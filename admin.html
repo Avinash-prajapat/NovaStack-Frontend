@@ -1,0 +1,1898 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard — DevCraft</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    /* ===== 🎨 Modern CSS Variables (Matching Main Page) ===== */
+    :root {
+      --bg-primary: #0f0c1a;
+      --bg-secondary: #1a162a;
+      --bg-card: rgba(26, 22, 42, 0.85);
+      --surface: rgba(255, 255, 255, 0.08);
+      --surface-hover: rgba(255, 255, 255, 0.15);
+      --border: rgba(255, 255, 255, 0.12);
+      --border-hover: rgba(232, 93, 38, 0.6);
+      --text-primary: #ffffff;
+      --text-secondary: rgba(255, 255, 255, 0.75);
+      --text-muted: rgba(255, 255, 255, 0.45);
+      --accent: #ff6b35;
+      --accent-glow: rgba(255, 107, 53, 0.4);
+      --accent-secondary: #7c3aed;
+      --green: #10b981;
+      --green-glow: rgba(16, 185, 129, 0.3);
+      --blue: #3b82f6;
+      --blue-glow: rgba(59, 130, 246, 0.3);
+      --error: #ef4444;
+      --error-glow: rgba(239, 68, 68, 0.3);
+      --warning: #f59e0b;
+      --gradient-1: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+      --gradient-2: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+      --gradient-3: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+      --gradient-accent: linear-gradient(135deg, #ff6b35 0%, #f7c531 100%);
+      --gradient-sidebar: linear-gradient(180deg, #1a162a 0%, #0f0c1a 100%);
+      --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.25);
+      --shadow-md: 0 8px 30px rgba(0, 0, 0, 0.4);
+      --shadow-lg: 0 20px 60px rgba(0, 0, 0, 0.55);
+      --shadow-glow: 0 0 40px var(--accent-glow);
+      --transition-fast: 150ms ease;
+      --transition-normal: 300ms cubic-bezier(0.4, 0, 0.2, 1);
+      --transition-slow: 500ms cubic-bezier(0.4, 0, 0.2, 1);
+      --radius-sm: 8px;
+      --radius-md: 14px;
+      --radius-lg: 20px;
+      --radius-full: 9999px;
+      --sidebar-width: 260px;
+    }
+
+    /* ===== 🌟 Base Reset ===== */
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    html { scroll-behavior: smooth; }
+    
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.6;
+      overflow-x: hidden;
+      min-height: 100vh;
+      position: relative;
+    }
+
+    /* Animated Background */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: 
+        radial-gradient(ellipse at 15% 85%, rgba(124, 58, 237, 0.12) 0%, transparent 50%),
+        radial-gradient(ellipse at 85% 15%, rgba(255, 107, 53, 0.1) 0%, transparent 50%),
+        radial-gradient(ellipse at 50% 50%, rgba(59, 130, 246, 0.06) 0%, transparent 70%);
+      z-index: -2;
+      animation: bgPulse 25s ease-in-out infinite;
+      pointer-events: none;
+    }
+    
+    @keyframes bgPulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.85; transform: scale(1.03); }
+    }
+
+    /* Floating Particles */
+    .particles {
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      z-index: -1;
+      pointer-events: none;
+      overflow: hidden;
+    }
+    
+    .particle {
+      position: absolute;
+      width: 3px; height: 3px;
+      background: var(--accent);
+      border-radius: 50%;
+      opacity: 0.25;
+      animation: float 18s infinite linear;
+    }
+    
+    @keyframes float {
+      0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+      10% { opacity: 0.25; }
+      90% { opacity: 0.25; }
+      100% { transform: translateY(-20vh) rotate(720deg); opacity: 0; }
+    }
+
+    /* ===== 🔐 LOGIN SCREEN ===== */
+    #login-screen {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 2rem;
+      position: relative;
+      z-index: 10;
+    }
+    
+    .login-box {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 2.5rem;
+      width: 100%;
+      max-width: 420px;
+      text-align: center;
+      backdrop-filter: blur(20px);
+      box-shadow: var(--shadow-lg);
+      animation: slideUp 0.5s ease-out;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .login-box::before {
+      content: '';
+      position: absolute;
+      top: 0; left: -100%;
+      width: 100%; height: 100%;
+      background: linear-gradient(90deg, transparent, var(--surface-hover), transparent);
+      transition: left 0.6s;
+    }
+    
+    .login-box:hover::before { left: 100%; }
+    
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(40px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .login-box .icon {
+      font-size: 3.5rem;
+      margin-bottom: 1.2rem;
+      background: var(--gradient-accent);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: pulse 2s infinite;
+    }
+    
+    .login-box h2 {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 1.8rem;
+      margin-bottom: 0.5rem;
+    }
+    
+    .login-box p {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      margin-bottom: 2rem;
+    }
+    
+    .login-box input {
+      width: 100%;
+      padding: 0.9rem 1.2rem;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-md);
+      font-size: 0.95rem;
+      margin-bottom: 1rem;
+      outline: none;
+      font-family: 'DM Sans', sans-serif;
+      color: var(--text-primary);
+      background: var(--surface);
+      transition: all var(--transition-normal);
+    }
+    
+    .login-box input::placeholder { color: var(--text-muted); }
+    
+    .login-box input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 4px var(--accent-glow);
+      background: var(--surface-hover);
+    }
+    
+    .login-box button {
+      width: 100%;
+      padding: 1rem;
+      background: var(--gradient-accent);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius-md);
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all var(--transition-normal);
+      position: relative;
+      overflow: hidden;
+      margin-top: 0.5rem;
+    }
+    
+    .login-box button::before {
+      content: '';
+      position: absolute;
+      top: 0; left: -100%;
+      width: 100%; height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.25), transparent);
+      transition: left 0.5s;
+    }
+    
+    .login-box button:hover:not(:disabled)::before { left: 100%; }
+    .login-box button:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 35px var(--accent-glow);
+    }
+    .login-box button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+    
+    .login-err {
+      color: var(--error);
+      font-size: 0.85rem;
+      margin-top: 0.8rem;
+      display: none;
+      padding: 0.5rem;
+      background: rgba(239, 68, 68, 0.15);
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--error);
+      animation: shake 0.4s ease-in-out;
+    }
+    
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-5px); }
+      75% { transform: translateX(5px); }
+    }
+
+    /* ===== 🖥️ DASHBOARD LAYOUT ===== */
+    #dashboard {
+      display: none;
+      min-height: 100vh;
+    }
+
+    /* ===== 📋 SIDEBAR ===== */
+    .sidebar {
+      width: var(--sidebar-width);
+      background: var(--gradient-sidebar);
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      z-index: 100;
+      border-right: 1px solid var(--border);
+      backdrop-filter: blur(20px);
+      transition: transform var(--transition-normal);
+    }
+    
+    .sidebar.collapsed { transform: translateX(-100%); }
+    
+    .sidebar-logo {
+      padding: 1.5rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      gap: 0.3rem;
+    }
+    
+    .sidebar-logo a {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 1.5rem;
+      color: var(--text-primary);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      transition: transform var(--transition-fast);
+    }
+    
+    .sidebar-logo a:hover { transform: scale(1.03); }
+    .sidebar-logo a span {
+      background: var(--gradient-accent);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    
+    .sidebar-logo small {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+    
+    .sidebar-nav {
+      flex: 1;
+      padding: 1rem 0.75rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+      overflow-y: auto;
+    }
+    
+    .nav-section {
+      font-size: 0.68rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--text-muted);
+      padding: 1rem 1.2rem 0.5rem;
+      font-weight: 600;
+    }
+    
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+      padding: 0.75rem 1.2rem;
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      color: var(--text-secondary);
+      font-size: 0.92rem;
+      font-weight: 500;
+      transition: all var(--transition-normal);
+      text-decoration: none;
+      border: none;
+      background: none;
+      width: 100%;
+      text-align: left;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .nav-item::before {
+      content: '';
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      width: 3px;
+      background: var(--gradient-accent);
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+      opacity: 0;
+      transition: opacity var(--transition-fast);
+    }
+    
+    .nav-item:hover {
+      background: var(--surface);
+      color: var(--text-primary);
+      transform: translateX(4px);
+    }
+    
+    .nav-item:hover::before { opacity: 1; }
+    
+    .nav-item.active {
+      background: var(--surface-hover);
+      color: var(--accent);
+      border-left: 3px solid var(--accent);
+    }
+    
+    .nav-item.active::before { opacity: 1; }
+    
+    .nav-item .icon {
+      font-size: 1.1rem;
+      width: 20px;
+      text-align: center;
+      transition: transform var(--transition-fast);
+    }
+    
+    .nav-item:hover .icon { transform: scale(1.15); }
+    
+    .sidebar-foot {
+      padding: 1rem 1.2rem;
+      border-top: 1px solid var(--border);
+      background: rgba(0, 0, 0, 0.1);
+    }
+    
+    .admin-info {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+    }
+    
+    .admin-av {
+      width: 36px;
+      height: 36px;
+      border-radius: var(--radius-md);
+      background: var(--gradient-accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      box-shadow: 0 4px 15px var(--accent-glow);
+    }
+    
+    .admin-name {
+      font-size: 0.9rem;
+      color: var(--text-primary);
+      font-weight: 600;
+    }
+    
+    .admin-role {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+    }
+    
+    .logout-icon {
+      margin-left: auto;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      cursor: pointer;
+      font-size: 1rem;
+      width: 32px;
+      height: 32px;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all var(--transition-fast);
+    }
+    
+    .logout-icon:hover {
+      background: var(--error);
+      color: white;
+      border-color: var(--error);
+      transform: scale(1.1);
+    }
+
+    /* ===== 📊 MAIN CONTENT ===== */
+    .main {
+      margin-left: var(--sidebar-width);
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      transition: margin-left var(--transition-normal);
+    }
+    
+    .main.full-width { margin-left: 0; }
+    
+    .topbar {
+      background: var(--bg-card);
+      border-bottom: 1px solid var(--border);
+      padding: 0 2rem;
+      height: 68px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      backdrop-filter: blur(20px);
+    }
+    
+    .topbar h1 {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 1.3rem;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+    
+    .topbar h1 i { color: var(--accent); }
+    
+    .toggle-sidebar {
+      display: none;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text-primary);
+      padding: 0.5rem 0.8rem;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      margin-right: 1rem;
+      transition: all var(--transition-fast);
+    }
+    
+    .toggle-sidebar:hover {
+      background: var(--surface-hover);
+      border-color: var(--accent);
+    }
+
+    /* ===== ✨ Modern Buttons ===== */
+    .btn {
+      padding: 0.55rem 1.2rem;
+      border-radius: var(--radius-full);
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      transition: all var(--transition-normal);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      position: relative;
+      overflow: hidden;
+      text-decoration: none;
+    }
+    
+    .btn::before {
+      content: '';
+      position: absolute;
+      top: 0; left: -100%;
+      width: 100%; height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+      transition: left 0.5s;
+    }
+    
+    .btn:hover::before { left: 100%; }
+    
+    .btn-primary {
+      background: var(--gradient-accent);
+      color: white;
+      box-shadow: 0 4px 20px var(--accent-glow);
+    }
+    
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px var(--accent-glow);
+    }
+    
+    .btn-edit {
+      background: rgba(59, 130, 246, 0.15);
+      color: var(--blue);
+      border: 1px solid rgba(59, 130, 246, 0.4);
+    }
+    
+    .btn-edit:hover {
+      background: var(--blue);
+      color: white;
+      box-shadow: 0 6px 20px var(--blue-glow);
+      transform: translateY(-2px);
+    }
+    
+    .btn-danger {
+      background: rgba(239, 68, 68, 0.15);
+      color: var(--error);
+      border: 1px solid rgba(239, 68, 68, 0.4);
+    }
+    
+    .btn-danger:hover {
+      background: var(--error);
+      color: white;
+      box-shadow: 0 6px 20px var(--error-glow);
+      transform: translateY(-2px);
+    }
+    
+    .btn-secondary {
+      background: var(--surface);
+      color: var(--text-primary);
+      border: 1.5px solid var(--border);
+    }
+    
+    .btn-secondary:hover {
+      border-color: var(--accent);
+      background: var(--surface-hover);
+      transform: translateY(-2px);
+    }
+    
+    .btn-sm { padding: 0.4rem 0.9rem; font-size: 0.8rem; }
+
+    /* ===== 📦 Content Area ===== */
+    .content {
+      flex: 1;
+      padding: 2rem;
+      max-width: 1600px;
+      margin: 0 auto;
+      width: 100%;
+    }
+    
+    .panel { display: none; animation: fadeIn 0.4s ease-out; }
+    .panel.active { display: block; }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ===== 📈 Stats Cards ===== */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1.2rem;
+      margin-bottom: 2rem;
+    }
+    
+    .stat-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.4rem;
+      backdrop-filter: blur(10px);
+      transition: all var(--transition-normal);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .stat-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; height: 3px;
+      background: var(--gradient-accent);
+      opacity: 0;
+      transition: opacity var(--transition-fast);
+    }
+    
+    .stat-card:hover {
+      transform: translateY(-4px);
+      border-color: var(--accent);
+      box-shadow: var(--shadow-md), 0 0 30px var(--accent-glow);
+    }
+    
+    .stat-card:hover::before { opacity: 1; }
+    
+    .stat-card .lbl {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    
+    .stat-card .val {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 2.2rem;
+      margin-top: 0.4rem;
+      background: var(--gradient-accent);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    
+    .stat-card.trend-up .val { color: var(--green); }
+    .stat-card.trend-down .val { color: var(--error); }
+
+    /* ===== 📋 Table Styles ===== */
+    .tbl-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      backdrop-filter: blur(10px);
+    }
+    
+    .tbl-head {
+      padding: 1.2rem 1.5rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    
+    .tbl-head h3 {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 1.1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .search-inp {
+      padding: 0.55rem 1rem;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-full);
+      font-size: 0.85rem;
+      color: var(--text-primary);
+      background: var(--surface);
+      outline: none;
+      width: 220px;
+      transition: all var(--transition-normal);
+    }
+    
+    .search-inp::placeholder { color: var(--text-muted); }
+    
+    .search-inp:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 4px var(--accent-glow);
+      background: var(--surface-hover);
+    }
+    
+    .search-inp i { margin-right: 0.4rem; color: var(--text-muted); }
+    
+    table { width: 100%; border-collapse: collapse; }
+    
+    th {
+      background: var(--surface);
+      padding: 0.9rem 1.2rem;
+      text-align: left;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      border-bottom: 1px solid var(--border);
+    }
+    
+    td {
+      padding: 1rem 1.2rem;
+      font-size: 0.9rem;
+      border-bottom: 1px solid var(--border);
+      vertical-align: middle;
+      color: var(--text-secondary);
+    }
+    
+    tr:last-child td { border-bottom: none; }
+    
+    tr:hover td {
+      background: var(--surface);
+      transition: background var(--transition-fast);
+    }
+    
+    tr:hover { transform: scale(1.005); }
+
+    /* ===== 🏷️ Badges ===== */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.3rem 0.75rem;
+      border-radius: var(--radius-full);
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: capitalize;
+    }
+    
+    .badge-pending {
+      background: rgba(245, 158, 11, 0.15);
+      color: var(--warning);
+      border: 1px solid rgba(245, 158, 11, 0.4);
+    }
+    
+    .badge-progress {
+      background: rgba(59, 130, 246, 0.15);
+      color: var(--blue);
+      border: 1px solid rgba(59, 130, 246, 0.4);
+    }
+    
+    .badge-done {
+      background: rgba(16, 185, 129, 0.15);
+      color: var(--green);
+      border: 1px solid rgba(16, 185, 129, 0.4);
+    }
+    
+    .badge-cancelled {
+      background: rgba(239, 68, 68, 0.15);
+      color: var(--error);
+      border: 1px solid rgba(239, 68, 68, 0.4);
+    }
+    
+    .badge-verified {
+      background: rgba(16, 185, 129, 0.15);
+      color: var(--green);
+      border: 1px solid rgba(16, 185, 129, 0.4);
+    }
+
+    /* ===== ⚡ Table Actions ===== */
+    .tbl-actions {
+      display: flex;
+      gap: 0.4rem;
+      flex-wrap: wrap;
+    }
+    
+    .empty-row td {
+      text-align: center;
+      padding: 3.5rem !important;
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+    
+    .empty-row i {
+      font-size: 2.5rem;
+      display: block;
+      margin-bottom: 0.8rem;
+      opacity: 0.5;
+    }
+
+    /* ===== 🪟 Modal ===== */
+    .modal-ov {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.6);
+      z-index: 1000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+      backdrop-filter: blur(8px);
+      animation: fadeIn 0.3s ease-out;
+    }
+    
+    .modal-ov.open { display: flex; }
+    
+    .modal {
+      background: var(--bg-card);
+      border-radius: var(--radius-lg);
+      padding: 2rem;
+      width: 100%;
+      max-width: 580px;
+      max-height: 90vh;
+      overflow-y: auto;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow-lg);
+      animation: modalSlide 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+    }
+    
+    @keyframes modalSlide {
+      from { opacity: 0; transform: translateY(30px) scale(0.98); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    
+    .modal-hdr {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1.5rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid var(--border);
+    }
+    
+    .modal-hdr h3 {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 1.3rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .close-btn {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      width: 36px;
+      height: 36px;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 1.1rem;
+      transition: all var(--transition-fast);
+    }
+    
+    .close-btn:hover {
+      background: var(--error);
+      color: white;
+      border-color: var(--error);
+      transform: rotate(90deg);
+    }
+    
+    .fg { margin-bottom: 1.1rem; }
+    
+    .fg label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 500;
+      margin-bottom: 0.5rem;
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    
+    .fg label i { color: var(--accent); font-size: 0.8rem; }
+    
+    .fg input,
+    .fg textarea,
+    .fg select {
+      width: 100%;
+      padding: 0.8rem 1rem;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-md);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.9rem;
+      color: var(--text-primary);
+      background: var(--surface);
+      outline: none;
+      transition: all var(--transition-normal);
+    }
+    
+    .fg input::placeholder,
+    .fg textarea::placeholder { color: var(--text-muted); }
+    
+    .fg input:focus,
+    .fg textarea:focus,
+    .fg select:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 4px var(--accent-glow);
+      background: var(--surface-hover);
+    }
+    
+    .fg textarea {
+      min-height: 80px;
+      resize: vertical;
+      font-family: inherit;
+    }
+    
+    .fg select {
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%237a736a'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 1rem center;
+      background-size: 1rem;
+      padding-right: 2.5rem;
+    }
+    
+    .modal-foot {
+      display: flex;
+      gap: 0.8rem;
+      justify-content: flex-end;
+      margin-top: 1.5rem;
+      padding-top: 1.2rem;
+      border-top: 1px solid var(--border);
+    }
+    
+    .btn-cancel {
+      padding: 0.7rem 1.4rem;
+      border-radius: var(--radius-full);
+      font-size: 0.9rem;
+      font-weight: 500;
+      cursor: pointer;
+      background: var(--surface);
+      color: var(--text-primary);
+      border: 1.5px solid var(--border);
+      transition: all var(--transition-normal);
+    }
+    
+    .btn-cancel:hover {
+      border-color: var(--text-primary);
+      transform: translateY(-2px);
+    }
+    
+    .btn-save {
+      padding: 0.7rem 1.6rem;
+      border-radius: var(--radius-full);
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      background: var(--gradient-accent);
+      color: #fff;
+      border: none;
+      transition: all var(--transition-normal);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .btn-save:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px var(--accent-glow);
+    }
+    
+    .btn-save:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    /* ===== 🔔 Global Alerts ===== */
+    .global-alert {
+      padding: 0.8rem 1.2rem;
+      border-radius: var(--radius-md);
+      font-size: 0.9rem;
+      font-weight: 500;
+      margin-bottom: 1.2rem;
+      display: none;
+      align-items: center;
+      gap: 0.6rem;
+      animation: slideInRight 0.4s ease-out;
+      border: 1px solid;
+    }
+    
+    @keyframes slideInRight {
+      from { opacity: 0; transform: translateX(30px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+    
+    .ga-success {
+      background: rgba(16, 185, 129, 0.15);
+      color: var(--green);
+      border-color: rgba(16, 185, 129, 0.4);
+    }
+    
+    .ga-error {
+      background: rgba(239, 68, 68, 0.15);
+      color: var(--error);
+      border-color: rgba(239, 68, 68, 0.4);
+    }
+    
+    .global-alert i { font-size: 1.1rem; }
+
+    /* ===== 📱 Responsive ===== */
+    @media (max-width: 1200px) {
+      .stats-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    
+    @media (max-width: 992px) {
+      .sidebar { transform: translateX(-100%); }
+      .sidebar.mobile-open { transform: translateX(0); }
+      .main { margin-left: 0; }
+      .toggle-sidebar { display: flex; }
+      .modal { margin: 1rem; max-width: calc(100% - 2rem); }
+    }
+    
+    @media (max-width: 768px) {
+      .stats-grid { grid-template-columns: 1fr; }
+      .tbl-head { flex-direction: column; align-items: flex-start; }
+      .search-inp { width: 100%; }
+      .modal-foot { flex-direction: column-reverse; }
+      .btn { width: 100%; justify-content: center; }
+      .content { padding: 1.2rem; }
+      .topbar { padding: 0 1rem; }
+    }
+    
+    @media (max-width: 480px) {
+      .login-box { padding: 2rem 1.5rem; }
+      .login-box h2 { font-size: 1.5rem; }
+      .stat-card .val { font-size: 1.8rem; }
+      table { font-size: 0.85rem; }
+      th, td { padding: 0.7rem 0.8rem; }
+      .tbl-actions { flex-direction: column; }
+      .btn { padding: 0.5rem 1rem; font-size: 0.8rem; }
+    }
+
+    /* ===== 🌀 Loading & Utilities ===== */
+    .spinner {
+      width: 40px; height: 40px;
+      border: 3px solid var(--border);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 2rem auto;
+    }
+    
+    @keyframes spin { to { transform: rotate(360deg); } }
+    
+    .skeleton {
+      background: linear-gradient(90deg, var(--surface) 25%, var(--surface-hover) 50%, var(--surface) 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.5s infinite;
+      border-radius: var(--radius-sm);
+    }
+    
+    @keyframes shimmer {
+      0% { background-position: -200% 0; }
+      100% { background-position: 200% 0; }
+    }
+    
+    .code {
+      font-family: 'DM Sans', monospace;
+      font-size: 0.8rem;
+      background: var(--surface);
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+      color: var(--accent);
+    }
+    
+    .text-truncate {
+      max-width: 180px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      display: inline-block;
+    }
+    
+    select.status-select {
+      padding: 0.35rem 0.6rem;
+      font-size: 0.8rem;
+      border-radius: var(--radius-sm);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text-primary);
+      cursor: pointer;
+      transition: all var(--transition-fast);
+    }
+    
+    select.status-select:focus {
+      border-color: var(--accent);
+      outline: none;
+    }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar { width: 7px; height: 7px; }
+    ::-webkit-scrollbar-track { background: var(--bg-secondary); }
+    ::-webkit-scrollbar-thumb {
+      background: var(--gradient-accent);
+      border-radius: var(--radius-full);
+    }
+    ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+
+    /* Focus States */
+    a:focus, button:focus, input:focus, select:focus, textarea:focus {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+    }
+
+    /* Reduced Motion */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Animated Particles -->
+<div class="particles" id="particles"></div>
+
+<!-- 🔐 LOGIN SCREEN -->
+<div id="login-screen">
+  <div class="login-box">
+    <div class="icon"><i class="fas fa-shield-alt"></i></div>
+    <h2>Admin Access</h2>
+    <p>Enter your credentials to access the dashboard</p>
+    <input type="email" id="adm-email" placeholder="Admin email" autocomplete="email" aria-label="Admin email">
+    <input type="password" id="adm-pass" placeholder="Admin password" onkeypress="if(event.key==='Enter')doAdminLogin()" aria-label="Admin password">
+    <button id="login-btn" onclick="doAdminLogin()">
+      <i class="fas fa-sign-in-alt"></i> Login to Dashboard
+    </button>
+    <div class="login-err" id="login-err">
+      <i class="fas fa-exclamation-circle"></i> Invalid admin credentials
+    </div>
+  </div>
+</div>
+
+<!-- 🖥️ DASHBOARD -->
+<div id="dashboard">
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <a href="index.html"><i class="fas fa-code"></i> Dev<span>Craft</span></a>
+      <small><i class="fas fa-cog"></i> Admin Dashboard</small>
+    </div>
+    
+    <nav class="sidebar-nav">
+      <div class="nav-section"><i class="fas fa-chart-pie"></i> Overview</div>
+      <button class="nav-item active" onclick="switchPanel('overview',this)">
+        <span class="icon"><i class="fas fa-home"></i></span> Dashboard
+      </button>
+      
+      <div class="nav-section"><i class="fas fa-tools"></i> Management</div>
+      <button class="nav-item" onclick="switchPanel('services',this)">
+        <span class="icon"><i class="fas fa-cube"></i></span> Services
+      </button>
+      <button class="nav-item" onclick="switchPanel('orders',this)">
+        <span class="icon"><i class="fas fa-box-open"></i></span> Orders
+      </button>
+      <button class="nav-item" onclick="switchPanel('users',this)">
+        <span class="icon"><i class="fas fa-users"></i></span> Users
+      </button>
+      
+      <div class="nav-section"><i class="fas fa-globe"></i> Site</div>
+      <a class="nav-item" href="index.html" target="_blank">
+        <span class="icon"><i class="fas fa-external-link-alt"></i></span> View Website
+      </a>
+    </nav>
+    
+    <div class="sidebar-foot">
+      <div class="admin-info">
+        <div class="admin-av"><i class="fas fa-user"></i></div>
+        <div>
+          <div class="admin-name" id="admin-name-disp">Admin</div>
+          <div class="admin-role"><i class="fas fa-crown"></i> Super Admin</div>
+        </div>
+        <button class="logout-icon" onclick="doAdminLogout()" title="Logout">
+          <i class="fas fa-sign-out-alt"></i>
+        </button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <div class="main" id="main">
+    <div class="topbar">
+      <div style="display:flex;align-items:center">
+        <button class="toggle-sidebar" onclick="toggleSidebar()">
+          <i class="fas fa-bars"></i>
+        </button>
+        <h1><i class="fas fa-tachometer-alt"></i> <span id="panel-title">Dashboard</span></h1>
+      </div>
+      <div style="display:flex;gap:0.8rem;align-items:center">
+        <button class="btn btn-primary" id="add-svc-btn" style="display:none" onclick="openModal()">
+          <i class="fas fa-plus"></i> Add Service
+        </button>
+        <span style="font-size:0.85rem;color:var(--text-muted)" id="date-disp"></span>
+      </div>
+    </div>
+    
+    <div class="content">
+      <!-- Global Alerts -->
+      <div class="global-alert ga-success" id="ga-success">
+        <i class="fas fa-check-circle"></i> <span id="success-msg"></span>
+      </div>
+      <div class="global-alert ga-error" id="ga-error">
+        <i class="fas fa-exclamation-triangle"></i> <span id="error-msg"></span>
+      </div>
+
+      <!-- 📊 OVERVIEW PANEL -->
+      <div class="panel active" id="panel-overview">
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="lbl"><i class="fas fa-cube"></i> Total Services</div>
+            <div class="val counter" id="st-svc" data-target="0">0</div>
+          </div>
+          <div class="stat-card">
+            <div class="lbl"><i class="fas fa-box-open"></i> Total Orders</div>
+            <div class="val counter" id="st-ord" data-target="0">0</div>
+          </div>
+          <div class="stat-card">
+            <div class="lbl"><i class="fas fa-users"></i> Registered Users</div>
+            <div class="val counter" id="st-usr" data-target="0">0</div>
+          </div>
+          <div class="stat-card trend-up">
+            <div class="lbl"><i class="fas fa-dollar-sign"></i> Total Revenue</div>
+            <div class="val" id="st-rev">$0</div>
+          </div>
+        </div>
+        
+        <div class="tbl-card">
+          <div class="tbl-head">
+            <h3><i class="fas fa-clock"></i> Recent Orders</h3>
+          </div>
+          <table>
+            <thead>
+              <tr>
+                <th>Order ID</th>
+                <th>Client</th>
+                <th>Service</th>
+                <th>Amount</th>
+                <th>Status</th>
+                <th>Date</th>
+              </tr>
+            </thead>
+            <tbody id="recent-tbody">
+              <tr class="loading-row"><td colspan="6"><div class="spinner"></div></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- 🛠️ SERVICES PANEL -->
+      <div class="panel" id="panel-services">
+        <div class="tbl-card">
+          <div class="tbl-head">
+            <h3><i class="fas fa-list"></i> All Services</h3>
+            <div style="position:relative">
+              <i class="fas fa-search" style="position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--text-muted);font-size:0.85rem"></i>
+              <input type="text" class="search-inp" placeholder="Search services..." oninput="renderServices(this.value)" style="padding-left:32px">
+            </div>
+          </div>
+          <table>
+            <thead>
+              <tr>
+                <th>Service</th>
+                <th>Category</th>
+                <th>Technologies</th>
+                <th>Price</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="svc-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- 📦 ORDERS PANEL -->
+      <div class="panel" id="panel-orders">
+        <div class="tbl-card">
+          <div class="tbl-head">
+            <h3><i class="fas fa-receipt"></i> All Orders</h3>
+          </div>
+          <table>
+            <thead>
+              <tr>
+                <th>Order ID</th>
+                <th>Client</th>
+                <th>Service</th>
+                <th>Total</th>
+                <th>Status</th>
+                <th>Date</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="ord-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- 👥 USERS PANEL -->
+      <div class="panel" id="panel-users">
+        <div class="tbl-card">
+          <div class="tbl-head">
+            <h3><i class="fas fa-user-friends"></i> Registered Users</h3>
+          </div>
+          <table>
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Verified</th>
+                <th>Orders</th>
+                <th>Joined</th>
+              </tr>
+            </thead>
+            <tbody id="usr-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 🪟 SERVICE MODAL -->
+<div class="modal-ov" id="svc-modal">
+  <div class="modal">
+    <div class="modal-hdr">
+      <h3><i class="fas fa-edit"></i> <span id="modal-title">Add New Service</span></h3>
+      <button class="close-btn" onclick="closeModal()" aria-label="Close modal">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+    
+    <div class="fg">
+      <label><i class="fas fa-heading"></i> Title *</label>
+      <input id="f-title" placeholder="e.g. Web Application Development">
+    </div>
+    
+    <div class="fg">
+      <label><i class="fas fa-align-left"></i> Description *</label>
+      <textarea id="f-desc" placeholder="Describe the service in detail..."></textarea>
+    </div>
+    
+    <div class="fg">
+      <label><i class="fas fa-folder"></i> Category</label>
+      <select id="f-cat">
+        <option value="web">🌐 Web Application</option>
+        <option value="mobile">📱 Mobile App</option>
+        <option value="ai">🤖 AI / ML</option>
+        <option value="ecom">🛒 E-Commerce</option>
+        <option value="portfolio">🎨 Portfolio</option>
+        <option value="custom">⚙️ Custom</option>
+      </select>
+    </div>
+    
+    <div class="fg">
+      <label><i class="fas fa-code"></i> Technologies</label>
+      <input id="f-tech" placeholder="React, Node.js, PostgreSQL">
+    </div>
+    
+    <div class="fg">
+      <label><i class="fas fa-tag"></i> Price ($) *</label>
+      <input type="number" id="f-price" placeholder="299" min="0">
+    </div>
+    
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
+      <div class="fg">
+        <label><i class="fab fa-github"></i> GitHub Link</label>
+        <input type="url" id="f-github" placeholder="https://github.com/...">
+      </div>
+      <div class="fg">
+        <label><i class="fas fa-external-link-alt"></i> Live Demo</label>
+        <input type="url" id="f-demo" placeholder="https://...">
+      </div>
+    </div>
+    
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem">
+      <div class="fg">
+        <label><i class="fas fa-smile"></i> Emoji</label>
+        <input id="f-emoji" placeholder="💻" maxlength="2" style="text-align:center">
+      </div>
+      <div class="fg">
+        <label><i class="fas fa-calendar-day"></i> Days</label>
+        <input type="number" id="f-days" placeholder="14" min="1">
+      </div>
+      <div class="fg">
+        <label><i class="fas fa-sync-alt"></i> Revisions</label>
+        <input type="number" id="f-revs" placeholder="3" min="0">
+      </div>
+    </div>
+    
+    <div class="fg">
+      <label><i class="fas fa-list-check"></i> Features (one per line)</label>
+      <textarea id="f-feats" placeholder="✅ Source code included&#10;✅ Free revisions&#10;✅ Documentation"></textarea>
+    </div>
+    
+    <div class="modal-foot">
+      <button class="btn-cancel" onclick="closeModal()">
+        <i class="fas fa-times"></i> Cancel
+      </button>
+      <button class="btn-save" onclick="saveService()">
+        <i class="fas fa-save"></i> Save Service
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── CONFIG ─────────────────────────────────────────────────────────────────
+const CONFIG = { API: 'http://172.20.68.74:5000' };
+let adminToken = '';
+let editingId = null;
+let adminData = { services: [], orders: [], users: [] };
+
+// ── Create Floating Particles ─────────────────────────────────────────────
+function createParticles() {
+  const container = document.getElementById('particles');
+  for (let i = 0; i < 30; i++) {
+    const particle = document.createElement('div');
+    particle.className = 'particle';
+    particle.style.left = Math.random() * 100 + '%';
+    particle.style.animationDelay = Math.random() * 18 + 's';
+    particle.style.animationDuration = (18 + Math.random() * 12) + 's';
+    particle.style.opacity = 0.15 + Math.random() * 0.3;
+    container.appendChild(particle);
+  }
+}
+createParticles();
+
+// ── Sidebar Toggle (Mobile) ───────────────────────────────────────────────
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('mobile-open');
+}
+
+// ── Admin Auth ────────────────────────────────────────────────────────────
+async function doAdminLogin() {
+  const email = document.getElementById('adm-email').value.trim();
+  const password = document.getElementById('adm-pass').value;
+  const btn = document.getElementById('login-btn');
+  const errEl = document.getElementById('login-err');
+  
+  errEl.style.display = 'none';
+  
+  if (!email || !password) {
+    errEl.style.display = 'block';
+    errEl.innerHTML = '<i class="fas fa-exclamation-circle"></i> Please fill in all fields';
+    return;
+  }
+  
+  btn.disabled = true;
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Logging in...';
+  
+  try {
+    const res = await fetch(CONFIG.API + '/admin/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password })
+    });
+    const data = await res.json();
+    
+    if (!res.ok) throw new Error(data.error || 'Invalid credentials');
+    
+    adminToken = data.token;
+    localStorage.setItem('dc_admin_token', adminToken);
+    localStorage.setItem('dc_admin_email', email);
+    
+    showDashboard(email);
+  } catch (e) {
+    errEl.style.display = 'block';
+    errEl.innerHTML = '<i class="fas fa-exclamation-circle"></i> ' + (e.message || 'Invalid credentials');
+  }
+  
+  btn.disabled = false;
+  btn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Login to Dashboard';
+}
+
+function showDashboard(email) {
+  document.getElementById('login-screen').style.display = 'none';
+  document.getElementById('dashboard').style.display = 'flex';
+  document.getElementById('admin-name-disp').textContent = email.split('@')[0];
+  document.getElementById('date-disp').textContent = new Date().toLocaleDateString('en-US', {
+    weekday: 'short', month: 'short', day: 'numeric', year: 'numeric'
+  });
+  loadAll();
+}
+
+function doAdminLogout() {
+  localStorage.removeItem('dc_admin_token');
+  localStorage.removeItem('dc_admin_email');
+  adminToken = '';
+  document.getElementById('dashboard').style.display = 'none';
+  document.getElementById('login-screen').style.display = 'flex';
+  // Reset sidebar for mobile
+  document.getElementById('sidebar').classList.remove('mobile-open');
+}
+
+// ── API Helper ────────────────────────────────────────────────────────────
+async function adminFetch(method, path, body = null) {
+  const headers = {
+    'Content-Type': 'application/json',
+    'Authorization': `Bearer ${adminToken}`
+  };
+  const opts = { method, headers };
+  if (body) opts.body = JSON.stringify(body);
+  
+  const res = await fetch(CONFIG.API + path, opts);
+  const json = await res.json();
+  
+  if (!res.ok) throw new Error(json.error || `HTTP ${res.status}`);
+  return json;
+}
+
+// ── Load All Data ─────────────────────────────────────────────────────────
+async function loadAll() {
+  try {
+    const [sd, od, ud] = await Promise.all([
+      adminFetch('GET', '/admin/services'),
+      adminFetch('GET', '/admin/orders'),
+      adminFetch('GET', '/admin/users'),
+    ]);
+    
+    adminData.services = sd.services || [];
+    adminData.orders = od.orders || [];
+    adminData.users = ud.users || [];
+    
+  } catch (e) {
+    showGlobalErr('Failed to load data: ' + e.message);
+    return;
+  }
+  
+  renderStats();
+  renderRecentOrders();
+  renderServices();
+  renderOrders();
+  renderUsers();
+  
+  // Animate counters after data loads
+  setTimeout(animateCounters, 300);
+}
+
+// ── Render Stats ──────────────────────────────────────────────────────────
+function renderStats() {
+  const revenue = adminData.orders.reduce((s, o) => s + parseFloat(o.price || 0), 0);
+  
+  document.getElementById('st-svc').dataset.target = adminData.services.length;
+  document.getElementById('st-ord').dataset.target = adminData.orders.length;
+  document.getElementById('st-usr').dataset.target = adminData.users.length;
+  document.getElementById('st-rev').textContent = '$' + Math.round(revenue).toLocaleString();
+}
+
+// ── Animated Counters ─────────────────────────────────────────────────────
+function animateCounters() {
+  document.querySelectorAll('.counter').forEach(counter => {
+    const target = parseInt(counter.dataset.target);
+    let current = 0;
+    const increment = Math.ceil(target / 30);
+    const duration = 1500;
+    const stepTime = duration / (target / increment);
+    
+    function update() {
+      current += increment;
+      if (current >= target) {
+        counter.textContent = target.toLocaleString();
+      } else {
+        counter.textContent = current.toLocaleString();
+        requestAnimationFrame(update);
+      }
+    }
+    update();
+  });
+}
+
+// ── Render Recent Orders ──────────────────────────────────────────────────
+function renderRecentOrders() {
+  const tbody = document.getElementById('recent-tbody');
+  const rows = adminData.orders.slice(0, 6);
+  
+  if (!rows.length) {
+    tbody.innerHTML = '<tr class="empty-row"><td colspan="6"><i class="fas fa-inbox"></i><br>No orders yet</td></tr>';
+    return;
+  }
+  
+  tbody.innerHTML = rows.map(o => `
+    <tr style="animation: fadeIn 0.3s ease-out">
+      <td><span class="code">${(o.id || '').substring(0, 8)}...</span></td>
+      <td><strong>${o.user_name || '—'}</strong></td>
+      <td class="text-truncate" title="${o.service_title || ''}">${o.service_title || '—'}</td>
+      <td><strong style="color:var(--accent)">$${parseFloat(o.price || 0).toLocaleString()}</strong></td>
+      <td><span class="badge badge-${o.status || 'pending'}"><i class="fas fa-circle" style="font-size:0.5rem"></i> ${o.status || 'pending'}</span></td>
+      <td style="color:var(--text-muted);font-size:0.85rem">${(o.created_at || '').substring(0, 10)}</td>
+    </tr>
+  `).join('');
+}
+
+// ── Render Services ───────────────────────────────────────────────────────
+function renderServices(filter = '') {
+  const tbody = document.getElementById('svc-tbody');
+  const filtered = filter
+    ? adminData.services.filter(s => s.title?.toLowerCase().includes(filter.toLowerCase()))
+    : adminData.services;
+  
+  if (!filtered.length) {
+    tbody.innerHTML = '<tr class="empty-row"><td colspan="5"><i class="fas fa-search"></i><br>No services found</td></tr>';
+    return;
+  }
+  
+  tbody.innerHTML = filtered.map(s => `
+    <tr>
+      <td><strong>${s.emoji || '💻'} ${s.title}</strong></td>
+      <td><span class="badge badge-progress">${s.category || 'web'}</span></td>
+      <td class="text-truncate" title="${s.technologies || ''}" style="color:var(--text-muted);font-size:0.85rem">${s.technologies || '—'}</td>
+      <td><strong style="color:var(--accent)">$${s.price}</strong></td>
+      <td>
+        <div class="tbl-actions">
+          <button class="btn btn-edit btn-sm" onclick="editService(${s.id})">
+            <i class="fas fa-edit"></i> Edit
+          </button>
+          <button class="btn btn-danger btn-sm" onclick="deleteService(${s.id})">
+            <i class="fas fa-trash"></i> Delete
+          </button>
+        </div>
+      </td>
+    </tr>
+  `).join('');
+}
+
+// ── Render Orders ─────────────────────────────────────────────────────────
+function renderOrders() {
+  const tbody = document.getElementById('ord-tbody');
+  
+  if (!adminData.orders.length) {
+    tbody.innerHTML = '<tr class="empty-row"><td colspan="7"><i class="fas fa-box-open"></i><br>No orders yet</td></tr>';
+    return;
+  }
+  
+  const statuses = [
+    { value: 'pending', label: 'Pending', class: 'badge-pending' },
+    { value: 'progress', label: 'In Progress', class: 'badge-progress' },
+    { value: 'done', label: 'Completed', class: 'badge-done' },
+    { value: 'cancelled', label: 'Cancelled', class: 'badge-cancelled' }
+  ];
+  
+  tbody.innerHTML = adminData.orders.map(o => `
+    <tr>
+      <td><span class="code">${(o.id || '').substring(0, 8)}...</span></td>
+      <td>
+        <strong>${o.user_name || '—'}</strong><br>
+        <span style="font-size:0.8rem;color:var(--text-muted)">${o.user_email || ''}</span>
+      </td>
+      <td class="text-truncate" title="${o.service_title || ''}">${o.service_title || '—'}</td>
+      <td><strong style="color:var(--accent)">$${parseFloat(o.price || 0).toLocaleString()}</strong></td>
+      <td>
+        <select class="status-select" onchange="updateOrderStatus(${o.id}, this.value)">
+          ${statuses.map(s => `<option value="${s.value}" ${o.status === s.value ? 'selected' : ''}>${s.label}</option>`).join('')}
+        </select>
+      </td>
+      <td style="color:var(--text-muted);font-size:0.85rem">${(o.created_at || '').substring(0, 10)}</td>
+      <td><span class="badge ${statuses.find(st => st.value === o.status)?.class || 'badge-pending'}">${o.status || 'pending'}</span></td>
+    </tr>
+  `).join('');
+}
+
+// ── Render Users ──────────────────────────────────────────────────────────
+function renderUsers() {
+  const tbody = document.getElementById('usr-tbody');
+  
+  if (!adminData.users.length) {
+    tbody.innerHTML = '<tr class="empty-row"><td colspan="5"><i class="fas fa-users"></i><br>No users yet</td></tr>';
+    return;
+  }
+  
+  tbody.innerHTML = adminData.users.map(u => `
+    <tr>
+      <td><strong>${u.name || '—'}</strong></td>
+      <td>${u.email}</td>
+      <td>
+        ${u.verified
+          ? '<span class="badge badge-verified"><i class="fas fa-check"></i> Verified</span>'
+          : '<span class="badge badge-pending"><i class="fas fa-clock"></i> Pending</span>'}
+      </td>
+      <td><strong>${u.order_count || 0}</strong> orders</td>
+      <td style="color:var(--text-muted);font-size:0.85rem">${(u.created_at || '').substring(0, 10)}</td>
+    </tr>
+  `).join('');
+}
+
+// ── Panel Switcher ────────────────────────────────────────────────────────
+function switchPanel(name, el) {
+  // Hide all panels
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('panel-' + name).classList.add('active');
+  
+  // Update nav active state
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  el.classList.add('active');
+  
+  // Update title
+  const titles = {
+    overview: 'Dashboard',
+    services: 'Services Management',
+    orders: 'Orders Management',
+    users: 'User Management'
+  };
+  document.getElementById('panel-title').innerHTML = `<i class="fas fa-${getIconForPanel(name)}"></i> ${titles[name]}`;
+  
+  // Show/hide Add Service button
+  document.getElementById('add-svc-btn').style.display = name === 'services' ? 'inline-flex' : 'none';
+  
+  // Close mobile sidebar
+  document.getElementById('sidebar').classList.remove('mobile-open');
+}
+
+function getIconForPanel(name) {
+  const icons = {
+    overview: 'tachometer-alt',
+    services: 'cube',
+    orders: 'box-open',
+    users: 'users'
+  };
+  return icons[name] || 'home';
+}
+
+// ── Modal Functions ───────────────────────────────────────────────────────
+function openModal() {
+  editingId = null;
+  document.getElementById('modal-title').textContent = 'Add New Service';
+  
+  // Reset form
+  ['f-title', 'f-desc', 'f-tech', 'f-github', 'f-demo', 'f-emoji', 'f-feats'].forEach(id => {
+    document.getElementById(id).value = '';
+  });
+  document.getElementById('f-price').value = '';
+  document.getElementById('f-days').value = '14';
+  document.getElementById('f-revs').value = '3';
+  document.getElementById('f-cat').value = 'web';
+  
+  document.getElementById('svc-modal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function editService(id) {
+  const s = adminData.services.find(s => s.id === id);
+  if (!s) return;
+  
+  editingId = id;
+  document.getElementById('modal-title').textContent = 'Edit Service';
+  
+  document.getElementById('f-title').value = s.title || '';
+  document.getElementById('f-desc').value = s.description || '';
+  document.getElementById('f-cat').value = s.category || 'web';
+  document.getElementById('f-tech').value = s.technologies || '';
+  document.getElementById('f-price').value = s.price || '';
+  document.getElementById('f-github').value = s.github_link || '';
+  document.getElementById('f-demo').value = s.live_url || '';
+  document.getElementById('f-emoji').value = s.emoji || '';
+  document.getElementById('f-days').value = s.delivery_days || 14;
+  document.getElementById('f-revs').value = s.revisions || 3;
+  document.getElementById('f-feats').value = (s.features || []).join('\n');
+  
+  document.getElementById('svc-modal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal() {
+  document.getElementById('svc-modal').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+// Close modal on overlay click
+document.getElementById('svc-modal').addEventListener('click', (e) => {
+  if (e.target.id === 'svc-modal') closeModal();
+});
+
+// Close modal on Escape key
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') closeModal();
+});
+
+// ── Save Service ──────────────────────────────────────────────────────────
+async function saveService() {
+  const title = document.getElementById('f-title').value.trim();
+  const price = document.getElementById('f-price').value;
+  
+  if (!title) { showGlobalErr('Title is required'); return; }
+  if (!price) { showGlobalErr('Price is required'); return; }
+  
+  const features = document.getElementById('f-feats').value
+    .split('\n')
+    .map(f => f.trim())
+    .filter(Boolean);
+  
+  const payload = {
+    title,
+    price: parseFloat(price),
+    description: document.getElementById('f-desc').value.trim(),
+    category: document.getElementById('f-cat').value,
+    technologies: document.getElementById('f-tech').value.trim(),
+    github_link: document.getElementById('f-github').value.trim(),
+    live_url: document.getElementById('f-demo').value.trim(),
+    emoji: document.getElementById('f-emoji').value.trim() || '💻',
+    delivery_days: parseInt(document.getElementById('f-days').value) || 14,
+    revisions: parseInt(document.getElementById('f-revs').value) || 3,
+    features,
+  };
+  
+  const btn = document.querySelector('.btn-save');
+  const originalText = btn.innerHTML;
+  btn.disabled = true;
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+  
+  try {
+    if (editingId) {
+      payload.id = editingId;
+      await adminFetch('PUT', '/admin/service/update', payload);
+    } else {
+      await adminFetch('POST', '/admin/service/add', payload);
+    }
+    
+    closeModal();
+    await loadAll();
+    showGlobalSuccess(editingId ? '✅ Service updated!' : '✅ Service added!');
+    
+  } catch (e) {
+    showGlobalErr('❌ Error: ' + e.message);
+  }
+  
+  btn.disabled = false;
+  btn.innerHTML = originalText;
+}
+
+// ── Delete Service ────────────────────────────────────────────────────────
+async function deleteService(id) {
+  if (!confirm('⚠️ Delete this service?\n\nThis action cannot be undone.')) return;
+  
+  try {
+    await adminFetch('DELETE', '/admin/service/delete', { id });
+    await loadAll();
+    showGlobalSuccess('🗑️ Service deleted.');
+  } catch (e) {
+    showGlobalErr('❌ Error: ' + e.message);
+  }
+}
+
+// ── Update Order Status ───────────────────────────────────────────────────
+async function updateOrderStatus(id, status) {
+  try {
+    await adminFetch('PUT', '/admin/order/update', { id, status });
+    const o = adminData.orders.find(o => o.id === id);
+    if (o) o.status = status;
+    renderOrders();
+    showGlobalSuccess('📦 Order status updated.');
+  } catch (e) {
+    showGlobalErr('❌ Error: ' + e.message);
+  }
+}
+
+// ── Global Alerts ─────────────────────────────────────────────────────────
+function showGlobalSuccess(msg) {
+  const el = document.getElementById('ga-success');
+  document.getElementById('success-msg').textContent = msg;
+  el.style.display = 'flex';
+  setTimeout(() => { el.style.display = 'none'; }, 4000);
+}
+
+function showGlobalErr(msg) {
+  const el = document.getElementById('ga-error');
+  document.getElementById('error-msg').textContent = msg;
+  el.style.display = 'flex';
+  setTimeout(() => { el.style.display = 'none'; }, 6000);
+}
+
+// ── Auto-login if token exists ────────────────────────────────────────────
+window.onload = () => {
+  const t = localStorage.getItem('dc_admin_token');
+  const e = localStorage.getItem('dc_admin_email');
+  if (t && e) {
+    adminToken = t;
+    showDashboard(e);
+  }
+};
+</script>
+</body>
+</html>

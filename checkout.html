@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Checkout — DevCraft</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Syne:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --bg-primary: #0f0c1a;
+      --bg-secondary: #1a162a;
+      --surface: rgba(255, 255, 255, 0.08);
+      --text-primary: #ffffff;
+      --text-secondary: rgba(255, 255, 255, 0.75);
+      --text-muted: rgba(255, 255, 255, 0.45);
+      --accent: #ff6b35;
+      --accent-glow: rgba(255, 107, 53, 0.4);
+      --green: #10b981;
+      --border: rgba(255, 255, 255, 0.12);
+    }
+    
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+    }
+    
+    .checkout-container {
+      max-width: 800px;
+      width: 100%;
+    }
+    
+    .logo {
+      font-family: 'Syne', sans-serif;
+      font-size: 2rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #ff6b35 0%, #f7c531 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    
+    .checkout-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 2rem;
+      animation: slideUp 0.5s ease-out;
+    }
+    
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    h2 {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.8rem;
+      margin-bottom: 1.5rem;
+    }
+    
+    .order-summary {
+      background: var(--surface);
+      border-radius: 16px;
+      padding: 1.5rem;
+      margin: 1.5rem 0;
+    }
+    
+    .order-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 0.8rem 0;
+      border-bottom: 1px solid var(--border);
+    }
+    
+    .order-item:last-child {
+      border-bottom: none;
+    }
+    
+    .total-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 1rem 0;
+      font-size: 1.1rem;
+      font-weight: 600;
+    }
+    
+    .advance-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 1rem 0;
+      background: rgba(16, 185, 129, 0.1);
+      border-radius: 12px;
+      margin: 0.5rem 0;
+      padding: 1rem;
+    }
+    
+    .advance-amount {
+      color: var(--green);
+      font-weight: 700;
+      font-size: 1.3rem;
+    }
+    
+    .note {
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      margin: 0.5rem 0 1rem;
+    }
+    
+    .btn-primary {
+      width: 100%;
+      padding: 1rem;
+      background: linear-gradient(135deg, #ff6b35 0%, #f7c531 100%);
+      border: none;
+      border-radius: 16px;
+      color: white;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+    
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px var(--accent-glow);
+    }
+    
+    .btn-primary:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+    
+    .btn-secondary {
+      width: 100%;
+      padding: 0.8rem;
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      color: var(--text-secondary);
+      cursor: pointer;
+      margin-top: 1rem;
+      transition: all 0.3s ease;
+    }
+    
+    .btn-secondary:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+    
+    .loading {
+      text-align: center;
+      padding: 2rem;
+      color: var(--text-muted);
+    }
+    
+    .loading i {
+      animation: spin 1s linear infinite;
+    }
+    
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    
+    .error {
+      color: #f87171;
+      text-align: center;
+      padding: 1rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="checkout-container">
+    <div class="logo">Dev<span>Craft</span></div>
+    
+    <div class="checkout-card" id="checkout-content">
+      <h2>Complete Your Booking</h2>
+      <div id="loading" class="loading">
+        <i class="fas fa-spinner"></i> Loading your cart...
+      </div>
+      
+      <div id="order-details" style="display: none;">
+        <div class="order-summary" id="items-container"></div>
+        
+        <div class="total-row">
+          <span>Total Amount:</span>
+          <span>₹<span id="total-amount">0</span></span>
+        </div>
+        
+        <div class="advance-row">
+          <span>Advance (10%):</span>
+          <span class="advance-amount">₹<span id="advance-amount">0</span></span>
+        </div>
+        
+        <p class="note">
+          <i class="fas fa-info-circle"></i>
+          Balance 90% payable after project completion
+        </p>
+        
+        <button class="btn-primary" id="pay-button" onclick="initPayment()">
+          Pay Advance <i class="fas fa-arrow-right"></i>
+        </button>
+        
+        <button class="btn-secondary" onclick="window.location.href='cart.html'">
+          ← Back to Cart
+        </button>
+      </div>
+      
+      <div id="error" class="error" style="display: none;"></div>
+    </div>
+  </div>
+
+  <!-- Razorpay Script -->
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+  
+  <script>
+    const CONFIG = { API: 'http://172.20.68.74:5000' };
+    
+    // Firebase Config (same as other pages)
+    const firebaseConfig = {
+      apiKey: "AIzaSyDPj_DQIlTX-wYPqnLsoxXcvioHBYJmbU8",
+      authDomain: "devcraft-prod.firebaseapp.com",
+      projectId: "devcraft-prod",
+      storageBucket: "devcraft-prod.firebasestorage.app",
+      messagingSenderId: "719733652018",
+      appId: "1:719733652018:web:58459c289095ec71795a2b"
+    };
+    
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    
+    let orderData = null;
+    
+    // Check authentication
+    auth.onAuthStateChanged(async (user) => {
+      if (!user) {
+        window.location.href = 'login.html?redirect=checkout.html';
+        return;
+      }
+      
+      if (!localStorage.getItem('dc_token')) {
+        window.location.href = 'login.html?redirect=checkout.html';
+        return;
+      }
+      
+      await loadOrder();
+    });
+    
+    async function loadOrder() {
+      document.getElementById('loading').style.display = 'block';
+      document.getElementById('order-details').style.display = 'none';
+      
+      try {
+        const res = await fetch(CONFIG.API + '/create-order', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('dc_token')}`
+          }
+        });
+        
+        const data = await res.json();
+        
+        if (!res.ok) {
+          if (data.error === 'Cart is empty') {
+            window.location.href = 'cart.html?empty=1';
+            return;
+          }
+          throw new Error(data.error);
+        }
+        
+        orderData = data;
+        
+        // Display items
+        const itemsHtml = data.items.map(item => `
+          <div class="order-item">
+            <span>${item.title}</span>
+            <span>₹${item.price}</span>
+          </div>
+        `).join('');
+        
+        document.getElementById('items-container').innerHTML = itemsHtml;
+        document.getElementById('total-amount').textContent = data.total;
+        document.getElementById('advance-amount').textContent = data.advance;
+        document.getElementById('pay-button').innerHTML = 
+          `Pay Advance ₹${data.advance} <i class="fas fa-arrow-right"></i>`;
+        
+        document.getElementById('loading').style.display = 'none';
+        document.getElementById('order-details').style.display = 'block';
+        
+      } catch (error) {
+        console.error('Error:', error);
+        document.getElementById('loading').style.display = 'none';
+        document.getElementById('error').style.display = 'block';
+        document.getElementById('error').textContent = error.message || 'Failed to load order';
+      }
+    }
+    
+    async function initPayment() {
+      if (!orderData) return;
+      
+      const options = {
+        key: orderData.key_id,
+        amount: orderData.advance * 100,
+        currency: "INR",
+        name: "DevCraft",
+        description: `Order #${orderData.order_id}`,
+        order_id: orderData.razorpay_order_id,
+        handler: async function(response) {
+          await verifyPayment(response);
+        },
+        prefill: {
+          name: auth.currentUser?.displayName || '',
+          email: auth.currentUser?.email || '',
+          contact: '' // User will fill during payment
+        },
+        theme: {
+          color: "#ff6b35"
+        },
+        modal: {
+          ondismiss: function() {
+            console.log('Payment cancelled');
+          }
+        }
+      };
+      
+      const rzp = new Razorpay(options);
+      rzp.open();
+    }
+    
+    async function verifyPayment(paymentResponse) {
+      document.getElementById('pay-button').disabled = true;
+      document.getElementById('pay-button').innerHTML = 'Verifying Payment...';
+      
+      try {
+        const res = await fetch(CONFIG.API + '/verify-payment', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('dc_token')}`
+          },
+          body: JSON.stringify(paymentResponse)
+        });
+        
+        const data = await res.json();
+        
+        if (!res.ok) throw new Error(data.error);
+        
+        // Redirect to success page
+        window.location.href = 'order-confirmation.html?order=' + data.order_ids[0];
+        
+      } catch (error) {
+        console.error('Payment verification error:', error);
+        alert('Payment verification failed: ' + error.message);
+        document.getElementById('pay-button').disabled = false;
+        document.getElementById('pay-button').innerHTML = 
+          `Pay Advance ₹${orderData.advance} <i class="fas fa-arrow-right"></i>`;
+      }
+    }
+  </script>
+</body>
+</html>
