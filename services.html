@@ -7,8 +7,9 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="icon" type="logo/jpeg" href="/frontend/logo.png">
   <style>
-    /* ===== 🎨 Modern CSS Variables (Matching Design System) ===== */
+    /* ===== 🎨 Modern CSS Variables (UNCHANGED) ===== */
     :root {
       --bg-primary: #0f0c1a;
       --bg-secondary: #1a162a;
@@ -57,6 +58,8 @@
       overflow-x: hidden;
       min-height: 100vh;
       position: relative;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
     }
 
     /* Animated Background */
@@ -134,6 +137,7 @@
       align-items: center;
       gap: 0.3rem;
       transition: transform var(--transition-fast);
+      white-space: nowrap;
     }
     
     .logo:hover { transform: scale(1.05); }
@@ -146,18 +150,19 @@
     
     .nav-links {
       display: flex;
-      gap: 2rem;
+      gap: 1.5rem;
       align-items: center;
     }
     
     .nav-links a {
       text-decoration: none;
       color: var(--text-secondary);
-      font-size: 0.92rem;
+      font-size: 0.9rem;
       font-weight: 500;
       position: relative;
       padding: 0.5rem 0;
       transition: color var(--transition-fast);
+      white-space: nowrap;
     }
     
     .nav-links a::after {
@@ -177,8 +182,10 @@
     
     .nav-right {
       display: flex;
-      gap: 0.7rem;
+      gap: 0.6rem;
       align-items: center;
+      flex-wrap: wrap;
+      justify-content: flex-end;
     }
 
     /* ===== ✨ Modern Buttons ===== */
@@ -196,6 +203,7 @@
       border: none;
       position: relative;
       overflow: hidden;
+      white-space: nowrap;
     }
     
     .btn::before {
@@ -210,13 +218,14 @@
     .btn:hover::before { left: 100%; }
     
     .btn-sm {
-      padding: 0.45rem 1rem;
-      font-size: 0.82rem;
+      padding: 0.45rem 0.9rem;
+      font-size: 0.8rem;
       border-radius: var(--radius-full);
       border: 1.5px solid var(--border);
       background: var(--surface);
       color: var(--text-primary);
       transition: all var(--transition-normal);
+      white-space: nowrap;
     }
     
     .btn-sm:hover {
@@ -253,6 +262,7 @@
       justify-content: center;
       animation: pulse 2s infinite;
       box-shadow: 0 0 10px var(--accent-glow);
+      line-height: 1;
     }
     
     @keyframes pulse {
@@ -296,10 +306,11 @@
     .page-hero h1 {
       font-family: 'Syne', sans-serif;
       font-weight: 800;
-      font-size: clamp(2rem, 5vw, 2.8rem);
+      font-size: clamp(1.8rem, 4vw, 2.5rem);
       margin-bottom: 0.6rem;
       line-height: 1.2;
       animation: slideInDown 0.6s ease-out;
+      word-wrap: break-word;
     }
     
     @keyframes slideInDown {
@@ -309,9 +320,10 @@
     
     .page-hero p {
       color: var(--text-secondary);
-      font-size: 1.05rem;
+      font-size: 1rem;
       max-width: 580px;
       animation: slideInDown 0.6s ease-out 0.1s both;
+      line-height: 1.6;
     }
     
     /* Search Bar */
@@ -343,12 +355,13 @@
       font-size: 0.95rem;
       color: var(--text-primary);
       outline: none;
+      min-width: 0;
     }
     
     .search-bar input::placeholder { color: var(--text-muted); }
     
     .search-bar button {
-      padding: 1rem 1.6rem;
+      padding: 1rem 1.4rem;
       background: var(--gradient-accent);
       color: #fff;
       border: none;
@@ -360,6 +373,7 @@
       display: flex;
       align-items: center;
       gap: 0.5rem;
+      white-space: nowrap;
     }
     
     .search-bar button:hover {
@@ -388,6 +402,7 @@
       flex-direction: column;
       gap: 1rem;
       animation: slideInLeft 0.5s ease-out;
+      min-width: 0;
     }
     
     @keyframes slideInLeft {
@@ -399,7 +414,7 @@
       background: var(--bg-card);
       border: 1px solid var(--border);
       border-radius: var(--radius-lg);
-      padding: 1.4rem;
+      padding: 1.2rem;
       backdrop-filter: blur(10px);
       transition: all var(--transition-normal);
     }
@@ -412,32 +427,33 @@
     .sidebar-card h4 {
       font-family: 'Syne', sans-serif;
       font-weight: 700;
-      font-size: 0.82rem;
+      font-size: 0.8rem;
       text-transform: uppercase;
       letter-spacing: 0.08em;
       color: var(--text-muted);
-      margin-bottom: 1rem;
+      margin-bottom: 0.9rem;
       display: flex;
       align-items: center;
       gap: 0.5rem;
-      padding-bottom: 0.8rem;
+      padding-bottom: 0.7rem;
       border-bottom: 1px solid var(--border);
+      white-space: nowrap;
     }
     
-    .sidebar-card h4 i { color: var(--accent); font-size: 0.9rem; }
+    .sidebar-card h4 i { color: var(--accent); font-size: 0.85rem; }
     
     .filter-list {
       display: flex;
       flex-direction: column;
-      gap: 0.5rem;
+      gap: 0.4rem;
     }
     
     .filter-item {
       display: flex;
       align-items: center;
-      gap: 0.7rem;
+      gap: 0.6rem;
       cursor: pointer;
-      padding: 0.35rem 0.5rem;
+      padding: 0.3rem 0.4rem;
       border-radius: var(--radius-sm);
       transition: all var(--transition-fast);
     }
@@ -448,30 +464,36 @@
     }
     
     .filter-item input {
-      width: 18px;
-      height: 18px;
+      width: 17px;
+      height: 17px;
       accent-color: var(--accent);
       cursor: pointer;
       border: 2px solid var(--border);
       border-radius: 4px;
       transition: all var(--transition-fast);
+      flex-shrink: 0;
     }
     
     .filter-item label {
-      font-size: 0.9rem;
+      font-size: 0.88rem;
       cursor: pointer;
       color: var(--text-secondary);
       display: flex;
       align-items: center;
       gap: 0.4rem;
       flex: 1;
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
     
     .filter-item label i {
-      font-size: 0.85rem;
+      font-size: 0.8rem;
       color: var(--text-muted);
-      width: 18px;
+      width: 16px;
       text-align: center;
+      flex-shrink: 0;
     }
     
     .filter-item:hover label { color: var(--text-primary); }
@@ -479,21 +501,22 @@
     /* Price Range Inputs */
     .price-inputs {
       display: flex;
-      gap: 0.5rem;
+      gap: 0.4rem;
       align-items: center;
-      margin-top: 0.3rem;
+      margin-top: 0.2rem;
     }
     
     .price-input {
       flex: 1;
-      padding: 0.55rem 0.8rem;
+      padding: 0.5rem 0.7rem;
       border: 1.5px solid var(--border);
       border-radius: var(--radius-md);
-      font-size: 0.85rem;
+      font-size: 0.82rem;
       color: var(--text-primary);
       background: var(--surface);
       outline: none;
       transition: all var(--transition-normal);
+      min-width: 0;
     }
     
     .price-input::placeholder { color: var(--text-muted); }
@@ -506,38 +529,43 @@
     
     .price-inputs span {
       color: var(--text-muted);
-      font-size: 0.85rem;
+      font-size: 0.82rem;
       font-weight: 500;
+      flex-shrink: 0;
     }
     
     .clear-btn {
       width: 100%;
-      padding: 0.6rem;
+      padding: 0.55rem;
       background: var(--surface);
       color: var(--text-muted);
       border: 1px solid var(--border);
       border-radius: var(--radius-md);
-      font-size: 0.82rem;
+      font-size: 0.8rem;
       cursor: pointer;
       transition: all var(--transition-normal);
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 0.4rem;
-      margin-top: 0.5rem;
+      margin-top: 0.4rem;
+      white-space: nowrap;
     }
     
     .clear-btn:hover {
-      color: var(--error);
-      border-color: var(--error);
+      color: #ef4444;
+      border-color: #ef4444;
       background: rgba(239, 68, 68, 0.1);
       transform: translateY(-2px);
     }
     
-    .clear-btn i { font-size: 0.8rem; }
+    .clear-btn i { font-size: 0.75rem; flex-shrink: 0; }
 
     /* ===== 📊 Main Content Area ===== */
-    .main-area { animation: slideInRight 0.5s ease-out; }
+    .main-area { 
+      animation: slideInRight 0.5s ease-out;
+      min-width: 0;
+    }
     
     @keyframes slideInRight {
       from { opacity: 0; transform: translateX(30px); }
@@ -549,34 +577,35 @@
       align-items: center;
       justify-content: space-between;
       margin-bottom: 1.5rem;
-      padding: 0.8rem 1.2rem;
+      padding: 0.7rem 1rem;
       background: var(--bg-card);
       border: 1px solid var(--border);
       border-radius: var(--radius-lg);
       backdrop-filter: blur(10px);
       flex-wrap: wrap;
-      gap: 1rem;
+      gap: 0.8rem;
     }
     
     .results-count {
-      font-size: 0.9rem;
+      font-size: 0.88rem;
       color: var(--text-secondary);
       display: flex;
       align-items: center;
       gap: 0.4rem;
+      flex-shrink: 0;
     }
     
     .results-count i { color: var(--accent); }
     .results-count strong { color: var(--text-primary); font-weight: 700; }
     
     .sort-select {
-      padding: 0.55rem 1rem;
+      padding: 0.5rem 0.9rem;
       border: 1.5px solid var(--border);
       border-radius: var(--radius-full);
       font-family: 'DM Sans', sans-serif;
-      font-size: 0.85rem;
+      font-size: 0.83rem;
       color: var(--text-primary);
-      background: var(--surface);
+      background: black;
       cursor: pointer;
       outline: none;
       transition: all var(--transition-normal);
@@ -586,23 +615,23 @@
       appearance: none;
       background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%237a736a'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
       background-repeat: no-repeat;
-      background-position: right 0.8rem center;
-      background-size: 1rem;
-      padding-right: 2.2rem;
+      background-position: right 0.7rem center;
+      background-size: 0.9rem;
+      padding-right: 2rem;
+      max-width: 200px;
+      flex-shrink: 0;
     }
     
     .sort-select:focus {
       border-color: var(--accent);
       box-shadow: 0 0 0 4px var(--accent-glow);
     }
-    
-    .sort-select i { color: var(--text-muted); font-size: 0.85rem; }
 
     /* ===== 📦 Services Grid ===== */
     .services-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(285px, 1fr));
-      gap: 1.4rem;
+      grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+      gap: 1.2rem;
     }
     
     .service-card {
@@ -616,6 +645,7 @@
       flex-direction: column;
       animation: fadeInUp 0.4s ease-out both;
       opacity: 0;
+      min-height: 100%;
     }
     
     .service-card.visible { opacity: 1; }
@@ -633,14 +663,15 @@
     }
     
     .card-thumb {
-      height: 160px;
+      height: 150px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 3.2rem;
+      font-size: 3rem;
       position: relative;
       overflow: hidden;
       transition: transform var(--transition-normal);
+      flex-shrink: 0;
     }
     
     .service-card:hover .card-thumb {
@@ -664,22 +695,26 @@
     
     .cat-badge {
       position: absolute;
-      top: 0.8rem;
-      left: 0.8rem;
+      top: 0.7rem;
+      left: 0.7rem;
       background: rgba(15, 12, 26, 0.95);
       border: 1px solid var(--border);
       border-radius: var(--radius-full);
-      padding: 0.3rem 0.85rem;
-      font-size: 0.72rem;
+      padding: 0.25rem 0.7rem;
+      font-size: 0.7rem;
       font-weight: 600;
       color: var(--text-primary);
       text-transform: capitalize;
       z-index: 2;
       display: flex;
       align-items: center;
-      gap: 0.4rem;
+      gap: 0.3rem;
       backdrop-filter: blur(10px);
       transition: all var(--transition-fast);
+      white-space: nowrap;
+      max-width: 80%;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
     
     .service-card:hover .cat-badge {
@@ -688,17 +723,18 @@
     }
     
     .card-body {
-      padding: 1.2rem;
+      padding: 1rem;
       flex: 1;
       display: flex;
       flex-direction: column;
+      min-height: 0;
     }
     
     .card-tags {
       display: flex;
-      gap: 0.4rem;
+      gap: 0.35rem;
       flex-wrap: wrap;
-      margin-bottom: 0.7rem;
+      margin-bottom: 0.6rem;
     }
     
     .tag {
@@ -706,80 +742,102 @@
       color: var(--text-secondary);
       border: 1px solid var(--border);
       border-radius: var(--radius-full);
-      padding: 0.2rem 0.65rem;
-      font-size: 0.72rem;
+      padding: 0.18rem 0.55rem;
+      font-size: 0.7rem;
       font-weight: 500;
       transition: all var(--transition-fast);
-      display: flex;
+      display: inline-flex;
       align-items: center;
-      gap: 0.3rem;
+      gap: 0.25rem;
+      white-space: nowrap;
+      max-width: 100%;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
     
-    .tag i { font-size: 0.65rem; color: var(--accent); }
+    .tag i { font-size: 0.6rem; color: var(--accent); flex-shrink: 0; }
     .service-card:hover .tag { border-color: var(--accent); color: var(--text-primary); }
     
     .card-body h3 {
       font-family: 'Syne', sans-serif;
       font-weight: 700;
-      font-size: 1rem;
-      margin-bottom: 0.4rem;
+      font-size: 0.98rem;
+      margin-bottom: 0.35rem;
       line-height: 1.3;
       transition: color var(--transition-fast);
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      word-break: break-word;
     }
     
     .service-card:hover .card-body h3 { color: var(--accent); }
     
     .card-body p {
       color: var(--text-muted);
-      font-size: 0.85rem;
-      line-height: 1.6;
-      margin-bottom: 1rem;
+      font-size: 0.83rem;
+      line-height: 1.5;
+      margin-bottom: 0.8rem;
       flex: 1;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      word-break: break-word;
     }
     
     .card-footer {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding-top: 0.8rem;
+      padding-top: 0.7rem;
       border-top: 1px solid var(--border);
       margin-top: auto;
+      gap: 0.5rem;
+      flex-wrap: wrap;
     }
     
     .price {
       font-family: 'Syne', sans-serif;
       font-weight: 800;
-      font-size: 1.2rem;
+      font-size: 1.15rem;
       color: var(--text-primary);
       display: flex;
       align-items: baseline;
-      gap: 0.3rem;
+      gap: 0.25rem;
+      flex-shrink: 0;
+      white-space: nowrap;
     }
     
     .price span {
-      font-size: 0.75rem;
+      font-size: 0.72rem;
       color: var(--text-muted);
       font-weight: 400;
     }
     
     .card-actions {
       display: flex;
-      gap: 0.5rem;
+      gap: 0.4rem;
+      flex-wrap: wrap;
+      justify-content: flex-end;
     }
     
     .btn-cart {
-      padding: 0.45rem 0.9rem;
+      padding: 0.4rem 0.75rem;
       background: transparent;
       border: 1.5px solid var(--accent);
       color: var(--accent);
       border-radius: var(--radius-md);
-      font-size: 0.78rem;
+      font-size: 0.75rem;
       font-weight: 600;
       cursor: pointer;
       transition: all var(--transition-normal);
-      display: flex;
+      display: inline-flex;
       align-items: center;
-      gap: 0.3rem;
+      gap: 0.25rem;
+      white-space: nowrap;
+      flex-shrink: 0;
     }
     
     .btn-cart:hover,
@@ -792,24 +850,26 @@
     }
     
     .btn-cart.in-cart {
-      background: var(--gradient-success);
+      background: var(--green);
       border-color: transparent;
     }
     
     .btn-detail {
-      padding: 0.45rem 0.9rem;
+      padding: 0.4rem 0.75rem;
       background: var(--surface);
       color: var(--text-primary);
       border: 1.5px solid var(--border);
       border-radius: var(--radius-md);
-      font-size: 0.78rem;
+      font-size: 0.75rem;
       font-weight: 600;
       cursor: pointer;
       transition: all var(--transition-normal);
       text-decoration: none;
-      display: flex;
+      display: inline-flex;
       align-items: center;
-      gap: 0.3rem;
+      gap: 0.25rem;
+      white-space: nowrap;
+      flex-shrink: 0;
     }
     
     .btn-detail:hover {
@@ -818,12 +878,283 @@
       transform: translateY(-2px);
     }
     
-    .btn-cart i, .btn-detail i { font-size: 0.75rem; }
+    .btn-detail.customize {
+      background: var(--green);
+      border-color: var(--green);
+      color: white;
+    }
+    
+    .btn-detail.customize:hover {
+      background: #059669;
+      border-color: #059669;
+    }
+    
+    .btn-cart i, .btn-detail i { font-size: 0.7rem; flex-shrink: 0; }
+
+    /* ===== 🎨 Custom Project Card ===== */
+    .custom-project-card {
+      grid-column: 1 / -1;
+      background: linear-gradient(135deg, rgba(124, 58, 237, 0.15) 0%, rgba(255, 107, 53, 0.15) 100%);
+      border: 2px dashed var(--accent);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      margin: 1.5rem 0 0;
+      backdrop-filter: blur(10px);
+      animation: pulse 3s infinite;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .custom-project-card::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(
+        45deg,
+        transparent 30%,
+        rgba(255, 107, 53, 0.1) 50%,
+        transparent 70%
+      );
+      animation: shimmer 3s infinite;
+      pointer-events: none;
+    }
+    
+    @keyframes shimmer {
+      0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+      100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+    }
+    
+    .custom-project-content {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+      justify-content: center;
+      text-align: center;
+      position: relative;
+      z-index: 2;
+    }
+    
+    .custom-icon {
+      width: 70px;
+      height: 70px;
+      background: var(--gradient-accent);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      color: white;
+      box-shadow: 0 10px 30px var(--accent-glow);
+      animation: float 3s ease-in-out infinite;
+      flex-shrink: 0;
+    }
+    
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+    
+    .custom-text {
+      flex: 1;
+      min-width: 200px;
+      max-width: 100%;
+    }
+    
+    .custom-text h3 {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.25rem;
+      margin-bottom: 0.4rem;
+      color: var(--text-primary);
+      line-height: 1.3;
+      word-wrap: break-word;
+    }
+    
+    .custom-text p {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      line-height: 1.5;
+      word-wrap: break-word;
+    }
+    
+    .btn-custom {
+      padding: 0.85rem 1.8rem;
+      background: var(--gradient-accent);
+      color: white;
+      border: none;
+      border-radius: var(--radius-full);
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all var(--transition-normal);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      box-shadow: 0 8px 25px var(--accent-glow);
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    
+    .btn-custom:hover {
+      transform: translateY(-3px) scale(1.03);
+      box-shadow: 0 15px 40px var(--accent-glow);
+    }
+    
+    .btn-custom i { font-size: 1rem; }
+
+    /* ===== 🎯 Modal Styles ===== */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(10px);
+      z-index: 2000;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+      animation: fadeIn 0.3s ease-out;
+    }
+    
+    .modal.show { display: flex; }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    
+    .modal-content {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      padding: 1.5rem;
+      max-width: 560px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      position: relative;
+      animation: slideUp 0.4s ease-out;
+    }
+    
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(30px) scale(0.98); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    
+    .modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1.5rem;
+      padding-bottom: 0.9rem;
+      border-bottom: 1px solid var(--border);
+      gap: 1rem;
+    }
+    
+    .modal-header h2 {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.3rem;
+      color: var(--text-primary);
+      line-height: 1.3;
+      word-wrap: break-word;
+    }
+    
+    .modal-header h2 i { color: var(--accent); margin-right: 0.4rem; }
+    
+    .modal-close {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-size: 1.8rem;
+      cursor: pointer;
+      transition: color var(--transition-fast);
+      line-height: 1;
+      padding: 0.3rem;
+      border-radius: var(--radius-sm);
+      flex-shrink: 0;
+    }
+    
+    .modal-close:hover { color: var(--accent); background: var(--surface); }
+    
+    /* Modal Form Styles */
+    .form-group { margin-bottom: 1.1rem; }
+    
+    .form-group label {
+      display: block;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      margin-bottom: 0.4rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    
+    .form-group label i { color: var(--accent); font-size: 0.75rem; }
+    
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      padding: 0.7rem 0.9rem;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-md);
+      font-size: 0.9rem;
+      font-family: inherit;
+      background: var(--surface);
+      color: var(--text-primary);
+      outline: none;
+      transition: all var(--transition-normal);
+    }
+    
+    .form-group input::placeholder,
+    .form-group textarea::placeholder { color: var(--text-muted); }
+    
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 4px var(--accent-glow);
+      background: var(--surface-hover);
+    }
+    
+    .form-group textarea {
+      min-height: 90px;
+      resize: vertical;
+      line-height: 1.5;
+    }
+    
+    .modal-actions {
+      display: flex;
+      gap: 0.8rem;
+      margin-top: 1.5rem;
+      flex-wrap: wrap;
+    }
+    
+    .modal-actions button {
+      flex: 1;
+      min-width: 120px;
+      white-space: nowrap;
+    }
+    
+    .btn-secondary {
+      background: var(--surface);
+      color: var(--text-primary);
+      border: 1.5px solid var(--border);
+    }
+    
+    .btn-secondary:hover {
+      border-color: var(--accent);
+      background: var(--surface-hover);
+    }
 
     /* ===== ⚠️ Empty State ===== */
     .empty-state {
       text-align: center;
-      padding: 5rem 2rem;
+      padding: 4rem 1.5rem;
       background: var(--bg-card);
       border: 1px solid var(--border);
       border-radius: var(--radius-lg);
@@ -831,15 +1162,10 @@
       animation: fadeIn 0.5s ease-out;
     }
     
-    @keyframes fadeIn {
-      from { opacity: 0; transform: scale(0.98); }
-      to { opacity: 1; transform: scale(1); }
-    }
-    
     .empty-state .icon {
-      font-size: 3.5rem;
+      font-size: 3rem;
       display: block;
-      margin-bottom: 1rem;
+      margin-bottom: 0.9rem;
       color: var(--text-muted);
       animation: float 3s ease-in-out infinite;
     }
@@ -847,25 +1173,26 @@
     .empty-state h3 {
       font-family: 'Syne', sans-serif;
       font-weight: 700;
-      font-size: 1.2rem;
-      margin-bottom: 0.5rem;
+      font-size: 1.15rem;
+      margin-bottom: 0.4rem;
     }
     
     .empty-state p {
       color: var(--text-muted);
-      margin-bottom: 1.5rem;
-      font-size: 0.95rem;
+      margin-bottom: 1.3rem;
+      font-size: 0.92rem;
+      line-height: 1.5;
     }
 
     /* ===== 🌀 Loading Spinner ===== */
     .spinner {
-      width: 44px;
-      height: 44px;
+      width: 40px;
+      height: 40px;
       border: 3px solid var(--border);
       border-top-color: var(--accent);
       border-radius: 50%;
       animation: spin 1s linear infinite;
-      margin: 4rem auto;
+      margin: 3rem auto;
     }
     
     @keyframes spin { to { transform: rotate(360deg); } }
@@ -873,22 +1200,23 @@
     /* ===== 💬 WhatsApp Float ===== */
     .whatsapp-float {
       position: fixed;
-      bottom: 2rem;
-      right: 2rem;
+      bottom: 1.5rem;
+      right: 1.5rem;
       z-index: 999;
       background: linear-gradient(135deg, #25D366, #128C7E);
       color: white;
-      padding: 0.85rem 1.5rem;
+      padding: 0.75rem 1.3rem;
       border-radius: var(--radius-full);
       display: flex;
       align-items: center;
-      gap: 0.6rem;
+      gap: 0.5rem;
       text-decoration: none;
       font-weight: 600;
-      font-size: 0.9rem;
+      font-size: 0.88rem;
       box-shadow: 0 6px 30px rgba(37, 211, 102, 0.5);
       transition: all var(--transition-normal);
       animation: floatUp 0.6s ease 0.3s both;
+      white-space: nowrap;
     }
     
     .whatsapp-float:hover {
@@ -896,7 +1224,7 @@
       box-shadow: 0 12px 45px rgba(37, 211, 102, 0.7);
     }
     
-    .whatsapp-float i { font-size: 1.2rem; }
+    .whatsapp-float i { font-size: 1.1rem; }
     
     @keyframes floatUp {
       from { opacity: 0; transform: translateY(30px); }
@@ -909,9 +1237,9 @@
       bottom: 2rem;
       left: 50%;
       transform: translateX(-50%) translateY(100px);
-      padding: 0.85rem 1.8rem;
+      padding: 0.8rem 1.6rem;
       border-radius: var(--radius-full);
-      font-size: 0.9rem;
+      font-size: 0.88rem;
       font-weight: 500;
       z-index: 9999;
       transition: transform var(--transition-normal);
@@ -919,39 +1247,52 @@
       color: #fff;
       display: flex;
       align-items: center;
-      gap: 0.6rem;
+      gap: 0.5rem;
       box-shadow: var(--shadow-lg);
       backdrop-filter: blur(10px);
       font-family: 'DM Sans', sans-serif;
+      max-width: 90vw;
     }
     
     #toast.success { background: linear-gradient(135deg, var(--green), #059669); }
-    #toast.error { background: linear-gradient(135deg, var(--error), #b91c1c); }
+    #toast.error { background: linear-gradient(135deg, #ef4444, #b91c1c); }
     #toast.show { transform: translateX(-50%) translateY(0); }
 
     /* ===== 📱 Responsive Design ===== */
-    @media (max-width: 1024px) {
+    @media (max-width: 1100px) {
       .layout { grid-template-columns: 1fr; }
       .sidebar {
         position: static;
         flex-direction: row;
         flex-wrap: wrap;
-        gap: 0.8rem;
+        gap: 0.7rem;
       }
-      .sidebar-card { flex: 1; min-width: 200px; }
+      .sidebar-card { flex: 1; min-width: 180px; }
     }
     
     @media (max-width: 768px) {
       nav { padding: 0 4%; height: 68px; }
       .nav-links { display: none; }
       
-      .page-hero { padding: 3rem 4% 2.5rem; }
-      .page-hero h1 { font-size: 1.8rem; }
+      .page-hero { padding: 2.5rem 4% 2rem; }
+      .page-hero h1 { font-size: 1.6rem; }
       .page-hero p { font-size: 0.95rem; }
       
-      .search-bar { max-width: 100%; }
-      .search-bar input { padding: 0.9rem 1rem; font-size: 0.9rem; }
-      .search-bar button { padding: 0.9rem 1.3rem; }
+      .search-bar { 
+        max-width: 100%; 
+        flex-direction: column;
+        padding: 0.5rem;
+      }
+      .search-bar input { 
+        padding: 0.8rem 1rem; 
+        font-size: 0.9rem;
+        width: 100%;
+      }
+      .search-bar button { 
+        padding: 0.8rem 1.2rem; 
+        width: 100%;
+        justify-content: center;
+      }
       
       .layout { padding: 1.5rem 4% 3rem; }
       
@@ -963,27 +1304,94 @@
       .results-header {
         flex-direction: column;
         align-items: stretch;
+        padding: 0.6rem 0.9rem;
       }
-      .sort-select { width: 100%; justify-content: space-between; }
+      .sort-select { 
+        width: 100%; 
+        justify-content: space-between;
+        max-width: none;
+      }
       
-      .services-grid { grid-template-columns: 1fr; }
+      .services-grid { 
+        grid-template-columns: 1fr; 
+        gap: 1rem;
+      }
+      
+      .service-card { min-height: auto; }
+      .card-thumb { height: 140px; font-size: 2.6rem; }
+      .card-body h3 { font-size: 0.95rem; }
+      .card-body p { font-size: 0.82rem; }
+      
+      .card-footer {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.6rem;
+      }
+      
+      .price { justify-content: center; }
+      .card-actions { justify-content: center; }
+      
+      .btn-cart, .btn-detail { 
+        width: 100%; 
+        justify-content: center;
+        padding: 0.45rem 0.8rem;
+      }
+      
+      .custom-project-content {
+        flex-direction: column;
+        gap: 1rem;
+        text-align: center;
+      }
+      
+      .custom-text { min-width: 100%; }
+      .btn-custom {
+        width: 100%;
+        justify-content: center;
+        padding: 0.8rem 1.5rem;
+      }
+      
+      .modal-content {
+        padding: 1.3rem;
+        margin: 0.5rem;
+      }
+      
+      .modal-actions {
+        flex-direction: column;
+      }
+      
+      .modal-actions button {
+        width: 100%;
+      }
       
       .whatsapp-float {
-        bottom: 1.2rem;
-        right: 1.2rem;
-        padding: 0.7rem 1.2rem;
-        font-size: 0.85rem;
+        bottom: 1rem;
+        right: 1rem;
+        padding: 0.65rem 1.1rem;
+        font-size: 0.82rem;
       }
     }
     
     @media (max-width: 480px) {
-      .page-hero h1 { font-size: 1.6rem; }
-      .card-thumb { height: 140px; font-size: 2.8rem; }
-      .card-body h3 { font-size: 0.95rem; }
-      .card-footer { flex-direction: column; gap: 0.8rem; align-items: stretch; }
-      .price { justify-content: center; }
-      .card-actions { justify-content: center; }
-      .btn-cart, .btn-detail { width: 100%; justify-content: center; }
+      .page-hero h1 { font-size: 1.45rem; }
+      .hero-badge { font-size: 0.78rem; padding: 0.35rem 0.9rem; }
+      
+      .card-thumb { height: 130px; font-size: 2.4rem; }
+      .card-body { padding: 0.9rem; }
+      .card-body h3 { font-size: 0.92rem; }
+      .card-body p { font-size: 0.8rem; }
+      
+      .price { font-size: 1.1rem; }
+      
+      .custom-icon { width: 60px; height: 60px; font-size: 1.8rem; }
+      .custom-text h3 { font-size: 1.15rem; }
+      .custom-text p { font-size: 0.88rem; }
+      
+      .modal-header h2 { font-size: 1.2rem; }
+      
+      #toast {
+        font-size: 0.85rem;
+        padding: 0.75rem 1.4rem;
+      }
     }
 
     /* ===== 🎭 Scroll Animations ===== */
@@ -1008,7 +1416,7 @@
     ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
 
     /* Focus States */
-    a:focus, button:focus, input:focus, select:focus {
+    a:focus, button:focus, input:focus, select:focus, textarea:focus {
       outline: 2px solid var(--accent);
       outline-offset: 2px;
     }
@@ -1020,6 +1428,32 @@
         animation-iteration-count: 1 !important;
         transition-duration: 0.01ms !important;
       }
+    }
+
+    /* Utility Classes for Text Handling */
+    .text-truncate {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    
+    .text-truncate-2 {
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    
+    .text-truncate-3 {
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    
+    .word-break {
+      word-break: break-word;
+      overflow-wrap: break-word;
     }
   </style>
 </head>
@@ -1034,10 +1468,12 @@
   <div class="nav-links">
     <a href="index.html"><i class="fas fa-home"></i> Home</a>
     <a href="services.html" class="active"><i class="fas fa-layer-group"></i> Services</a>
+    <a href="my-orders.html"><i class="fas fa-shopping-bag"></i> My Orders</a>
+    <a href="#how"><i class="fas fa-cogs"></i> How It Works</a>
   </div>
   <div class="nav-right">
     <a href="cart.html" class="btn-sm cart-btn">
-      <i class="fas fa-shopping-cart"></i> Cart 
+      <i class="fas fa-shopping-cart"></i> Cart
       <span class="cart-count" id="cart-count">0</span>
     </a>
     <a href="login.html" class="btn-sm" id="login-btn">Login</a>
@@ -1137,6 +1573,75 @@
   <i class="fab fa-whatsapp"></i> Chat on WhatsApp
 </a>
 
+<!-- 🎯 Custom Project Modal -->
+<div id="customProjectModal" class="modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2><i class="fas fa-magic"></i> Request Custom Project</h2>
+      <button class="modal-close" onclick="closeCustomProjectModal()" aria-label="Close modal">&times;</button>
+    </div>
+    <form id="customProjectForm" onsubmit="submitCustomProject(event)">
+      <div class="form-group">
+        <label><i class="fas fa-user"></i> Your Name</label>
+        <input type="text" id="custom-name" placeholder="Enter your full name" required>
+      </div>
+      <div class="form-group">
+        <label><i class="fas fa-envelope"></i> Email Address</label>
+        <input type="email" id="custom-email" placeholder="you@example.com" required>
+      </div>
+      <div class="form-group">
+        <label><i class="fas fa-tag"></i> Project Type</label>
+        <select id="custom-type" required>
+          <option value="">Select project type...</option>
+          <option value="web">Web Application</option>
+          <option value="mobile">Mobile App</option>
+          <option value="ai">AI / ML Solution</option>
+          <option value="ecom">E-Commerce Platform</option>
+          <option value="other">Other (Please specify)</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label><i class="fas fa-heading"></i> Project Title</label>
+        <input type="text" id="custom-title" placeholder="e.g., Office Management System" required>
+      </div>
+      <div class="form-group">
+        <label><i class="fas fa-align-left"></i> Project Description</label>
+        <textarea id="custom-description" rows="4" placeholder="Describe your project requirements in detail..." required></textarea>
+      </div>
+      <div class="form-group">
+        <label><i class="fas fa-money-bill-wave"></i> Estimated Budget</label>
+        <select id="custom-budget" required>
+          <option value="">Select budget range...</option>
+          <option value="<500">Less than $500</option>
+          <option value="500-1000">$500 - $1,000</option>
+          <option value="1000-2500">$1,000 - $2,500</option>
+          <option value="2500-5000">$2,500 - $5,000</option>
+          <option value=">5000">$5,000+</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label><i class="fas fa-clock"></i> Timeline</label>
+        <select id="custom-timeline" required>
+          <option value="">Select timeline...</option>
+          <option value="<1">Less than 1 month</option>
+          <option value="1-2">1-2 months</option>
+          <option value="2-3">2-3 months</option>
+          <option value="3-6">3-6 months</option>
+          <option value=">6">6+ months</option>
+        </select>
+      </div>
+      <div class="modal-actions">
+        <button type="submit" class="btn-primary">
+          <i class="fas fa-paper-plane"></i> Submit Request
+        </button>
+        <button type="button" class="btn-secondary" onclick="closeCustomProjectModal()">
+          <i class="fas fa-times"></i> Cancel
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
 <!-- 🍞 Toast Notification -->
 <div id="toast" style="display:none"></div>
 
@@ -1231,11 +1736,11 @@ function showToast(msg, type = 'default') {
     toast.id = 'toast';
     toast.style.cssText = `
       position:fixed;bottom:2rem;left:50%;transform:translateX(-50%) translateY(100px);
-      padding:0.85rem 1.8rem;border-radius:9999px;font-size:0.9rem;font-weight:500;
+      padding:0.8rem 1.6rem;border-radius:9999px;font-size:0.88rem;font-weight:500;
       z-index:9999;transition:transform 0.3s cubic-bezier(0.4,0,0.2,1);
-      white-space:nowrap;color:#fff;display:flex;align-items:center;gap:0.6rem;
+      white-space:nowrap;color:#fff;display:flex;align-items:center;gap:0.5rem;
       box-shadow:0 20px 60px rgba(0,0,0,0.4);backdrop-filter:blur(10px);
-      font-family:'DM Sans',sans-serif;
+      font-family:'DM Sans',sans-serif;max-width:90vw;
     `;
     document.body.appendChild(toast);
   }
@@ -1251,6 +1756,53 @@ function showToast(msg, type = 'default') {
     toast.classList.remove('show');
     setTimeout(() => { toast.style.display = 'none'; }, 300);
   }, 3000);
+}
+
+// ── Custom Project Modal Functions ─────────────────────────────────────────
+function openCustomProjectModal() {
+  const modal = document.getElementById('customProjectModal');
+  modal.classList.add('show');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeCustomProjectModal() {
+  const modal = document.getElementById('customProjectModal');
+  modal.classList.remove('show');
+  document.body.style.overflow = '';
+}
+
+async function submitCustomProject(event) {
+  event.preventDefault();
+  const formData = {
+    name: document.getElementById('custom-name').value,
+    email: document.getElementById('custom-email').value,
+    type: document.getElementById('custom-type').value,
+    title: document.getElementById('custom-title').value,
+    description: document.getElementById('custom-description').value,
+    budget: document.getElementById('custom-budget').value,
+    timeline: document.getElementById('custom-timeline').value
+  };
+  
+  console.log('📝 Custom Project Request:', formData);
+  closeCustomProjectModal();
+  showToast('⏳ Submitting your request...', 'default');
+  
+  try {
+    const res = await fetch(`${CONFIG.API}/custom-project-request`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(formData)
+    });
+    
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Failed to submit');
+    
+    showToast('✨ Custom project request sent! We\'ll contact you within 24 hours.', 'success');
+    document.getElementById('customProjectForm').reset();
+  } catch (error) {
+    console.error('❌ Error:', error);
+    showToast('❌ Failed to send request. Please try again.', 'error');
+  }
 }
 
 // ── Service Thumbnail Mapping ─────────────────────────────────────────────
@@ -1313,7 +1865,6 @@ function filterServices() {
     return matchSearch && matchCat && matchPrice;
   });
 
-  // Apply sorting
   if (sort === 'price-asc') {
     filtered.sort((a, b) => (a.price || 0) - (b.price || 0));
   } else if (sort === 'price-desc') {
@@ -1344,7 +1895,7 @@ function renderServices(services) {
     return;
   }
   
-  container.innerHTML = `
+  let servicesHtml = `
     <div class="services-grid">
       ${services.map((s, index) => {
         const inCart = CartLocal.has(s.id);
@@ -1370,11 +1921,11 @@ function renderServices(services) {
               <div class="card-tags">
                 ${techList.map(t => {
                   const icon = techIcons[t.toLowerCase()] || 'fas fa-code';
-                  return `<span class="tag"><i class="${icon}"></i> ${t}</span>`;
+                  return `<span class="tag" title="${t}"><i class="${icon}"></i> ${t}</span>`;
                 }).join('')}
               </div>
-              <h3>${s.title || 'Untitled Service'}</h3>
-              <p>${(s.description || 'Professional software development service.').substring(0, 90)}${(s.description || '').length > 90 ? '...' : ''}</p>
+              <h3 title="${s.title || ''}">${s.title || 'Untitled Service'}</h3>
+              <p title="${s.description || ''}">${(s.description || 'Professional software development service.').substring(0, 90)}${(s.description || '').length > 90 ? '...' : ''}</p>
               <div class="card-footer">
                 <div class="price">
                   $${parseFloat(s.price || 0).toLocaleString()}
@@ -1382,12 +1933,16 @@ function renderServices(services) {
                 </div>
                 <div class="card-actions">
                   <button class="btn-cart ${inCart ? 'in-cart' : ''}" id="cart-btn-${s.id}" 
-                    onclick="toggleCart(${s.id}, '${(s.title || '').replace(/'/g, "\\'")}', ${s.price || 0}, '${s.emoji || '💻'}', '${category}')">
+                    onclick="toggleCart(${s.id}, '${(s.title || '').replace(/'/g, "\\'")}', ${s.price || 0}, '${s.emoji || '💻'}', '${category}')"
+                    title="${inCart ? 'Remove from cart' : 'Add to cart'}">
                     <i class="fas ${inCart ? 'fa-check' : 'fa-cart-plus'}"></i>
-                    ${inCart ? 'Added' : '+ Cart'}
+                    ${inCart ? 'Added' : 'Cart'}
                   </button>
-                  <a href="project.html?id=${s.id}" class="btn-detail">
-                    <i class="fas fa-arrow-right"></i> Details
+                  <a href="order-customize.html?id=${s.id}" class="btn-detail customize" title="Customize this service">
+                    <i class="fas fa-sliders-h"></i> Customize
+                  </a>
+                  <a href="project.html?id=${s.id}" class="btn-detail" title="View details">
+                    <i class="fas fa-arrow-right"></i> View
                   </a>
                 </div>
               </div>
@@ -1398,9 +1953,29 @@ function renderServices(services) {
     </div>
   `;
   
+  // Add Custom Project Card
+  servicesHtml += `
+    <div class="custom-project-card">
+      <div class="custom-project-content">
+        <div class="custom-icon">
+          <i class="fas fa-magic"></i>
+        </div>
+        <div class="custom-text">
+          <h3>Don't see what you're looking for?</h3>
+          <p>Tell us about your custom project and we'll build it for you</p>
+        </div>
+        <button class="btn-custom" onclick="openCustomProjectModal()">
+          <i class="fas fa-plus-circle"></i> Request Custom Project
+        </button>
+      </div>
+    </div>
+  `;
+  
+  container.innerHTML = servicesHtml;
+  
   // Trigger card animations
   setTimeout(() => {
-    document.querySelectorAll('.service-card').forEach((card, i) => {
+    document.querySelectorAll('.service-card').forEach((card) => {
       card.classList.add('visible');
     });
   }, 100);
@@ -1416,25 +1991,20 @@ async function toggleCart(id, title, price, emoji, category) {
     CartLocal.add({ id, title, price, emoji, category });
   }
   
-  // Update UI instantly
   document.getElementById('cart-count').textContent = CartLocal.count();
   const btn = document.getElementById(`cart-btn-${id}`);
   const nowInCart = CartLocal.has(id);
   
   if (btn) {
-    btn.innerHTML = `<i class="fas ${nowInCart ? 'fa-check' : 'fa-cart-plus'}"></i> ${nowInCart ? 'Added' : '+ Cart'}`;
+    btn.innerHTML = `<i class="fas ${nowInCart ? 'fa-check' : 'fa-cart-plus'}"></i> ${nowInCart ? 'Added' : 'Cart'}`;
     btn.classList.toggle('in-cart', nowInCart);
-    
-    // Button animation
     btn.style.transform = 'scale(0.95)';
     setTimeout(() => btn.style.transform = '', 150);
   }
   
-  // Show toast
   const shortTitle = title.length > 25 ? title.substring(0, 25) + '...' : title;
   showToast(nowInCart ? `✓ "${shortTitle}" added to cart` : `Removed from cart`, nowInCart ? 'success' : 'default');
   
-  // Sync with backend if logged in
   if (Auth.isLoggedIn()) {
     try {
       const endpoint = nowInCart ? '/cart/add' : '/cart/remove';
@@ -1471,14 +2041,13 @@ const observer = new IntersectionObserver((entries) => {
   });
 }, { threshold: 0.1, rootMargin: '0px 0px -30px 0px' });
 
-// Observe animate-on-scroll elements
 document.querySelectorAll('.animate-on-scroll').forEach(el => observer.observe(el));
 
 // ── Initialize ────────────────────────────────────────────────────────────
 renderNav();
 loadServices();
 
-// Add smooth scroll for anchor links
+// Smooth scroll for anchor links
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
   anchor.addEventListener('click', function(e) {
     e.preventDefault();
@@ -1489,20 +2058,32 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
   });
 });
 
-// Add keyboard shortcuts
+// Keyboard shortcuts
 document.addEventListener('keydown', (e) => {
-  // Press '/' to focus search
-  if (e.key === '/' && !e.target.matches('input, textarea')) {
+  if (e.key === '/' && !e.target.matches('input, textarea, select')) {
     e.preventDefault();
     document.getElementById('search-input').focus();
   }
-  // Press 'Escape' to clear search
   if (e.key === 'Escape' && document.getElementById('search-input').value) {
     document.getElementById('search-input').value = '';
     filterServices();
   }
 });
+
+// Close modal on outside click
+window.addEventListener('click', (e) => {
+  const modal = document.getElementById('customProjectModal');
+  if (e.target === modal) {
+    closeCustomProjectModal();
+  }
+});
+
+// Handle modal close on Escape key
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    closeCustomProjectModal();
+  }
+});
 </script>
 </body>
-
 </html>
