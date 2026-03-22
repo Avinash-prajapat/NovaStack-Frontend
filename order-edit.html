@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Edit Order — NovaStack</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Syne:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="icon" type="logo/jpeg" href="logo.png">
+  <style>
+    /* ===== 🎨 Modern CSS Variables ===== */
+    :root {
+      --bg-primary: #0f0c1a;
+      --bg-secondary: #1a162a;
+      --bg-card: rgba(26, 22, 42, 0.95);
+      --surface: rgba(255, 255, 255, 0.08);
+      --surface-hover: rgba(255, 255, 255, 0.15);
+      --border: rgba(255, 255, 255, 0.12);
+      --border-hover: rgba(255, 107, 53, 0.6);
+      --text-primary: #ffffff;
+      --text-secondary: rgba(255, 255, 255, 0.75);
+      --text-muted: rgba(255, 255, 255, 0.45);
+      --accent: #ff6b35;
+      --accent-glow: rgba(255, 107, 53, 0.4);
+      --green: #10b981;
+      --green-glow: rgba(16, 185, 129, 0.35);
+      --gradient-accent: linear-gradient(135deg, #ff6b35 0%, #f7c531 100%);
+      --gradient-green: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.25);
+      --shadow-md: 0 8px 30px rgba(0, 0, 0, 0.4);
+      --shadow-lg: 0 20px 60px rgba(0, 0, 0, 0.55);
+      --shadow-glow: 0 0 40px var(--accent-glow);
+      --transition-fast: 150ms ease;
+      --transition-normal: 300ms cubic-bezier(0.4, 0, 0.2, 1);
+      --radius-sm: 8px;
+      --radius-md: 14px;
+      --radius-lg: 20px;
+      --radius-xl: 28px;
+      --radius-full: 9999px;
+    }
+
+    /* ===== 🌟 Base Reset ===== */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      min-height: 100vh;
+      padding: 2rem;
+      position: relative;
+    }
+
+    /* Animated Background */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: 
+        radial-gradient(ellipse at 20% 80%, rgba(124, 58, 237, 0.12) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 20%, rgba(255, 107, 53, 0.1) 0%, transparent 50%);
+      z-index: -2;
+      pointer-events: none;
+    }
+
+    /* Container */
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 10;
+    }
+
+    /* Back Link */
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 0.95rem;
+      font-weight: 500;
+      margin-bottom: 1.5rem;
+      padding: 0.5rem 1rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-full);
+      transition: all var(--transition-fast);
+    }
+
+    .back-link:hover {
+      color: var(--accent);
+      border-color: var(--accent);
+      transform: translateX(-2px);
+    }
+
+    .back-link i {
+      font-size: 0.9rem;
+    }
+
+    /* Main Card */
+    .customization-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      padding: 2.5rem;
+      backdrop-filter: blur(20px);
+      box-shadow: var(--shadow-lg);
+      animation: slideUp 0.5s ease-out;
+    }
+
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Service Header */
+    .service-header {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      margin-bottom: 2.5rem;
+      padding-bottom: 1.5rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .service-icon {
+      font-size: 3.5rem;
+      background: var(--surface);
+      width: 80px;
+      height: 80px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border);
+      transition: transform var(--transition-normal);
+    }
+
+    .service-icon:hover {
+      transform: scale(1.05) rotate(5deg);
+      border-color: var(--accent);
+    }
+
+    .service-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.8rem;
+      font-weight: 700;
+      margin-bottom: 0.3rem;
+      background: var(--gradient-accent);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .service-price {
+      color: var(--text-secondary);
+      font-size: 1.1rem;
+      font-weight: 500;
+    }
+
+    .service-price span {
+      color: var(--accent);
+      font-weight: 700;
+    }
+
+    /* Form Groups */
+    .form-group {
+      margin-bottom: 1.8rem;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 0.6rem;
+      color: var(--text-secondary);
+      font-weight: 500;
+      font-size: 0.95rem;
+    }
+
+    label i {
+      color: var(--accent);
+      margin-right: 0.5rem;
+      font-size: 0.9rem;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      padding: 1rem 1.2rem;
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-md);
+      color: var(--text-primary);
+      font-family: inherit;
+      font-size: 0.95rem;
+      transition: all var(--transition-normal);
+    }
+
+    input:hover, select:hover, textarea:hover {
+      border-color: var(--border-hover);
+    }
+
+    input:focus, select:focus, textarea:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 4px var(--accent-glow);
+      background: var(--surface-hover);
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 100px;
+    }
+
+    /* Checkbox Group */
+    .checkbox-group {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 0.5rem 0;
+    }
+
+    .checkbox-group input[type="checkbox"] {
+      width: 20px;
+      height: 20px;
+      accent-color: var(--accent);
+      cursor: pointer;
+    }
+
+    .checkbox-group label {
+      margin: 0;
+      cursor: pointer;
+    }
+
+    /* Select Dropdown */
+    select {
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%237a736a'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 1rem center;
+      background-size: 1.2rem;
+      padding-right: 2.5rem;
+    }
+
+    /* Buttons */
+    .btn-primary {
+      width: 100%;
+      padding: 1.2rem;
+      background: var(--gradient-accent);
+      color: white;
+      border: none;
+      border-radius: var(--radius-lg);
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all var(--transition-normal);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.8rem;
+      margin-top: 1rem;
+      box-shadow: 0 6px 25px var(--accent-glow);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn-primary::before {
+      content: '';
+      position: absolute;
+      top: 0; left: -100%;
+      width: 100%; height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+      transition: left 0.5s;
+    }
+
+    .btn-primary:hover::before {
+      left: 100%;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 35px var(--accent-glow);
+    }
+
+    .btn-primary i {
+      font-size: 1rem;
+    }
+
+    .btn-secondary {
+      width: 100%;
+      padding: 1rem;
+      background: transparent;
+      color: var(--text-secondary);
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-lg);
+      font-size: 0.95rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all var(--transition-normal);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.6rem;
+      margin-top: 0.8rem;
+    }
+
+    .btn-secondary:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+      background: var(--surface);
+    }
+
+    /* History Timeline */
+    .history-timeline {
+      margin-top: 2.5rem;
+      padding: 1.5rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+    }
+
+    .history-timeline h4 {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      font-family: 'Syne', sans-serif;
+      font-size: 1rem;
+      color: var(--text-secondary);
+      margin-bottom: 1.2rem;
+      padding-bottom: 0.8rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .history-timeline h4 i {
+      color: var(--accent);
+    }
+
+    .timeline-item {
+      display: flex;
+      gap: 1rem;
+      padding: 0.8rem 0 0.8rem 1.5rem;
+      border-left: 2px solid var(--accent);
+      margin-left: 0.5rem;
+      position: relative;
+      animation: fadeIn 0.3s ease-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateX(-10px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    .timeline-item::before {
+      content: '';
+      position: absolute;
+      left: -6px;
+      top: 18px;
+      width: 10px;
+      height: 10px;
+      background: var(--accent);
+      border-radius: 50%;
+      box-shadow: 0 0 10px var(--accent-glow);
+    }
+
+    .timeline-time {
+      color: var(--accent);
+      font-size: 0.8rem;
+      font-weight: 600;
+      margin-bottom: 0.3rem;
+    }
+
+    .timeline-action {
+      font-weight: 600;
+      margin-bottom: 0.2rem;
+      text-transform: capitalize;
+    }
+
+    .timeline-details {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    /* Loading State */
+    .loading {
+      text-align: center;
+      padding: 3rem;
+      color: var(--text-muted);
+      font-size: 1rem;
+    }
+
+    .loading i {
+      animation: spin 1s linear infinite;
+      margin-right: 0.5rem;
+      color: var(--accent);
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* Error State */
+    .error-message {
+      text-align: center;
+      padding: 3rem;
+      color: #f87171;
+    }
+
+    .error-message a {
+      color: var(--accent);
+      text-decoration: none;
+      display: inline-block;
+      margin-top: 1rem;
+      padding: 0.5rem 1.5rem;
+      border: 1px solid var(--accent);
+      border-radius: var(--radius-full);
+      transition: all var(--transition-fast);
+    }
+
+    .error-message a:hover {
+      background: var(--accent);
+      color: white;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      body { padding: 1.5rem; }
+      
+      .customization-card { padding: 1.5rem; }
+      
+      .service-header {
+        flex-direction: column;
+        text-align: center;
+        gap: 1rem;
+      }
+      
+      .service-icon { margin: 0 auto; }
+      
+      .service-title { font-size: 1.5rem; }
+    }
+
+    @media (max-width: 480px) {
+      .btn-primary, .btn-secondary { padding: 0.9rem; }
+    }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar { width: 7px; }
+    ::-webkit-scrollbar-track { background: var(--bg-secondary); }
+    ::-webkit-scrollbar-thumb {
+      background: var(--gradient-accent);
+      border-radius: var(--radius-full);
+    }
+    ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+
+    /* Focus States */
+    a:focus, button:focus, input:focus, select:focus, textarea:focus {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+    }
+
+    /* Reduced Motion */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <a href="my-orders.html" class="back-link">
+      <i class="fas fa-arrow-left"></i> Back to My Orders
+    </a>
+    
+    <div class="customization-card" id="edit-card">
+      <div id="loading" class="loading">
+        <i class="fas fa-spinner fa-spin"></i> Loading order details...
+      </div>
+    </div>
+  </div>
+  
+  <script>
+    const CONFIG = { API: 'https://novastack-backend.onrender.com' };
+    const urlParams = new URLSearchParams(window.location.search);
+    const orderId = urlParams.get('id');
+    
+    if (!orderId) {
+      window.location.href = 'my-orders.html';
+    }
+    
+    let orderData = null;
+    
+    async function loadOrder() {
+      const token = localStorage.getItem('dc_token');
+      if (!token) {
+        window.location.href = `login.html?redirect=order-edit.html?id=${orderId}`;
+        return;
+      }
+      
+      try {
+        console.log('🔄 Loading order:', orderId);
+        
+        const res = await fetch(`${CONFIG.API}/order/${orderId}`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        
+        const data = await res.json();
+        console.log('📥 Order data:', data);
+        
+        if (!res.ok) throw new Error(data.error);
+        
+        orderData = data.data;
+        renderEditForm();
+        
+      } catch (error) {
+        console.error('❌ Error:', error);
+        document.getElementById('edit-card').innerHTML = `
+          <div class="error-message">
+            <i class="fas fa-exclamation-triangle" style="font-size: 2rem; margin-bottom: 1rem;"></i>
+            <p>Failed to load order: ${error.message}</p>
+            <a href="my-orders.html">Go back to My Orders</a>
+          </div>
+        `;
+      }
+    }
+    
+    function renderEditForm() {
+      const order = orderData.order;
+      const customization = order.customization || {};
+      const service = order.services || {};
+      
+      const html = `
+        <div class="service-header">
+          <div class="service-icon">${service.emoji || '💻'}</div>
+          <div>
+            <h2 class="service-title">Edit Order #${order.id}</h2>
+            <div class="service-price">Total: <span>$${order.price}</span></div>
+          </div>
+        </div>
+        
+        <form id="editForm">
+          ${renderCustomizationFields(customization)}
+          
+          <div class="form-group">
+            <label><i class="fas fa-file-alt"></i> Additional Requirements</label>
+            <textarea id="requirements" rows="4" placeholder="Tell us more about your project...">${order.requirements || ''}</textarea>
+          </div>
+          
+          <button type="submit" class="btn-primary">
+            <i class="fas fa-save"></i> Save Changes
+          </button>
+          <button type="button" class="btn-secondary" onclick="window.location.href='my-orders.html'">
+            <i class="fas fa-times"></i> Cancel
+          </button>
+        </form>
+        
+        ${renderHistory()}
+      `;
+      
+      document.getElementById('edit-card').innerHTML = html;
+      document.getElementById('editForm').addEventListener('submit', saveChanges);
+    }
+    
+    function renderCustomizationFields(existingCustomization) {
+      const options = orderData.order.services?.customization_options || [];
+      
+      if (options.length === 0) {
+        return `
+          <div style="background: var(--surface); padding: 1rem; border-radius: var(--radius-md); margin-bottom: 1.5rem; color: var(--text-muted);">
+            <i class="fas fa-info-circle" style="color: var(--accent); margin-right: 0.5rem;"></i>
+            No customization options available for this service.
+          </div>
+        `;
+      }
+      
+      return options.map(field => {
+        const fieldId = `field_${field.label.replace(/\s+/g, '_')}`;
+        const currentValue = existingCustomization[field.label];
+        
+        switch(field.type) {
+          case 'select':
+            return `
+              <div class="form-group">
+                <label><i class="fas fa-chevron-down"></i> ${field.label} ${field.required ? '<span style="color: var(--accent);">*</span>' : ''}</label>
+                <select id="${fieldId}" ${field.required ? 'required' : ''}>
+                  <option value="">Select ${field.label}...</option>
+                  ${field.options.map(opt => `
+                    <option value="${opt}" ${currentValue === opt ? 'selected' : ''}>${opt}</option>
+                  `).join('')}
+                </select>
+              </div>
+            `;
+            
+          case 'checkbox':
+            return `
+              <div class="form-group">
+                <div class="checkbox-group">
+                  <input type="checkbox" id="${fieldId}" ${currentValue ? 'checked' : ''}>
+                  <label for="${fieldId}">${field.label}</label>
+                </div>
+              </div>
+            `;
+            
+          case 'textarea':
+            return `
+              <div class="form-group">
+                <label><i class="fas fa-align-left"></i> ${field.label}</label>
+                <textarea id="${fieldId}" rows="3" ${field.required ? 'required' : ''}>${currentValue || ''}</textarea>
+              </div>
+            `;
+            
+          default:
+            return `
+              <div class="form-group">
+                <label><i class="fas fa-pencil-alt"></i> ${field.label}</label>
+                <input type="text" id="${fieldId}" value="${currentValue || ''}" ${field.required ? 'required' : ''}>
+              </div>
+            `;
+        }
+      }).join('');
+    }
+    
+    function renderHistory() {
+      const history = orderData.history || [];
+      
+      if (history.length === 0) return '';
+      
+      return `
+        <div class="history-timeline">
+          <h4><i class="fas fa-history"></i> Order History</h4>
+          ${history.map(item => `
+            <div class="timeline-item">
+              <div style="flex:1;">
+                <div class="timeline-time">
+                  <i class="fas fa-clock" style="margin-right: 0.3rem;"></i>
+                  ${new Date(item.created_at).toLocaleString()}
+                </div>
+                <div class="timeline-action">${item.action.replace('_', ' ')}</div>
+                ${item.old_data ? `
+                  <div class="timeline-details">
+                    <i class="fas fa-edit" style="margin-right: 0.3rem;"></i>
+                    Previous: ${JSON.stringify(item.old_data).substring(0, 50)}...
+                  </div>
+                ` : ''}
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      `;
+    }
+    
+    async function saveChanges(e) {
+      e.preventDefault();
+      
+      const options = orderData.order.services?.customization_options || [];
+      const customization = {};
+      
+      options.forEach(field => {
+        const fieldId = `field_${field.label.replace(/\s+/g, '_')}`;
+        const element = document.getElementById(fieldId);
+        if (element) {
+          customization[field.label] = element.type === 'checkbox' ? element.checked : element.value;
+        }
+      });
+      
+      const requirements = document.getElementById('requirements').value;
+      const token = localStorage.getItem('dc_token');
+      
+      try {
+        const res = await fetch(`${CONFIG.API}/order/${orderId}/update`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({
+            customization: customization,
+            requirements: requirements
+          })
+        });
+        
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error);
+        
+        alert('✅ Order updated successfully!');
+        window.location.href = 'my-orders.html';
+        
+      } catch (error) {
+        alert('❌ Error: ' + error.message);
+      }
+    }
+    
+    loadOrder();
+  </script>
+</body>
+</html>
