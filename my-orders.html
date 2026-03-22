@@ -1,0 +1,906 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Orders — NovaStack</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --bg-primary: #0f0c1a;
+      --bg-secondary: #1a162a;
+      --surface: rgba(255,255,255,0.08);
+      --text-primary: #ffffff;
+      --text-secondary: rgba(255,255,255,0.75);
+      --accent: #ff6b35;
+      --green: #10b981;
+      --orange: #f59e0b;
+      --red: #ef4444;
+      --whatsapp: #25D366;
+      --border: rgba(255,255,255,0.12);
+    }
+    
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      min-height: 100vh;
+      position: relative;
+    }
+    
+    nav {
+      background: var(--bg-secondary);
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border);
+    }
+    
+    .logo {
+      font-size: 1.5rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #ff6b35, #f7c531);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    
+    .nav-links a {
+      color: var(--text-secondary);
+      text-decoration: none;
+      margin-left: 1.5rem;
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 2rem auto;
+      padding: 0 2rem;
+    }
+    
+    .page-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+    }
+    
+    .btn-new-order {
+      background: linear-gradient(135deg, #ff6b35, #f7c531);
+      color: white;
+      text-decoration: none;
+      padding: 0.7rem 1.5rem;
+      border-radius: 12px;
+    }
+    
+    .orders-grid {
+      display: grid;
+      gap: 1.5rem;
+    }
+    
+    .order-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 1.5rem;
+      transition: all 0.3s ease;
+    }
+    
+    .order-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-2px);
+    }
+    
+    .order-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid var(--border);
+    }
+    
+    .order-id {
+      font-weight: 600;
+      color: var(--accent);
+    }
+    
+    .order-status {
+      padding: 0.25rem 1rem;
+      border-radius: 50px;
+      font-size: 0.85rem;
+      font-weight: 500;
+    }
+    
+    .status-pending { background: rgba(245, 158, 11, 0.2); color: var(--orange); }
+    .status-payment_received { background: rgba(16, 185, 129, 0.2); color: var(--green); }
+    .status-cancellation_requested { background: rgba(239, 68, 68, 0.2); color: var(--red); }
+    .status-progress { background: rgba(59, 130, 246, 0.2); color: #3b82f6; }
+    .status-done { background: rgba(16, 185, 129, 0.2); color: var(--green); }
+    
+    .order-details {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+    
+    .service-icon {
+      font-size: 2.5rem;
+      background: var(--surface);
+      padding: 1rem;
+      border-radius: 12px;
+    }
+    
+    .service-info h3 {
+      margin-bottom: 0.5rem;
+    }
+    
+    .service-price {
+      color: var(--accent);
+      font-weight: 600;
+    }
+    
+    .customization-panel {
+      background: var(--surface);
+      padding: 1rem;
+      border-radius: 12px;
+      margin-bottom: 1rem;
+    }
+    
+    .customization-panel h4 {
+      margin-bottom: 0.5rem;
+      color: var(--text-secondary);
+    }
+    
+    .customization-item {
+      display: flex;
+      gap: 0.5rem;
+      font-size: 0.9rem;
+      margin-bottom: 0.25rem;
+    }
+    
+    .order-actions {
+      display: flex;
+      gap: 0.8rem;
+      margin-top: 1rem;
+      flex-wrap: wrap;
+    }
+    
+    .btn-edit, .btn-chat, .btn-whatsapp, .btn-cancel, .btn-delete {
+      padding: 0.5rem 1.2rem;
+      border-radius: 8px;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.9rem;
+      transition: all 0.2s ease;
+      border: 1px solid;
+    }
+    
+    .btn-edit {
+      background: var(--surface);
+      border-color: var(--border);
+      color: var(--text-primary);
+    }
+    .btn-edit:hover {
+      border-color: var(--accent);
+      transform: translateY(-2px);
+    }
+    
+    .btn-chat {
+      background: rgba(16, 185, 129, 0.1);
+      border-color: var(--green);
+      color: var(--green);
+    }
+    .btn-chat:hover {
+      background: var(--green);
+      color: white;
+      transform: translateY(-2px);
+    }
+    
+    .btn-whatsapp {
+      background: var(--whatsapp);
+      border: none;
+      color: white;
+    }
+    .btn-whatsapp:hover {
+      transform: translateY(-2px);
+      filter: brightness(1.05);
+    }
+    
+    .btn-cancel {
+      background: rgba(239, 68, 68, 0.1);
+      border-color: var(--red);
+      color: var(--red);
+    }
+    .btn-cancel:hover {
+      background: var(--red);
+      color: white;
+    }
+    
+    .btn-delete {
+      background: transparent;
+      border-color: var(--border);
+      color: var(--text-secondary);
+    }
+    .btn-delete:hover {
+      border-color: var(--red);
+      color: var(--red);
+    }
+    
+    .history-section {
+      margin-top: 1rem;
+      padding-top: 1rem;
+      border-top: 1px dashed var(--border);
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+    }
+    
+    .empty-state {
+      text-align: center;
+      padding: 4rem;
+      color: var(--text-secondary);
+    }
+    
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.8);
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+    
+    .modal-content {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 2rem;
+      max-width: 400px;
+      width: 90%;
+    }
+    
+    .modal textarea {
+      width: 100%;
+      padding: 0.8rem;
+      margin: 1rem 0;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text-primary);
+    }
+    
+    .modal-buttons {
+      display: flex;
+      gap: 1rem;
+    }
+    
+    /* Chat Widget */
+    .chat-widget {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      width: 400px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+      z-index: 1000;
+      overflow: hidden;
+      display: none;
+      flex-direction: column;
+    }
+    
+    .chat-header {
+      padding: 15px;
+      background: linear-gradient(135deg, #ff6b35, #f7c531);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: white;
+      cursor: pointer;
+    }
+    
+    .chat-header .chat-order-id {
+      font-size: 0.8rem;
+      background: rgba(0,0,0,0.2);
+      padding: 2px 8px;
+      border-radius: 20px;
+    }
+    
+    .chat-close {
+      margin-left: auto;
+      cursor: pointer;
+      padding: 0 5px;
+    }
+    
+    .chat-body {
+      height: 450px;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .chat-messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 15px;
+      background: var(--bg-secondary);
+    }
+    
+    .message {
+      margin-bottom: 15px;
+      max-width: 80%;
+      clear: both;
+    }
+    
+    .message.user {
+      float: right;
+    }
+    
+    .message.admin {
+      float: left;
+    }
+    
+    .message-content {
+      padding: 10px 15px;
+      border-radius: 12px;
+      background: var(--surface);
+      color: var(--text-primary);
+      word-wrap: break-word;
+    }
+    
+    .message.user .message-content {
+      background: linear-gradient(135deg, #ff6b35, #f7c531);
+      color: white;
+    }
+    
+    .message-time {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      margin-top: 3px;
+    }
+    
+    .message.user .message-time {
+      text-align: right;
+    }
+    
+    .message.admin .message-time {
+      text-align: left;
+    }
+    
+    .chat-input-area {
+      padding: 15px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      gap: 10px;
+      background: var(--bg-secondary);
+    }
+    
+    .chat-input-area textarea {
+      flex: 1;
+      padding: 8px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--surface);
+      color: var(--text-primary);
+      resize: none;
+      font-family: inherit;
+    }
+    
+    .chat-input-area button {
+      padding: 8px 15px;
+      background: linear-gradient(135deg, #ff6b35, #f7c531);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    
+    .clearfix::after {
+      content: "";
+      clear: both;
+      display: table;
+    }
+    
+    @media (max-width: 768px) {
+      .order-details {
+        grid-template-columns: 1fr;
+      }
+      .chat-widget {
+        width: 320px;
+        bottom: 10px;
+        right: 10px;
+      }
+      .order-actions {
+        flex-direction: column;
+      }
+      .btn-edit, .btn-chat, .btn-whatsapp, .btn-cancel, .btn-delete {
+        width: 100%;
+        justify-content: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <a href="index.html" class="logo">NovaStack</a>
+    <div class="nav-links">
+      <a href="services.html">Services</a>
+      <a href="my-orders.html">My Orders</a>
+      <a href="cart.html">Cart</a>
+    </div>
+  </nav>
+  
+  <div class="container">
+    <div class="page-header">
+      <h1>My Orders</h1>
+      <a href="services.html" class="btn-new-order">+ New Order</a>
+    </div>
+    
+    <div id="loading" style="display: none; text-align: center; padding: 2rem;">
+      <i class="fas fa-spinner fa-spin"></i> Loading...
+    </div>
+    
+    <div id="orders-container" class="orders-grid"></div>
+  </div>
+  
+  <!-- Chat Widget -->
+  <div class="chat-widget" id="chatWidget">
+    <div class="chat-header" onclick="toggleChat()">
+      <i class="fas fa-comments"></i>
+      <span>Support Chat</span>
+      <span class="chat-order-id" id="chatOrderIdDisplay"></span>
+      <div class="chat-close" onclick="closeChatWidget(event)">
+        <i class="fas fa-times"></i>
+      </div>
+    </div>
+    
+    <div class="chat-body" id="chatBody">
+      <div class="chat-messages" id="chatMessages">
+        <div style="text-align:center;padding:1rem;color:var(--text-muted);">Select an order to start chatting</div>
+      </div>
+      
+      <div class="chat-input-area">
+        <textarea id="chatMessageInput" placeholder="Type your message..." rows="2" onkeypress="if(event.key==='Enter' && !event.shiftKey){event.preventDefault();sendChatMessage();}"></textarea>
+        <button onclick="sendChatMessage()">
+          <i class="fas fa-paper-plane"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Cancel Modal -->
+  <div id="cancelModal" class="modal">
+    <div class="modal-content">
+      <h3>Cancel Order</h3>
+      <p>Please tell us why you want to cancel:</p>
+      <textarea id="cancelReason" rows="3" placeholder="Reason for cancellation..."></textarea>
+      <div class="modal-buttons">
+        <button class="btn-edit" onclick="submitCancel()">Submit</button>
+        <button class="btn-delete" onclick="closeModal()">Close</button>
+      </div>
+    </div>
+  </div>
+  
+  <script>
+    const CONFIG = { API: 'https://novastack-backend.onrender.com' };
+    const WHATSAPP_NUMBER = '8235263572';
+    let currentOrderId = null;
+    let currentConversationId = null;
+    let messagePollInterval = null;
+    let currentUser = null;
+    
+    // Auth helpers
+    const Auth = {
+      getToken() { return localStorage.getItem('dc_token') || ''; },
+      getUser()  { 
+        try { 
+          const user = JSON.parse(localStorage.getItem('dc_user') || 'null'); 
+          if (user) currentUser = user;
+          return user;
+        } catch { return null; } 
+      },
+      isLoggedIn() { return !!this.getToken() && !!this.getUser(); },
+    };
+    
+    // ===== ORDER FUNCTIONS =====
+    async function loadOrders() {
+      const token = Auth.getToken();
+      if (!token) {
+        window.location.href = 'login.html?redirect=my-orders.html';
+        return;
+      }
+      
+      document.getElementById('loading').style.display = 'block';
+      
+      try {
+        const res = await fetch(`${CONFIG.API}/my-orders`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error);
+        
+        const orders = data.orders || [];
+        renderOrders(orders);
+        
+      } catch (error) {
+        console.error('❌ Error:', error);
+        document.getElementById('orders-container').innerHTML = `
+          <div class="empty-state">
+            <i class="fas fa-exclamation-triangle" style="font-size: 3rem;"></i>
+            <p>Error loading orders: ${error.message}</p>
+            <button onclick="loadOrders()" style="margin-top:1rem; padding:0.5rem 1.5rem; background:var(--accent); border:none; border-radius:8px; color:white; cursor:pointer;">Try Again</button>
+          </div>
+        `;
+      }
+      
+      document.getElementById('loading').style.display = 'none';
+    }
+    
+    function formatWhatsAppMessage(order) {
+      const customizations = order.customization || {};
+      const hasCustom = Object.keys(customizations).length > 0;
+      
+      let message = `*📦 ORDER #${order.id}*\n`;
+      message += `━━━━━━━━━━━━━━━━━━━━━\n`;
+      message += `*Service:* ${order.services?.title || 'N/A'}\n`;
+      message += `*Price:* $${order.price || 0}\n`;
+      message += `*Status:* ${order.status || 'pending'}\n`;
+      
+      if (hasCustom) {
+        message += `\n*🎨 Customizations:*\n`;
+        Object.entries(customizations).forEach(([key, value]) => {
+          const val = typeof value === 'boolean' ? (value ? 'Yes' : 'No') : value;
+          message += `   • ${key}: ${val}\n`;
+        });
+      }
+      
+      if (order.requirements) {
+        const req = order.requirements.substring(0, 150);
+        message += `\n*📝 Requirements:*\n${req}${order.requirements.length > 150 ? '...' : ''}\n`;
+      }
+      
+      message += `\n━━━━━━━━━━━━━━━━━━━━━\n`;
+      message += `Hi! I need help with this order.`;
+      
+      return encodeURIComponent(message);
+    }
+    
+    function renderOrders(orders) {
+      const container = document.getElementById('orders-container');
+      
+      if (orders.length === 0) {
+        container.innerHTML = `
+          <div class="empty-state">
+            <i class="fas fa-shopping-bag" style="font-size: 3rem;"></i>
+            <h3>No orders yet</h3>
+            <p style="margin: 1rem 0;">Ready to start your first project?</p>
+            <a href="services.html" class="btn-new-order">Browse Services</a>
+          </div>
+        `;
+        return;
+      }
+      
+      container.innerHTML = orders.map(order => {
+        const whatsappLink = `https://wa.me/${WHATSAPP_NUMBER}?text=${formatWhatsAppMessage(order)}`;
+        
+        return `
+          <div class="order-card" id="order-${order.id}">
+            <div class="order-header">
+              <span class="order-id">Order #${order.id}</span>
+              <span class="order-status status-${order.status}">${order.status.replace('_', ' ')}</span>
+            </div>
+            
+            <div class="order-details">
+              <div class="service-icon">${order.services?.emoji || '💻'}</div>
+              <div class="service-info">
+                <h3>${order.services?.title || 'Service'}</h3>
+                <p class="service-price">$${order.price || 0}</p>
+              </div>
+            </div>
+            
+            ${renderCustomization(order.customization)}
+            
+            ${order.requirements ? `
+              <div class="customization-panel">
+                <h4>Requirements:</h4>
+                <p>${escapeHtml(order.requirements)}</p>
+              </div>
+            ` : ''}
+            
+            <div class="order-actions">
+              <a href="${whatsappLink}" class="btn-whatsapp" target="_blank">
+                <i class="fab fa-whatsapp"></i> WhatsApp
+              </a>
+              
+              <button class="btn-chat" onclick="openChat(${order.id})">
+                <i class="fas fa-comment"></i> Chat
+              </button>
+              
+              ${order.can_cancel ? `
+                <button class="btn-cancel" onclick="openCancelModal(${order.id})">
+                  <i class="fas fa-ban"></i> Cancel
+                </button>
+              ` : ''}
+              
+              ${['pending', 'payment_received'].includes(order.status) ? `
+                <a href="order-edit.html?id=${order.id}" class="btn-edit">
+                  <i class="fas fa-edit"></i> Edit
+                </a>
+              ` : ''}
+            </div>
+            
+            <div class="history-section">
+              <i class="fas fa-history"></i> Placed on ${new Date(order.created_at).toLocaleDateString()}
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+    
+    function renderCustomization(customization) {
+      if (!customization || Object.keys(customization).length === 0) return '';
+      
+      return `
+        <div class="customization-panel">
+          <h4>Customizations:</h4>
+          ${Object.entries(customization).map(([key, value]) => `
+            <div class="customization-item">
+              <strong>${key}:</strong> 
+              <span>${typeof value === 'boolean' ? (value ? 'Yes' : 'No') : value}</span>
+            </div>
+          `).join('')}
+        </div>
+      `;
+    }
+    
+    // ===== CHAT FUNCTIONS - WORKING DISPLAY =====
+    function openChat(orderId) {
+      currentOrderId = orderId;
+      currentConversationId = `order_${orderId}`;
+      
+      const chatWidget = document.getElementById('chatWidget');
+      document.getElementById('chatOrderIdDisplay').textContent = `Order #${orderId}`;
+      chatWidget.style.display = 'flex';
+      document.getElementById('chatBody').style.display = 'flex';
+      
+      // Clear and show loading
+      document.getElementById('chatMessages').innerHTML = '<div style="text-align:center;padding:1rem;"><i class="fas fa-spinner fa-spin"></i> Loading messages...</div>';
+      
+      loadMessages();
+      startMessagePolling();
+    }
+    
+    async function loadMessages() {
+      if (!currentConversationId) return;
+      
+      const token = Auth.getToken();
+      if (!token) return;
+      
+      try {
+        const res = await fetch(`${CONFIG.API}/conversation/${currentConversationId}/messages`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        
+        if (res.ok) {
+          const data = await res.json();
+          console.log('📨 Messages received:', data.messages);
+          console.log('📨 Count:', data.messages ? data.messages.length : 0);
+          
+          // 🔥 FIX: Always call displayMessages
+          if (data.messages && data.messages.length > 0) {
+            displayMessages(data.messages);
+          } else {
+            const container = document.getElementById('chatMessages');
+            container.innerHTML = '<div style="text-align: center; padding: 1rem; color: var(--text-muted);">No messages yet. Start the conversation!</div>';
+          }
+        } else {
+          console.error('Failed to load messages:', res.status);
+        }
+      } catch (error) {
+        console.error('Failed to load messages:', error);
+      }
+    }
+    
+    function displayMessages(messages) {
+      const container = document.getElementById('chatMessages');
+      
+      if (!messages || messages.length === 0) {
+        container.innerHTML = '<div style="text-align: center; padding: 1rem; color: var(--text-muted);">No messages yet. Start the conversation!</div>';
+        return;
+      }
+      
+      let html = '';
+      
+      messages.forEach(msg => {
+        const isUser = msg.sender_role === 'user';
+        const messageText = msg.message || '';
+        const time = msg.created_at ? new Date(msg.created_at).toLocaleString() : new Date().toLocaleString();
+        
+        html += `
+          <div class="message ${isUser ? 'user' : 'admin'}">
+            <div class="message-content">${escapeHtml(messageText)}</div>
+            <div class="message-time">${time}</div>
+          </div>
+          <div class="clearfix"></div>
+        `;
+      });
+      
+      container.innerHTML = html;
+      container.scrollTop = container.scrollHeight;
+    }
+    
+    async function sendChatMessage() {
+      const input = document.getElementById('chatMessageInput');
+      const message = input.value.trim();
+      
+      if (!message || !currentConversationId) {
+        return;
+      }
+      
+      const token = Auth.getToken();
+      if (!token) {
+        alert('Please login to send messages');
+        return;
+      }
+      
+      // Clear input immediately
+      input.value = '';
+      
+      // Add message to UI immediately (optimistic update)
+      const container = document.getElementById('chatMessages');
+      
+      // Remove "No messages" text if present
+      if (container.innerHTML.includes('No messages yet')) {
+        container.innerHTML = '';
+      }
+      
+      const tempId = 'temp_' + Date.now();
+      const currentTime = new Date().toLocaleString();
+      
+      container.innerHTML += `
+        <div class="message user" id="${tempId}">
+          <div class="message-content">${escapeHtml(message)}</div>
+          <div class="message-time">${currentTime}</div>
+        </div>
+        <div class="clearfix"></div>
+      `;
+      container.scrollTop = container.scrollHeight;
+      
+      try {
+        const res = await fetch(`${CONFIG.API}/conversation/${currentConversationId}/send`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({ message })
+        });
+        
+        if (res.ok) {
+          console.log('✅ Message sent successfully');
+          // Reload messages to sync with server
+          await loadMessages();
+        } else {
+          console.error('Failed to send message:', res.status);
+          const tempMsg = document.getElementById(tempId);
+          if (tempMsg) {
+            tempMsg.style.opacity = '0.5';
+            const timeSpan = tempMsg.querySelector('.message-time');
+            if (timeSpan) timeSpan.textContent = 'Failed to send';
+          }
+          alert('Failed to send message. Please try again.');
+        }
+      } catch (error) {
+        console.error('Failed to send message:', error);
+        const tempMsg = document.getElementById(tempId);
+        if (tempMsg) {
+          tempMsg.style.opacity = '0.5';
+          const timeSpan = tempMsg.querySelector('.message-time');
+          if (timeSpan) timeSpan.textContent = 'Failed to send';
+        }
+        alert('Failed to send message. Please try again.');
+      }
+    }
+    
+    function startMessagePolling() {
+      if (messagePollInterval) clearInterval(messagePollInterval);
+      
+      messagePollInterval = setInterval(() => {
+        if (currentConversationId && document.getElementById('chatWidget').style.display === 'flex') {
+          loadMessages();
+        }
+      }, 5000);
+    }
+    
+    function toggleChat() {
+      const body = document.getElementById('chatBody');
+      body.style.display = body.style.display === 'none' ? 'flex' : 'none';
+    }
+    
+    function closeChatWidget(event) {
+      if (event) event.stopPropagation();
+      const chatWidget = document.getElementById('chatWidget');
+      chatWidget.style.display = 'none';
+      if (messagePollInterval) {
+        clearInterval(messagePollInterval);
+        messagePollInterval = null;
+      }
+      currentConversationId = null;
+      currentOrderId = null;
+    }
+    
+    // ===== CANCEL/DELETE FUNCTIONS =====
+    function openCancelModal(orderId) {
+      currentOrderId = orderId;
+      document.getElementById('cancelModal').style.display = 'flex';
+    }
+    
+    function closeModal() {
+      document.getElementById('cancelModal').style.display = 'none';
+      document.getElementById('cancelReason').value = '';
+    }
+    
+    async function submitCancel() {
+      const reason = document.getElementById('cancelReason').value;
+      if (!reason) {
+        alert('Please provide a reason');
+        return;
+      }
+      
+      const token = Auth.getToken();
+      
+      try {
+        const res = await fetch(`${CONFIG.API}/order/${currentOrderId}/cancel`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({ reason })
+        });
+        
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error);
+        
+        alert('Cancellation requested!');
+        closeModal();
+        loadOrders();
+        
+      } catch (error) {
+        alert('Error: ' + error.message);
+      }
+    }
+    
+    function escapeHtml(text) {
+      if (!text) return '';
+      return String(text)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+    
+    // Initialize
+    Auth.getUser();
+    
+    if (window.location.search.includes('success=1')) {
+      alert('Order placed successfully!');
+    }
+    
+    loadOrders();
+    
+    window.addEventListener('beforeunload', () => {
+      if (messagePollInterval) clearInterval(messagePollInterval);
+    });
+  </script>
+</body>
+</html>
