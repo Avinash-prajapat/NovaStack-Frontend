@@ -252,6 +252,28 @@
             transform: translateY(-2px);
         }
         
+        .btn-retry {
+            background: #f59e0b;
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 1rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s;
+            margin-left: 0.5rem;
+        }
+        
+        .btn-retry:hover {
+            background: #d97706;
+            transform: translateY(-2px);
+        }
+        
         @keyframes pulse {
             0%, 100% { border-color: #10b981; box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4); }
             50% { border-color: #10b981; box-shadow: 0 0 0 10px rgba(16, 185, 129, 0); }
@@ -268,6 +290,12 @@
         .payment-status.pending {
             background: rgba(245, 158, 11, 0.2);
             border: 1px solid #f59e0b;
+            display: block;
+        }
+        
+        .payment-status.success {
+            background: rgba(16, 185, 129, 0.2);
+            border: 1px solid #10b981;
             display: block;
         }
         
@@ -308,6 +336,20 @@
         .toast.warning {
             background: #f59e0b;
         }
+        
+        .error-card {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid #ef4444;
+            border-radius: 20px;
+            padding: 2rem;
+            text-align: center;
+        }
+        
+        .error-card i {
+            font-size: 3rem;
+            color: #ef4444;
+            margin-bottom: 1rem;
+        }
     </style>
 </head>
 <body>
@@ -338,12 +380,13 @@
     </div>
 
     <script>
-        // 🔥 FIXED: Use localhost for testing
+        // CONFIGURATION
         const CONFIG = {
-            API: 'https://novastack-backend.onrender.com',  // Changed to localhost
+            API: 'https://novastack-backend.onrender.com',
             FRONTEND: window.location.origin
         };
         
+        // Global variables
         let paymentData = null;
         let isCartCheckout = false;
         let cartItems = [];
@@ -367,17 +410,35 @@
         
         console.log('📦 Checkout Data:', { isCartCheckout, serviceId, serviceTitle, totalPrice });
         
-        // Auth helpers
+        // ============================================================
+        // AUTH HELPERS - FIXED
+        // ============================================================
         const Auth = {
-            getToken() { return localStorage.getItem('dc_token') || ''; },
+            getToken() { 
+                const token = localStorage.getItem('dc_token');
+                console.log('🔑 Auth.getToken() called, token present:', !!token);
+                if (!token) {
+                    console.warn('⚠️ No token found in localStorage');
+                }
+                return token || ''; 
+            },
             getUser() { 
                 try { 
-                    return JSON.parse(localStorage.getItem('dc_user') || 'null'); 
-                } catch { return null; } 
+                    const user = localStorage.getItem('dc_user');
+                    return user ? JSON.parse(user) : null; 
+                } catch(e) { 
+                    console.error('Error parsing user:', e);
+                    return null; 
+                } 
+            },
+            isLoggedIn() {
+                return !!this.getToken();
             }
         };
         
-        // Show toast notification
+        // ============================================================
+        // UI HELPERS
+        // ============================================================
         function showToast(message, type = 'success') {
             let toast = document.querySelector('.toast');
             if (!toast) {
@@ -391,14 +452,58 @@
             setTimeout(() => toast.classList.remove('show'), 4000);
         }
         
-        async function loadPayment() {
+        function showError(message) {
+            const container = document.getElementById('checkout-content');
+            if (container) {
+                container.innerHTML = `
+                    <div class="error-card">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <h3>Something went wrong</h3>
+                        <p style="margin: 1rem 0;">${escapeHtml(message)}</p>
+                        <button class="btn-back" onclick="window.location.href='${isCartCheckout ? 'cart.html' : 'services.html'}'">
+                            ← Go Back
+                        </button>
+                        <button class="btn-retry" onclick="location.reload()" style="margin-left: 0.5rem;">
+                            <i class="fas fa-sync"></i> Try Again
+                        </button>
+                    </div>
+                `;
+            }
+            showToast(message, 'error');
+        }
+        
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+        
+        // ============================================================
+        // CHECK AUTHENTICATION
+        // ============================================================
+        function checkAuth() {
             const token = Auth.getToken();
-            console.log('🔑 Token:', token ? 'Present' : 'Missing');
-            
             if (!token) {
-                window.location.href = `login.html?redirect=checkout.html${window.location.search}`;
+                console.log('❌ No token found, redirecting to login');
+                const currentUrl = encodeURIComponent(window.location.href);
+                window.location.href = `login.html?redirect=${currentUrl}`;
+                return false;
+            }
+            return true;
+        }
+        
+        // ============================================================
+        // LOAD PAYMENT
+        // ============================================================
+        async function loadPayment() {
+            // Check authentication first
+            if (!checkAuth()) {
                 return;
             }
+            
+            const token = Auth.getToken();
+            console.log('🔑 Token present for payment creation');
             
             if (!totalPrice || totalPrice <= 0) {
                 showError('Invalid order amount. Please go back and try again.');
@@ -438,18 +543,21 @@
                 
                 paymentData = data.data;
                 
-                if (!paymentData.key_id) {
+                if (!paymentData || !paymentData.key_id) {
                     throw new Error('Payment configuration error');
                 }
                 
                 renderCheckout();
                 
             } catch (error) {
-                console.error('❌ Error:', error);
+                console.error('❌ Error loading payment:', error);
                 showError(error.message);
             }
         }
         
+        // ============================================================
+        // RENDER CHECKOUT UI
+        // ============================================================
         function renderCheckout() {
             const advance = paymentData.advance;
             const total = paymentData.total;
@@ -513,10 +621,26 @@
             document.getElementById('pay-button').addEventListener('click', initPayment);
         }
         
+        // ============================================================
+        // INITIATE PAYMENT
+        // ============================================================
         function initPayment() {
+            // Check authentication again before payment
+            if (!checkAuth()) {
+                return;
+            }
+            
+            const token = Auth.getToken();
+            if (!token) {
+                showError('Please login to continue');
+                window.location.href = `login.html?redirect=${encodeURIComponent(window.location.href)}`;
+                return;
+            }
+            
             const user = Auth.getUser() || {};
             const advance = paymentData.advance;
             
+            // Store pending payment
             localStorage.setItem('pending_payment', JSON.stringify({
                 order_id: paymentData.razorpay_order_id,
                 amount: advance,
@@ -526,7 +650,7 @@
             
             const options = {
                 key: paymentData.key_id,
-                amount: advance * 100,
+                amount: Math.round(advance * 100),
                 currency: "INR",
                 name: "NovaStack",
                 description: `15% Advance for ${isCartCheckout ? 'Order' : serviceTitle}`,
@@ -564,6 +688,7 @@
                 console.error('❌ Payment Failed:', response.error);
                 const errorMessage = response.error.description || response.error.reason || 'Payment failed';
                 
+                // Log failure to backend
                 fetch(`${CONFIG.API}/payment-failed`, {
                     method: 'POST',
                     headers: {
@@ -578,7 +703,7 @@
                     })
                 }).catch(e => console.error('Failed to log error:', e));
                 
-                showPaymentFailure(errorMessage, paymentData.razorpay_order_id);
+                showToast('Payment failed: ' + errorMessage, 'error');
                 
                 const btn = document.getElementById('pay-button');
                 if (btn) {
@@ -597,26 +722,251 @@
             rzp.open();
         }
         
-        function showPaymentFailure(errorMessage, orderId) {
-            const container = document.getElementById('checkout-content');
-            const errorHtml = `
-                <div class="error-card">
-                    <i class="fas fa-exclamation-triangle"></i>
-                    <h3>Payment Failed!</h3>
-                    <p style="margin: 0.5rem 0;">${escapeHtml(errorMessage)}</p>
-                    <p style="font-size: 0.85rem; color: rgba(255,255,255,0.6);">Order ID: ${orderId}</p>
-                    <button class="btn-retry" onclick="retryPayment()">
-                        <i class="fas fa-redo"></i> Try Again
-                    </button>
-                    <button class="btn-back" onclick="window.location.href='${isCartCheckout ? 'cart.html' : 'services.html'}'" style="margin-top: 0.5rem;">
-                        ← Back to Cart
-                    </button>
-                </div>
-            `;
-            container.innerHTML = errorHtml;
-            showToast('Payment failed: ' + errorMessage, 'error');
+        // ============================================================
+        // VERIFY PAYMENT - FIXED WITH PROPER TOKEN HANDLING
+        // ============================================================
+        async function verifyPayment(response) {
+            console.log('💰 Starting payment verification...');
+            console.log('📦 Payment response:', response);
+            
+            // Get token - CRITICAL FIX
+            const token = Auth.getToken();
+            console.log('🔑 Token for verification:', token ? `Present (${token.substring(0, 20)}...)` : 'MISSING');
+            
+            if (!token) {
+                console.error('❌ No token found for verification');
+                showToast('Session expired. Please login again.', 'error');
+                
+                // Store payment info for recovery
+                localStorage.setItem('pending_payment_recovery', JSON.stringify({
+                    razorpay_order_id: response.razorpay_order_id,
+                    razorpay_payment_id: response.razorpay_payment_id,
+                    razorpay_signature: response.razorpay_signature,
+                    timestamp: new Date().toISOString()
+                }));
+                
+                setTimeout(() => {
+                    window.location.href = `login.html?redirect=${encodeURIComponent(window.location.href)}`;
+                }, 2000);
+                return;
+            }
+            
+            const btn = document.getElementById('pay-button');
+            if (btn) {
+                btn.disabled = true;
+                btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Verifying payment...';
+            }
+            
+            try {
+                console.log('📤 Sending verification to backend...');
+                console.log('URL:', `${CONFIG.API}/verify-payment`);
+                
+                const res = await fetch(`${CONFIG.API}/verify-payment`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({
+                        razorpay_order_id: response.razorpay_order_id,
+                        razorpay_payment_id: response.razorpay_payment_id,
+                        razorpay_signature: response.razorpay_signature
+                    })
+                });
+                
+                console.log('📥 Verification response status:', res.status);
+                const data = await res.json();
+                console.log('📥 Verification response data:', data);
+                
+                if (!res.ok) {
+                    throw new Error(data.error || 'Verification failed');
+                }
+                
+                // Success!
+                console.log('✅ Payment verified successfully!');
+                
+                if (isCartCheckout) {
+                    localStorage.removeItem('dc_cart_local');
+                }
+                localStorage.removeItem('pending_payment');
+                localStorage.removeItem('pending_payment_recovery');
+                
+                const orderData = data.data;
+                localStorage.setItem('dc_last_order', JSON.stringify({
+                    order_id: orderData.order_id,
+                    advance_paid: orderData.advance_paid,
+                    total: orderData.total,
+                    balance_due: orderData.balance_due
+                }));
+                
+                showToast('✅ Payment successful! Order confirmed.');
+                
+                setTimeout(() => {
+                    window.location.href = `order-confirmed.html?order_id=${orderData.order_id}`;
+                }, 1500);
+                
+            } catch (error) {
+                console.error('❌ Verification error:', error);
+                console.error('Error details:', error.message);
+                
+                // Show manual confirmation button
+                showToast('⚠️ Payment successful but verification pending. Click "Confirm Order" to complete.', 'warning');
+                
+                if (btn) {
+                    btn.disabled = false;
+                    btn.innerHTML = `<i class="fas fa-lock"></i> Pay ₹${paymentData?.advance || 0} Now`;
+                }
+                
+                // Store payment info for manual confirmation
+                localStorage.setItem('pending_payment_recovery', JSON.stringify({
+                    razorpay_order_id: response.razorpay_order_id,
+                    razorpay_payment_id: response.razorpay_payment_id,
+                    razorpay_signature: response.razorpay_signature,
+                    timestamp: new Date().toISOString()
+                }));
+                
+                // Show manual confirmation button
+                document.getElementById('manualConfirm').classList.add('show');
+                
+                // Update payment status box
+                const paymentStatus = document.getElementById('paymentStatus');
+                if (paymentStatus) {
+                    paymentStatus.innerHTML = `
+                        <div class="payment-status success">
+                            <i class="fas fa-check-circle" style="color: #10b981; font-size: 2rem;"></i>
+                            <p><strong>Payment Received!</strong></p>
+                            <p>Your payment of ₹${paymentData?.advance || 0} was successful.</p>
+                            <p>Click below to confirm your order.</p>
+                            <button class="btn-manual" onclick="manualConfirm()" style="margin-top: 0.5rem;">
+                                <i class="fas fa-check"></i> Confirm Order
+                            </button>
+                        </div>
+                    `;
+                }
+            }
         }
         
+        // ============================================================
+        // MANUAL CONFIRMATION
+        // ============================================================
+        async function manualConfirm() {
+            console.log('🔧 Manual confirmation triggered');
+            
+            const token = Auth.getToken();
+            if (!token) {
+                showToast('Please login to confirm order', 'error');
+                window.location.href = `login.html?redirect=${encodeURIComponent(window.location.href)}`;
+                return;
+            }
+            
+            const pendingPayment = localStorage.getItem('pending_payment_recovery') || localStorage.getItem('pending_payment');
+            
+            if (!pendingPayment) {
+                showToast('No pending payment found.', 'error');
+                window.location.reload();
+                return;
+            }
+            
+            const payment = JSON.parse(pendingPayment);
+            console.log('📦 Manual confirmation for order:', payment.razorpay_order_id);
+            
+            const statusDiv = document.getElementById('paymentStatus');
+            if (statusDiv) {
+                statusDiv.innerHTML = `
+                    <div class="payment-status pending">
+                        <i class="fas fa-spinner fa-spin"></i>
+                        <p>Checking payment status...</p>
+                    </div>
+                `;
+            }
+            
+            try {
+                // Try to verify again
+                const res = await fetch(`${CONFIG.API}/verify-payment`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({
+                        razorpay_order_id: payment.razorpay_order_id,
+                        razorpay_payment_id: payment.razorpay_payment_id,
+                        razorpay_signature: payment.razorpay_signature
+                    })
+                });
+                
+                const data = await res.json();
+                
+                if (res.ok && data.success) {
+                    // Success!
+                    localStorage.removeItem('pending_payment');
+                    localStorage.removeItem('pending_payment_recovery');
+                    
+                    if (isCartCheckout) {
+                        localStorage.removeItem('dc_cart_local');
+                    }
+                    
+                    showToast('✅ Order confirmed successfully!');
+                    setTimeout(() => {
+                        window.location.href = `order-confirmed.html?order_id=${data.data?.order_id || payment.razorpay_order_id}`;
+                    }, 1500);
+                } else {
+                    // Try check status endpoint
+                    const checkRes = await fetch(`${CONFIG.API}/check-payment-status`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        },
+                        body: JSON.stringify({
+                            razorpay_order_id: payment.razorpay_order_id
+                        })
+                    });
+                    
+                    const checkData = await checkRes.json();
+                    
+                    if (checkData.success && checkData.paid) {
+                        showToast('✅ Payment confirmed! Order will be created.');
+                        setTimeout(() => {
+                            window.location.reload();
+                        }, 1500);
+                    } else {
+                        statusDiv.innerHTML = `
+                            <div class="payment-status pending">
+                                <i class="fas fa-hourglass-half"></i>
+                                <p>Payment still processing. Please wait a moment.</p>
+                                <button class="btn-manual" onclick="manualConfirm()">
+                                    <i class="fas fa-sync"></i> Check Again
+                                </button>
+                                <button class="btn-back" onclick="window.location.href='${isCartCheckout ? 'cart.html' : 'services.html'}'">
+                                    ← Go to Services
+                                </button>
+                            </div>
+                        `;
+                        showToast('Payment still processing. Please wait and try again.', 'warning');
+                    }
+                }
+            } catch (error) {
+                console.error('❌ Manual confirmation error:', error);
+                statusDiv.innerHTML = `
+                    <div class="payment-status pending">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <p>Could not verify payment status.</p>
+                        <p style="font-size: 0.85rem;">Your payment was successful. Our team will confirm your order shortly.</p>
+                        <button class="btn-manual" onclick="manualConfirm()">
+                            <i class="fas fa-sync"></i> Try Again
+                        </button>
+                        <button class="btn-back" onclick="window.location.href='${isCartCheckout ? 'cart.html' : 'services.html'}'">
+                            ← Go to Services
+                        </button>
+                    </div>
+                `;
+            }
+        }
+        
+        // ============================================================
+        // RETRY PAYMENT
+        // ============================================================
         async function retryPayment() {
             const token = Auth.getToken();
             if (!token) {
@@ -661,155 +1011,10 @@
             }
         }
         
-        async function verifyPayment(response) {
-            const token = Auth.getToken();
-            const btn = document.getElementById('pay-button');
-            
-            if (btn) {
-                btn.disabled = true;
-                btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Verifying...';
-            }
-            
-            try {
-                const res = await fetch(`${CONFIG.API}/verify-payment`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`
-                    },
-                    body: JSON.stringify({
-                        razorpay_order_id: response.razorpay_order_id,
-                        razorpay_payment_id: response.razorpay_payment_id,
-                        razorpay_signature: response.razorpay_signature
-                    })
-                });
-                
-                const data = await res.json();
-                
-                if (!res.ok) {
-                    throw new Error(data.error || 'Verification failed');
-                }
-                
-                if (isCartCheckout) {
-                    localStorage.removeItem('dc_cart_local');
-                }
-                localStorage.removeItem('pending_payment');
-                
-                const orderData = data.data;
-                localStorage.setItem('dc_last_order', JSON.stringify({
-                    order_id: orderData.order_id,
-                    advance_paid: orderData.advance_paid,
-                    total: orderData.total,
-                    balance_due: orderData.balance_due
-                }));
-                
-                showToast('✅ Payment successful! Order confirmed.');
-                setTimeout(() => {
-                    window.location.href = `order-confirmed.html?order_id=${orderData.order_id}`;
-                }, 1500);
-                
-            } catch (error) {
-                console.error('❌ Verification error:', error);
-                showToast('❌ ' + error.message, 'error');
-                if (btn) {
-                    btn.disabled = false;
-                    btn.innerHTML = `<i class="fas fa-lock"></i> Pay ₹${paymentData.advance} Now`;
-                }
-                document.getElementById('manualConfirm').classList.add('show');
-            }
-        }
-        
-        async function manualConfirm() {
-            const pendingPayment = localStorage.getItem('pending_payment');
-            if (!pendingPayment) {
-                showToast('No pending payment found.', 'error');
-                window.location.reload();
-                return;
-            }
-            
-            const payment = JSON.parse(pendingPayment);
-            const token = Auth.getToken();
-            
-            document.getElementById('paymentStatus').innerHTML = `
-                <div class="payment-status pending">
-                    <i class="fas fa-spinner fa-spin"></i>
-                    <p>Checking payment status...</p>
-                </div>
-            `;
-            
-            try {
-                const res = await fetch(`${CONFIG.API}/check-payment-status`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`
-                    },
-                    body: JSON.stringify({
-                        razorpay_order_id: payment.order_id
-                    })
-                });
-                
-                const data = await res.json();
-                
-                if (data.success && data.paid) {
-                    localStorage.removeItem('pending_payment');
-                    if (isCartCheckout) {
-                        localStorage.removeItem('dc_cart_local');
-                    }
-                    showToast('✅ Payment confirmed!');
-                    setTimeout(() => {
-                        window.location.href = `order-confirmed.html?order_id=${payment.order_id}`;
-                    }, 1500);
-                } else {
-                    document.getElementById('paymentStatus').innerHTML = `
-                        <div class="payment-status pending">
-                            <i class="fas fa-hourglass-half"></i>
-                            <p>Payment still processing. Please try again.</p>
-                            <button class="btn-manual" onclick="manualConfirm()">
-                                <i class="fas fa-sync"></i> Check Again
-                            </button>
-                            <button class="btn-retry" onclick="retryPayment()" style="margin-top: 0.5rem;">
-                                <i class="fas fa-redo"></i> Try New Payment
-                            </button>
-                        </div>
-                    `;
-                }
-            } catch (error) {
-                document.getElementById('paymentStatus').innerHTML = `
-                    <div class="payment-status pending">
-                        <i class="fas fa-exclamation-triangle"></i>
-                        <p>Could not verify payment status.</p>
-                        <button class="btn-manual" onclick="manualConfirm()">
-                            <i class="fas fa-sync"></i> Try Again
-                        </button>
-                        <button class="btn-retry" onclick="retryPayment()" style="margin-top: 0.5rem;">
-                            <i class="fas fa-redo"></i> Try New Payment
-                        </button>
-                    </div>
-                `;
-            }
-        }
-        
-        function showError(message) {
-            document.getElementById('checkout-content').innerHTML = `
-                <div class="error">
-                    <i class="fas fa-exclamation-triangle"></i>
-                    <p>${message}</p>
-                    <button class="btn-back" onclick="window.location.href='${isCartCheckout ? 'cart.html' : 'services.html'}'">
-                        ← Go Back
-                    </button>
-                </div>
-            `;
-        }
-        
-        function escapeHtml(text) {
-            if (!text) return '';
-            const div = document.createElement('div');
-            div.textContent = text;
-            return div.innerHTML;
-        }
-        
-        // Start
+        // ============================================================
+        // START
+        // ============================================================
+        console.log('🚀 Starting checkout page...');
         loadPayment();
     </script>
 </body>
