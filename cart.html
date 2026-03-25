@@ -7,7 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <link rel="icon" type="logo/jpeg" href="logo.png">
+  <link rel="icon" type="logo/jpeg" href="/frontend/logo.png">
   <style>
     /* ===== 🎨 Modern CSS Variables (Matching Design System) ===== */
     :root {
@@ -929,7 +929,7 @@
 
 <script>
 // ── CONFIG ─────────────────────────────────────────────────────────────────
-const CONFIG = { API: 'https://novastack-backend.onrender.com', WA_NUMBER: '9015277062' };
+const CONFIG = { API: 'https://novastack-backend.onrender.com', WA_NUMBER: '923001234567' };
 document.getElementById('wa-link').href = `https://wa.me/${CONFIG.WA_NUMBER}`;
 
 // ── Create Floating Particles ─────────────────────────────────────────────
@@ -1073,7 +1073,7 @@ function render(items) {
             <h3>${item.title}</h3>
             <p><i class="fas fa-tag"></i> ${item.category || 'Software'} service</p>
           </div>
-          <div class="item-price">$${parseFloat(item.price).toLocaleString()}</div>
+          <div class="item-price">₹${parseFloat(item.price).toLocaleString()}</div>
           <button class="remove-btn" onclick="removeItem(${item.id})" title="Remove item" aria-label="Remove ${item.title}">
             <i class="fas fa-times"></i>
           </button>
@@ -1095,26 +1095,26 @@ function render(items) {
     ${items.map(i => `
       <div class="summary-row">
         <span class="lbl"><i class="fas fa-check"></i> ${(i.title || '').substring(0, 24)}${(i.title || '').length > 24 ? '...' : ''}</span>
-        <span class="val">$${parseFloat(i.price).toLocaleString()}</span>
+        <span class="val">₹${parseFloat(i.price).toLocaleString()}</span>
       </div>
     `).join('')}
     <hr class="divider">
     <div class="summary-row">
       <span class="lbl"><i class="fas fa-percent"></i> Advance (20%)</span>
-      <span class="val" style="color:var(--accent)">-$${advance.toLocaleString()}</span>
+      <span class="val" style="color:var(--accent)">-₹${advance.toLocaleString()}</span>
     </div>
     <div class="summary-row">
       <span class="lbl"><i class="fas fa-wallet"></i> Balance Due</span>
-      <span class="val">$${balance.toLocaleString()}</span>
+      <span class="val">₹${balance.toLocaleString()}</span>
     </div>
     <hr class="divider">
     <div class="summary-total">
       <span>Total</span>
-      <span class="val">$${subtotal.toLocaleString()}</span>
+      <span class="val">₹${subtotal.toLocaleString()}</span>
     </div>
     <div class="advance-note">
       <i class="fas fa-lightbulb"></i>
-      <span>A 20% advance (<strong>$${advance.toLocaleString()}</strong>) is required to start development. Balance due upon project delivery.</span>
+      <span>A 20% advance (<strong>₹${advance.toLocaleString()}</strong>) is required to start development. Balance due upon project delivery.</span>
     </div>
   `;
 
@@ -1123,7 +1123,7 @@ function render(items) {
   if (user && Auth.isLoggedIn()) {
     actionBody.innerHTML = `
       <button class="btn-place" onclick="placeOrder()">
-        <i class="fas fa-rocket"></i> Place Order — Pay $${advance.toLocaleString()} Advance
+        <i class="fas fa-rocket"></i> Place Order — Pay ₹${advance.toLocaleString()} Advance
       </button>
       <button class="btn-clear-cart" onclick="clearCart()">
         <i class="fas fa-trash-alt"></i> Clear Cart
@@ -1200,29 +1200,36 @@ async function clearCart() {
   showToast('Cart cleared', 'success');
 }
 
-// ── Place Order ───────────────────────────────────────────────────────────
+// ── Place Order with Payment Redirect ──────────────────────────────────────
 async function placeOrder() {
   const btn = document.querySelector('.btn-place');
   if (!btn) return;
   
+  const items = CartLocal.get();
+  if (items.length === 0) {
+    showToast('Your cart is empty', 'error');
+    return;
+  }
+  
+  const token = Auth.getToken();
+  if (!token) {
+    showToast('Please login to place order', 'error');
+    setTimeout(() => {
+      window.location.href = 'login.html?redirect=cart.html';
+    }, 1000);
+    return;
+  }
+  
   const originalText = btn.innerHTML;
   btn.disabled = true;
-  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Preparing checkout...';
   
   try {
-    const data = await apiFetch('/order/place', {
-      method: 'POST',
-      body: '{}',
-      auth: true
-    });
+    // Store cart items in localStorage for checkout page
+    localStorage.setItem('checkout_cart_items', JSON.stringify(items));
     
-    localStorage.setItem('dc_last_order', JSON.stringify(data));
-    CartLocal.clear();
-    
-    showToast('Order placed successfully! 🎉', 'success');
-    setTimeout(() => {
-      window.location.href = 'order.html';
-    }, 1500);
+    // Redirect to checkout page
+    window.location.href = 'checkout.html';
     
   } catch (e) {
     btn.disabled = false;
@@ -1295,5 +1302,4 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
 });
 </script>
 </body>
-
 </html>
