@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Secure Checkout - DevCraft</title>
+    <title>Secure Checkout - NovaStack</title>
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -312,7 +312,7 @@
 <body>
     <div class="checkout-container">
         <div class="checkout-header">
-            <div class="logo">DevCraft</div>
+            <div class="logo">NovaStack</div>
             <h2><i class="fas fa-credit-card"></i> Secure Checkout</h2>
             <p>Pay 15% advance to confirm your order</p>
         </div>
@@ -527,7 +527,7 @@
                 key: paymentData.key_id,
                 amount: advance * 100,
                 currency: "INR",
-                name: "DevCraft",
+                name: "NovaStack",
                 description: `15% Advance for ${isCartCheckout ? 'Order' : serviceTitle}`,
                 order_id: paymentData.razorpay_order_id,
                 handler: function(response) {
