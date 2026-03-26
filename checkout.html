@@ -403,6 +403,7 @@
         let paymentAttemptCount = 0;
         let isCustomOrder = false;
         let customizationData = null;
+        let pendingOrderData = null;
         
         // Get order details from URL
         const urlParams = new URLSearchParams(window.location.search);
@@ -413,11 +414,41 @@
         // 🔥 NEW: Check if this is a custom order with stored customization
         isCustomOrder = urlParams.get('custom') === '1';
         const storedCustomization = localStorage.getItem('pending_customization');
+        const storedOrderData = localStorage.getItem('pending_order_data');  // 🔥 ADD THIS LINE
         
-        if (isCustomOrder && storedCustomization) {
+        // Try to get data from pending_order_data first (new method)
+        if (storedOrderData && !storedCustomization) {
+            try {
+                const orderData = JSON.parse(storedOrderData);
+                console.log('📦 Found pending_order_data:', orderData);
+                
+                // Override checkout data
+                serviceId = orderData.service_id;
+                serviceTitle = orderData.service_title;
+                totalPrice = orderData.total_price;
+                
+                // Store customization for later use
+                customizationData = {
+                    customization: orderData.customization,
+                    requirements: orderData.requirements,
+                    timeline: orderData.timeline,
+                    references: orderData.references
+                };
+                
+                pendingOrderData = orderData;
+                isCustomOrder = true;
+                
+                console.log('✅ Custom order loaded from pending_order_data');
+                
+            } catch(e) {
+                console.error('Error parsing order data:', e);
+            }
+        }
+        // Fallback to old method
+        else if (isCustomOrder && storedCustomization) {
             try {
                 const customData = JSON.parse(storedCustomization);
-                console.log('📦 Custom order data found:', customData);
+                console.log('📦 Custom order data found (legacy):', customData);
                 
                 // Override checkout data with custom data
                 serviceId = customData.service_id;
@@ -432,9 +463,10 @@
                     references: customData.references
                 };
                 
-                console.log('✅ Custom order loaded:', customizationData);
+                pendingOrderData = customData;
                 
-                // Don't clear localStorage yet - we'll use it after payment
+                console.log('✅ Custom order loaded (legacy):', customizationData);
+                
             } catch(e) {
                 console.error('Error parsing custom data:', e);
                 isCustomOrder = false;
@@ -861,45 +893,62 @@
                 
                 // 🔥 If this was a custom order, save customization data to the order
                 if (isCustomOrder && customizationData) {
-                    console.log('🎨 Saving customization data for order:', orderData.order_id);
+                    console.log('🎨 Saving customization data for order...');
                     
+                    // 🔥 CRITICAL: Pehle check karo agar order already exist karta hai?
                     try {
-                        const customRes = await fetch(`${CONFIG.API}/order/customize`, {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'Authorization': `Bearer ${token}`
-                            },
-                            body: JSON.stringify({
-                                service_id: parseInt(serviceId),
-                                customization: customizationData.customization,
-                                requirements: customizationData.requirements,
-                                timeline: customizationData.timeline,
-                                references: customizationData.references
-                            })
+                        // Check if order already exists for this service
+                        const checkRes = await fetch(`${CONFIG.API}/my-orders`, {
+                            headers: { 'Authorization': `Bearer ${token}` }
                         });
+                        const ordersData = await checkRes.json();
                         
-                        const customResult = await customRes.json();
-                        console.log('📝 Customization save result:', customResult);
+                        const existingOrder = ordersData.orders?.find(o => 
+                            o.service_id === parseInt(serviceId) && 
+                            (o.status === 'payment_received' || o.status === 'in_progress')
+                        );
                         
-                        if (customRes.ok) {
-                            console.log('✅ Customization saved to order!');
-                            // Update order ID if returned
-                            if (customResult.data && customResult.data.order_id) {
-                                orderData.order_id = customResult.data.order_id;
-                            }
+                        if (existingOrder) {
+                            console.log(`✅ Order already exists: ${existingOrder.id}, skipping creation`);
+                            orderData.order_id = existingOrder.id;
                         } else {
-                            console.warn('⚠️ Customization save warning:', customResult.error);
+                            // Create new order
+                            const customRes = await fetch(`${CONFIG.API}/order/customize`, {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'Authorization': `Bearer ${token}`
+                                },
+                                body: JSON.stringify({
+                                    service_id: parseInt(serviceId),
+                                    customization: customizationData.customization,
+                                    requirements: customizationData.requirements,
+                                    timeline: customizationData.timeline,
+                                    references: customizationData.references
+                                })
+                            });
+                            
+                            const customResult = await customRes.json();
+                            console.log('📝 Customization save result:', customResult);
+                            
+                            if (customRes.ok && customResult.data) {
+                                console.log('✅ Customization saved to order!');
+                                if (customResult.data.order_id) {
+                                    orderData.order_id = customResult.data.order_id;
+                                }
+                            } else {
+                                console.warn('⚠️ Customization save warning:', customResult.error);
+                            }
                         }
                         
                     } catch (customError) {
-                        console.error('❌ Error saving customization:', customError);
-                        // Don't fail the order - customization can be added later
+                        console.error('❌ Error checking/saving customization:', customError);
                         showToast('Order created! Customization will be applied.', 'warning');
                     }
                     
-                    // Clear stored customization
+                    // Clear stored customization from both keys
                     localStorage.removeItem('pending_customization');
+                    localStorage.removeItem('pending_order_data');  // 🔥 ADD THIS LINE
                 }
                 
                 // Clear cart if it was a cart checkout
