@@ -1278,6 +1278,7 @@ async function handleProceedToPayment(e) {
   };
   
   localStorage.setItem('pending_customization', JSON.stringify(checkoutData));
+  localStorage.setItem('pending_order_data', JSON.stringify(checkoutData));
   
   console.log('📦 Stored customization data:', checkoutData);
   
