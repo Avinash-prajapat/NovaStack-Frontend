@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="icon" type="logo/jpeg" href="logo.png">
     <style>
+        /* Your existing styles remain the same */
         * {
             margin: 0;
             padding: 0;
@@ -299,6 +300,15 @@
             display: block;
         }
         
+        .customization-badge {
+            background: rgba(124, 58, 237, 0.2);
+            border: 1px solid #7c3aed;
+            border-radius: 12px;
+            padding: 0.8rem;
+            margin: 1rem 0;
+            font-size: 0.85rem;
+        }
+        
         @media (max-width: 480px) {
             .checkout-container {
                 padding: 1.5rem;
@@ -391,12 +401,45 @@
         let isCartCheckout = false;
         let cartItems = [];
         let paymentAttemptCount = 0;
+        let isCustomOrder = false;
+        let customizationData = null;
         
         // Get order details from URL
         const urlParams = new URLSearchParams(window.location.search);
         let serviceId = urlParams.get('service_id');
         let serviceTitle = decodeURIComponent(urlParams.get('title') || '');
         let totalPrice = parseFloat(urlParams.get('price') || 0);
+        
+        // 🔥 NEW: Check if this is a custom order with stored customization
+        isCustomOrder = urlParams.get('custom') === '1';
+        const storedCustomization = localStorage.getItem('pending_customization');
+        
+        if (isCustomOrder && storedCustomization) {
+            try {
+                const customData = JSON.parse(storedCustomization);
+                console.log('📦 Custom order data found:', customData);
+                
+                // Override checkout data with custom data
+                serviceId = customData.service_id;
+                serviceTitle = customData.service_title;
+                totalPrice = customData.total_price;
+                
+                // Store customization for later use
+                customizationData = {
+                    customization: customData.customization,
+                    requirements: customData.requirements,
+                    timeline: customData.timeline,
+                    references: customData.references
+                };
+                
+                console.log('✅ Custom order loaded:', customizationData);
+                
+                // Don't clear localStorage yet - we'll use it after payment
+            } catch(e) {
+                console.error('Error parsing custom data:', e);
+                isCustomOrder = false;
+            }
+        }
         
         // Check for cart checkout
         cartItems = JSON.parse(localStorage.getItem('dc_cart_local') || '[]');
@@ -408,10 +451,10 @@
             serviceId = 0;
         }
         
-        console.log('📦 Checkout Data:', { isCartCheckout, serviceId, serviceTitle, totalPrice });
+        console.log('📦 Checkout Data:', { isCartCheckout, isCustomOrder, serviceId, serviceTitle, totalPrice });
         
         // ============================================================
-        // AUTH HELPERS - FIXED
+        // AUTH HELPERS
         // ============================================================
         const Auth = {
             getToken() { 
@@ -460,7 +503,7 @@
                         <i class="fas fa-exclamation-triangle"></i>
                         <h3>Something went wrong</h3>
                         <p style="margin: 1rem 0;">${escapeHtml(message)}</p>
-                        <button class="btn-back" onclick="window.location.href='${isCartCheckout ? 'cart.html' : 'services.html'}'">
+                        <button class="btn-back" onclick="window.location.href='${isCartCheckout ? 'cart.html' : (isCustomOrder ? 'order-customize.html?id=' + serviceId : 'services.html')}'">
                             ← Go Back
                         </button>
                         <button class="btn-retry" onclick="location.reload()" style="margin-left: 0.5rem;">
@@ -511,14 +554,20 @@
             }
             
             try {
-                const payload = {
+                // 🔥 For custom orders, include customization data in the payment order
+                let payload = {
                     service_id: parseInt(serviceId) || 0,
                     service_title: serviceTitle,
                     total_price: totalPrice,
-                    customization: {},
-                    requirements: '',
                     quantity: isCartCheckout ? cartItems.length : 1
                 };
+                
+                // If custom order, add customization and requirements
+                if (isCustomOrder && customizationData) {
+                    payload.customization = customizationData.customization;
+                    payload.requirements = customizationData.requirements;
+                    console.log('📝 Adding custom order data to payment payload');
+                }
                 
                 console.log('📤 Creating payment order...');
                 console.log('URL:', `${CONFIG.API}/create-payment-order`);
@@ -580,10 +629,30 @@
                 `;
             }
             
+            // 🔥 Show customization summary for custom orders
+            let customizationHtml = '';
+            if (isCustomOrder && customizationData) {
+                const customFields = customizationData.customization || {};
+                const customEntries = Object.entries(customFields).filter(([key, val]) => val && val !== '');
+                
+                if (customEntries.length > 0) {
+                    customizationHtml = `
+                        <div class="customization-badge">
+                            <i class="fas fa-sliders-h"></i> <strong>Customization:</strong>
+                            ${customEntries.slice(0, 3).map(([key, val]) => 
+                                `<div style="font-size:0.8rem; margin-top:0.3rem;">• ${escapeHtml(key)}: ${escapeHtml(String(val).substring(0, 50))}</div>`
+                            ).join('')}
+                            ${customEntries.length > 3 ? `<div style="font-size:0.75rem; margin-top:0.3rem;">+${customEntries.length - 3} more options</div>` : ''}
+                        </div>
+                    `;
+                }
+            }
+            
             const html = `
                 <div class="order-summary">
                     <h3><i class="fas fa-shopping-bag"></i> Order Summary</h3>
                     ${itemsHtml}
+                    ${customizationHtml}
                     <div class="total-row">
                         <span>Total Amount</span>
                         <span>₹${total}</span>
@@ -612,8 +681,8 @@
                 <button class="btn-pay" id="pay-button">
                     <i class="fas fa-lock"></i> Pay ₹${advance} Now
                 </button>
-                <button class="btn-back" onclick="window.location.href='${isCartCheckout ? 'cart.html' : `order-customize.html?id=${serviceId}`}'">
-                    ← Back to Cart
+                <button class="btn-back" onclick="window.location.href='${isCartCheckout ? 'cart.html' : (isCustomOrder ? `order-customize.html?id=${serviceId}` : 'services.html')}'">
+                    ← Back
                 </button>
             `;
             
@@ -645,7 +714,9 @@
                 order_id: paymentData.razorpay_order_id,
                 amount: advance,
                 timestamp: new Date().toISOString(),
-                attempt: ++paymentAttemptCount
+                attempt: ++paymentAttemptCount,
+                is_custom: isCustomOrder,
+                customization: customizationData
             }));
             
             const options = {
@@ -653,7 +724,7 @@
                 amount: Math.round(advance * 100),
                 currency: "INR",
                 name: "NovaStack",
-                description: `15% Advance for ${isCartCheckout ? 'Order' : serviceTitle}`,
+                description: `15% Advance for ${isCustomOrder ? 'Custom Order' : (isCartCheckout ? 'Cart Items' : serviceTitle)}`,
                 order_id: paymentData.razorpay_order_id,
                 handler: function(response) {
                     console.log('💰 Payment Response:', response);
@@ -723,13 +794,13 @@
         }
         
         // ============================================================
-        // VERIFY PAYMENT - FIXED WITH PROPER TOKEN HANDLING
+        // VERIFY PAYMENT - WITH CUSTOM ORDER HANDLING
         // ============================================================
         async function verifyPayment(response) {
             console.log('💰 Starting payment verification...');
             console.log('📦 Payment response:', response);
             
-            // Get token - CRITICAL FIX
+            // Get token
             const token = Auth.getToken();
             console.log('🔑 Token for verification:', token ? `Present (${token.substring(0, 20)}...)` : 'MISSING');
             
@@ -742,7 +813,8 @@
                     razorpay_order_id: response.razorpay_order_id,
                     razorpay_payment_id: response.razorpay_payment_id,
                     razorpay_signature: response.razorpay_signature,
-                    timestamp: new Date().toISOString()
+                    timestamp: new Date().toISOString(),
+                    is_custom: isCustomOrder
                 }));
                 
                 setTimeout(() => {
@@ -782,21 +854,68 @@
                     throw new Error(data.error || 'Verification failed');
                 }
                 
-                // Success!
+                // 🔥 SUCCESS! Now handle custom order data
                 console.log('✅ Payment verified successfully!');
                 
+                const orderData = data.data;
+                
+                // 🔥 If this was a custom order, save customization data to the order
+                if (isCustomOrder && customizationData) {
+                    console.log('🎨 Saving customization data for order:', orderData.order_id);
+                    
+                    try {
+                        const customRes = await fetch(`${CONFIG.API}/order/customize`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Authorization': `Bearer ${token}`
+                            },
+                            body: JSON.stringify({
+                                service_id: parseInt(serviceId),
+                                customization: customizationData.customization,
+                                requirements: customizationData.requirements,
+                                timeline: customizationData.timeline,
+                                references: customizationData.references
+                            })
+                        });
+                        
+                        const customResult = await customRes.json();
+                        console.log('📝 Customization save result:', customResult);
+                        
+                        if (customRes.ok) {
+                            console.log('✅ Customization saved to order!');
+                            // Update order ID if returned
+                            if (customResult.data && customResult.data.order_id) {
+                                orderData.order_id = customResult.data.order_id;
+                            }
+                        } else {
+                            console.warn('⚠️ Customization save warning:', customResult.error);
+                        }
+                        
+                    } catch (customError) {
+                        console.error('❌ Error saving customization:', customError);
+                        // Don't fail the order - customization can be added later
+                        showToast('Order created! Customization will be applied.', 'warning');
+                    }
+                    
+                    // Clear stored customization
+                    localStorage.removeItem('pending_customization');
+                }
+                
+                // Clear cart if it was a cart checkout
                 if (isCartCheckout) {
                     localStorage.removeItem('dc_cart_local');
                 }
+                
                 localStorage.removeItem('pending_payment');
                 localStorage.removeItem('pending_payment_recovery');
                 
-                const orderData = data.data;
                 localStorage.setItem('dc_last_order', JSON.stringify({
                     order_id: orderData.order_id,
                     advance_paid: orderData.advance_paid,
                     total: orderData.total,
-                    balance_due: orderData.balance_due
+                    balance_due: orderData.balance_due,
+                    is_custom: isCustomOrder
                 }));
                 
                 showToast('✅ Payment successful! Order confirmed.');
@@ -822,7 +941,9 @@
                     razorpay_order_id: response.razorpay_order_id,
                     razorpay_payment_id: response.razorpay_payment_id,
                     razorpay_signature: response.razorpay_signature,
-                    timestamp: new Date().toISOString()
+                    timestamp: new Date().toISOString(),
+                    is_custom: isCustomOrder,
+                    customization: customizationData
                 }));
                 
                 // Show manual confirmation button
@@ -847,7 +968,7 @@
         }
         
         // ============================================================
-        // MANUAL CONFIRMATION
+        // MANUAL CONFIRMATION - WITH CUSTOM ORDER HANDLING
         // ============================================================
         async function manualConfirm() {
             console.log('🔧 Manual confirmation triggered');
@@ -898,7 +1019,30 @@
                 const data = await res.json();
                 
                 if (res.ok && data.success) {
-                    // Success!
+                    // 🔥 Success! Handle custom order if needed
+                    if (payment.is_custom && payment.customization) {
+                        try {
+                            await fetch(`${CONFIG.API}/order/customize`, {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'Authorization': `Bearer ${token}`
+                                },
+                                body: JSON.stringify({
+                                    service_id: parseInt(serviceId),
+                                    customization: payment.customization.customization,
+                                    requirements: payment.customization.requirements,
+                                    timeline: payment.customization.timeline,
+                                    references: payment.customization.references
+                                })
+                            });
+                            console.log('✅ Customization saved during manual confirm');
+                        } catch(e) {
+                            console.error('Error saving customization:', e);
+                        }
+                        localStorage.removeItem('pending_customization');
+                    }
+                    
                     localStorage.removeItem('pending_payment');
                     localStorage.removeItem('pending_payment_recovery');
                     
@@ -977,14 +1121,17 @@
             showToast('Retrying payment...', 'warning');
             
             try {
-                const payload = {
+                let payload = {
                     service_id: parseInt(serviceId) || 0,
                     service_title: serviceTitle,
                     total_price: totalPrice,
-                    customization: {},
-                    requirements: '',
                     quantity: isCartCheckout ? cartItems.length : 1
                 };
+                
+                if (isCustomOrder && customizationData) {
+                    payload.customization = customizationData.customization;
+                    payload.requirements = customizationData.requirements;
+                }
                 
                 const res = await fetch(`${CONFIG.API}/create-payment-order`, {
                     method: 'POST',
@@ -1015,6 +1162,7 @@
         // START
         // ============================================================
         console.log('🚀 Starting checkout page...');
+        console.log('📦 Custom order mode:', isCustomOrder);
         loadPayment();
     </script>
 </body>
