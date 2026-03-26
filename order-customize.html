@@ -227,7 +227,7 @@
       align-items: center;
       justify-content: center;
       font-size: 2.2rem;
-      background: var(--gradient-1);
+      background: var(--gradient-hero);
       box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
       animation: floatIcon 4s ease-in-out infinite;
       flex-shrink: 0;
@@ -569,6 +569,39 @@
       transform: translateY(-2px);
     }
 
+    /* Payment Info Card */
+    .payment-info {
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.15), rgba(16, 185, 129, 0.05));
+      border: 1px solid var(--green);
+      border-radius: var(--radius-lg);
+      padding: 1rem 1.2rem;
+      margin: 1rem 0;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+      justify-content: space-between;
+    }
+    
+    .payment-info .info-text {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      color: var(--green);
+      font-weight: 500;
+    }
+    
+    .payment-info .info-text i {
+      font-size: 1.2rem;
+    }
+    
+    .payment-info .advance-amount {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.3rem;
+      font-weight: 800;
+      color: var(--green);
+    }
+
     /* ===== ⚠️ Loading & Error States ===== */
     .loading-state {
       text-align: center;
@@ -689,6 +722,11 @@
       .btn-primary, .btn-secondary {
         padding: 0.9rem;
         font-size: 0.95rem;
+      }
+      
+      .payment-info {
+        flex-direction: column;
+        text-align: center;
       }
     }
     
@@ -867,7 +905,6 @@ async function loadService() {
     
     if (!serviceRes.ok) throw new Error(serviceDataJson.error);
     
-    // ✅ IMPORTANT: serviceData assign karo
     serviceData = serviceDataJson.service;
     
     console.log('✅ Service loaded:', serviceData);
@@ -887,7 +924,6 @@ async function loadService() {
       customizationOptions = [];
     }
     
-    // ✅ Call renderForm only after data is loaded
     renderForm();
     
   } catch (error) {
@@ -911,7 +947,6 @@ async function loadService() {
 function renderForm() {
   const card = document.getElementById('customization-card');
   
-  // ✅ NULL CHECK - serviceData exist karta hai?
   if (!serviceData) {
     console.error('❌ serviceData is null in renderForm');
     card.innerHTML = `
@@ -927,17 +962,26 @@ function renderForm() {
     return;
   }
   
-  // Calculate base price
   const basePrice = parseFloat(serviceData.price || 0);
+  const advanceAmount = Math.round(basePrice * 0.15 * 100) / 100; // 15% advance
   
   const html = `
     <!-- Service Header -->
     <div class="service-header animate-on-scroll">
       <div class="service-icon">${serviceData.emoji || '💻'}</div>
       <div>
-        <h2 class="service-title">${serviceData.title || 'Service'}</h2>
-        <p class="service-price">$${basePrice.toLocaleString()} <span style="font-size:0.9rem;font-weight:400;color:var(--text-muted)">starting</span></p>
+        <h2 class="service-title">${escapeHtml(serviceData.title || 'Service')}</h2>
+        <p class="service-price">₹${basePrice.toLocaleString()} <span style="font-size:0.9rem;font-weight:400;color:var(--text-muted)">starting</span></p>
       </div>
+    </div>
+    
+    <!-- Payment Info Card -->
+    <div class="payment-info animate-on-scroll">
+      <div class="info-text">
+        <i class="fas fa-shield-alt"></i>
+        <span>Pay only 15% advance to confirm your order</span>
+      </div>
+      <div class="advance-amount">₹${advanceAmount.toLocaleString()}</div>
     </div>
     
     <!-- Progress Indicator -->
@@ -991,12 +1035,12 @@ function renderForm() {
         <div class="form-group">
           <div class="checkbox-group">
             <input type="checkbox" id="terms" name="terms" required>
-            <label for="terms">I agree to the <a href="#" style="color:var(--accent);text-decoration:none">Terms of Service</a> and understand that a 20% advance payment is required to start development.</label>
+            <label for="terms">I agree to the <a href="#" style="color:var(--accent);text-decoration:none">Terms of Service</a> and understand that a 15% advance payment is required to confirm the order.</label>
           </div>
         </div>
         
         <button type="submit" class="btn-primary" id="submitBtn">
-          <i class="fas fa-rocket"></i> Place Custom Order
+          <i class="fas fa-rocket"></i> Continue to Payment (₹${advanceAmount})
         </button>
         <button type="button" class="btn-secondary" onclick="window.location.href='services.html'">
           <i class="fas fa-times"></i> Cancel
@@ -1008,7 +1052,7 @@ function renderForm() {
   card.innerHTML = html;
   
   // Attach form submit handler
-  document.getElementById('customizationForm')?.addEventListener('submit', placeOrder);
+  document.getElementById('customizationForm')?.addEventListener('submit', handleProceedToPayment);
   
   // Add event listeners for progress tracking
   document.querySelectorAll('#customizationForm input, #customizationForm select, #customizationForm textarea').forEach(el => {
@@ -1035,6 +1079,14 @@ function renderForm() {
   }, 100);
 }
 
+// ── Escape HTML Function ───────────────────────────────────────────────────
+function escapeHtml(text) {
+  if (!text) return '';
+  const div = document.createElement('div');
+  div.textContent = text;
+  return div.innerHTML;
+}
+
 // ── Render Individual Field ───────────────────────────────────────────────
 function renderField(field, index) {
   const fieldId = `field_${field.label.replace(/\s+/g, '_').toLowerCase()}`;
@@ -1045,10 +1097,10 @@ function renderField(field, index) {
     case 'select':
       return `
         <div class="form-group" style="animation-delay: ${index * 0.05}s">
-          <label class="${requiredClass}"><i class="fas fa-chevron-down"></i> ${field.label}</label>
-          <select id="${fieldId}" name="${field.label}" ${isRequired}>
-            <option value="">Select ${field.label.toLowerCase()}...</option>
-            ${(field.options || []).map(opt => `<option value="${opt}">${opt}</option>`).join('')}
+          <label class="${requiredClass}"><i class="fas fa-chevron-down"></i> ${escapeHtml(field.label)}</label>
+          <select id="${fieldId}" name="${escapeHtml(field.label)}" ${isRequired}>
+            <option value="">Select ${escapeHtml(field.label.toLowerCase())}...</option>
+            ${(field.options || []).map(opt => `<option value="${escapeHtml(opt)}">${escapeHtml(opt)}</option>`).join('')}
           </select>
         </div>
       `;
@@ -1056,8 +1108,8 @@ function renderField(field, index) {
     case 'textarea':
       return `
         <div class="form-group" style="animation-delay: ${index * 0.05}s">
-          <label class="${requiredClass}"><i class="fas fa-align-left"></i> ${field.label}</label>
-          <textarea id="${fieldId}" name="${field.label}" rows="3" ${isRequired} placeholder="Enter ${field.label.toLowerCase()}..."></textarea>
+          <label class="${requiredClass}"><i class="fas fa-align-left"></i> ${escapeHtml(field.label)}</label>
+          <textarea id="${fieldId}" name="${escapeHtml(field.label)}" rows="3" ${isRequired} placeholder="Enter ${escapeHtml(field.label.toLowerCase())}..."></textarea>
         </div>
       `;
       
@@ -1065,8 +1117,8 @@ function renderField(field, index) {
       return `
         <div class="form-group" style="animation-delay: ${index * 0.05}s">
           <div class="checkbox-group">
-            <input type="checkbox" id="${fieldId}" name="${field.label}" ${field.default ? 'checked' : ''} ${isRequired}>
-            <label for="${fieldId}">${field.label}</label>
+            <input type="checkbox" id="${fieldId}" name="${escapeHtml(field.label)}" ${field.default ? 'checked' : ''} ${isRequired}>
+            <label for="${fieldId}">${escapeHtml(field.label)}</label>
           </div>
         </div>
       `;
@@ -1074,12 +1126,12 @@ function renderField(field, index) {
     case 'radio':
       return `
         <div class="form-group" style="animation-delay: ${index * 0.05}s">
-          <label class="${requiredClass}"><i class="fas fa-dot-circle"></i> ${field.label}</label>
+          <label class="${requiredClass}"><i class="fas fa-dot-circle"></i> ${escapeHtml(field.label)}</label>
           <div style="display:flex;flex-direction:column;gap:0.5rem">
             ${(field.options || []).map((opt, i) => `
               <div class="radio-group">
-                <input type="radio" id="${fieldId}_${i}" name="${field.label}" value="${opt}" ${field.default === opt ? 'checked' : ''} ${isRequired}>
-                <label for="${fieldId}_${i}">${opt}</label>
+                <input type="radio" id="${fieldId}_${i}" name="${escapeHtml(field.label)}" value="${escapeHtml(opt)}" ${field.default === opt ? 'checked' : ''} ${isRequired}>
+                <label for="${fieldId}_${i}">${escapeHtml(opt)}</label>
               </div>
             `).join('')}
           </div>
@@ -1089,21 +1141,21 @@ function renderField(field, index) {
     case 'tags':
       return `
         <div class="form-group" style="animation-delay: ${index * 0.05}s">
-          <label class="${requiredClass}"><i class="fas fa-tags"></i> ${field.label}</label>
+          <label class="${requiredClass}"><i class="fas fa-tags"></i> ${escapeHtml(field.label)}</label>
           <div class="tags-container">
             ${(field.options || []).map(opt => `
-              <span class="tag-option" data-value="${opt}">${opt}</span>
+              <span class="tag-option" data-value="${escapeHtml(opt)}">${escapeHtml(opt)}</span>
             `).join('')}
           </div>
-          <input type="hidden" id="${fieldId}" name="${field.label}">
+          <input type="hidden" id="${fieldId}" name="${escapeHtml(field.label)}">
         </div>
       `;
       
     default:
       return `
         <div class="form-group" style="animation-delay: ${index * 0.05}s">
-          <label class="${requiredClass}"><i class="fas fa-i-cursor"></i> ${field.label}</label>
-          <input type="text" id="${fieldId}" name="${field.label}" placeholder="Enter ${field.label.toLowerCase()}..." ${isRequired}>
+          <label class="${requiredClass}"><i class="fas fa-i-cursor"></i> ${escapeHtml(field.label)}</label>
+          <input type="text" id="${fieldId}" name="${escapeHtml(field.label)}" placeholder="Enter ${escapeHtml(field.label.toLowerCase())}..." ${isRequired}>
         </div>
       `;
   }
@@ -1133,8 +1185,50 @@ function updateProgress() {
   document.getElementById('progressPercent').textContent = `${percent}%`;
 }
 
-// ── Place Order Handler ───────────────────────────────────────────────────
-async function placeOrder(e) {
+// ── Collect Form Data ─────────────────────────────────────────────────────
+function collectFormData() {
+  const customization = {};
+  
+  customizationOptions.forEach(field => {
+    const fieldId = `field_${field.label.replace(/\s+/g, '_').toLowerCase()}`;
+    const element = document.getElementById(fieldId);
+    
+    if (element) {
+      if (element.type === 'checkbox') {
+        customization[field.label] = element.checked;
+      } else if (element.type === 'radio') {
+        const form = document.getElementById('customizationForm');
+        const checked = form.querySelector(`input[name="${field.label}"]:checked`);
+        customization[field.label] = checked?.value || '';
+      } else if (element.type === 'text' && element.classList.contains('tag-option')) {
+        // Tag handling
+        const selected = Array.from(document.querySelectorAll(`.tag-option.selected`))
+          .map(tag => tag.dataset.value);
+        customization[field.label] = selected.join(', ');
+      } else {
+        customization[field.label] = element.value;
+      }
+    }
+    
+    // Handle tag selections for tags type
+    const tagInput = document.getElementById(fieldId);
+    if (tagInput && field.type === 'tags') {
+      const selected = Array.from(document.querySelectorAll(`.tag-option.selected`))
+        .map(tag => tag.dataset.value);
+      customization[field.label] = selected.join(', ');
+    }
+  });
+  
+  return {
+    customization: customization,
+    requirements: document.getElementById('requirements')?.value.trim() || '',
+    timeline: document.getElementById('timeline')?.value || '',
+    references: document.getElementById('references')?.value.trim() || ''
+  };
+}
+
+// ── Handle Proceed to Payment ─────────────────────────────────────────────
+async function handleProceedToPayment(e) {
   e.preventDefault();
   
   const submitBtn = document.getElementById('submitBtn');
@@ -1146,96 +1240,56 @@ async function placeOrder(e) {
     return;
   }
   
+  // Validate requirements
+  const requirements = document.getElementById('requirements')?.value.trim();
+  if (!requirements) {
+    showToast('Please provide project requirements', 'error');
+    document.getElementById('requirements')?.focus();
+    return;
+  }
+  
+  // Get token
+  const token = localStorage.getItem('dc_token');
+  
+  if (!token) {
+    showToast('Please login to continue', 'error');
+    setTimeout(() => {
+      window.location.href = `login.html?redirect=order-customize.html?id=${serviceId}`;
+    }, 1500);
+    return;
+  }
+  
+  // Collect form data
+  const formData = collectFormData();
+  const basePrice = parseFloat(serviceData.price || 0);
+  const advanceAmount = Math.round(basePrice * 0.15 * 100) / 100;
+  
+  // Store customization data in localStorage for checkout
+  const checkoutData = {
+    service_id: parseInt(serviceId),
+    service_title: serviceData.title,
+    total_price: basePrice,
+    advance: advanceAmount,
+    customization: formData.customization,
+    requirements: formData.requirements,
+    timeline: formData.timeline,
+    references: formData.references,
+    timestamp: new Date().toISOString()
+  };
+  
+  localStorage.setItem('pending_customization', JSON.stringify(checkoutData));
+  
+  console.log('📦 Stored customization data:', checkoutData);
+  
   // Show loading state
   submitBtn.disabled = true;
   submitBtn.classList.add('loading');
-  submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+  submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Preparing checkout...';
   
-  try {
-    // Collect customization data
-    const customization = {};
-    
-    customizationOptions.forEach(field => {
-      const fieldId = `field_${field.label.replace(/\s+/g, '_').toLowerCase()}`;
-      const element = document.getElementById(fieldId);
-      
-      if (element) {
-        if (element.type === 'checkbox') {
-          customization[field.label] = element.checked;
-        } else if (element.type === 'radio') {
-          const checked = form.querySelector(`input[name="${field.label}"]:checked`);
-          customization[field.label] = checked?.value || '';
-        } else {
-          customization[field.label] = element.value;
-        }
-      }
-      
-      // Handle tag selections
-      const tagInput = document.getElementById(fieldId);
-      if (tagInput && field.type === 'tags') {
-        const selected = Array.from(document.querySelectorAll(`.tag-option.selected`))
-          .map(tag => tag.dataset.value);
-        customization[field.label] = selected.join(', ');
-      }
-    });
-    
-    const requirements = document.getElementById('requirements')?.value.trim();
-    const timeline = document.getElementById('timeline')?.value;
-    const references = document.getElementById('references')?.value.trim();
-    
-    const token = localStorage.getItem('dc_token');
-    
-    if (!token) {
-      showToast('Please login to place an order', 'error');
-      setTimeout(() => {
-        window.location.href = `login.html?redirect=order-customize.html?id=${serviceId}`;
-      }, 1500);
-      return;
-    }
-    
-    console.log('📤 Submitting order:', {
-      service_id: serviceId,
-      customization,
-      requirements,
-      timeline,
-      references
-    });
-    
-    const res = await fetch(`${CONFIG.API}/order/customize`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
-      },
-      body: JSON.stringify({
-        service_id: serviceId,
-        customization: customization,
-        requirements: requirements,
-        timeline: timeline,
-        references: references
-      })
-    });
-    
-    const data = await res.json();
-    
-    if (!res.ok) throw new Error(data.error || 'Failed to place order');
-    
-    // Show success and redirect
-    showToast('✨ Order placed successfully! Redirecting...', 'success');
-    
-    setTimeout(() => {
-      window.location.href = 'my-orders.html?success=1';
-    }, 2000);
-    
-  } catch (error) {
-    console.error('❌ Error placing order:', error);
-    showToast(`Error: ${error.message}`, 'error');
-    
-    // Reset button
-    submitBtn.disabled = false;
-    submitBtn.classList.remove('loading');
-    submitBtn.innerHTML = originalText;
-  }
+  // Redirect to checkout
+  setTimeout(() => {
+    window.location.href = `checkout.html?service_id=${serviceId}&title=${encodeURIComponent(serviceData.title)}&price=${basePrice}&custom=1`;
+  }, 500);
 }
 
 // ── Initialize ────────────────────────────────────────────────────────────
