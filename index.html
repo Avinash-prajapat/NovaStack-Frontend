@@ -1485,7 +1485,7 @@ function renderServices() {
             <h3>${s.title}</h3>
             <p>${(s.description || '').substring(0, 90)}${(s.description || '').length > 90 ? '...' : ''}</p>
             <div class="card-footer">
-              <div class="price">$${s.price}<span> starting</span></div>
+              <div class="price">₹${s.price}<span> starting</span></div>
               <a class="btn-card" href="project.html?id=${s.id}">
                 View Details <i class="fas fa-arrow-right"></i>
               </a>
@@ -1524,7 +1524,7 @@ function renderHeroPreview() {
         <h4>${s.title.substring(0, 28)}${s.title.length > 28 ? '...' : ''}</h4>
         <p>${(s.technologies || '').split(',').slice(0, 2).join(', ')}</p>
       </div>
-      <div class="card-price">$${s.price}</div>
+      <div class="card-price">₹${s.price}</div>
     </div>`).join('');
 }
 
