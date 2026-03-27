@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-<>
-  
+<head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
@@ -37,7 +36,7 @@
   
   <!-- Favicon -->
   <link rel="apple-touch-icon" href="logo.png">
-  <link rel="icon" type="logo/jpeg" href="logo.png">
+  <link rel="icon" type="image/png" href="logo.png">
   
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -229,6 +228,121 @@
       display: flex;
       align-items: center;
       gap: 0.8rem;
+      position: relative;
+    }
+    
+    /* ===== 🎭 Profile Dropdown ===== */
+    .profile-wrapper {
+      position: relative;
+    }
+    
+    .profile-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--gradient-accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      cursor: pointer;
+      border: 2px solid var(--accent);
+      transition: all var(--transition-normal);
+      font-weight: 600;
+      font-size: 1rem;
+      text-transform: uppercase;
+    }
+    
+    .profile-btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 20px var(--accent-glow);
+    }
+    
+    .profile-dropdown {
+      position: absolute;
+      top: calc(100% + 10px);
+      right: 0;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      min-width: 220px;
+      padding: 0.8rem 0;
+      box-shadow: var(--shadow-lg);
+      backdrop-filter: blur(20px);
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(-10px);
+      transition: all var(--transition-normal);
+      z-index: 1001;
+    }
+    
+    .profile-dropdown.active {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+    
+    .profile-dropdown::before {
+      content: '';
+      position: absolute;
+      top: -6px;
+      right: 20px;
+      width: 12px;
+      height: 12px;
+      background: var(--bg-card);
+      border-left: 1px solid var(--border);
+      border-top: 1px solid var(--border);
+      transform: rotate(45deg);
+    }
+    
+    .dropdown-item {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      padding: 0.7rem 1.2rem;
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 0.9rem;
+      transition: all var(--transition-fast);
+      border-left: 3px solid transparent;
+    }
+    
+    .dropdown-item:hover {
+      background: var(--surface-hover);
+      color: var(--text-primary);
+      border-left-color: var(--accent);
+      padding-left: 1.5rem;
+    }
+    
+    .dropdown-item i {
+      width: 20px;
+      text-align: center;
+      color: var(--accent);
+    }
+    
+    .dropdown-divider {
+      height: 1px;
+      background: var(--border);
+      margin: 0.5rem 0;
+    }
+    
+    .dropdown-logout {
+      color: #ef4444 !important;
+    }
+    
+    .dropdown-logout i {
+      color: #ef4444 !important;
+    }
+    
+    /* Guest Auth Buttons */
+    .auth-buttons {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+    
+    .auth-buttons.hidden {
+      display: none;
     }
     
     /* ===== ✨ Modern Buttons ===== */
@@ -1107,6 +1221,15 @@
       50% { transform: translateY(-15px); }
     }
     
+    .retry-btn {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 600;
+      margin-left: 0.3rem;
+    }
+    
+    .retry-btn:hover { text-decoration: underline; }
+    
     /* ===== 📱 Responsive Design ===== */
     @media (max-width: 1024px) {
       .hero { grid-template-columns: 1fr; text-align: center; padding-top: 120px; }
@@ -1141,6 +1264,11 @@
         padding: 0.75rem 1.3rem;
         font-size: 0.85rem;
       }
+      
+      .profile-dropdown {
+        right: -10px;
+        min-width: 200px;
+      }
     }
     
     @media (max-width: 480px) {
@@ -1149,6 +1277,9 @@
       .steps-grid { grid-template-columns: 1fr; }
       .trust-bar { gap: 1.5rem; font-size: 0.85rem; }
       .trust-item { padding: 0.25rem 0.6rem; }
+      
+      .nav-right { gap: 0.4rem; }
+      .profile-btn { width: 36px; height: 36px; font-size: 0.9rem; }
     }
     
     /* ===== 🎭 Scroll Animations ===== */
@@ -1189,6 +1320,25 @@
       }
       html { scroll-behavior: auto; }
     }
+    
+    /* Mobile Menu Toggle */
+    .menu-toggle {
+      display: none;
+      font-size: 1.4rem;
+      color: var(--text-primary);
+      cursor: pointer;
+      padding: 0.5rem;
+      border-radius: var(--radius-sm);
+      transition: background var(--transition-fast);
+    }
+    
+    .menu-toggle:hover {
+      background: var(--surface);
+    }
+    
+    @media (max-width: 768px) {
+      .menu-toggle { display: block; }
+    }
   </style>
 </head>
 <body>
@@ -1198,23 +1348,54 @@
 
 <nav id="navbar">
   <a class="logo" href="index.html"><i class="fas fa-code"></i> Nova<span>Stack</span></a>
-  <div class="nav-links">
+  
+  <!-- Mobile Menu Toggle -->
+  <div class="menu-toggle" id="menuToggle">
+    <i class="fas fa-bars"></i>
+  </div>
+  
+  <div class="nav-links" id="navLinks">
     <a href="index.html"><i class="fas fa-home"></i> Home</a>
     <a href="services.html"><i class="fas fa-layer-group"></i> Services</a>
-    <a href="my-orders.html"><i class="fas fa-shopping-bag"></i> My Orders</a>
+    <a href="my-orders.html" class="auth-only"><i class="fas fa-shopping-bag"></i> My Orders</a>
     <a href="#how"><i class="fas fa-cogs"></i> How It Works</a>
   </div>
+  
   <div class="nav-right">
-    <a href="cart.html" class="btn btn-outline cart-btn">
-      <i class="fas fa-shopping-cart"></i> Cart 
+    <!-- Guest View: Login/Signup Buttons -->
+    <div class="auth-buttons" id="authButtons">
+      <a href="login.html" class="btn btn-outline" id="login-btn">Login</a>
+      <a href="signup.html" class="btn btn-primary" id="signup-btn">Sign Up</a>
+    </div>
+    
+    <!-- Logged In View: Profile Dropdown -->
+    <div class="profile-wrapper" id="profileWrapper" style="display: none;">
+      <div class="profile-btn" id="profileBtn">
+        <i class="fas fa-user"></i>
+      </div>
+      <div class="profile-dropdown" id="profileDropdown">
+        <a href="profile.html" class="dropdown-item">
+          <i class="fas fa-user-circle"></i> My Profile
+        </a>
+        <a href="my-orders.html" class="dropdown-item">
+          <i class="fas fa-shopping-bag"></i> My Orders
+        </a>
+        <a href="cart.html" class="dropdown-item">
+          <i class="fas fa-shopping-cart"></i> Cart 
+          <span class="cart-count" id="cart-count-dropdown">0</span>
+        </a>
+        <div class="dropdown-divider"></div>
+        <a href="#" class="dropdown-item dropdown-logout" id="dropdownLogout">
+          <i class="fas fa-sign-out-alt"></i> Logout
+        </a>
+      </div>
+    </div>
+    
+    <!-- Cart Button (Only Visible When Logged In) -->
+    <a href="cart.html" class="btn btn-outline cart-btn auth-only" id="cartBtn">
+      <i class="fas fa-shopping-cart"></i> 
       <span class="cart-count" id="cart-count">0</span>
     </a>
-    <a href="login.html" class="btn btn-outline" id="login-btn">Login</a>
-    <a href="signup.html" class="btn btn-primary" id="signup-btn">Sign Up</a>
-    <span id="user-nav" style="display:none;font-size:0.9rem;color:var(--text-secondary)"></span>
-    <button id="logout-btn" style="display:none;" class="btn btn-outline" onclick="logout()">
-      <i class="fas fa-sign-out-alt"></i> Logout
-    </button>
   </div>
 </nav>
 
@@ -1249,7 +1430,7 @@
     </div>
   </div>
   <div class="hero-visual" id="hero-preview">
-    <!-- Populated from API -->
+    <!-- Populated from REAL API only -->
   </div>
 </div>
 
@@ -1278,7 +1459,7 @@
   
   <div id="services-container">
     <div class="spinner"></div>
-    <p style="text-align:center;color:var(--text-muted)">Loading amazing services...</p>
+    <p style="text-align:center;color:var(--text-muted)">Fetching services from server...</p>
   </div>
 </section>
 
@@ -1343,8 +1524,8 @@
       <ul>
         <li><a href="login.html"><i class="fas fa-sign-in-alt"></i> Login</a></li>
         <li><a href="signup.html"><i class="fas fa-user-plus"></i> Sign Up</a></li>
-        <li><a href="cart.html"><i class="fas fa-shopping-cart"></i> Cart</a></li>
-        <li><a href="my-orders.html"><i class="fas fa-shopping-bag"></i> My Orders</a></li>
+        <li><a href="cart.html" class="auth-only"><i class="fas fa-shopping-cart"></i> Cart</a></li>
+        <li><a href="my-orders.html" class="auth-only"><i class="fas fa-shopping-bag"></i> My Orders</a></li>
         <li><a href="#contact"><i class="fas fa-envelope"></i> Contact</a></li>
       </ul>
     </div>
@@ -1357,8 +1538,20 @@
 
 <script>
 // ── CONFIG ─────────────────────────────────────────────────────────────────
-const CONFIG = { API: 'https://novastack-backend.onrender.com', WA_NUMBER: '9015277062' };
+const CONFIG = { 
+  API: 'https://novastack-backend.onrender.com', 
+  WA_NUMBER: '9015277062',
+  ENDPOINTS: {
+    SERVICES: '/services',
+    USER: '/user',
+    CART: '/cart',
+    ORDERS: '/orders',
+    LOGIN: '/auth/login',
+    LOGOUT: '/auth/logout'
+  }
+};
 
+// Set WhatsApp link
 document.getElementById('wa-link').href =
   `https://wa.me/${CONFIG.WA_NUMBER}?text=Hi!%20I'm%20interested%20in%20your%20software%20services.`;
 
@@ -1388,48 +1581,220 @@ window.addEventListener('scroll', () => {
   }
 });
 
-// ── Auth & Cart Helpers ───────────────────────────────────────────────────
+// ── Auth & Cart Helpers (REAL API ONLY) ───────────────────────────────────
 const Auth = {
-  getToken() { return localStorage.getItem('dc_token') || ''; },
-  getUser()  { try { return JSON.parse(localStorage.getItem('dc_user') || 'null'); } catch { return null; } },
-  isLoggedIn() { return !!this.getToken() && !!this.getUser(); },
+  getToken() { 
+    return localStorage.getItem('dc_token') || sessionStorage.getItem('dc_token') || ''; 
+  },
+  
+  getUser() { 
+    try { 
+      const userStr = localStorage.getItem('dc_user') || sessionStorage.getItem('dc_user');
+      return userStr ? JSON.parse(userStr) : null; 
+    } catch { return null; } 
+  },
+  
+  isLoggedIn() { 
+    return !!this.getToken() && !!this.getUser(); 
+  },
+  
+  // Fetch fresh user data from API
+  async fetchUser() {
+    const token = this.getToken();
+    if (!token) return null;
+    
+    try {
+      const res = await fetch(CONFIG.API + CONFIG.ENDPOINTS.USER, {
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      if (!res.ok) throw new Error('Auth failed');
+      const data = await res.json();
+      return data.user || data;
+    } catch (e) {
+      console.warn('Failed to fetch user:', e.message);
+      return null;
+    }
+  }
 };
 
 const Cart = {
-  get()  { try { return JSON.parse(localStorage.getItem('dc_cart_local') || '[]'); } catch { return []; } },
-  count() { return this.get().length; },
+  // Fetch cart from REAL API
+  async fetch() {
+    const token = Auth.getToken();
+    if (!token) return [];
+    
+    try {
+      const res = await fetch(CONFIG.API + CONFIG.ENDPOINTS.CART, {
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      if (!res.ok) throw new Error('Cart fetch failed');
+      const data = await res.json();
+      return data.items || data.cart || [];
+    } catch (e) {
+      console.warn('Failed to fetch cart:', e.message);
+      return [];
+    }
+  },
+  
+  // Local fallback for cart count display only (UI purpose)
+  getLocalCount() {
+    try { 
+      const local = JSON.parse(localStorage.getItem('dc_cart_local') || '[]');
+      return local.length;
+    } catch { return 0; }
+  }
 };
 
-function logout() { 
-  localStorage.removeItem('dc_token'); 
-  localStorage.removeItem('dc_user'); 
-  localStorage.removeItem('dc_cart_local'); 
-  window.location.reload(); 
+async function logout() { 
+  const token = Auth.getToken();
+  
+  // Call logout API if token exists
+  if (token) {
+    try {
+      await fetch(CONFIG.API + CONFIG.ENDPOINTS.LOGOUT, {
+        method: 'POST',
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        }
+      });
+    } catch (e) {
+      console.warn('Logout API call failed:', e.message);
+    }
+  }
+  
+  // Clear local storage
+  localStorage.removeItem('dc_token');
+  localStorage.removeItem('dc_user');
+  localStorage.removeItem('dc_cart_local');
+  sessionStorage.removeItem('dc_token');
+  sessionStorage.removeItem('dc_user');
+  
+  // Update UI and redirect
+  updateAuthUI();
+  window.location.href = 'index.html';
 }
 
-function renderNavAuth() {
+// ── UI Update Functions ───────────────────────────────────────────────────
+async function updateAuthUI() {
+  const isLoggedIn = Auth.isLoggedIn();
   const user = Auth.getUser();
-  document.getElementById('cart-count').textContent = Cart.count();
-  if (user && Auth.isLoggedIn()) {
-    document.getElementById('login-btn').style.display = 'none';
-    document.getElementById('signup-btn').style.display = 'none';
-    const u = document.getElementById('user-nav');
-    u.style.display = 'inline'; 
-    u.textContent = `👤 ${user.name || user.email}`;
-    document.getElementById('logout-btn').style.display = 'inline-flex';
+  
+  // Update cart count from API if logged in
+  let cartCount = 0;
+  if (isLoggedIn) {
+    const cartItems = await Cart.fetch();
+    cartCount = cartItems.length;
+  } else {
+    cartCount = Cart.getLocalCount();
+  }
+  
+  document.getElementById('cart-count').textContent = cartCount;
+  document.getElementById('cart-count-dropdown').textContent = cartCount;
+  
+  if (isLoggedIn && user) {
+    // Show profile dropdown, hide auth buttons
+    document.getElementById('authButtons').classList.add('hidden');
+    document.getElementById('profileWrapper').style.display = 'block';
+    
+    // Show auth-only elements
+    document.querySelectorAll('.auth-only').forEach(el => {
+      el.style.display = el.tagName === 'LI' ? 'block' : 'inline-flex';
+    });
+    
+    // Update profile button with user initial or avatar
+    const profileBtn = document.getElementById('profileBtn');
+    if (user.avatar) {
+      profileBtn.innerHTML = `<img src="${user.avatar}" style="width:100%;height:100%;border-radius:50%;object-fit:cover">`;
+    } else {
+      const initial = (user.name || user.email || 'U').charAt(0).toUpperCase();
+      profileBtn.textContent = initial;
+    }
+  } else {
+    // Show auth buttons, hide profile dropdown
+    document.getElementById('authButtons').classList.remove('hidden');
+    document.getElementById('profileWrapper').style.display = 'none';
+    
+    // Hide auth-only elements
+    document.querySelectorAll('.auth-only').forEach(el => {
+      el.style.display = 'none';
+    });
   }
 }
 
-// ── API Fetch ─────────────────────────────────────────────────────────────
+// ── Profile Dropdown Toggle ───────────────────────────────────────────────
+document.getElementById('profileBtn').addEventListener('click', (e) => {
+  e.stopPropagation();
+  const dropdown = document.getElementById('profileDropdown');
+  dropdown.classList.toggle('active');
+});
+
+// Close dropdown when clicking outside
+document.addEventListener('click', (e) => {
+  const dropdown = document.getElementById('profileDropdown');
+  const profileBtn = document.getElementById('profileBtn');
+  
+  if (!profileBtn.contains(e.target) && !dropdown.contains(e.target)) {
+    dropdown.classList.remove('active');
+  }
+});
+
+// Logout from dropdown
+document.getElementById('dropdownLogout').addEventListener('click', (e) => {
+  e.preventDefault();
+  logout();
+});
+
+// ── Mobile Menu Toggle ────────────────────────────────────────────────────
+document.getElementById('menuToggle').addEventListener('click', () => {
+  const navLinks = document.getElementById('navLinks');
+  navLinks.style.display = navLinks.style.display === 'flex' ? 'none' : 'flex';
+});
+
+// Close mobile menu when clicking a link
+document.querySelectorAll('.nav-links a').forEach(link => {
+  link.addEventListener('click', () => {
+    if (window.innerWidth <= 768) {
+      document.getElementById('navLinks').style.display = 'none';
+    }
+  });
+});
+
+// ── REAL API Fetch (NO DEMO/FALLBACK) ─────────────────────────────────────
 async function apiFetch(path, opts = {}) {
-  const headers = { 'Content-Type': 'application/json', ...(opts.headers || {}) };
-  const res = await fetch(CONFIG.API + path, { ...opts, headers });
+  const headers = { 
+    'Content-Type': 'application/json', 
+    ...(opts.headers || {}) 
+  };
+  
+  // Add auth token if available
+  const token = Auth.getToken();
+  if (token) {
+    headers['Authorization'] = `Bearer ${token}`;
+  }
+  
+  const res = await fetch(CONFIG.API + path, { 
+    ...opts, 
+    headers,
+    credentials: 'include' // for cookies if needed
+  });
+  
   const json = await res.json();
-  if (!res.ok) throw new Error(json.error || `Error ${res.status}`);
+  
+  if (!res.ok) {
+    throw new Error(json.error || json.message || `Error ${res.status}`);
+  }
+  
   return json;
 }
 
-// ── Services Logic ────────────────────────────────────────────────────────
+// ── Services Logic (REAL API ONLY) ────────────────────────────────────────
 const THUMB = { 
   web:'thumb-web', mobile:'thumb-mobile', ai:'thumb-ai', 
   portfolio:'thumb-portfolio', ecom:'thumb-ecom', custom:'thumb-custom' 
@@ -1437,61 +1802,90 @@ const THUMB = {
 
 let allServices = [];
 let activeCategory = 'all';
+let servicesLoadError = false;
 
 async function loadServices() {
   const container = document.getElementById('services-container');
+  
   try {
-    const data = await apiFetch('/services');
-    allServices = data.services || [];
+    // Fetch from REAL API ONLY - no demo fallback
+    const data = await apiFetch(CONFIG.ENDPOINTS.SERVICES);
+    
+    // Handle different API response formats
+    allServices = data.services || data.data || [];
+    
+    if (!Array.isArray(allServices) || allServices.length === 0) {
+      throw new Error('No services found');
+    }
+    
+    servicesLoadError = false;
+    renderServices();
+    renderHeroPreview();
+    
   } catch (e) {
+    servicesLoadError = true;
+    console.error('Failed to load services:', e.message);
+    
     container.innerHTML = `
       <div class="empty-state">
         <span><i class="fas fa-exclamation-triangle"></i></span>
-        <p>Could not load services. <a href="#" onclick="loadServices()" style="color:var(--accent);text-decoration:none">Retry</a></p>
+        <p>Unable to connect to server.<br>Please check your connection.</p>
+        <a href="#" class="retry-btn" onclick="loadServices(); return false;">
+          <i class="fas fa-redo"></i> Retry
+        </a>
       </div>`;
-    return;
   }
-  renderServices();
-  renderHeroPreview();
 }
 
 function renderServices() {
   const container = document.getElementById('services-container');
+  
   const filtered = activeCategory === 'all' 
     ? allServices 
     : allServices.filter(s => s.category === activeCategory);
     
-  if (!filtered.length) {
+  if (!filtered || filtered.length === 0) {
     container.innerHTML = `
       <div class="empty-state">
         <span><i class="fas fa-search"></i></span>
-        <p>No services in this category yet.</p>
+        <p>No services found in this category.</p>
       </div>`;
     return;
   }
   
   container.innerHTML = `
     <div class="services-grid">
-      ${filtered.slice(0, 6).map((s, index) => `
+      ${filtered.slice(0, 6).map((s, index) => {
+        // Safe property access with defaults
+        const title = s.title || s.name || 'Untitled Service';
+        const price = s.price || s.cost || 0;
+        const tech = s.technologies || s.tech || s.stack || '';
+        const desc = s.description || s.desc || s.summary || '';
+        const emoji = s.emoji || s.icon || '<i class="fas fa-laptop-code"></i>';
+        const category = s.category || 'custom';
+        const id = s.id || s._id || s.serviceId || '';
+        
+        return `
         <div class="service-card" style="animation-delay: ${index * 0.1}s">
-          <div class="card-thumb ${THUMB[s.category] || 'thumb-custom'}">
-            ${s.emoji || '<i class="fas fa-laptop-code"></i>'}
+          <div class="card-thumb ${THUMB[category] || 'thumb-custom'}">
+            ${emoji}
           </div>
           <div class="card-body">
             <div class="card-tags">
-              ${(s.technologies || '').split(',').slice(0, 3).map(t => 
-                `<span class="tag">${t.trim()}</span>`).join('')}
+              ${tech ? tech.split(',').slice(0, 3).map(t => 
+                `<span class="tag">${t.trim()}</span>`).join('') : ''}
             </div>
-            <h3>${s.title}</h3>
-            <p>${(s.description || '').substring(0, 90)}${(s.description || '').length > 90 ? '...' : ''}</p>
+            <h3>${title}</h3>
+            <p>${desc.substring(0, 90)}${desc.length > 90 ? '...' : ''}</p>
             <div class="card-footer">
-              <div class="price">₹${s.price}<span> starting</span></div>
-              <a class="btn-card" href="project.html?id=${s.id}">
+              <div class="price">$${price}<span> starting</span></div>
+              <a class="btn-card" href="project.html?id=${id}">
                 View Details <i class="fas fa-arrow-right"></i>
               </a>
             </div>
           </div>
-        </div>`).join('')}
+        </div>`;
+      }).join('')}
     </div>
     ${filtered.length > 6 ? `
       <div style="text-align:center;margin-top:3rem">
@@ -1501,7 +1895,7 @@ function renderServices() {
       </div>` : ''}
   `;
   
-  // Trigger scroll animations for new cards
+  // Trigger scroll animations
   setTimeout(() => {
     document.querySelectorAll('.service-card').forEach(card => {
       card.classList.add('visible');
@@ -1511,21 +1905,34 @@ function renderServices() {
 
 function renderHeroPreview() {
   const preview = document.getElementById('hero-preview');
+  
+  if (!allServices || allServices.length === 0) {
+    preview.innerHTML = '';
+    return;
+  }
+  
   const icons = ['icon-orange', 'icon-blue', 'icon-green'];
-  const iconEmojis = ['<i class="fas fa-globe"></i>', '<i class="fas fa-mobile-alt"></i>', '<i class="fas fa-brain"></i>'];
+  const defaultEmojis = ['<i class="fas fa-globe"></i>', '<i class="fas fa-mobile-alt"></i>', '<i class="fas fa-brain"></i>'];
   const sample = allServices.slice(0, 3);
   
-  preview.innerHTML = sample.map((s, i) => `
+  preview.innerHTML = sample.map((s, i) => {
+    const title = s.title || s.name || 'Service';
+    const price = s.price || s.cost || 0;
+    const tech = s.technologies || s.tech || '';
+    const emoji = s.emoji || s.icon || defaultEmojis[i] || '<i class="fas fa-code"></i>';
+    
+    return `
     <div class="hero-svc-card">
       <div class="card-icon ${icons[i] || 'icon-orange'}">
-        ${s.emoji ? `<i class="fas ${s.emoji.replace('fa-', 'fa-')}"></i>` : iconEmojis[i]}
+        ${emoji}
       </div>
       <div class="card-info">
-        <h4>${s.title.substring(0, 28)}${s.title.length > 28 ? '...' : ''}</h4>
-        <p>${(s.technologies || '').split(',').slice(0, 2).join(', ')}</p>
+        <h4>${title.substring(0, 28)}${title.length > 28 ? '...' : ''}</h4>
+        <p>${tech ? tech.split(',').slice(0, 2).join(', ') : ''}</p>
       </div>
-      <div class="card-price">₹${s.price}</div>
-    </div>`).join('');
+      <div class="card-price">$${price}</div>
+    </div>`;
+  }).join('');
 }
 
 // Category Filter Logic
@@ -1590,26 +1997,56 @@ const heroSection = document.querySelector('.hero');
 if (heroSection) heroObserver.observe(heroSection);
 
 // ── Initialize ────────────────────────────────────────────────────────────
-renderNavAuth();
-loadServices();
-
-// Add smooth scroll for anchor links
-document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-  anchor.addEventListener('click', function(e) {
-    e.preventDefault();
-    const target = document.querySelector(this.getAttribute('href'));
-    if (target) {
-      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+document.addEventListener('DOMContentLoaded', async () => {
+  // Check auth status and refresh user data if needed
+  if (Auth.isLoggedIn()) {
+    const freshUser = await Auth.fetchUser();
+    if (freshUser) {
+      localStorage.setItem('dc_user', JSON.stringify(freshUser));
+    }
+  }
+  
+  // Update UI based on auth state
+  await updateAuthUI();
+  
+  // Load services from REAL API
+  await loadServices();
+  
+  // Add smooth scroll for anchor links
+  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function(e) {
+      e.preventDefault();
+      const target = document.querySelector(this.getAttribute('href'));
+      if (target) {
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    });
+  });
+  
+  // Handle window resize for mobile menu
+  window.addEventListener('resize', () => {
+    if (window.innerWidth > 768) {
+      document.getElementById('navLinks').style.display = 'flex';
     }
   });
+  
+  // Auto-refresh cart count every 30 seconds when logged in
+  if (Auth.isLoggedIn()) {
+    setInterval(async () => {
+      const cartItems = await Cart.fetch();
+      const count = cartItems.length;
+      document.getElementById('cart-count').textContent = count;
+      document.getElementById('cart-count-dropdown').textContent = count;
+    }, 30000);
+  }
 });
 
-// Add hover sound effect (optional - commented out)
-// document.querySelectorAll('.service-card, .btn').forEach(el => {
-//   el.addEventListener('mouseenter', () => {
-//     // new Audio('hover.mp3').play().catch(() => {});
-//   });
-// });
+// Handle page visibility change (refresh auth/cart when tab becomes active)
+document.addEventListener('visibilitychange', async () => {
+  if (!document.hidden && Auth.isLoggedIn()) {
+    await updateAuthUI();
+  }
+});
 </script>
 </body>
 </html>
