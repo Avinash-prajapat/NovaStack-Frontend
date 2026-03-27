@@ -9,8 +9,8 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <link rel="icon" type="logo/jpeg" href="logo.png">
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-
 <style>
+/* ===== 🎨 Modern CSS Variables ===== */
 :root {
 --bg-primary: #0f0c1a;
 --bg-secondary: #1a162a;
@@ -57,6 +57,7 @@ min-height: 100vh;
 width: 100%;
 }
 
+/* Animated Background */
 body::before {
 content: '';
 position: fixed;
@@ -91,7 +92,7 @@ animation: float 18s infinite linear;
 100% { transform: translateY(-20vh) rotate(720deg); opacity: 0; }
 }
 
-/* Login Screen */
+/* ===== Login Screen ===== */
 #login-screen {
 display: flex;
 align-items: center;
@@ -129,7 +130,7 @@ to { opacity: 1; transform: translateY(0); }
 .login-box button:disabled { opacity: 0.7; cursor: not-allowed; transform: none; }
 .login-err { color: var(--error); font-size: 0.85rem; margin-top: 0.8rem; display: none; padding: 0.5rem; background: rgba(239, 68, 68, 0.15); border-radius: var(--radius-sm); }
 
-/* Dashboard Layout */
+/* ===== Dashboard Layout ===== */
 #dashboard { display: none; min-height: 100vh; width: 100%; }
 
 /* Sidebar */
@@ -172,7 +173,7 @@ overflow-x: hidden;
 .logout-icon { margin-left: auto; background: var(--surface); border: 1px solid var(--border); color: var(--text-secondary); cursor: pointer; width: 32px; height: 32px; border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; transition: all var(--transition-normal); flex-shrink: 0; }
 .logout-icon:hover { background: var(--error); color: white; }
 
-/* Main Content */
+/* ===== Main Content ===== */
 .main { margin-left: var(--sidebar-width); display: flex; flex-direction: column; min-height: 100vh; transition: margin-left var(--transition-normal); width: 100%; }
 .main.expanded { margin-left: var(--sidebar-width-collapsed); }
 
@@ -195,7 +196,7 @@ flex-shrink: 0;
 .toggle-sidebar { display: none; background: var(--surface); border: 1px solid var(--border); color: var(--text-primary); padding: 0.5rem 0.8rem; border-radius: var(--radius-sm); cursor: pointer; margin-right: 1rem; transition: all var(--transition-normal); flex-shrink: 0; }
 .toggle-sidebar:hover { background: var(--surface-hover); }
 
-/* Buttons */
+/* ===== Buttons ===== */
 .btn { padding: 0.55rem 1.2rem; border-radius: var(--radius-full); font-size: 0.85rem; font-weight: 600; cursor: pointer; border: none; transition: all var(--transition-normal); display: inline-flex; align-items: center; gap: 0.5rem; white-space: nowrap; flex-shrink: 0; }
 .btn-primary { background: var(--gradient-accent); color: white; box-shadow: 0 4px 20px var(--accent-glow); }
 .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 30px var(--accent-glow); }
@@ -210,25 +211,23 @@ flex-shrink: 0;
 .btn-view { background: rgba(59, 130, 246, 0.15); color: var(--blue); border: 1px solid rgba(59, 130, 246, 0.4); }
 .btn-view:hover { background: var(--blue); color: white; }
 .btn-sm { padding: 0.4rem 0.9rem; font-size: 0.8rem; }
-.btn-warning { background: rgba(245, 158, 11, 0.15); color: var(--warning); border: 1px solid rgba(245, 158, 11, 0.4); }
-.btn-warning:hover { background: var(--warning); color: white; }
 
-/* Content Area */
+/* ===== Content Area ===== */
 .content { flex: 1; padding: 2rem; max-width: 100%; width: 100%; overflow-x: hidden; }
 .panel { display: none; animation: fadeIn 0.4s ease-out; width: 100%; }
 .panel.active { display: block; }
 @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-/* Stats Cards */
+/* ===== Stats Cards ===== */
 .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.2rem; margin-bottom: 2rem; width: 100%; }
-.stat-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.4rem; backdrop-filter: blur(10px); transition: all var(--transition-normal); position: relative; overflow: hidden; min-width: 0; cursor: pointer; }
+.stat-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.4rem; backdrop-filter: blur(10px); transition: all var(--transition-normal); position: relative; overflow: hidden; min-width: 0; }
 .stat-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--gradient-accent); transform: scaleX(0); transition: transform var(--transition-normal); }
 .stat-card:hover { transform: translateY(-4px); border-color: var(--accent); box-shadow: var(--shadow-md); }
 .stat-card:hover::before { transform: scaleX(1); }
 .stat-card .lbl { font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.08em; font-weight: 600; display: flex; align-items: center; gap: 0.4rem; flex-wrap: wrap; }
 .stat-card .val { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 2.2rem; margin-top: 0.4rem; background: var(--gradient-accent); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; line-height: 1.2; }
 
-/* Table Styles */
+/* ===== Table Styles ===== */
 .tbl-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; backdrop-filter: blur(10px); margin-bottom: 1.5rem; width: 100%; }
 .tbl-head { padding: 1.2rem 1.5rem; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; }
 .tbl-head h3 { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1.1rem; display: flex; align-items: center; gap: 0.5rem; white-space: nowrap; }
@@ -242,7 +241,7 @@ tr:last-child td { border-bottom: none; }
 tr:hover td { background: var(--surface); }
 .empty-row { text-align: center; padding: 2rem !important; color: var(--text-muted); }
 
-/* Badges */
+/* ===== Badges ===== */
 .badge { display: inline-flex; align-items: center; gap: 0.35rem; padding: 0.3rem 0.75rem; border-radius: var(--radius-full); font-size: 0.75rem; font-weight: 600; text-transform: capitalize; white-space: nowrap; }
 .badge-pending { background: rgba(245, 158, 11, 0.15); color: var(--warning); border: 1px solid rgba(245, 158, 11, 0.4); }
 .badge-payment_received { background: rgba(16, 185, 129, 0.15); color: var(--green); border: 1px solid rgba(16, 185, 129, 0.4); }
@@ -251,12 +250,13 @@ tr:hover td { background: var(--surface); }
 .badge-completed { background: rgba(16, 185, 129, 0.15); color: var(--green); border: 1px solid rgba(16, 185, 129, 0.4); }
 .badge-delivered { background: rgba(139, 92, 246, 0.15); color: var(--purple); border: 1px solid rgba(139, 92, 246, 0.4); }
 .badge-cancelled { background: rgba(239, 68, 68, 0.15); color: var(--error); border: 1px solid rgba(239, 68, 68, 0.4); }
-.badge-cancellation_requested { background: rgba(239, 68, 68, 0.15); color: var(--error); border: 1px solid rgba(239, 68, 68, 0.4); }
+.delivered-yes { color: var(--green); }
+.delivered-no { color: var(--error); }
 
-/* Modals */
-.modal-ov { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.8); z-index: 2000; display: none; align-items: center; justify-content: center; padding: 1rem; backdrop-filter: blur(8px); }
+/* ===== Modal ===== */
+.modal-ov { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.6); z-index: 2000; display: none; align-items: center; justify-content: center; padding: 1rem; backdrop-filter: blur(8px); }
 .modal-ov.open { display: flex; }
-.modal { background: var(--bg-card); border-radius: var(--radius-lg); padding: 2rem; width: 100%; max-width: 800px; max-height: 90vh; overflow-y: auto; border: 1px solid var(--border); box-shadow: var(--shadow-lg); animation: modalSlide 0.3s ease; }
+.modal { background: var(--bg-card); border-radius: var(--radius-lg); padding: 2rem; width: 100%; max-width: 700px; max-height: 90vh; overflow-y: auto; border: 1px solid var(--border); box-shadow: var(--shadow-lg); animation: modalSlide 0.3s ease; }
 @keyframes modalSlide { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
 .modal-hdr { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; padding-bottom: 1rem; border-bottom: 1px solid var(--border); }
 .modal-hdr h3 { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.3rem; display: flex; align-items: center; gap: 0.5rem; }
@@ -270,20 +270,20 @@ tr:hover td { background: var(--surface); }
 .fg textarea { min-height: 80px; resize: vertical; }
 .modal-foot { display: flex; gap: 0.8rem; justify-content: flex-end; margin-top: 1.5rem; padding-top: 1.2rem; border-top: 1px solid var(--border); flex-wrap: wrap; }
 
-/* Alerts */
+/* ===== Alerts ===== */
 .global-alert { padding: 0.8rem 1.2rem; border-radius: var(--radius-md); font-size: 0.9rem; font-weight: 500; margin-bottom: 1.2rem; display: none; align-items: center; gap: 0.6rem; border: 1px solid; animation: slideDown 0.3s ease; }
 @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
 .ga-success { background: rgba(16, 185, 129, 0.15); color: var(--green); border-color: rgba(16, 185, 129, 0.4); }
 .ga-error { background: rgba(239, 68, 68, 0.15); color: var(--error); border-color: rgba(239, 68, 68, 0.4); }
 
-/* Order Detail Card */
+/* ===== Order Detail Modal ===== */
 .order-detail-card { display: flex; flex-direction: column; gap: 1.5rem; }
 .detail-section { background: var(--surface); padding: 1.2rem; border-radius: var(--radius-md); border: 1px solid var(--border); }
 .section-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1rem; margin-bottom: 1rem; color: var(--accent); display: flex; align-items: center; gap: 0.5rem; }
 .info-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; }
 .info-item { display: flex; flex-direction: column; gap: 0.3rem; }
 .info-item .label { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; }
-.info-item .value { font-size: 0.95rem; color: var(--text-primary); font-weight: 500; word-break: break-word; }
+.info-item .value { font-size: 0.95rem; color: var(--text-primary); font-weight: 500; }
 .customization-item { padding: 0.5rem 0; border-bottom: 1px solid var(--border); font-size: 0.9rem; }
 .customization-item:last-child { border-bottom: none; }
 .progress-bar { height: 6px; background: var(--surface); border-radius: 10px; overflow: hidden; margin-top: 0.5rem; }
@@ -291,28 +291,14 @@ tr:hover td { background: var(--surface); }
 .deliverable-link { display: inline-block; margin: 0.2rem 0; color: var(--green); text-decoration: none; }
 .deliverable-link:hover { text-decoration: underline; }
 
-/* Chat Container */
-.chat-container { display: grid; grid-template-columns: 320px 1fr; min-height: 500px; background: var(--bg-card); border-radius: 20px; overflow: hidden; }
-.conversations-list { border-right: 1px solid var(--border); overflow-y: auto; padding: 1rem; }
-.conversation-item { padding: 1rem; border-bottom: 1px solid var(--border); cursor: pointer; transition: all var(--transition-normal); }
-.conversation-item:hover { background: var(--surface); }
-.conversation-item.unread { background: rgba(255, 107, 53, 0.1); }
-.conversation-item.active { background: var(--surface-hover); border-left: 3px solid var(--accent); }
-.chat-area { display: flex; flex-direction: column; }
-.chat-header-area { padding: 1rem; border-bottom: 1px solid var(--border); }
-.chat-messages { flex: 1; overflow-y: auto; padding: 1rem; }
-.chat-input-area { padding: 1rem; border-top: 1px solid var(--border); display: flex; gap: 0.5rem; }
-.chat-input-area textarea { flex: 1; padding: 0.5rem; border-radius: 8px; background: var(--surface); color: white; border: 1px solid var(--border); resize: none; font-family: inherit; }
-.chat-input-area button { padding: 0.5rem 1rem; background: var(--gradient-accent); border: none; border-radius: 8px; color: white; cursor: pointer; }
-
-/* Overlay */
+/* ===== Overlay ===== */
 .sidebar-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.5); z-index: 999; display: none; backdrop-filter: blur(4px); }
 .sidebar-overlay.active { display: block; }
 
-/* Responsive */
+/* ===== Responsive ===== */
 @media (max-width: 1200px) { .stats-grid { grid-template-columns: repeat(2, 1fr); } }
-@media (max-width: 992px) { .sidebar { transform: translateX(-100%); width: var(--sidebar-width); } .sidebar.mobile-open { transform: translateX(0); } .sidebar-overlay.active { display: block; } .main { margin-left: 0; } .toggle-sidebar { display: flex; } .chat-container { grid-template-columns: 1fr; } .conversations-list { display: none; } .conversations-list.mobile-show { display: block; } }
-@media (max-width: 768px) { .stats-grid { grid-template-columns: 1fr; } .content { padding: 1rem; } .tbl-head { flex-direction: column; align-items: flex-start; } .search-inp { width: 100%; } .modal { padding: 1.5rem; max-width: 95%; } .modal-foot { flex-direction: column; } .btn { width: 100%; justify-content: center; } .info-grid { grid-template-columns: 1fr; } }
+@media (max-width: 992px) { .sidebar { transform: translateX(-100%); width: var(--sidebar-width); } .sidebar.mobile-open { transform: translateX(0); } .sidebar-overlay.active { display: block; } .main { margin-left: 0; } .toggle-sidebar { display: flex; } }
+@media (max-width: 768px) { .stats-grid { grid-template-columns: 1fr; } .content { padding: 1rem; } .tbl-head { flex-direction: column; align-items: flex-start; } .search-inp { width: 100%; } .modal { padding: 1.5rem; max-width: 95%; } .modal-foot { flex-direction: column; } .btn { width: 100%; justify-content: center; } }
 @media (max-width: 480px) { .stats-grid { gap: 0.75rem; } .stat-card .val { font-size: 1.6rem; } .topbar h1 { font-size: 1rem; } }
 ::-webkit-scrollbar { width: 8px; height: 8px; }
 ::-webkit-scrollbar-track { background: var(--surface); border-radius: var(--radius-sm); }
@@ -473,7 +459,7 @@ tr:hover td { background: var(--surface); }
 </div>
 </div>
 
-<!-- Service Modal -->
+<!-- Modals -->
 <div class="modal-ov" id="svc-modal"><div class="modal"><div class="modal-hdr"><h3><i class="fas fa-edit"></i> <span id="modal-title">Add New Service</span></h3><button class="close-btn" onclick="closeModal()"><i class="fas fa-times"></i></button></div>
 <div class="fg"><label><i class="fas fa-heading"></i> Title *</label><input id="f-title" placeholder="e.g. Web Application"></div>
 <div class="fg"><label><i class="fas fa-align-left"></i> Description *</label><textarea id="f-desc" placeholder="Describe the service..."></textarea></div>
@@ -482,18 +468,14 @@ tr:hover td { background: var(--surface); }
 <div class="fg"><label><i class="fas fa-tag"></i> Price (₹) *</label><input type="number" id="f-price" placeholder="299" min="0"></div>
 <div class="modal-foot"><button class="btn-cancel" onclick="closeModal()">Cancel</button><button class="btn btn-save" onclick="saveService()"><i class="fas fa-save"></i> Save</button></div></div></div>
 
-<!-- Order Detail Modal -->
 <div class="modal-ov" id="order-detail-modal"><div class="modal" style="max-width:800px"><div class="modal-hdr"><h3><i class="fas fa-info-circle"></i> Order Details</h3><button class="close-btn" onclick="closeOrderDetail()"><i class="fas fa-times"></i></button></div><div id="order-detail-content"></div></div></div>
 
-<!-- Delivery Modal -->
 <div class="modal-ov" id="delivery-modal"><div class="modal" style="max-width:650px"><div class="modal-hdr"><h3><i class="fas fa-box"></i> <span id="delivery-modal-title">Deliver Project</span></h3><button class="close-btn" onclick="closeDeliveryModal()"><i class="fas fa-times"></i></button></div>
 <div id="delivery-modal-content"></div></div></div>
 
-<!-- View Deliverables Modal -->
 <div class="modal-ov" id="view-deliverables-modal"><div class="modal" style="max-width:600px"><div class="modal-hdr"><h3><i class="fas fa-eye"></i> <span id="view-deliverables-title">Project Deliverables</span></h3><button class="close-btn" onclick="closeViewDeliverablesModal()"><i class="fas fa-times"></i></button></div>
 <div id="view-deliverables-content"></div></div></div>
 
-<!-- Refund Modal -->
 <div class="modal-ov" id="refund-modal"><div class="modal" style="max-width:500px"><div class="modal-hdr"><h3><i class="fas fa-money-bill-wave"></i> Process Refund</h3><button class="close-btn" onclick="closeRefundModal()"><i class="fas fa-times"></i></button></div>
 <div class="fg"><label><i class="fas fa-dollar-sign"></i> Refund Amount</label><input type="number" id="refund-amount" step="0.01" readonly></div>
 <div class="fg"><label><i class="fas fa-comment"></i> Reason</label><textarea id="refund-reason" placeholder="Refund reason..."></textarea></div>
@@ -658,8 +640,9 @@ return `<tr>
 <button class="btn btn-sm btn-primary" onclick="openDeliveryModal(${o.id}, '${(o.user_name || 'User').replace(/'/g, "\\'")}')" title="Deliver"><i class="fas fa-box"></i></button>
 <button class="btn btn-sm btn-view" onclick="viewDeliverablesModal(${o.id})" title="View Deliverables"><i class="fas fa-download"></i></button>
 <button class="btn btn-sm btn-chat" onclick="chatFromOrder(${o.id}, '${(o.user_name || 'User').replace(/'/g, "\\'")}')" title="Chat"><i class="fas fa-comment"></i></button>
-<button class="btn btn-sm btn-success" onclick="updateOrderStatus(${o.id},'in_progress')" title="Start"><i class="fas fa-play"></i></button>
-<button class="btn btn-sm btn-warning" onclick="updateOrderStatus(${o.id},'ready_for_balance')" title="Ready for Balance"><i class="fas fa-money-bill"></i></button>
+<button class="btn btn-sm btn-success" onclick="startProject(${o.id})" title="Start Project"><i class="fas fa-play"></i></button>
+<button class="btn btn-sm btn-warning" onclick="markReadyForBalance(${o.id})" title="Ready for Balance"><i class="fas fa-money-bill"></i></button>
+<button class="btn btn-sm btn-primary" onclick="markAsCompleted(${o.id})" title="Mark Complete"><i class="fas fa-check-circle"></i></button>
 ${o.status === 'cancellation_requested' ? `<button class="btn btn-sm btn-danger" onclick="openRefundModalFromOrder(${o.id}, ${advance})" title="Refund"><i class="fas fa-money-bill-wave"></i></button>` : ''}
 </div></td>
 </tr>`;
@@ -750,6 +733,7 @@ const html = `<div class="fg"><label><i class="fab fa-github"></i> GitHub Reposi
 <div class="fg"><label><i class="fas fa-sticky-note"></i> Delivery Notes</label><textarea id="del-notes" rows="3" placeholder="Add any delivery notes...">${order?.delivery_notes || ''}</textarea></div>
 <div class="fg"><label><i class="fas fa-eye"></i> Preview Ready (15% payment ke baad client dekhega)</label><input type="checkbox" id="del-preview" ${order?.preview_ready ? 'checked' : ''}></div>
 <div class="fg"><label><i class="fas fa-download"></i> Full Access Ready (85% payment ke baad client download karega)</label><input type="checkbox" id="del-full" ${order?.full_access_ready ? 'checked' : ''}></div>
+<div class="fg"><label><i class="fas fa-check-circle"></i> Mark as Delivered</label><input type="checkbox" id="del-mark-delivered"></div>
 <div class="modal-foot"><button class="btn-cancel" onclick="closeDeliveryModal()">Cancel</button><button class="btn btn-save" onclick="submitDelivery(${orderId})"><i class="fas fa-save"></i> Save Delivery</button></div>`;
 document.getElementById('delivery-modal-content').innerHTML = html;
 document.getElementById('delivery-modal').classList.add('open');
@@ -764,17 +748,77 @@ const docs = document.getElementById('del-docs').value;
 const notes = document.getElementById('del-notes').value;
 const preview = document.getElementById('del-preview').checked;
 const full = document.getElementById('del-full').checked;
+const markDelivered = document.getElementById('del-mark-delivered').checked;
 try {
 await adminFetch('POST', `/admin/order/${orderId}/update-delivery`, { 
 delivery_notes: notes, github_repo: github, live_url: live, 
 source_code_url: source, documentation_url: docs, 
-preview_ready: preview, full_access_ready: full 
+preview_ready: preview, full_access_ready: full,
+mark_delivered: markDelivered
 });
 closeDeliveryModal();
 closeOrderDetail();
 await loadAll();
 showGlobalSuccess(`Delivery info saved for Order #${orderId}`);
 } catch(e) { showGlobalErr('Failed: ' + e.message); }
+}
+
+// ============================================================
+// NEW FUNCTIONS - ALL BUTTONS WORKING
+// ============================================================
+
+async function startProject(orderId) {
+if (!confirm(`Start working on Order #${orderId}?`)) return;
+try {
+await adminFetch('POST', `/admin/order/${orderId}/start-project`);
+showGlobalSuccess(`Project started for Order #${orderId}`);
+await loadAll();
+closeOrderDetail();
+} catch(e) { showGlobalErr('Failed to start project: ' + e.message); }
+}
+
+async function markReadyForBalance(orderId) {
+if (!confirm(`Mark Order #${orderId} as ready for balance payment?`)) return;
+try {
+await adminFetch('POST', `/admin/order/${orderId}/ready-for-balance`);
+showGlobalSuccess(`Order #${orderId} is ready for balance payment`);
+await loadAll();
+closeOrderDetail();
+} catch(e) { showGlobalErr('Failed: ' + e.message); }
+}
+
+async function markAsCompleted(orderId) {
+const liveUrl = prompt("Enter live URL (optional):");
+const githubRepo = prompt("Enter GitHub repo URL (optional):");
+const notes = prompt("Enter delivery notes (optional):");
+try {
+await adminFetch('POST', `/admin/order/${orderId}/complete`, {
+live_url: liveUrl,
+github_repo: githubRepo,
+delivery_notes: notes
+});
+showGlobalSuccess(`Order #${orderId} marked as completed`);
+await loadAll();
+closeOrderDetail();
+} catch(e) { showGlobalErr('Failed: ' + e.message); }
+}
+
+async function updateOrderStatus(orderId, newStatus) {
+const statusMessages = {
+'in_progress': 'Start working on this project?',
+'ready_for_balance': 'Mark as ready for balance payment?',
+'completed': 'Mark as completed?',
+'delivered': 'Mark as delivered?',
+'cancelled': 'Cancel this order?'
+};
+const message = statusMessages[newStatus];
+if (!message || !confirm(message)) return;
+try {
+await adminFetch('PUT', `/admin/order/${orderId}/status`, { status: newStatus });
+showGlobalSuccess(`Order #${orderId} status updated to ${newStatus}`);
+await loadAll();
+closeOrderDetail();
+} catch(e) { showGlobalErr('Failed to update status: ' + e.message); }
 }
 
 async function viewOrderDetails(orderId) {
@@ -786,6 +830,11 @@ const total = parseFloat(order.price) || 0;
 const advance = parseFloat(order.advance_paid) || 0;
 const paid = parseFloat(order.total_paid) || advance;
 const balance = total - paid;
+
+const canStart = order.status === 'payment_received';
+const canMarkReady = ['payment_received', 'in_progress'].includes(order.status);
+const canComplete = ['ready_for_balance', 'in_progress'].includes(order.status);
+
 const html = `<div class="order-detail-card">
 <div class="detail-section"><div class="section-title"><i class="fas fa-info-circle"></i> Order Information</div>
 <div class="info-grid"><div class="info-item"><div class="label">Order ID</div><div class="value" style="color:var(--accent)">#${order.id}</div></div>
@@ -794,8 +843,7 @@ const html = `<div class="order-detail-card">
 <div class="info-item"><div class="label">Total Price</div><div class="value" style="color:var(--green)">₹${total.toLocaleString()}</div></div></div></div>
 <div class="detail-section"><div class="section-title"><i class="fas fa-user-circle"></i> Client Information</div>
 <div class="info-grid"><div class="info-item"><div class="label">Client Name</div><div class="value"><strong>${order.user_name || 'N/A'}</strong></div></div>
-<div class="info-item"><div class="label">Email Address</div><div class="value"><a href="mailto:${order.user_email}" style="color:var(--accent)">${order.user_email || 'N/A'}</a></div></div>
-<div class="info-item"><div class="label">User ID</div><div class="value"><small>${order.user_id || 'N/A'}</small></div></div></div></div>
+<div class="info-item"><div class="label">Email Address</div><div class="value"><a href="mailto:${order.user_email}" style="color:var(--accent)">${order.user_email || 'N/A'}</a></div></div></div></div>
 <div class="detail-section"><div class="section-title"><i class="fas fa-credit-card"></i> Payment Details</div>
 <div class="info-grid"><div class="info-item"><div class="label">Advance Paid (15%)</div><div class="value" style="color:var(--warning)">₹${advance.toLocaleString()}</div></div>
 <div class="info-item"><div class="label">Total Paid</div><div class="value" style="color:var(--green)">₹${paid.toLocaleString()}</div></div>
@@ -806,16 +854,17 @@ ${order.requirements ? `<div class="detail-section"><div class="section-title"><
 <div class="detail-section"><div class="section-title"><i class="fas fa-link"></i> Deliverables</div><div class="info-grid">
 <div class="info-item"><div class="label">Live URL</div><div class="value">${order.live_url ? `<a href="${order.live_url}" target="_blank" class="deliverable-link">${order.live_url.substring(0,40)}</a>` : '—'}</div></div>
 <div class="info-item"><div class="label">GitHub Repo</div><div class="value">${order.github_repo ? `<a href="${order.github_repo}" target="_blank" class="deliverable-link">View</a>` : '—'}</div></div>
-<div class="info-item"><div class="label">Source Code</div><div class="value">${order.source_code_url ? `<a href="${order.source_code_url}" target="_blank" class="deliverable-link">Download</a>` : '—'}</div></div>
-<div class="info-item"><div class="label">Documentation</div><div class="value">${order.documentation_url ? `<a href="${order.documentation_url}" target="_blank" class="deliverable-link">View</a>` : '—'}</div></div></div>
+<div class="info-item"><div class="label">Preview Ready</div><div class="value">${order.preview_ready ? '<i class="fas fa-check-circle" style="color:var(--green)"></i> Yes' : '<i class="fas fa-times-circle" style="color:var(--error)"></i> No'}</div></div>
+<div class="info-item"><div class="label">Full Access Ready</div><div class="value">${order.full_access_ready ? '<i class="fas fa-check-circle" style="color:var(--green)"></i> Yes' : '<i class="fas fa-times-circle" style="color:var(--error)"></i> No'}</div></div></div>
 ${order.delivery_notes ? `<div style="margin-top:1rem"><strong>Delivery Notes:</strong><p style="margin-top:0.3rem">${order.delivery_notes}</p></div>` : ''}</div>
 <div class="detail-section"><div class="section-title"><i class="fas fa-cog"></i> Actions</div>
 <div style="display:flex;gap:0.5rem;flex-wrap:wrap">
-<button class="btn btn-success" onclick="updateOrderStatus(${order.id},'in_progress')"><i class="fas fa-play"></i> Start Project</button>
+${canStart ? `<button class="btn btn-success" onclick="startProject(${order.id})"><i class="fas fa-play"></i> Start Project</button>` : ''}
+${canMarkReady ? `<button class="btn btn-warning" onclick="markReadyForBalance(${order.id})"><i class="fas fa-money-bill"></i> Ready for Balance</button>` : ''}
+${canComplete ? `<button class="btn btn-primary" onclick="markAsCompleted(${order.id})"><i class="fas fa-check-circle"></i> Mark Complete</button>` : ''}
 <button class="btn btn-primary" onclick="openDeliveryModal(${order.id}, '${(order.user_name || 'User').replace(/'/g, "\\'")}')"><i class="fas fa-box"></i> Edit Deliverables</button>
 <button class="btn btn-view" onclick="viewDeliverablesModal(${order.id})"><i class="fas fa-eye"></i> View Deliverables</button>
 <button class="btn btn-chat" onclick="chatFromOrder(${order.id}, '${(order.user_name || 'User').replace(/'/g, "\\'")}')"><i class="fas fa-comment"></i> Chat</button>
-<button class="btn btn-warning" onclick="updateOrderStatus(${order.id},'ready_for_balance')"><i class="fas fa-money-bill"></i> Ready for Balance</button>
 ${order.status === 'cancellation_requested' ? `<button class="btn btn-danger" onclick="openRefundModalFromOrder(${order.id}, ${advance})"><i class="fas fa-money-bill-wave"></i> Process Refund</button>` : ''}
 </div></div></div>`;
 document.getElementById('order-detail-content').innerHTML = html;
@@ -823,21 +872,10 @@ document.getElementById('order-detail-modal').classList.add('open');
 }
 function closeOrderDetail() { document.getElementById('order-detail-modal').classList.remove('open'); }
 
-async function updateOrderStatus(id, status) {
-try { 
-await adminFetch('PUT', '/admin/order/update', { id, status }); 
-const order = adminData.orders.find(o => o.id === id); 
-if (order) order.status = status; 
-renderAll(); 
-showGlobalSuccess(`Order #${id} updated to ${status}`); 
-closeOrderDetail(); 
-} catch(e) { showGlobalErr('Error: ' + e.message); }
-}
-
 function renderServices(filter = '') {
 const tbody = document.getElementById('svc-tbody');
 const filtered = filter ? adminData.services.filter(s => s.title?.toLowerCase().includes(filter.toLowerCase())) : adminData.services;
-if (!filtered.length) { tbody.innerHTML = '骨<tr><td colspan="5" class="empty-row">No services</td></tr>'; return; }
+if (!filtered.length) { tbody.innerHTML = '骨<th colspan="5" class="empty-row">No services</th>'; return; }
 const counts = {}; adminData.orders.forEach(o => { counts[o.service_id] = (counts[o.service_id] || 0) + 1; });
 tbody.innerHTML = filtered.map(s => `<tr><td><strong>${s.emoji || '💻'} ${s.title}</strong></td><td><span class="badge badge-progress">${s.category}</span></td><td><strong style="color:var(--green)">₹${(s.price || 0).toLocaleString()}</strong></td><td>${counts[s.id] || 0}</td><td><div style="display:flex;gap:0.5rem"><button class="btn btn-sm btn-edit" onclick="editService(${s.id})"><i class="fas fa-edit"></i></button><button class="btn btn-sm btn-danger" onclick="deleteService(${s.id})"><i class="fas fa-trash"></i></button></div></td></tr>`).join('');
 }
