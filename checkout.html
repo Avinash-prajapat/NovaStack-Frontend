@@ -830,25 +830,10 @@
         // ============================================================
         async function verifyPayment(response) {
             console.log('💰 Starting payment verification...');
-            console.log('📦 Payment response:', response);
             
-            // Get token
             const token = Auth.getToken();
-            console.log('🔑 Token for verification:', token ? `Present (${token.substring(0, 20)}...)` : 'MISSING');
-            
             if (!token) {
-                console.error('❌ No token found for verification');
                 showToast('Session expired. Please login again.', 'error');
-                
-                // Store payment info for recovery
-                localStorage.setItem('pending_payment_recovery', JSON.stringify({
-                    razorpay_order_id: response.razorpay_order_id,
-                    razorpay_payment_id: response.razorpay_payment_id,
-                    razorpay_signature: response.razorpay_signature,
-                    timestamp: new Date().toISOString(),
-                    is_custom: isCustomOrder
-                }));
-                
                 setTimeout(() => {
                     window.location.href = `login.html?redirect=${encodeURIComponent(window.location.href)}`;
                 }, 2000);
@@ -862,10 +847,8 @@
             }
             
             try {
-                console.log('📤 Sending verification to backend...');
-                console.log('URL:', `${CONFIG.API}/verify-payment`);
-                
-                const res = await fetch(`${CONFIG.API}/verify-payment`, {
+                // 🔥 STEP 1: Verify payment with backend FIRST
+                const verifyRes = await fetch(`${CONFIG.API}/verify-payment`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -878,26 +861,21 @@
                     })
                 });
                 
-                console.log('📥 Verification response status:', res.status);
-                const data = await res.json();
-                console.log('📥 Verification response data:', data);
+                const verifyData = await verifyRes.json();
                 
-                if (!res.ok) {
-                    throw new Error(data.error || 'Verification failed');
+                if (!verifyRes.ok) {
+                    throw new Error(verifyData.error || 'Payment verification failed');
                 }
                 
-                // 🔥 SUCCESS! Now handle custom order data
                 console.log('✅ Payment verified successfully!');
                 
-                const orderData = data.data;
+                // 🔥 STEP 2: Get order data from verification response
+                const orderData = verifyData.data;
                 
-                // 🔥 If this was a custom order, save customization data to the order
+                // 🔥 STEP 3: Only now create custom order (if custom order)
                 if (isCustomOrder && customizationData) {
-                    console.log('🎨 Saving customization data for order...');
-                    
-                    // 🔥 CRITICAL: Pehle check karo agar order already exist karta hai?
                     try {
-                        // Check if order already exists for this service
+                        // Check if order already exists (to avoid duplicates)
                         const checkRes = await fetch(`${CONFIG.API}/my-orders`, {
                             headers: { 'Authorization': `Bearer ${token}` }
                         });
@@ -908,12 +886,9 @@
                             (o.status === 'payment_received' || o.status === 'in_progress')
                         );
                         
-                        if (existingOrder) {
-                            console.log(`✅ Order already exists: ${existingOrder.id}, skipping creation`);
-                            orderData.order_id = existingOrder.id;
-                        } else {
-                            // Create new order
-                            const customRes = await fetch(`${CONFIG.API}/order/customize`, {
+                        if (!existingOrder) {
+                            // Only create new order if doesn't exist
+                            await fetch(`${CONFIG.API}/order/customize`, {
                                 method: 'POST',
                                 headers: {
                                     'Content-Type': 'application/json',
@@ -922,43 +897,39 @@
                                 body: JSON.stringify({
                                     service_id: parseInt(serviceId),
                                     customization: customizationData.customization,
-                                    requirements: customizationData.requirements,
-                                    timeline: customizationData.timeline,
-                                    references: customizationData.references
+                                    requirements: customizationData.requirements
                                 })
                             });
-                            
-                            const customResult = await customRes.json();
-                            console.log('📝 Customization save result:', customResult);
-                            
-                            if (customRes.ok && customResult.data) {
-                                console.log('✅ Customization saved to order!');
-                                if (customResult.data.order_id) {
-                                    orderData.order_id = customResult.data.order_id;
-                                }
-                            } else {
-                                console.warn('⚠️ Customization save warning:', customResult.error);
-                            }
+                            console.log('✅ Custom order created');
                         }
-                        
                     } catch (customError) {
-                        console.error('❌ Error checking/saving customization:', customError);
-                        showToast('Order created! Customization will be applied.', 'warning');
+                        console.warn('Custom order creation warning:', customError);
                     }
                     
-                    // Clear stored customization from both keys
+                    // Clear stored customization
                     localStorage.removeItem('pending_customization');
-                    localStorage.removeItem('pending_order_data');  // 🔥 ADD THIS LINE
+                    localStorage.removeItem('pending_order_data');
                 }
                 
-                // Clear cart if it was a cart checkout
+                // 🔥 STEP 4: Clear cart if cart checkout
                 if (isCartCheckout) {
+                    // Clear cart from localStorage
                     localStorage.removeItem('dc_cart_local');
+                    
+                    // Also clear from backend
+                    try {
+                        await fetch(`${CONFIG.API}/cart/clear`, {
+                            method: 'POST',
+                            headers: { 'Authorization': `Bearer ${token}` }
+                        });
+                    } catch(e) { console.warn('Cart clear warning:', e); }
                 }
                 
+                // Clear pending payment data
                 localStorage.removeItem('pending_payment');
                 localStorage.removeItem('pending_payment_recovery');
                 
+                // Store last order info
                 localStorage.setItem('dc_last_order', JSON.stringify({
                     order_id: orderData.order_id,
                     advance_paid: orderData.advance_paid,
@@ -969,50 +940,22 @@
                 
                 showToast('✅ Payment successful! Order confirmed.');
                 
+                // Redirect to order confirmation page
                 setTimeout(() => {
                     window.location.href = `order-confirmed.html?order_id=${orderData.order_id}`;
                 }, 1500);
                 
             } catch (error) {
                 console.error('❌ Verification error:', error);
-                console.error('Error details:', error.message);
-                
-                // Show manual confirmation button
-                showToast('⚠️ Payment successful but verification pending. Click "Confirm Order" to complete.', 'warning');
+                showToast(error.message, 'error');
                 
                 if (btn) {
                     btn.disabled = false;
                     btn.innerHTML = `<i class="fas fa-lock"></i> Pay ₹${paymentData?.advance || 0} Now`;
                 }
                 
-                // Store payment info for manual confirmation
-                localStorage.setItem('pending_payment_recovery', JSON.stringify({
-                    razorpay_order_id: response.razorpay_order_id,
-                    razorpay_payment_id: response.razorpay_payment_id,
-                    razorpay_signature: response.razorpay_signature,
-                    timestamp: new Date().toISOString(),
-                    is_custom: isCustomOrder,
-                    customization: customizationData
-                }));
-                
                 // Show manual confirmation button
                 document.getElementById('manualConfirm').classList.add('show');
-                
-                // Update payment status box
-                const paymentStatus = document.getElementById('paymentStatus');
-                if (paymentStatus) {
-                    paymentStatus.innerHTML = `
-                        <div class="payment-status success">
-                            <i class="fas fa-check-circle" style="color: #10b981; font-size: 2rem;"></i>
-                            <p><strong>Payment Received!</strong></p>
-                            <p>Your payment of ₹${paymentData?.advance || 0} was successful.</p>
-                            <p>Click below to confirm your order.</p>
-                            <button class="btn-manual" onclick="manualConfirm()" style="margin-top: 0.5rem;">
-                                <i class="fas fa-check"></i> Confirm Order
-                            </button>
-                        </div>
-                    `;
-                }
             }
         }
         
@@ -1038,7 +981,6 @@
             }
             
             const payment = JSON.parse(pendingPayment);
-            console.log('📦 Manual confirmation for order:', payment.razorpay_order_id);
             
             const statusDiv = document.getElementById('paymentStatus');
             if (statusDiv) {
@@ -1051,96 +993,67 @@
             }
             
             try {
-                // Try to verify again
-                const res = await fetch(`${CONFIG.API}/verify-payment`, {
+                // First check if payment was already verified
+                const checkRes = await fetch(`${CONFIG.API}/check-payment-status`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                         'Authorization': `Bearer ${token}`
                     },
                     body: JSON.stringify({
-                        razorpay_order_id: payment.razorpay_order_id,
-                        razorpay_payment_id: payment.razorpay_payment_id,
-                        razorpay_signature: payment.razorpay_signature
+                        razorpay_order_id: payment.razorpay_order_id
                     })
                 });
                 
-                const data = await res.json();
+                const checkData = await checkRes.json();
                 
-                if (res.ok && data.success) {
-                    // 🔥 Success! Handle custom order if needed
-                    if (payment.is_custom && payment.customization) {
-                        try {
-                            await fetch(`${CONFIG.API}/order/customize`, {
-                                method: 'POST',
-                                headers: {
-                                    'Content-Type': 'application/json',
-                                    'Authorization': `Bearer ${token}`
-                                },
-                                body: JSON.stringify({
-                                    service_id: parseInt(serviceId),
-                                    customization: payment.customization.customization,
-                                    requirements: payment.customization.requirements,
-                                    timeline: payment.customization.timeline,
-                                    references: payment.customization.references
-                                })
-                            });
-                            console.log('✅ Customization saved during manual confirm');
-                        } catch(e) {
-                            console.error('Error saving customization:', e);
-                        }
-                        localStorage.removeItem('pending_customization');
+                if (checkData.success && checkData.paid) {
+                    // Payment was successful, try to create order
+                    if (isCustomOrder && customizationData) {
+                        await fetch(`${CONFIG.API}/order/customize`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Authorization': `Bearer ${token}`
+                            },
+                            body: JSON.stringify({
+                                service_id: parseInt(serviceId),
+                                customization: customizationData.customization,
+                                requirements: customizationData.requirements
+                            })
+                        });
                     }
-                    
-                    localStorage.removeItem('pending_payment');
-                    localStorage.removeItem('pending_payment_recovery');
                     
                     if (isCartCheckout) {
                         localStorage.removeItem('dc_cart_local');
                     }
                     
-                    showToast('✅ Order confirmed successfully!');
+                    localStorage.removeItem('pending_payment_recovery');
+                    localStorage.removeItem('pending_payment');
+                    
+                    showToast('✅ Order confirmed!');
                     setTimeout(() => {
-                        window.location.href = `order-confirmed.html?order_id=${data.data?.order_id || payment.razorpay_order_id}`;
+                        window.location.href = `order-confirmed.html?order_id=${payment.razorpay_order_id}`;
                     }, 1500);
+                    
                 } else {
-                    // Try check status endpoint
-                    const checkRes = await fetch(`${CONFIG.API}/check-payment-status`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Authorization': `Bearer ${token}`
-                        },
-                        body: JSON.stringify({
-                            razorpay_order_id: payment.razorpay_order_id
-                        })
-                    });
-                    
-                    const checkData = await checkRes.json();
-                    
-                    if (checkData.success && checkData.paid) {
-                        showToast('✅ Payment confirmed! Order will be created.');
-                        setTimeout(() => {
-                            window.location.reload();
-                        }, 1500);
-                    } else {
-                        statusDiv.innerHTML = `
-                            <div class="payment-status pending">
-                                <i class="fas fa-hourglass-half"></i>
-                                <p>Payment still processing. Please wait a moment.</p>
-                                <button class="btn-manual" onclick="manualConfirm()">
-                                    <i class="fas fa-sync"></i> Check Again
-                                </button>
-                                <button class="btn-back" onclick="window.location.href='${isCartCheckout ? 'cart.html' : 'services.html'}'">
-                                    ← Go to Services
-                                </button>
-                            </div>
-                        `;
-                        showToast('Payment still processing. Please wait and try again.', 'warning');
-                    }
+                    statusDiv.innerHTML = `
+                        <div class="payment-status pending">
+                            <i class="fas fa-hourglass-half"></i>
+                            <p>Payment still processing. Please wait a moment.</p>
+                            <button class="btn-manual" onclick="manualConfirm()">
+                                <i class="fas fa-sync"></i> Check Again
+                            </button>
+                            <button class="btn-back" onclick="window.location.href='${isCartCheckout ? 'cart.html' : 'services.html'}'">
+                                ← Go to Services
+                            </button>
+                        </div>
+                    `;
+                    showToast('Payment still processing. Please wait.', 'warning');
                 }
+                
             } catch (error) {
-                console.error('❌ Manual confirmation error:', error);
+                console.error('Manual confirmation error:', error);
                 statusDiv.innerHTML = `
                     <div class="payment-status pending">
                         <i class="fas fa-exclamation-triangle"></i>
@@ -1148,9 +1061,6 @@
                         <p style="font-size: 0.85rem;">Your payment was successful. Our team will confirm your order shortly.</p>
                         <button class="btn-manual" onclick="manualConfirm()">
                             <i class="fas fa-sync"></i> Try Again
-                        </button>
-                        <button class="btn-back" onclick="window.location.href='${isCartCheckout ? 'cart.html' : 'services.html'}'">
-                            ← Go to Services
                         </button>
                     </div>
                 `;
