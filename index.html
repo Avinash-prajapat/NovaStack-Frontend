@@ -98,7 +98,6 @@
       -moz-osx-font-smoothing: grayscale;
     }
     
-    /* Prevent scroll when mobile menu is open */
     body.menu-open {
       overflow: hidden;
       position: fixed;
@@ -236,58 +235,90 @@
     .nav-links a:hover { color: var(--text-primary); }
     .nav-links a:hover::after { width: 100%; }
     
-    .nav-right {
+    /* ===== 🎭 NEW: Left-side User Toggle (when logged in) ===== */
+    .user-toggle-wrapper {
+      position: relative;
       display: flex;
       align-items: center;
-      gap: 0.8rem;
-      position: relative;
       flex-shrink: 0;
     }
     
-    /* ===== 🎭 Profile Dropdown ===== */
-    .profile-wrapper {
-      position: relative;
+    .user-toggle {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      padding: 0.4rem 0.8rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-full);
+      cursor: pointer;
+      transition: all var(--transition-normal);
+      min-height: 40px;
     }
     
-    .profile-btn {
-      width: 40px;
-      height: 40px;
+    .user-toggle:hover {
+      background: var(--surface-hover);
+      border-color: var(--accent);
+      transform: translateY(-1px);
+    }
+    
+    .user-toggle.active {
+      background: var(--surface-hover);
+      border-color: var(--accent);
+    }
+    
+    .user-avatar {
+      width: 32px;
+      height: 32px;
       border-radius: 50%;
       background: var(--gradient-accent);
       display: flex;
       align-items: center;
       justify-content: center;
-      color: white;
-      cursor: pointer;
-      border: 2px solid var(--accent);
-      transition: all var(--transition-normal);
       font-weight: 600;
-      font-size: 1rem;
+      font-size: 0.85rem;
+      color: white;
       text-transform: uppercase;
       flex-shrink: 0;
+      overflow: hidden;
     }
     
-    .profile-btn:hover {
-      transform: scale(1.05);
-      box-shadow: 0 0 20px var(--accent-glow);
-    }
-    
-    .profile-btn img {
+    .user-avatar img {
       width: 100%;
       height: 100%;
-      border-radius: 50%;
       object-fit: cover;
     }
     
-    .profile-dropdown {
+    .user-name {
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--text-primary);
+      max-width: 120px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    
+    .user-toggle i.chevron {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      transition: transform var(--transition-fast);
+    }
+    
+    .user-toggle.active i.chevron {
+      transform: rotate(180deg);
+    }
+    
+    /* ===== 📦 User Dropdown Menu (Left-side) ===== */
+    .user-dropdown {
       position: absolute;
-      top: calc(100% + 10px);
-      right: 0;
+      top: calc(100% + 12px);
+      left: 0;
       background: var(--bg-card);
       border: 1px solid var(--border);
       border-radius: var(--radius-md);
-      min-width: 220px;
-      padding: 0.8rem 0;
+      min-width: 240px;
+      padding: 0.5rem 0;
       box-shadow: var(--shadow-lg);
       backdrop-filter: blur(20px);
       opacity: 0;
@@ -297,23 +328,47 @@
       z-index: 1001;
     }
     
-    .profile-dropdown.active {
+    .user-dropdown.active {
       opacity: 1;
       visibility: visible;
       transform: translateY(0);
     }
     
-    .profile-dropdown::before {
+    .user-dropdown::before {
       content: '';
       position: absolute;
       top: -6px;
-      right: 20px;
+      left: 24px;
       width: 12px;
       height: 12px;
       background: var(--bg-card);
       border-left: 1px solid var(--border);
       border-top: 1px solid var(--border);
       transform: rotate(45deg);
+    }
+    
+    .dropdown-header {
+      padding: 0.8rem 1.2rem;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 0.3rem;
+    }
+    
+    .dropdown-header .user-avatar {
+      width: 40px;
+      height: 40px;
+      font-size: 1rem;
+      margin-bottom: 0.4rem;
+    }
+    
+    .dropdown-header .user-name {
+      font-size: 1rem;
+      font-weight: 600;
+      max-width: none;
+    }
+    
+    .dropdown-header .user-email {
+      font-size: 0.8rem;
+      color: var(--text-muted);
     }
     
     .dropdown-item {
@@ -339,23 +394,47 @@
       width: 20px;
       text-align: center;
       color: var(--accent);
+      font-size: 0.9rem;
+    }
+    
+    .dropdown-item .badge {
+      margin-left: auto;
+      background: var(--accent);
+      color: white;
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 0.15rem 0.5rem;
+      border-radius: var(--radius-full);
+      min-width: 20px;
+      text-align: center;
     }
     
     .dropdown-divider {
       height: 1px;
       background: var(--border);
-      margin: 0.5rem 0;
+      margin: 0.4rem 0;
     }
     
     .dropdown-logout {
       color: #ef4444 !important;
+      border-top: 1px solid var(--border);
+      margin-top: 0.3rem;
+      padding-top: 0.7rem;
     }
     
     .dropdown-logout i {
       color: #ef4444 !important;
     }
     
-    /* Guest Auth Buttons */
+    /* ===== 🎭 Right-side Auth Buttons (Guest View) ===== */
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      position: relative;
+      flex-shrink: 0;
+    }
+    
     .auth-buttons {
       display: flex;
       align-items: center;
@@ -382,7 +461,7 @@
       position: relative;
       overflow: hidden;
       border: none;
-      min-height: 44px; /* Touch-friendly */
+      min-height: 44px;
     }
     
     .btn::before {
@@ -479,7 +558,7 @@
     .menu-toggle {
       display: none;
       font-size: 1.4rem;
-      color: red;   /* 👈 yahan color change karo */
+      color: var(--accent);
       cursor: pointer;
       padding: 0.6rem;
       border-radius: var(--radius-sm);
@@ -613,6 +692,7 @@
       background: var(--surface);
       border-radius: var(--radius-md);
       margin-bottom: 0.5rem;
+      cursor: pointer;
     }
     
     .mobile-profile-avatar {
@@ -669,7 +749,6 @@
       background: rgba(239, 68, 68, 0.1) !important;
     }
     
-    /* Mobile Cart Button */
     .mobile-cart-btn {
       display: none;
     }
@@ -1281,7 +1360,6 @@
       line-height: 1.5;
     }
     
-    
     /* ===== 🦶 Footer ===== */
     footer {
       background: var(--bg-secondary);
@@ -1453,6 +1531,10 @@
       .nav-right { display: none; }
       .menu-toggle { display: flex; }
       
+      .user-toggle-wrapper {
+        display: none !important;
+      }
+      
       .hero { padding: 110px 4% 80px; }
       .hero h1 { font-size: clamp(2rem, 8vw, 3rem); }
       .hero-stats { gap: 1.8rem; flex-wrap: wrap; }
@@ -1468,14 +1550,6 @@
       footer > .footer-top > div:first-child p { margin-left: auto; margin-right: auto; }
       .footer-bottom { flex-direction: column; text-align: center; }
       
-      
-      
-      .profile-dropdown {
-        right: -10px;
-        min-width: 200px;
-      }
-      
-      /* Mobile menu adjustments */
       .mobile-menu {
         top: 68px;
       }
@@ -1491,7 +1565,6 @@
       .hero h1 { font-size: clamp(1.8rem, 9vw, 2.5rem); }
       .section-header h2 { font-size: clamp(1.5rem, 6vw, 2rem); }
       
-      /* Smaller touch targets for very small screens */
       .btn, .cat-btn, .mobile-nav-link {
         min-height: 48px;
         padding: 0.8rem 1rem;
@@ -1521,7 +1594,6 @@
       background: var(--accent);
     }
     
-    /* Mobile menu scrollbar */
     .mobile-menu::-webkit-scrollbar {
       width: 4px;
     }
@@ -1531,7 +1603,7 @@
     }
     
     /* Focus States for Accessibility */
-    a:focus, button:focus, .cat-btn:focus, .mobile-nav-link:focus {
+    a:focus, button:focus, .cat-btn:focus, .mobile-nav-link:focus, .user-toggle:focus {
       outline: 2px solid var(--accent);
       outline-offset: 2px;
     }
@@ -1578,18 +1650,32 @@
   
   <!-- Desktop Right Section -->
   <div class="nav-right">
-    <!-- Guest View: Login/Signup Buttons -->
+    
+    <!-- ✅ Guest View: Login/Signup Buttons -->
     <div class="auth-buttons" id="authButtons">
       <a href="login.html" class="btn btn-outline" id="login-btn">Login</a>
       <a href="signup.html" class="btn btn-primary" id="signup-btn">Sign Up</a>
     </div>
     
-    <!-- Logged In View: Profile Dropdown -->
-    <div class="profile-wrapper" id="profileWrapper" style="display: none;">
-      <div class="profile-btn" id="profileBtn">
-        <i class="fas fa-user"></i>
+    <!-- ✅ Logged In View: Left-side User Toggle with Dropdown -->
+    <div class="user-toggle-wrapper" id="userToggleWrapper" style="display: none;">
+      <div class="user-toggle" id="userToggle" role="button" tabindex="0" aria-expanded="false" aria-haspopup="true">
+        <div class="user-avatar" id="userAvatar">
+          <i class="fas fa-user"></i>
+        </div>
+        <span class="user-name" id="userName">User</span>
+        <i class="fas fa-chevron-down chevron"></i>
       </div>
-      <div class="profile-dropdown" id="profileDropdown">
+      
+      <div class="user-dropdown" id="userDropdown">
+        <div class="dropdown-header">
+          <div class="user-avatar" id="dropdownAvatar">
+            <i class="fas fa-user"></i>
+          </div>
+          <div class="user-name" id="dropdownName">User Name</div>
+          <div class="user-email" id="dropdownEmail">user@example.com</div>
+        </div>
+        
         <a href="profile.html" class="dropdown-item">
           <i class="fas fa-user-circle"></i> My Profile
         </a>
@@ -1598,7 +1684,7 @@
         </a>
         <a href="cart.html" class="dropdown-item">
           <i class="fas fa-shopping-cart"></i> Cart 
-          <span class="cart-count" id="cart-count-dropdown">0</span>
+          <span class="badge" id="cartBadge">0</span>
         </a>
         <div class="dropdown-divider"></div>
         <a href="#" class="dropdown-item dropdown-logout" id="dropdownLogout">
@@ -1607,10 +1693,10 @@
       </div>
     </div>
     
-    <!-- Cart Button (Only Visible When Logged In) -->
-    <a href="cart.html" class="btn btn-outline cart-btn auth-only" id="cartBtn">
+    <!-- Cart Button (Only Visible When Logged In - Right Side Backup) -->
+    <a href="cart.html" class="btn btn-outline cart-btn auth-only" id="cartBtn" style="display: none;">
       <i class="fas fa-shopping-cart"></i> 
-      <span class="cart-count" id="cart-count">0</span>
+      <span class="cart-count" id="cartCountRight">0</span>
     </a>
   </div>
   
@@ -1647,7 +1733,7 @@
     
     <!-- Logged In Profile Section -->
     <div class="mobile-profile-section" id="mobileProfileSection">
-      <div class="mobile-profile-header">
+      <div class="mobile-profile-header" id="mobileProfileToggle">
         <div class="mobile-profile-avatar" id="mobileProfileAvatar">
           <i class="fas fa-user"></i>
         </div>
@@ -1655,26 +1741,31 @@
           <div class="mobile-profile-name" id="mobileProfileName">User</div>
           <div class="mobile-profile-email" id="mobileProfileEmail">user@example.com</div>
         </div>
+        <i class="fas fa-chevron-down" style="color: var(--text-muted);"></i>
       </div>
-      <a href="profile.html" class="mobile-nav-link" data-close-menu>
-        <i class="fas fa-user-circle"></i> My Profile
-      </a>
-      <a href="my-orders.html" class="mobile-nav-link" data-close-menu>
-        <i class="fas fa-shopping-bag"></i> My Orders
-      </a>
-      <a href="cart.html" class="mobile-nav-link mobile-cart-btn" data-close-menu>
-        <i class="fas fa-shopping-cart"></i> Cart 
-        <span class="cart-count" id="mobile-cart-count" style="margin-left:auto">0</span>
-      </a>
-      <button class="btn btn-outline mobile-logout-btn" id="mobileLogoutBtn" data-close-menu>
-        <i class="fas fa-sign-out-alt"></i> Logout
-      </button>
+      
+      <!-- Collapsible Profile Menu -->
+      <div id="mobileProfileMenu" style="display: none; flex-direction: column; gap: 0.3rem; padding: 0.3rem 0;">
+        <a href="profile.html" class="mobile-nav-link" data-close-menu style="padding-left: 2.8rem;">
+          <i class="fas fa-user-circle"></i> My Profile
+        </a>
+        <a href="my-orders.html" class="mobile-nav-link" data-close-menu style="padding-left: 2.8rem;">
+          <i class="fas fa-shopping-bag"></i> My Orders
+        </a>
+        <a href="cart.html" class="mobile-nav-link mobile-cart-btn" data-close-menu style="padding-left: 2.8rem;">
+          <i class="fas fa-shopping-cart"></i> Cart 
+          <span class="cart-count" id="mobileCartCount" style="margin-left:auto">0</span>
+        </a>
+        <button class="btn btn-outline mobile-logout-btn" id="mobileLogoutBtn" data-close-menu style="margin: 0.5rem 1.2rem;">
+          <i class="fas fa-sign-out-alt"></i> Logout
+        </button>
+      </div>
     </div>
     
     <!-- Mobile Cart Button (Guest - hidden) -->
     <a href="cart.html" class="mobile-nav-link mobile-cart-btn auth-only" style="display:none" data-close-menu>
       <i class="fas fa-shopping-cart"></i> Cart 
-      <span class="cart-count" id="mobile-cart-count-guest">0</span>
+      <span class="cart-count" id="mobileCartCountGuest">0</span>
     </a>
   </div>
 </div>
@@ -1777,8 +1868,6 @@
   </div>
 </div>
 
-
-
 <footer id="contact">
   <div class="footer-top">
     <div>
@@ -1828,11 +1917,10 @@ const CONFIG = {
   }
 };
 
-
-
 // ── Create Floating Particles ─────────────────────────────────────────────
 function createParticles() {
   const container = document.getElementById('particles');
+  if (!container) return;
   for (let i = 0; i < 25; i++) {
     const particle = document.createElement('div');
     particle.className = 'particle';
@@ -1851,12 +1939,14 @@ window.addEventListener('scroll', () => {
   const nav = document.getElementById('navbar');
   const mobileMenu = document.getElementById('mobileMenu');
   
+  if (!nav) return;
+  
   if (window.scrollY > 50) {
     nav.classList.add('scrolled');
-    mobileMenu.style.top = '64px';
+    if (mobileMenu) mobileMenu.style.top = '64px';
   } else {
     nav.classList.remove('scrolled');
-    mobileMenu.style.top = window.innerWidth <= 768 ? '68px' : '72px';
+    if (mobileMenu) mobileMenu.style.top = window.innerWidth <= 768 ? '68px' : '72px';
   }
 });
 
@@ -1866,18 +1956,16 @@ const mobileMenu = document.getElementById('mobileMenu');
 const body = document.body;
 
 function toggleMobileMenu() {
+  if (!mobileMenu || !menuToggle) return;
   const isActive = mobileMenu.classList.toggle('active');
   menuToggle.classList.toggle('active', isActive);
   menuToggle.setAttribute('aria-expanded', isActive);
   
-  // Prevent body scroll when menu is open
   if (isActive) {
     body.classList.add('menu-open');
-    // Store scroll position
     body.dataset.scrollY = window.scrollY;
   } else {
     body.classList.remove('menu-open');
-    // Restore scroll position
     if (body.dataset.scrollY) {
       window.scrollTo(0, parseInt(body.dataset.scrollY));
       delete body.dataset.scrollY;
@@ -1885,18 +1973,18 @@ function toggleMobileMenu() {
   }
 }
 
-menuToggle.addEventListener('click', toggleMobileMenu);
+if (menuToggle) menuToggle.addEventListener('click', toggleMobileMenu);
 
-// Close menu when clicking any link with data-close-menu
 document.querySelectorAll('[data-close-menu]').forEach(link => {
   link.addEventListener('click', () => {
-    if (mobileMenu.classList.contains('active')) {
+    if (mobileMenu && mobileMenu.classList.contains('active')) {
       mobileMenu.classList.remove('active');
-      menuToggle.classList.remove('active');
-      menuToggle.setAttribute('aria-expanded', 'false');
+      if (menuToggle) {
+        menuToggle.classList.remove('active');
+        menuToggle.setAttribute('aria-expanded', 'false');
+      }
       body.classList.remove('menu-open');
       
-      // Restore scroll position
       if (body.dataset.scrollY) {
         setTimeout(() => {
           window.scrollTo(0, parseInt(body.dataset.scrollY));
@@ -1907,14 +1995,15 @@ document.querySelectorAll('[data-close-menu]').forEach(link => {
   });
 });
 
-// Close menu when clicking outside
 document.addEventListener('click', (e) => {
-  if (mobileMenu.classList.contains('active') && 
+  if (mobileMenu && mobileMenu.classList.contains('active') && 
       !mobileMenu.contains(e.target) && 
-      !menuToggle.contains(e.target)) {
+      (!menuToggle || !menuToggle.contains(e.target))) {
     mobileMenu.classList.remove('active');
-    menuToggle.classList.remove('active');
-    menuToggle.setAttribute('aria-expanded', 'false');
+    if (menuToggle) {
+      menuToggle.classList.remove('active');
+      menuToggle.setAttribute('aria-expanded', 'false');
+    }
     body.classList.remove('menu-open');
     
     if (body.dataset.scrollY) {
@@ -1926,28 +2015,27 @@ document.addEventListener('click', (e) => {
   }
 });
 
-// Close menu on escape key
 document.addEventListener('keydown', (e) => {
-  if (e.key === 'Escape' && mobileMenu.classList.contains('active')) {
+  if (e.key === 'Escape' && mobileMenu && mobileMenu.classList.contains('active')) {
     toggleMobileMenu();
-    menuToggle.focus();
+    if (menuToggle) menuToggle.focus();
   }
 });
 
-// Handle window resize - close menu if switching to desktop
 window.addEventListener('resize', () => {
-  if (window.innerWidth > 768 && mobileMenu.classList.contains('active')) {
+  if (mobileMenu && window.innerWidth > 768 && mobileMenu.classList.contains('active')) {
     mobileMenu.classList.remove('active');
-    menuToggle.classList.remove('active');
+    if (menuToggle) menuToggle.classList.remove('active');
     body.classList.remove('menu-open');
   }
   
-  // Update navbar height for mobile menu position
   const nav = document.getElementById('navbar');
-  if (window.scrollY > 50) {
-    mobileMenu.style.top = '64px';
-  } else {
-    mobileMenu.style.top = window.innerWidth <= 768 ? '68px' : '72px';
+  if (nav && mobileMenu) {
+    if (window.scrollY > 50) {
+      mobileMenu.style.top = '64px';
+    } else {
+      mobileMenu.style.top = window.innerWidth <= 768 ? '68px' : '72px';
+    }
   }
 });
 
@@ -2043,11 +2131,12 @@ async function logout() {
   
   updateAuthUI();
   
-  // Close mobile menu if open
-  if (mobileMenu.classList.contains('active')) {
+  if (mobileMenu && mobileMenu.classList.contains('active')) {
     mobileMenu.classList.remove('active');
-    menuToggle.classList.remove('active');
-    body.classList.remove('menu-open');
+    if (menuToggle) {
+      menuToggle.classList.remove('active');
+      body.classList.remove('menu-open');
+    }
   }
   
   window.location.href = 'index.html';
@@ -2067,19 +2156,30 @@ async function updateAuthUI() {
   }
   
   // Update all cart count displays
-  ['cart-count', 'cart-count-dropdown', 'mobile-cart-count', 'mobile-cart-count-guest'].forEach(id => {
+  ['cartCountRight', 'cartBadge', 'mobileCartCount', 'mobileCartCountGuest'].forEach(id => {
     const el = document.getElementById(id);
-    if (el) el.textContent = cartCount;
+    if (el) {
+      el.textContent = cartCount;
+      el.style.display = cartCount > 0 ? 'flex' : 'none';
+    }
   });
   
   if (isLoggedIn && user) {
-    // Desktop: Show profile, hide auth buttons
-    document.getElementById('authButtons').classList.add('hidden');
-    document.getElementById('profileWrapper').style.display = 'block';
+    // ✅ Desktop: Show LEFT-side user toggle, hide auth buttons
+    const authButtons = document.getElementById('authButtons');
+    const userToggleWrapper = document.getElementById('userToggleWrapper');
+    const cartBtnRight = document.getElementById('cartBtn');
     
-    // Mobile: Show profile section, hide auth buttons
-    document.getElementById('mobileAuthButtons').classList.add('hidden');
-    document.getElementById('mobileProfileSection').classList.add('visible');
+    if (authButtons) authButtons.classList.add('hidden');
+    if (userToggleWrapper) userToggleWrapper.style.display = 'flex';
+    if (cartBtnRight) cartBtnRight.style.display = 'none';
+    
+    // ✅ Mobile: Show profile section, hide auth buttons
+    const mobileAuth = document.getElementById('mobileAuthButtons');
+    const mobileProfile = document.getElementById('mobileProfileSection');
+    
+    if (mobileAuth) mobileAuth.classList.add('hidden');
+    if (mobileProfile) mobileProfile.classList.add('visible');
     
     // Show auth-only elements
     document.querySelectorAll('.auth-only').forEach(el => {
@@ -2089,37 +2189,68 @@ async function updateAuthUI() {
       }
     });
     
-    // Update desktop profile button
-    const profileBtn = document.getElementById('profileBtn');
-    if (user.avatar) {
-      profileBtn.innerHTML = `<img src="${user.avatar}" alt="${user.name || 'User'}">`;
-    } else {
-      const initial = (user.name || user.email || 'U').charAt(0).toUpperCase();
-      profileBtn.textContent = initial;
-    }
+    // ✅ Update desktop user toggle
+    const userAvatar = document.getElementById('userAvatar');
+    const userName = document.getElementById('userName');
+    const dropdownAvatar = document.getElementById('dropdownAvatar');
+    const dropdownName = document.getElementById('dropdownName');
+    const dropdownEmail = document.getElementById('dropdownEmail');
     
-    // Update mobile profile section
+    const initial = (user.name || user.email || 'U').charAt(0).toUpperCase();
+    
+    if (userAvatar) {
+      if (user.avatar) {
+        userAvatar.innerHTML = `<img src="${user.avatar}" alt="${user.name || 'User'}">`;
+      } else {
+        userAvatar.textContent = initial;
+        userAvatar.innerHTML = initial;
+      }
+    }
+    if (userName) userName.textContent = user.name || user.email || 'User';
+    
+    if (dropdownAvatar) {
+      if (user.avatar) {
+        dropdownAvatar.innerHTML = `<img src="${user.avatar}" alt="${user.name || 'User'}">`;
+      } else {
+        dropdownAvatar.textContent = initial;
+        dropdownAvatar.innerHTML = initial;
+      }
+    }
+    if (dropdownName) dropdownName.textContent = user.name || user.email || 'User';
+    if (dropdownEmail) dropdownEmail.textContent = user.email || '';
+    
+    // ✅ Update mobile profile
     const mobileAvatar = document.getElementById('mobileProfileAvatar');
     const mobileName = document.getElementById('mobileProfileName');
     const mobileEmail = document.getElementById('mobileProfileEmail');
     
-    if (user.avatar) {
-      mobileAvatar.innerHTML = `<img src="${user.avatar}" alt="${user.name || 'User'}">`;
-    } else {
-      const initial = (user.name || user.email || 'U').charAt(0).toUpperCase();
-      mobileAvatar.textContent = initial;
+    if (mobileAvatar) {
+      if (user.avatar) {
+        mobileAvatar.innerHTML = `<img src="${user.avatar}" alt="${user.name || 'User'}">`;
+      } else {
+        mobileAvatar.textContent = initial;
+        mobileAvatar.innerHTML = initial;
+      }
     }
-    mobileName.textContent = user.name || user.email || 'User';
-    mobileEmail.textContent = user.email || '';
+    if (mobileName) mobileName.textContent = user.name || user.email || 'User';
+    if (mobileEmail) mobileEmail.textContent = user.email || '';
     
   } else {
-    // Desktop: Show auth buttons, hide profile
-    document.getElementById('authButtons').classList.remove('hidden');
-    document.getElementById('profileWrapper').style.display = 'none';
+    // ✅ Guest View: Show auth buttons, hide user toggle
+    const authButtons = document.getElementById('authButtons');
+    const userToggleWrapper = document.getElementById('userToggleWrapper');
+    const cartBtnRight = document.getElementById('cartBtn');
     
-    // Mobile: Show auth buttons, hide profile section
-    document.getElementById('mobileAuthButtons').classList.remove('hidden');
-    document.getElementById('mobileProfileSection').classList.remove('visible');
+    if (authButtons) authButtons.classList.remove('hidden');
+    if (userToggleWrapper) userToggleWrapper.style.display = 'none';
+    if (cartBtnRight) cartBtnRight.style.display = 'none';
+    
+    // ✅ Mobile: Show auth buttons, hide profile section
+    const mobileAuth = document.getElementById('mobileAuthButtons');
+    const mobileProfile = document.getElementById('mobileProfileSection');
+    
+    if (mobileAuth) mobileAuth.classList.remove('hidden');
+    if (mobileProfile) mobileProfile.classList.remove('visible');
     
     // Hide auth-only elements
     document.querySelectorAll('.auth-only').forEach(el => {
@@ -2131,20 +2262,52 @@ async function updateAuthUI() {
   }
 }
 
-// ── Profile Dropdown Toggle (Desktop) ─────────────────────────────────────
-document.getElementById('profileBtn')?.addEventListener('click', (e) => {
-  e.stopPropagation();
-  const dropdown = document.getElementById('profileDropdown');
-  dropdown.classList.toggle('active');
+// ── User Dropdown Toggle (Desktop - Left Side) ────────────────────────────
+const userToggle = document.getElementById('userToggle');
+const userDropdown = document.getElementById('userDropdown');
+
+function toggleUserDropdown() {
+  if (!userToggle || !userDropdown) return;
+  const isActive = userDropdown.classList.toggle('active');
+  userToggle.classList.toggle('active', isActive);
+  userToggle.setAttribute('aria-expanded', isActive);
+}
+
+if (userToggle) {
+  userToggle.addEventListener('click', (e) => {
+    e.stopPropagation();
+    toggleUserDropdown();
+  });
+  
+  // Keyboard support
+  userToggle.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      toggleUserDropdown();
+    }
+  });
+}
+
+// Close dropdown when clicking outside
+document.addEventListener('click', (e) => {
+  if (userDropdown && userToggle && 
+      !userToggle.contains(e.target) && 
+      !userDropdown.contains(e.target)) {
+    userDropdown.classList.remove('active');
+    userToggle.classList.remove('active');
+    userToggle.setAttribute('aria-expanded', 'false');
+  }
 });
 
-// Close desktop profile dropdown when clicking outside
-document.addEventListener('click', (e) => {
-  const dropdown = document.getElementById('profileDropdown');
-  const profileBtn = document.getElementById('profileBtn');
-  
-  if (dropdown && !profileBtn?.contains(e.target) && !dropdown.contains(e.target)) {
-    dropdown.classList.remove('active');
+// Close on escape
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && userDropdown && userDropdown.classList.contains('active')) {
+    userDropdown.classList.remove('active');
+    if (userToggle) {
+      userToggle.classList.remove('active');
+      userToggle.setAttribute('aria-expanded', 'false');
+      userToggle.focus();
+    }
   }
 });
 
@@ -2159,6 +2322,20 @@ document.getElementById('mobileLogoutBtn')?.addEventListener('click', (e) => {
   e.preventDefault();
   logout();
 });
+
+// ── Mobile Profile Toggle ─────────────────────────────────────────────────
+const mobileProfileToggle = document.getElementById('mobileProfileToggle');
+const mobileProfileMenu = document.getElementById('mobileProfileMenu');
+
+if (mobileProfileToggle && mobileProfileMenu) {
+  mobileProfileToggle.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const isExpanded = mobileProfileMenu.style.display === 'flex';
+    mobileProfileMenu.style.display = isExpanded ? 'none' : 'flex';
+    const icon = mobileProfileToggle.querySelector('i');
+    if (icon) icon.style.transform = isExpanded ? 'rotate(0deg)' : 'rotate(180deg)';
+  });
+}
 
 // ── REAL API Fetch (NO DEMO/FALLBACK) ─────────────────────────────────────
 async function apiFetch(path, opts = {}) {
@@ -2198,6 +2375,7 @@ let activeCategory = 'all';
 
 async function loadServices() {
   const container = document.getElementById('services-container');
+  if (!container) return;
   
   try {
     const data = await apiFetch(CONFIG.ENDPOINTS.SERVICES);
@@ -2226,6 +2404,7 @@ async function loadServices() {
 
 function renderServices() {
   const container = document.getElementById('services-container');
+  if (!container) return;
   
   const filtered = activeCategory === 'all' 
     ? allServices 
@@ -2290,6 +2469,7 @@ function renderServices() {
 
 function renderHeroPreview() {
   const preview = document.getElementById('hero-preview');
+  if (!preview) return;
   
   if (!allServices || allServices.length === 0) {
     preview.innerHTML = '';
@@ -2345,7 +2525,9 @@ const observer = new IntersectionObserver((entries) => {
   });
 }, observerOptions);
 
-document.querySelectorAll('.animate-on-scroll').forEach(el => observer.observe(el));
+document.querySelectorAll('.animate-on-scroll').forEach(el => {
+  if (el) observer.observe(el);
+});
 
 // ── Animated Counter for Stats ────────────────────────────────────────────
 function animateCounter(element, target, duration = 2000) {
@@ -2367,8 +2549,9 @@ function animateCounter(element, target, duration = 2000) {
 const heroObserver = new IntersectionObserver((entries) => {
   if (entries[0].isIntersecting) {
     document.querySelectorAll('.counter').forEach(counter => {
+      if (!counter) return;
       const target = parseInt(counter.dataset.target);
-      const suffix = counter.closest('.stat-item').querySelector('p').textContent.includes('hrs') ? 'h' : '%';
+      const suffix = counter.closest('.stat-item')?.querySelector('p')?.textContent?.includes('hrs') ? 'h' : '%';
       counter.dataset.suffix = suffix;
       animateCounter(counter, target);
     });
@@ -2388,11 +2571,12 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     e.preventDefault();
     const target = document.querySelector(href);
     if (target) {
-      // Close mobile menu if open
-      if (mobileMenu.classList.contains('active')) {
+      if (mobileMenu && mobileMenu.classList.contains('active')) {
         mobileMenu.classList.remove('active');
-        menuToggle.classList.remove('active');
-        body.classList.remove('menu-open');
+        if (menuToggle) {
+          menuToggle.classList.remove('active');
+          body.classList.remove('menu-open');
+        }
       }
       
       const headerOffset = 80;
@@ -2426,16 +2610,17 @@ document.addEventListener('DOMContentLoaded', async () => {
   // Handle window resize for mobile menu position
   window.addEventListener('resize', () => {
     const nav = document.getElementById('navbar');
-    if (window.scrollY > 50) {
-      mobileMenu.style.top = '64px';
-    } else {
-      mobileMenu.style.top = window.innerWidth <= 768 ? '68px' : '72px';
+    if (nav && mobileMenu) {
+      if (window.scrollY > 50) {
+        mobileMenu.style.top = '64px';
+      } else {
+        mobileMenu.style.top = window.innerWidth <= 768 ? '68px' : '72px';
+      }
     }
     
-    // Close mobile menu if switching to desktop
-    if (window.innerWidth > 768 && mobileMenu.classList.contains('active')) {
+    if (window.innerWidth > 768 && mobileMenu && mobileMenu.classList.contains('active')) {
       mobileMenu.classList.remove('active');
-      menuToggle.classList.remove('active');
+      if (menuToggle) menuToggle.classList.remove('active');
       body.classList.remove('menu-open');
     }
   });
@@ -2445,9 +2630,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     setInterval(async () => {
       const cartItems = await Cart.fetch();
       const count = cartItems.length;
-      ['cart-count', 'cart-count-dropdown', 'mobile-cart-count', 'mobile-cart-count-guest'].forEach(id => {
+      ['cartCountRight', 'cartBadge', 'mobileCartCount', 'mobileCartCountGuest'].forEach(id => {
         const el = document.getElementById(id);
-        if (el) el.textContent = count;
+        if (el) {
+          el.textContent = count;
+          el.style.display = count > 0 ? 'flex' : 'none';
+        }
       });
     }, 30000);
   }
