@@ -479,7 +479,7 @@
     .menu-toggle {
       display: none;
       font-size: 1.4rem;
-      color: var(--text-primary);
+      color: red;
       cursor: pointer;
       padding: 0.6rem;
       border-radius: var(--radius-sm);
@@ -1281,38 +1281,7 @@
       line-height: 1.5;
     }
     
-    /* ===== 💬 WhatsApp Float ===== */
-    .whatsapp-float {
-      position: fixed;
-      bottom: 2rem; right: 2rem;
-      z-index: 999;
-      background: linear-gradient(135deg, #25D366, #128C7E);
-      color: white;
-      padding: 0.9rem 1.6rem;
-      border-radius: var(--radius-full);
-      display: flex;
-      align-items: center;
-      gap: 0.7rem;
-      text-decoration: none;
-      font-weight: 600;
-      font-size: 0.95rem;
-      box-shadow: 0 6px 30px rgba(37, 211, 102, 0.5);
-      transition: all var(--transition-normal);
-      animation: floatUp 0.6s ease 0.5s both;
-      min-height: 48px;
-    }
     
-    .whatsapp-float:hover {
-      transform: translateY(-4px) scale(1.05);
-      box-shadow: 0 12px 45px rgba(37, 211, 102, 0.7);
-    }
-    
-    .whatsapp-float i { font-size: 1.3rem; }
-    
-    @keyframes floatUp {
-      from { opacity: 0; transform: translateY(30px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
     
     /* ===== 🦶 Footer ===== */
     footer {
@@ -1500,11 +1469,7 @@
       footer > .footer-top > div:first-child p { margin-left: auto; margin-right: auto; }
       .footer-bottom { flex-direction: column; text-align: center; }
       
-      .whatsapp-float {
-        bottom: 1.2rem; right: 1.2rem;
-        padding: 0.75rem 1.3rem;
-        font-size: 0.85rem;
-      }
+      
       
       .profile-dropdown {
         right: -10px;
@@ -1753,7 +1718,7 @@
 <div class="trust-bar">
   <div class="trust-item"><i class="fas fa-bolt"></i> Fast Delivery</div>
   <div class="trust-item"><i class="fas fa-shield-alt"></i> Secure Code</div>
-  <div class="trust-item"><i class="fab fa-whatsapp"></i> WhatsApp Support</div>
+  <div class="trust-item"><i class="fab fa-whatsapp"></i> WhatsApp & Chat Support</div>
   <div class="trust-item"><i class="fas fa-sync-alt"></i> Free Revisions</div>
   <div class="trust-item"><i class="fas fa-code-branch"></i> Source Code Included</div>
 </div>
@@ -1812,11 +1777,6 @@
     </div>
   </div>
 </div>
-
-<a href="https://wa.me/PHONE?text=Hi!%20I'm%20interested%20in%20your%20software%20services." 
-   class="whatsapp-float" id="wa-link" target="_blank" rel="noopener">
-  <i class="fab fa-whatsapp"></i> Chat on WhatsApp
-</a>
 
 <footer id="contact">
   <div class="footer-top">
