@@ -479,7 +479,7 @@
     .menu-toggle {
       display: none;
       font-size: 1.4rem;
-      color: red;
+      color: red;   /* 👈 yahan color change karo */
       cursor: pointer;
       padding: 0.6rem;
       border-radius: var(--radius-sm);
@@ -1282,7 +1282,6 @@
     }
     
     
-    
     /* ===== 🦶 Footer ===== */
     footer {
       background: var(--bg-secondary);
@@ -1697,7 +1696,7 @@
     </div>
     <div class="hero-stats">
       <div class="stat-item">
-        <h3 class="counter" data-target="95">0</h3>
+        <h3 class="counter" data-target="50">0</h3>
         <p>Projects Delivered</p>
       </div>
       <div class="stat-item">
@@ -1778,6 +1777,8 @@
   </div>
 </div>
 
+
+
 <footer id="contact">
   <div class="footer-top">
     <div>
@@ -1827,9 +1828,7 @@ const CONFIG = {
   }
 };
 
-// Set WhatsApp link
-document.getElementById('wa-link').href =
-  `https://wa.me/${CONFIG.WA_NUMBER}?text=Hi!%20I'm%20interested%20in%20your%20software%20services.`;
+
 
 // ── Create Floating Particles ─────────────────────────────────────────────
 function createParticles() {
@@ -2265,7 +2264,7 @@ function renderServices() {
             <h3>${title}</h3>
             <p>${desc.substring(0, 90)}${desc.length > 90 ? '...' : ''}</p>
             <div class="card-footer">
-              <div class="price">₹${price}<span> starting</span></div>
+              <div class="price">$${price}<span> starting</span></div>
               <a class="btn-card" href="project.html?id=${id}">
                 View Details <i class="fas fa-arrow-right"></i>
               </a>
@@ -2316,7 +2315,7 @@ function renderHeroPreview() {
         <h4>${title.substring(0, 28)}${title.length > 28 ? '...' : ''}</h4>
         <p>${tech ? tech.split(',').slice(0, 2).join(', ') : ''}</p>
       </div>
-      <div class="card-price">₹${price}</div>
+      <div class="card-price">$${price}</div>
     </div>`;
   }).join('');
 }
