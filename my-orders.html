@@ -2,22 +2,87 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>My Orders - NovaStack</title>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Syne:wght@600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-    <link rel="icon" type="logo/jpeg" href="logo.png">
+    <link rel="icon" type="image/png" href="logo.png">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        /* ===== 🎨 Modern CSS Variables ===== */
+        :root {
+            --bg-primary: #0f0c1a;
+            --bg-secondary: #1a162a;
+            --bg-card: rgba(26, 22, 42, 0.95);
+            --surface: rgba(255, 255, 255, 0.08);
+            --surface-hover: rgba(255, 255, 255, 0.15);
+            --border: rgba(255, 255, 255, 0.12);
+            --border-hover: rgba(255, 107, 53, 0.6);
+            --text-primary: #ffffff;
+            --text-secondary: rgba(255, 255, 255, 0.75);
+            --text-muted: rgba(255, 255, 255, 0.45);
+            --accent: #ff6b35;
+            --accent-glow: rgba(255, 107, 53, 0.4);
+            --green: #10b981;
+            --green-glow: rgba(16, 185, 129, 0.35);
+            --error: #ef4444;
+            --error-glow: rgba(239, 68, 68, 0.3);
+            --gradient-accent: linear-gradient(135deg, #ff6b35 0%, #f7c531 100%);
+            --gradient-green: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.25);
+            --shadow-md: 0 8px 30px rgba(0, 0, 0, 0.4);
+            --shadow-lg: 0 20px 60px rgba(0, 0, 0, 0.55);
+            --shadow-glow: 0 0 40px var(--accent-glow);
+            --transition-fast: 150ms ease;
+            --transition-normal: 300ms cubic-bezier(0.4, 0, 0.2, 1);
+            --radius-sm: 8px;
+            --radius-md: 14px;
+            --radius-lg: 20px;
+            --radius-xl: 28px;
+            --radius-full: 9999px;
+        }
+
+        /* ===== 🌟 Base Reset ===== */
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        
+        html { scroll-behavior: smooth; scroll-padding-top: 80px; -webkit-overflow-scrolling: touch; }
         
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
-            background: linear-gradient(135deg, #0f0c1a 0%, #1a162a 100%);
-            color: #ffffff;
+            background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+            color: var(--text-primary);
             min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
-        
+
+        /* Prevent scroll when mobile menu is open */
+        body.menu-open {
+            overflow: hidden;
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            top: 0;
+        }
+
+        /* Animated Background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: 
+                radial-gradient(ellipse at 20% 80%, rgba(124, 58, 237, 0.12) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 20%, rgba(255, 107, 53, 0.1) 0%, transparent 50%);
+            z-index: -2;
+            pointer-events: none;
+        }
+
+        /* Container */
+        .container { max-width: 1200px; margin: 2rem auto; padding: 0 2rem; }
+
+        /* ===== 🔗 Navigation ===== */
         nav {
             background: rgba(26, 22, 42, 0.95);
             backdrop-filter: blur(10px);
@@ -25,88 +90,170 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
+            border-bottom: 1px solid var(--border);
             position: sticky;
             top: 0;
             z-index: 100;
             flex-wrap: wrap;
             gap: 1rem;
+            height: 72px;
+            transition: all var(--transition-normal);
         }
         
+        nav.scrolled {
+            height: 64px;
+            background: rgba(15, 12, 26, 0.95);
+            box-shadow: var(--shadow-md);
+        }
+        
+        /* ✅ FIXED: Logo size consistent with index.html (1.6rem) */
         .logo {
             font-family: 'Syne', sans-serif;
-            font-size: 1.5rem;
+            font-size: 1.6rem; /* Same as index.html */
             font-weight: 800;
-            background: linear-gradient(135deg, #ff6b35, #f7c531);
+            background: var(--gradient-accent);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            background-clip: text;
             text-decoration: none;
             display: flex;
             align-items: center;
             gap: 0.3rem;
+            flex-shrink: 0; /* Prevent logo from shrinking */
         }
         
-        .logo i { font-size: 1.3rem; background: none; -webkit-text-fill-color: #ff6b35; color: #ff6b35; }
+        .logo i { 
+            font-size: 1.3rem; 
+            background: none; 
+            -webkit-text-fill-color: var(--accent); 
+            color: var(--accent); 
+        }
         
         .nav-links {
             display: flex;
             gap: 1.5rem;
             flex-wrap: wrap;
+            align-items: center;
         }
         
         .nav-links a {
-            color: rgba(255,255,255,0.7);
+            color: var(--text-secondary);
             text-decoration: none;
-            transition: color 0.3s;
+            transition: color var(--transition-fast);
             display: flex;
             align-items: center;
             gap: 0.4rem;
             font-size: 0.9rem;
+            font-weight: 500;
         }
         
-        .nav-links a:hover, .nav-links a.active { color: #ff6b35; }
+        .nav-links a:hover, .nav-links a.active { color: var(--accent); }
         
-        .profile-section { position: relative; cursor: pointer; }
+        /* ===== 📱 Mobile Menu Toggle ===== */
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--text-primary);
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.6rem;
+            border-radius: var(--radius-sm);
+            transition: background var(--transition-fast);
+            min-width: 44px;
+            min-height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .mobile-menu-btn:hover, .mobile-menu-btn.active {
+            background: var(--surface);
+        }
+
+        /* ===== 📱 Mobile Menu Panel ===== */
+        .nav-links.mobile-show {
+            display: none;
+            flex-direction: column;
+            position: absolute;
+            top: 72px;
+            left: 0;
+            right: 0;
+            background: var(--bg-secondary);
+            padding: 1rem 2rem;
+            border-bottom: 1px solid var(--border);
+            z-index: 999;
+            backdrop-filter: blur(10px);
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1), 
+                        opacity 0.3s ease;
+            opacity: 0;
+        }
+        .nav-links.mobile-show.active {
+            max-height: 500px;
+            opacity: 1;
+        }
+        .nav-links.mobile-show a {
+            padding: 0.8rem 0;
+            border-bottom: 1px solid var(--border);
+        }
+        .nav-links.mobile-show a:last-child {
+            border-bottom: none;
+        }
+
+        /* ===== 🎭 Profile Dropdown ===== */
+        .profile-section { position: relative; cursor: pointer; flex-shrink: 0; }
         
         .profile-trigger {
             display: flex;
             align-items: center;
             gap: 0.8rem;
             padding: 0.4rem 0.8rem;
-            background: rgba(255,255,255,0.08);
-            border-radius: 40px;
-            transition: all 0.3s;
+            background: var(--surface);
+            border-radius: var(--radius-full);
+            transition: all var(--transition-fast);
+            min-height: 44px;
         }
         
-        .profile-trigger:hover { background: rgba(255,255,255,0.15); }
+        .profile-trigger:hover { background: var(--surface-hover); }
         
         .profile-avatar {
             width: 36px;
             height: 36px;
-            background: linear-gradient(135deg, #ff6b35, #f7c531);
+            background: var(--gradient-accent);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             font-weight: 600;
             font-size: 1rem;
+            color: white;
+            flex-shrink: 0;
+        }
+        
+        .profile-avatar img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
         }
         
         .profile-name { font-size: 0.9rem; font-weight: 500; color: white; }
         
         .profile-dropdown {
             position: absolute;
-            top: 55px;
+            top: calc(100% + 10px);
             right: 0;
-            background: #1a162a;
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 16px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
             min-width: 220px;
             backdrop-filter: blur(10px);
             z-index: 1000;
             display: none;
             animation: fadeInDown 0.2s ease;
             overflow: hidden;
+            box-shadow: var(--shadow-lg);
         }
         
         .profile-dropdown.show { display: block; }
@@ -121,21 +268,153 @@
             display: flex;
             align-items: center;
             gap: 0.8rem;
-            color: rgba(255,255,255,0.8);
+            color: var(--text-secondary);
             text-decoration: none;
-            transition: all 0.2s;
-            border-bottom: 1px solid rgba(255,255,255,0.05);
+            transition: all var(--transition-fast);
+            border-bottom: 1px solid var(--border);
+            font-size: 0.9rem;
+            min-height: 44px;
         }
         
-        .dropdown-item:hover { background: rgba(255,255,255,0.1); color: #ff6b35; }
+        .dropdown-item:hover { background: var(--surface-hover); color: var(--accent); }
         .dropdown-item:last-child { border-bottom: none; }
-        .dropdown-item i { width: 20px; font-size: 1rem; }
-        .dropdown-divider { height: 1px; background: rgba(255,255,255,0.1); margin: 0.3rem 0; }
-        .logout-btn-dropdown { color: #ef4444; }
-        .logout-btn-dropdown:hover { background: rgba(239, 68, 68, 0.15); color: #ef4444; }
+        .dropdown-item i { width: 20px; font-size: 1rem; color: var(--accent); flex-shrink: 0; }
+        .dropdown-divider { height: 1px; background: var(--border); margin: 0.3rem 0; }
+        .logout-btn-dropdown { color: var(--error); }
+        .logout-btn-dropdown:hover { background: rgba(239, 68, 68, 0.15); color: var(--error); }
         
-        .container { max-width: 1200px; margin: 2rem auto; padding: 0 2rem; }
+        /* ===== ✨ Modern Buttons ===== */
+        .btn {
+            padding: 0.55rem 1.2rem;
+            border-radius: var(--radius-full);
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all var(--transition-normal);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            text-decoration: none;
+            border: none;
+            position: relative;
+            overflow: hidden;
+            white-space: nowrap;
+            min-height: 44px;
+            font-family: inherit;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%;
+            width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn:hover::before { left: 100%; }
+
+        .btn-sm {
+            padding: 0.45rem 1rem;
+            font-size: 0.82rem;
+            border-radius: var(--radius-full);
+            border: 1.5px solid var(--border);
+            background: var(--surface);
+            color: var(--text-primary);
+            transition: all var(--transition-normal);
+            white-space: nowrap;
+            min-height: 40px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.4rem;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .btn-sm:hover {
+            border-color: var(--accent);
+            background: var(--surface-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px var(--accent-glow);
+            color: var(--text-primary);
+        }
+
+        .btn-accent {
+            background: var(--gradient-accent);
+            color: white !important;
+            border: none !important;
+            box-shadow: 0 4px 20px var(--accent-glow);
+        }
+
+        .btn-accent:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px var(--accent-glow);
+            color: white !important;
+        }
+
+        .btn-lg {
+            padding: 0.9rem 1.8rem;
+            font-size: 0.95rem;
+            border-radius: var(--radius-lg);
+            min-height: 48px;
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--text-primary);
+            border: 1.5px solid var(--border);
+        }
+
+        .btn-outline:hover {
+            border-color: var(--accent);
+            background: var(--surface-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px var(--accent-glow);
+        }
+
+        .btn:disabled,
+        .btn-sm:disabled,
+        .btn-accent:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none !important;
+            box-shadow: none !important;
+        }
+
+        .btn.loading {
+            color: transparent !important;
+            pointer-events: none;
+            position: relative;
+        }
+
+        .btn.loading::after {
+            content: '';
+            position: absolute;
+            width: 18px;
+            height: 18px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .btn i {
+            font-size: 0.85rem;
+            flex-shrink: 0;
+        }
+
+        .btn-sm i {
+            font-size: 0.8rem;
+        }
         
+        /* ===== 📦 Page Header ===== */
         .page-header {
             display: flex;
             justify-content: space-between;
@@ -143,41 +422,52 @@
             margin-bottom: 2rem;
             flex-wrap: wrap;
             gap: 1rem;
+            padding-top: 1rem;
         }
         
+        /* ✅ FIXED: Header text visible on all screens including laptop */
         .page-header h1 {
-            font-size: 1.8rem;
+            font-size: clamp(1.5rem, 4vw, 1.8rem);
             display: flex;
             align-items: center;
             gap: 0.5rem;
             font-family: 'Syne', sans-serif;
+            font-weight: 800;
+            line-height: 1.3;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            white-space: normal;
+            width: 100%;
+            max-width: 100%;
         }
         
         .btn-new-order {
-            background: linear-gradient(135deg, #ff6b35, #f7c531);
+            background: var(--gradient-accent);
             color: white;
             text-decoration: none;
             padding: 0.7rem 1.5rem;
-            border-radius: 40px;
+            border-radius: var(--radius-full);
             display: inline-flex;
             align-items: center;
             gap: 0.5rem;
-            transition: all 0.3s;
+            transition: all var(--transition-normal);
             font-weight: 600;
             font-size: 0.9rem;
+            min-height: 44px;
         }
         
-        .btn-new-order:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(255,107,53,0.4); }
+        .btn-new-order:hover { transform: translateY(-2px); box-shadow: 0 8px 25px var(--accent-glow); }
         
+        /* ===== 📋 Orders Grid ===== */
         .orders-grid { display: grid; gap: 1.5rem; }
         
         .order-card {
-            background: rgba(26, 22, 42, 0.8);
+            background: var(--bg-card);
             backdrop-filter: blur(10px);
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 24px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-xl);
             padding: 1.5rem;
-            transition: all 0.3s ease;
+            transition: all var(--transition-normal);
             animation: fadeInUp 0.4s ease-out;
         }
         
@@ -187,9 +477,9 @@
         }
         
         .order-card:hover {
-            border-color: #ff6b35;
+            border-color: var(--accent);
             transform: translateY(-2px);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            box-shadow: var(--shadow-lg);
         }
         
         .order-header {
@@ -198,21 +488,21 @@
             align-items: center;
             margin-bottom: 1rem;
             padding-bottom: 1rem;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
+            border-bottom: 1px solid var(--border);
             flex-wrap: wrap;
             gap: 0.5rem;
         }
         
         .order-id {
             font-weight: 600;
-            color: rgba(255,255,255,0.5);
+            color: var(--text-muted);
             font-family: monospace;
             font-size: 0.85rem;
         }
         
         .order-status {
             padding: 0.25rem 1rem;
-            border-radius: 50px;
+            border-radius: var(--radius-full);
             font-size: 0.75rem;
             font-weight: 600;
             text-transform: uppercase;
@@ -220,12 +510,12 @@
         }
         
         .status-pending { background: rgba(245, 158, 11, 0.2); color: #f59e0b; }
-        .status-payment_received { background: rgba(16, 185, 129, 0.2); color: #10b981; }
+        .status-payment_received { background: rgba(16, 185, 129, 0.2); color: var(--green); }
         .status-in_progress { background: rgba(59, 130, 246, 0.2); color: #3b82f6; }
-        .status-ready_for_balance { background: rgba(255, 107, 53, 0.2); color: #ff6b35; }
-        .status-completed { background: rgba(16, 185, 129, 0.2); color: #10b981; }
+        .status-ready_for_balance { background: rgba(255, 107, 53, 0.2); color: var(--accent); }
+        .status-completed { background: rgba(16, 185, 129, 0.2); color: var(--green); }
         .status-delivered { background: rgba(139, 92, 246, 0.2); color: #8b5cf6; }
-        .status-cancelled { background: rgba(239, 68, 68, 0.2); color: #ef4444; }
+        .status-cancelled { background: rgba(239, 68, 68, 0.2); color: var(--error); }
         
         .order-details {
             display: flex;
@@ -237,30 +527,32 @@
         .service-icon {
             width: 60px;
             height: 60px;
-            background: rgba(255,255,255,0.05);
-            border-radius: 16px;
+            background: var(--surface);
+            border-radius: var(--radius-lg);
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 2rem;
             flex-shrink: 0;
+            border: 1px solid var(--border);
         }
         
-        .service-info { flex: 1; }
+        .service-info { flex: 1; min-width: 0; }
         .service-info h3 { margin-bottom: 0.3rem; font-size: 1.1rem; }
-        .service-price { color: #ff6b35; font-weight: 700; font-size: 1.1rem; }
-        .order-date { font-size: 0.75rem; color: rgba(255,255,255,0.5); margin-top: 0.3rem; }
+        .service-price { color: var(--accent); font-weight: 700; font-size: 1.1rem; }
+        .order-date { font-size: 0.75rem; color: var(--text-muted); margin-top: 0.3rem; }
         
         .customization-panel {
-            background: rgba(255,255,255,0.05);
-            border-radius: 16px;
+            background: var(--surface);
+            border-radius: var(--radius-lg);
             padding: 1rem;
             margin: 1rem 0;
+            border: 1px solid var(--border);
         }
         
         .customization-panel h4 {
             margin-bottom: 0.5rem;
-            color: rgba(255,255,255,0.7);
+            color: var(--text-secondary);
             font-size: 0.85rem;
             display: flex;
             align-items: center;
@@ -275,13 +567,14 @@
             padding: 0.25rem 0;
         }
         
-        .customization-item strong { color: #ff6b35; min-width: 100px; }
+        .customization-item strong { color: var(--accent); min-width: 100px; }
         
         .timeline-section {
-            background: rgba(255,255,255,0.05);
-            border-radius: 16px;
+            background: var(--surface);
+            border-radius: var(--radius-lg);
             padding: 1rem;
             margin: 1rem 0;
+            border: 1px solid var(--border);
         }
         
         .timeline-header {
@@ -289,7 +582,7 @@
             align-items: center;
             gap: 0.5rem;
             margin-bottom: 1rem;
-            color: #ff6b35;
+            color: var(--accent);
             font-size: 0.9rem;
         }
         
@@ -300,7 +593,7 @@
             gap: 1rem;
             align-items: flex-start;
             padding: 0.5rem;
-            border-left: 2px solid rgba(255,107,53,0.3);
+            border-left: 2px solid var(--accent);
             margin-left: 0.5rem;
             position: relative;
         }
@@ -309,22 +602,23 @@
             content: '';
             width: 10px;
             height: 10px;
-            background: #ff6b35;
+            background: var(--accent);
             border-radius: 50%;
             position: absolute;
             left: -6px;
             top: 0.8rem;
         }
         
-        .timeline-status { font-weight: 600; color: #ff6b35; min-width: 120px; font-size: 0.8rem; }
-        .timeline-message { color: rgba(255,255,255,0.8); flex: 1; font-size: 0.85rem; }
-        .timeline-time { font-size: 0.7rem; color: rgba(255,255,255,0.5); min-width: 100px; }
+        .timeline-status { font-weight: 600; color: var(--accent); min-width: 120px; font-size: 0.8rem; }
+        .timeline-message { color: var(--text-secondary); flex: 1; font-size: 0.85rem; }
+        .timeline-time { font-size: 0.7rem; color: var(--text-muted); min-width: 100px; }
         
         .payment-card {
-            background: rgba(255,255,255,0.05);
-            border-radius: 16px;
+            background: var(--surface);
+            border-radius: var(--radius-lg);
             padding: 1rem;
             margin: 1rem 0;
+            border: 1px solid var(--border);
         }
         
         .payment-header {
@@ -332,7 +626,7 @@
             align-items: center;
             gap: 0.5rem;
             margin-bottom: 0.8rem;
-            color: #10b981;
+            color: var(--green);
             font-size: 0.9rem;
         }
         
@@ -345,23 +639,24 @@
         
         .progress-bar {
             height: 6px;
-            background: rgba(255,255,255,0.1);
-            border-radius: 10px;
+            background: var(--surface-hover);
+            border-radius: var(--radius-full);
             overflow: hidden;
             margin: 0.5rem 0;
+            border: 1px solid var(--border);
         }
         
         .progress-fill {
             height: 100%;
-            background: linear-gradient(135deg, #ff6b35, #f7c531);
-            border-radius: 10px;
-            transition: width 0.5s ease;
+            background: var(--gradient-accent);
+            border-radius: var(--radius-full);
+            transition: width var(--transition-normal);
         }
         
         .deliverables-section {
             background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(16, 185, 129, 0.05));
-            border: 1px solid #10b981;
-            border-radius: 16px;
+            border: 1px solid var(--green);
+            border-radius: var(--radius-lg);
             padding: 1rem;
             margin: 1rem 0;
         }
@@ -371,13 +666,13 @@
             align-items: center;
             gap: 0.5rem;
             margin-bottom: 1rem;
-            color: #10b981;
+            color: var(--green);
             font-size: 0.9rem;
         }
         
         .deliverable-item {
-            background: rgba(255,255,255,0.05);
-            border-radius: 12px;
+            background: var(--surface);
+            border-radius: var(--radius-md);
             padding: 0.8rem;
             margin-bottom: 0.5rem;
             display: flex;
@@ -385,72 +680,76 @@
             justify-content: space-between;
             flex-wrap: wrap;
             gap: 0.5rem;
+            border: 1px solid var(--border);
         }
         
         .btn-download {
-            background: #10b981;
+            background: var(--green);
             color: white;
             padding: 0.4rem 1rem;
-            border-radius: 8px;
+            border-radius: var(--radius-md);
             text-decoration: none;
             font-size: 0.8rem;
             display: inline-flex;
             align-items: center;
             gap: 0.3rem;
-            transition: all 0.3s;
+            transition: all var(--transition-fast);
+            min-height: 40px;
         }
         
         .btn-download:hover { background: #059669; transform: translateY(-1px); }
         
         .preview-badge {
             background: rgba(255, 107, 53, 0.2);
-            border: 1px solid #ff6b35;
-            border-radius: 8px;
+            border: 1px solid var(--accent);
+            border-radius: var(--radius-md);
             padding: 0.5rem;
             margin: 0.5rem 0;
             font-size: 0.75rem;
             display: flex;
             align-items: center;
             gap: 0.5rem;
-            color: #ff6b35;
+            color: var(--accent);
         }
         
         .btn-balance {
-            background: linear-gradient(135deg, #ff6b35, #f7c531);
+            background: var(--gradient-accent);
             color: white;
             border: none;
             padding: 0.7rem 1.5rem;
-            border-radius: 12px;
+            border-radius: var(--radius-lg);
             cursor: pointer;
             display: inline-flex;
             align-items: center;
             gap: 0.5rem;
             font-weight: 600;
             font-size: 0.9rem;
-            transition: all 0.3s;
+            transition: all var(--transition-normal);
+            min-height: 44px;
         }
         
-        .btn-balance:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(255,107,53,0.4); }
+        .btn-balance:hover { transform: translateY(-2px); box-shadow: 0 8px 25px var(--accent-glow); }
         
         .btn-chat, .btn-cancel, .btn-view, .btn-request-revision {
             padding: 0.6rem 1.2rem;
-            border-radius: 12px;
+            border-radius: var(--radius-lg);
             cursor: pointer;
             display: inline-flex;
             align-items: center;
             gap: 0.5rem;
             font-size: 0.85rem;
             border: 1px solid;
-            transition: all 0.3s;
+            transition: all var(--transition-fast);
             font-weight: 500;
+            min-height: 44px;
         }
         
-        .btn-chat { background: rgba(16, 185, 129, 0.1); border-color: #10b981; color: #10b981; }
-        .btn-chat:hover { background: #10b981; color: white; }
+        .btn-chat { background: rgba(16, 185, 129, 0.1); border-color: var(--green); color: var(--green); }
+        .btn-chat:hover { background: var(--green); color: white; }
         .btn-view { background: rgba(59, 130, 246, 0.1); border-color: #3b82f6; color: #3b82f6; }
         .btn-view:hover { background: #3b82f6; color: white; }
-        .btn-cancel { background: rgba(239, 68, 68, 0.1); border-color: #ef4444; color: #ef4444; }
-        .btn-cancel:hover { background: #ef4444; color: white; }
+        .btn-cancel { background: rgba(239, 68, 68, 0.1); border-color: var(--error); color: var(--error); }
+        .btn-cancel:hover { background: var(--error); color: white; }
         .btn-request-revision { background: rgba(245, 158, 11, 0.1); border-color: #f59e0b; color: #f59e0b; }
         .btn-request-revision:hover { background: #f59e0b; color: white; }
         
@@ -464,8 +763,8 @@
         .spinner {
             width: 40px;
             height: 40px;
-            border: 3px solid rgba(255,255,255,0.1);
-            border-top-color: #ff6b35;
+            border: 3px solid var(--border);
+            border-top-color: var(--accent);
             border-radius: 50%;
             animation: spin 1s linear infinite;
             margin: 2rem auto;
@@ -476,12 +775,14 @@
         .empty-state {
             text-align: center;
             padding: 4rem;
-            background: rgba(26, 22, 42, 0.5);
-            border-radius: 24px;
+            background: var(--bg-card);
+            border-radius: var(--radius-xl);
+            border: 1px solid var(--border);
         }
         
         .empty-state i { font-size: 4rem; margin-bottom: 1rem; opacity: 0.5; }
         
+        /* ===== 🎯 Modal Styles ===== */
         .modal {
             display: none;
             position: fixed;
@@ -493,15 +794,16 @@
             align-items: center;
             justify-content: center;
             z-index: 1000;
+            padding: 1rem;
         }
         
         .modal-content {
-            background: #1a162a;
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 24px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-xl);
             padding: 2rem;
             max-width: 500px;
-            width: 90%;
+            width: 100%;
             max-height: 80vh;
             overflow-y: auto;
         }
@@ -510,45 +812,54 @@
             width: 100%;
             padding: 0.8rem;
             margin: 1rem 0;
-            background: rgba(255,255,255,0.1);
-            border: 1px solid rgba(255,255,255,0.2);
-            border-radius: 12px;
-            color: white;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            color: var(--text-primary);
             font-family: inherit;
+            font-size: 0.95rem;
+            min-height: 44px;
         }
         
-        .modal-buttons { display: flex; gap: 1rem; margin-top: 1rem; }
+        .modal-buttons { display: flex; gap: 1rem; margin-top: 1rem; flex-wrap: wrap; }
         
+        /* ===== 🍞 Toast Notification ===== */
         .toast {
             position: fixed;
             bottom: 2rem;
             left: 50%;
             transform: translateX(-50%) translateY(100px);
             padding: 0.8rem 1.5rem;
-            background: #10b981;
+            background: var(--green);
             color: white;
-            border-radius: 50px;
+            border-radius: var(--radius-full);
             font-size: 0.9rem;
             z-index: 9999;
-            transition: transform 0.3s ease;
+            transition: transform var(--transition-normal);
             white-space: nowrap;
             max-width: 90vw;
             text-align: center;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            box-shadow: var(--shadow-lg);
+            backdrop-filter: blur(10px);
         }
         
         .toast.show { transform: translateX(-50%) translateY(0); }
-        .toast.error { background: #ef4444; }
+        .toast.error { background: var(--error); }
         .toast.warning { background: #f59e0b; }
         
+        /* ===== 💬 Chat Widget ===== */
         .chat-widget {
             position: fixed;
             bottom: 20px;
             right: 20px;
             width: 380px;
-            background: #1a162a;
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 20px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-lg);
             z-index: 1000;
             overflow: hidden;
             display: none;
@@ -557,7 +868,7 @@
         
         .chat-header {
             padding: 15px;
-            background: linear-gradient(135deg, #ff6b35, #f7c531);
+            background: var(--gradient-accent);
             display: flex;
             align-items: center;
             gap: 10px;
@@ -565,71 +876,75 @@
             cursor: pointer;
         }
         
-        .chat-order-id { font-size: 0.75rem; background: rgba(0,0,0,0.2); padding: 2px 8px; border-radius: 20px; }
+        .chat-order-id { font-size: 0.75rem; background: rgba(0,0,0,0.2); padding: 2px 8px; border-radius: var(--radius-full); }
         .chat-close { margin-left: auto; cursor: pointer; padding: 0 5px; }
         .chat-body { height: 450px; display: flex; flex-direction: column; }
-        .chat-messages { flex: 1; overflow-y: auto; padding: 15px; background: #0f0c1a; }
+        .chat-messages { flex: 1; overflow-y: auto; padding: 15px; background: var(--bg-primary); }
         
         .message { margin-bottom: 15px; max-width: 80%; clear: both; }
         .message.user { float: right; }
         .message.admin { float: left; }
         .message-content {
             padding: 10px 15px;
-            border-radius: 16px;
-            background: rgba(255,255,255,0.1);
-            color: white;
+            border-radius: var(--radius-lg);
+            background: var(--surface);
+            color: var(--text-primary);
             word-wrap: break-word;
             font-size: 0.85rem;
+            border: 1px solid var(--border);
         }
-        .message.user .message-content { background: linear-gradient(135deg, #ff6b35, #f7c531); }
-        .message-time { font-size: 0.65rem; color: rgba(255,255,255,0.5); margin-top: 3px; }
+        .message.user .message-content { background: var(--gradient-accent); border-color: transparent; }
+        .message-time { font-size: 0.65rem; color: var(--text-muted); margin-top: 3px; }
         
         .chat-input-area {
             padding: 15px;
-            border-top: 1px solid rgba(255,255,255,0.1);
+            border-top: 1px solid var(--border);
             display: flex;
             gap: 10px;
-            background: #1a162a;
+            background: var(--bg-secondary);
         }
         
         .chat-input-area textarea {
             flex: 1;
             padding: 8px 12px;
-            border: 1px solid rgba(255,255,255,0.2);
-            border-radius: 12px;
-            background: rgba(255,255,255,0.1);
-            color: white;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            background: var(--surface);
+            color: var(--text-primary);
             resize: none;
             font-family: inherit;
             font-size: 0.85rem;
+            min-height: 44px;
         }
         
         .chat-input-area button {
             padding: 8px 15px;
-            background: linear-gradient(135deg, #ff6b35, #f7c531);
+            background: var(--gradient-accent);
             color: white;
             border: none;
-            border-radius: 12px;
+            border-radius: var(--radius-md);
             cursor: pointer;
+            min-height: 44px;
+            min-width: 44px;
         }
         
         .clearfix::after { content: ""; clear: both; display: table; }
         
-        @media (max-width: 768px) {
-            nav { padding: 0.8rem 1rem; }
-            .nav-links { display: none; }
-            .nav-links.mobile-show {
-                display: flex;
-                flex-direction: column;
-                position: absolute;
-                top: 100%;
-                left: 0;
-                right: 0;
-                background: #1a162a;
-                padding: 1rem;
-                border-bottom: 1px solid rgba(255,255,255,0.1);
+        /* ===== 📱 Responsive Design - ✅ FIXED FOR LAPTOP SCREENS ===== */
+        
+        /* Laptop screens (1024px - 1400px) - Header text fix */
+        @media (min-width: 1024px) and (max-width: 1400px) {
+            .page-header h1 {
+                font-size: clamp(1.6rem, 3vw, 1.8rem);
+                line-height: 1.25;
             }
-            .mobile-menu-btn { display: block; background: none; border: none; color: white; font-size: 1.5rem; cursor: pointer; }
+        }
+
+        @media (max-width: 768px) {
+            nav { padding: 0.8rem 1rem; height: 68px; }
+            .nav-links { display: none; }
+            .mobile-menu-btn { display: flex; }
+            
             .container { padding: 0 1rem; margin: 1rem auto; }
             .page-header { flex-direction: column; text-align: center; }
             .order-card { padding: 1rem; }
@@ -642,18 +957,28 @@
             .chat-widget { width: 320px; bottom: 10px; right: 10px; }
             .profile-trigger .profile-name { display: none; }
             .profile-dropdown { right: -10px; min-width: 200px; }
+            .modal-content { padding: 1.5rem; }
+            .modal-buttons { flex-direction: column; }
+            .modal-buttons button { width: 100%; }
         }
         
-        @media (min-width: 769px) { .mobile-menu-btn { display: none; } }
-        
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: rgba(255,255,255,0.05); }
-        ::-webkit-scrollbar-thumb { background: #ff6b35; border-radius: 10px; }
-        
+        @media (max-width: 480px) {
+            .page-header h1 { font-size: 1.4rem; }
+            .btn-new-order { width: 100%; justify-content: center; }
+            .service-icon { width: 45px; height: 45px; font-size: 1.3rem; }
+            .order-status { font-size: 0.7rem; padding: 0.2rem 0.8rem; }
+            .btn-balance, .btn-chat, .btn-cancel, .btn-view, .btn-request-revision {
+                padding: 0.6rem;
+                font-size: 0.85rem;
+            }
+            .toast { font-size: 0.85rem; padding: 0.75rem 1.4rem; }
+        }
+
+        /* Tracking Badge */
         .tracking-badge {
             background: rgba(59, 130, 246, 0.2);
             border: 1px solid #3b82f6;
-            border-radius: 8px;
+            border-radius: var(--radius-md);
             padding: 0.5rem 1rem;
             margin: 0.5rem 0;
             font-size: 0.8rem;
@@ -671,34 +996,85 @@
             font-size: 0.7rem;
         }
         
-        .tracking-step.completed { color: #10b981; }
-        .tracking-step.active { color: #ff6b35; font-weight: 600; }
-        .tracking-step.pending { color: rgba(255,255,255,0.4); }
+        .tracking-step.completed { color: var(--green); }
+        .tracking-step.active { color: var(--accent); font-weight: 600; }
+        .tracking-step.pending { color: var(--text-muted); }
         
         .access-denied {
             background: rgba(239, 68, 68, 0.1);
-            border: 1px solid #ef4444;
-            border-radius: 12px;
+            border: 1px solid var(--error);
+            border-radius: var(--radius-md);
             padding: 1rem;
             text-align: center;
-            color: #ef4444;
+            color: var(--error);
             font-size: 0.85rem;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: var(--bg-secondary); }
+        ::-webkit-scrollbar-thumb {
+            background: var(--gradient-accent);
+            border-radius: var(--radius-full);
+        }
+        ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+
+        /* Mobile menu scrollbar */
+        .nav-links.mobile-show::-webkit-scrollbar {
+            width: 4px;
+        }
+        .nav-links.mobile-show::-webkit-scrollbar-thumb {
+            background: var(--accent);
+            border-radius: 2px;
+        }
+
+        /* Focus States */
+        a:focus, button:focus, input:focus, select:focus, textarea:focus {
+            outline: 2px solid var(--accent);
+            outline-offset: 2px;
+        }
+
+        /* Reduced Motion */
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+
+        /* Safe area for notched devices */
+        @supports (padding: max(0px)) {
+            nav {
+                padding-left: max(2rem, env(safe-area-inset-left));
+                padding-right: max(2rem, env(safe-area-inset-right));
+            }
+            .container {
+                padding-left: max(2rem, env(safe-area-inset-left));
+                padding-right: max(2rem, env(safe-area-inset-right));
+            }
+            .chat-widget {
+                right: max(20px, env(safe-area-inset-right));
+                bottom: max(20px, env(safe-area-inset-bottom));
+            }
         }
     </style>
 </head>
 <body>
-    <nav>
+    <nav id="navbar">
         <a href="index.html" class="logo"><i class="fas fa-code"></i> Nova<span>Stack</span></a>
+        
         <div class="nav-links" id="navLinks">
             <a href="services.html"><i class="fas fa-cube"></i> Services</a>
             <a href="my-orders.html" class="active"><i class="fas fa-shopping-bag"></i> My Orders</a>
             <a href="cart.html"><i class="fas fa-shopping-cart"></i> Cart</a>
         </div>
+        
         <div class="profile-section">
             <div class="profile-trigger" onclick="toggleProfileDropdown()">
                 <div class="profile-avatar" id="profileAvatar">U</div>
                 <span class="profile-name" id="profileName">User</span>
-                <i class="fas fa-chevron-down" style="font-size: 0.7rem; color: rgba(255,255,255,0.6);"></i>
+                <i class="fas fa-chevron-down" style="font-size: 0.7rem; color: var(--text-muted);"></i>
             </div>
             <div class="profile-dropdown" id="profileDropdown">
                 <div class="dropdown-item"><i class="fas fa-user"></i><span id="dropdownUserName">User Name</span></div>
@@ -711,7 +1087,10 @@
                 <div class="dropdown-item logout-btn-dropdown" onclick="logout()"><i class="fas fa-sign-out-alt"></i><span>Logout</span></div>
             </div>
         </div>
-        <button class="mobile-menu-btn" onclick="toggleMobileMenu()"><i class="fas fa-bars"></i></button>
+        
+        <button class="mobile-menu-btn" id="mobileMenuBtn" onclick="toggleMobileMenu()" aria-label="Toggle menu">
+            <i class="fas fa-bars"></i>
+        </button>
     </nav>
     
     <div class="container">
@@ -772,32 +1151,136 @@
     </div>
 
     <script>
-        const CONFIG = { API: 'https://novastack-backend.onrender.com' };
+        const CONFIG = { 
+            API: 'https://novastack-backend.onrender.com',
+            ENDPOINTS: {
+                MY_ORDERS: '/my-orders',
+                ORDER: '/order',
+                USER: '/user',
+                LOGOUT: '/auth/logout',
+                CONVERSATION: '/conversation',
+                PAYMENT_FAILED: '/payment-failed'
+            }
+        };
         let currentOrderId = null;
         let currentConversationId = null;
         let messagePollInterval = null;
         let currentUser = null;
         
+        // ── Auth Helpers (REAL API ONLY) ──────────────────────────────────────────
         const Auth = {
-            getToken() { return localStorage.getItem('dc_token') || ''; },
+            getToken() { 
+                return localStorage.getItem('dc_token') || sessionStorage.getItem('dc_token') || ''; 
+            },
             getUser() { 
                 try { 
-                    const user = JSON.parse(localStorage.getItem('dc_user') || 'null'); 
-                    if (user) currentUser = user; 
-                    return user; 
+                    const user = localStorage.getItem('dc_user') || sessionStorage.getItem('dc_user');
+                    if (user) currentUser = JSON.parse(user); 
+                    return currentUser; 
                 } catch { return null; } 
             },
-            isLoggedIn() { return !!this.getToken() && !!this.getUser(); }
+            isLoggedIn() { return !!this.getToken() && !!this.getUser(); },
+            async fetchUser() {
+                const token = this.getToken();
+                if (!token) return null;
+                try {
+                    const res = await fetch(CONFIG.API + CONFIG.ENDPOINTS.USER, {
+                        headers: { 
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        }
+                    });
+                    if (!res.ok) throw new Error('Auth failed');
+                    const data = await res.json();
+                    return data.user || data;
+                } catch (e) {
+                    console.warn('Failed to fetch user:', e.message);
+                    return null;
+                }
+            }
         };
         
         function toggleProfileDropdown() {
             document.getElementById('profileDropdown').classList.toggle('show');
         }
         
+        // ── Mobile Menu Toggle ────────────────────────────────────────────────────
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const navLinks = document.getElementById('navLinks');
+        
         function toggleMobileMenu() {
-            document.getElementById('navLinks').classList.toggle('mobile-show');
+            const isActive = navLinks.classList.toggle('active');
+            mobileMenuBtn.classList.toggle('active', isActive);
+            mobileMenuBtn.setAttribute('aria-expanded', isActive);
+            
+            if (isActive) {
+                document.body.classList.add('menu-open');
+                document.body.dataset.scrollY = window.scrollY;
+            } else {
+                document.body.classList.remove('menu-open');
+                if (document.body.dataset.scrollY) {
+                    window.scrollTo(0, parseInt(document.body.dataset.scrollY));
+                    delete document.body.dataset.scrollY;
+                }
+            }
         }
         
+        // Close menu when clicking any link
+        document.querySelectorAll('.nav-links a').forEach(link => {
+            link.addEventListener('click', () => {
+                if (navLinks.classList.contains('active')) {
+                    navLinks.classList.remove('active');
+                    mobileMenuBtn.classList.remove('active');
+                    mobileMenuBtn.setAttribute('aria-expanded', 'false');
+                    document.body.classList.remove('menu-open');
+                    
+                    if (document.body.dataset.scrollY) {
+                        setTimeout(() => {
+                            window.scrollTo(0, parseInt(document.body.dataset.scrollY));
+                            delete document.body.dataset.scrollY;
+                        }, 300);
+                    }
+                }
+            });
+        });
+        
+        // Close menu when clicking outside
+        document.addEventListener('click', (e) => {
+            if (navLinks.classList.contains('active') && 
+                !navLinks.contains(e.target) && 
+                !mobileMenuBtn.contains(e.target)) {
+                navLinks.classList.remove('active');
+                mobileMenuBtn.classList.remove('active');
+                mobileMenuBtn.setAttribute('aria-expanded', 'false');
+                document.body.classList.remove('menu-open');
+                
+                if (document.body.dataset.scrollY) {
+                    setTimeout(() => {
+                        window.scrollTo(0, parseInt(document.body.dataset.scrollY));
+                        delete document.body.dataset.scrollY;
+                    }, 300);
+                }
+            }
+        });
+        
+        // Close menu on escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && navLinks.classList.contains('active')) {
+                toggleMobileMenu();
+                mobileMenuBtn.focus();
+            }
+        });
+        
+        // Handle window resize - close menu if switching to desktop
+        window.addEventListener('resize', () => {
+            if (window.innerWidth > 768 && navLinks.classList.contains('active')) {
+                navLinks.classList.remove('active');
+                mobileMenuBtn.classList.remove('active');
+                document.body.classList.remove('menu-open');
+            }
+        });
+        
+        // ── UI Helpers ───────────────────────────────────────────────────
         function showToast(message, type = 'success') {
             let toast = document.querySelector('.toast');
             if (!toast) {
@@ -816,18 +1299,45 @@
             if (user) {
                 const name = user.name || user.email?.split('@')[0] || 'User';
                 const initial = name.charAt(0).toUpperCase();
-                document.getElementById('profileAvatar').textContent = initial;
+                const avatarEl = document.getElementById('profileAvatar');
+                if (user.avatar) {
+                    avatarEl.innerHTML = `<img src="${user.avatar}" alt="${name}">`;
+                } else {
+                    avatarEl.textContent = initial;
+                }
                 document.getElementById('profileName').textContent = name.length > 15 ? name.substring(0, 12) + '...' : name;
                 document.getElementById('dropdownUserName').textContent = name;
                 document.getElementById('dropdownUserEmail').textContent = user.email || '';
             }
         }
         
-        async function loadOrders() {
+        // ── REAL API Fetch (NO DEMO/FALLBACK) ─────────────────────────────────────
+        async function apiFetch(path, opts = {}) {
+            const headers = { 
+                'Content-Type': 'application/json', 
+                ...(opts.headers || {}) 
+            };
             const token = Auth.getToken();
-            if (!token) { 
-                window.location.href = 'login.html?redirect=my-orders.html'; 
-                return; 
+            if (token) {
+                headers['Authorization'] = `Bearer ${token}`;
+            }
+            const res = await fetch(CONFIG.API + path, { 
+                ...opts, 
+                headers,
+                credentials: 'include'
+            });
+            const json = await res.json();
+            if (!res.ok) {
+                throw new Error(json.error || json.message || `Error ${res.status}`);
+            }
+            return json;
+        }
+        
+        async function loadOrders() {
+            // Check authentication first
+            if (!Auth.isLoggedIn()) {
+                window.location.href = 'login.html?redirect=my-orders.html';
+                return;
             }
             
             updateProfileUI();
@@ -835,11 +1345,8 @@
             document.getElementById('orders-container').innerHTML = '';
             
             try {
-                const res = await fetch(`${CONFIG.API}/my-orders`, { 
-                    headers: { 'Authorization': `Bearer ${token}` } 
-                });
-                const data = await res.json();
-                if (!res.ok) throw new Error(data.error);
+                // REAL API ONLY - No demo fallback
+                const data = await apiFetch(CONFIG.ENDPOINTS.MY_ORDERS);
                 renderOrders(data.orders || []);
             } catch (error) {
                 document.getElementById('orders-container').innerHTML = `
@@ -847,7 +1354,7 @@
                         <i class="fas fa-exclamation-triangle"></i>
                         <h3>Error Loading Orders</h3>
                         <p>${error.message}</p>
-                        <button onclick="loadOrders()" style="margin-top:1rem; padding:0.5rem 1.5rem; background:#ff6b35; border:none; border-radius:40px; color:white; cursor:pointer;">
+                        <button onclick="loadOrders()" style="margin-top:1rem; padding:0.5rem 1.5rem; background:var(--gradient-accent); border:none; border-radius:40px; color:white; cursor:pointer; min-height:44px;">
                             <i class="fas fa-redo"></i> Try Again
                         </button>
                     </div>
@@ -874,7 +1381,7 @@
         async function loadTimeline(orderId) {
             const token = Auth.getToken();
             try {
-                const res = await fetch(`${CONFIG.API}/order/${orderId}/timeline`, { 
+                const res = await fetch(`${CONFIG.API}${CONFIG.ENDPOINTS.ORDER}/${orderId}/timeline`, { 
                     headers: { 'Authorization': `Bearer ${token}` } 
                 });
                 const data = await res.json();
@@ -885,12 +1392,12 @@
         async function loadDeliverables(orderId) {
             const token = Auth.getToken();
             try {
-                const res = await fetch(`${CONFIG.API}/order/${orderId}/deliverables`, { 
+                const res = await fetch(`${CONFIG.API}${CONFIG.ENDPOINTS.ORDER}/${orderId}/deliverables`, { 
                     headers: { 'Authorization': `Bearer ${token}` } 
                 });
                 const data = await res.json();
                 
-                // Handle 403 gracefully - don't show error, just return no access
+                // Handle 403 gracefully
                 if (res.status === 403) {
                     console.log(`🔒 No access to deliverables for order ${orderId}`);
                     return { success: false, error: 'Payment required to access deliverables', status: 403 };
@@ -934,11 +1441,9 @@
             `;
         }
         
-        // Replace your renderOrders function with this corrected version
-
         function renderOrders(orders) {
             const container = document.getElementById('orders-container');
-            if (orders.length === 0) {
+            if (!orders || orders.length === 0) {
                 container.innerHTML = `
                     <div class="empty-state">
                         <i class="fas fa-shopping-bag"></i>
@@ -958,24 +1463,14 @@
                 const paidPercent = total > 0 ? (totalPaid / total) * 100 : 0;
                 const isFullPaid = totalPaid >= total;
                 
-                // 🔥 FIXED: Only show pay balance button when status is 'ready_for_balance' OR 'delivered' with balance due
                 const canPayBalance = (order.status === 'ready_for_balance' || (order.status === 'delivered' && balanceDue > 0)) && balanceDue > 0;
-                
-                // Cancel only for pending/payment_received and not fully paid
                 const canCancel = (order.status === 'pending' || order.status === 'payment_received') && !isFullPaid;
-                
-                // Preview access: advance paid AND admin marked preview_ready
                 const hasPreview = order.preview_ready && advancePaid > 0;
-                
-                // Full access: fully paid AND admin marked full_access_ready OR order completed
                 const hasFullAccess = (order.full_access_ready && isFullPaid) || order.status === 'completed';
-                
                 const isDelivered = order.status === 'delivered';
                 const canRequestRevision = (order.status === 'delivered' || order.status === 'completed') && !order.revision_requested;
                 
                 const trackingSteps = getOrderTrackingSteps(order.status, paidPercent);
-                
-                // Determine if deliverables section should show
                 const showDeliverables = hasPreview || hasFullAccess || isDelivered;
                 
                 return `
@@ -1008,16 +1503,16 @@
                         <div class="payment-card">
                             <div class="payment-header"><i class="fas fa-credit-card"></i><strong>Payment Details</strong></div>
                             <div class="payment-row"><span>Total Amount:</span><span>₹${total.toLocaleString()}</span></div>
-                            <div class="payment-row"><span>Advance Paid (15%):</span><span style="color: #10b981;">₹${advancePaid.toLocaleString()}</span></div>
-                            ${totalPaid > advancePaid ? `<div class="payment-row"><span>Balance Paid:</span><span style="color: #10b981;">₹${(totalPaid - advancePaid).toLocaleString()}</span></div>` : ''}
-                            <div class="payment-row"><span>Total Paid:</span><span style="color: #10b981;">₹${totalPaid.toLocaleString()}</span></div>
-                            ${balanceDue > 0 ? `<div class="payment-row"><span>Balance Due:</span><span style="color: #ff6b35;">₹${balanceDue.toLocaleString()}</span></div>` : '<div class="payment-row"><span>Balance Due:</span><span style="color: #10b981;">₹0 - Fully Paid</span></div>'}
+                            <div class="payment-row"><span>Advance Paid (15%):</span><span style="color: var(--green);">₹${advancePaid.toLocaleString()}</span></div>
+                            ${totalPaid > advancePaid ? `<div class="payment-row"><span>Balance Paid:</span><span style="color: var(--green);">₹${(totalPaid - advancePaid).toLocaleString()}</span></div>` : ''}
+                            <div class="payment-row"><span>Total Paid:</span><span style="color: var(--green);">₹${totalPaid.toLocaleString()}</span></div>
+                            ${balanceDue > 0 ? `<div class="payment-row"><span>Balance Due:</span><span style="color: var(--accent);">₹${balanceDue.toLocaleString()}</span></div>` : '<div class="payment-row"><span>Balance Due:</span><span style="color: var(--green);">₹0 - Fully Paid</span></div>'}
                             <div class="progress-bar"><div class="progress-fill" style="width: ${paidPercent}%"></div></div>
                             <div style="text-align: center; font-size: 0.7rem;">${Math.round(paidPercent)}% Paid</div>
                         </div>
                         
                         ${canPayBalance ? `
-                            <div class="preview-badge" style="background: rgba(16,185,129,0.2); border-color: #10b981; color: #10b981;">
+                            <div class="preview-badge" style="background: rgba(16,185,129,0.2); border-color: var(--green); color: var(--green);">
                                 <i class="fas fa-credit-card"></i>
                                 <span>💰 Balance Payment Required: ₹${balanceDue.toLocaleString()} to complete your order and get full access!</span>
                             </div>
@@ -1031,7 +1526,7 @@
                         ` : ''}
                         
                         ${hasFullAccess ? `
-                            <div class="preview-badge" style="background: rgba(16,185,129,0.2); border-color: #10b981; color: #10b981;">
+                            <div class="preview-badge" style="background: rgba(16,185,129,0.2); border-color: var(--green); color: var(--green);">
                                 <i class="fas fa-check-circle"></i>
                                 <span>🎉 Full Access: All deliverables are now available for download!</span>
                             </div>
@@ -1055,9 +1550,9 @@
                                 <div id="deliverables-content-${order.id}"><div style="text-align: center;"><i class="fas fa-spinner fa-spin"></i> Loading deliverables...</div></div>
                             </div>
                         ` : `
-                            <div class="deliverables-section" style="background: rgba(255,107,53,0.05); border-color: #ff6b35;">
-                                <div class="deliverables-header" style="color: #ff6b35;"><i class="fas fa-lock"></i><strong>Deliverables Locked</strong></div>
-                                <div style="text-align: center; padding: 0.5rem; color: rgba(255,255,255,0.6); font-size: 0.85rem;">
+                            <div class="deliverables-section" style="background: rgba(255,107,53,0.05); border-color: var(--accent);">
+                                <div class="deliverables-header" style="color: var(--accent);"><i class="fas fa-lock"></i><strong>Deliverables Locked</strong></div>
+                                <div style="text-align: center; padding: 0.5rem; color: var(--text-muted); font-size: 0.85rem;">
                                     ${!advancePaid ? '🔒 Make advance payment to unlock preview access.' : (balanceDue > 0 && !isFullPaid ? '💰 Complete balance payment to unlock full access to deliverables.' : '📦 Deliverables will appear once project is ready.')}
                                 </div>
                             </div>
@@ -1116,7 +1611,7 @@
             const container = document.getElementById(`timeline-items-${orderId}`);
             if (!container) return;
             
-            if (timeline.length === 0) {
+            if (!timeline || timeline.length === 0) {
                 container.innerHTML = `<div class="timeline-item"><div class="timeline-status">Order Placed</div><div class="timeline-message">Order created successfully</div><div class="timeline-time">-</div></div>`;
                 return;
             }
@@ -1134,8 +1629,8 @@
             const container = document.getElementById(`deliverables-content-${orderId}`);
             if (!container) return;
             
-            if (!result.success) {
-                if (result.status === 403) {
+            if (!result || !result.success) {
+                if (result?.status === 403) {
                     container.innerHTML = `
                         <div class="access-denied">
                             <i class="fas fa-lock"></i> 🔒 Access Restricted<br>
@@ -1143,7 +1638,7 @@
                         </div>
                     `;
                 } else {
-                    container.innerHTML = `<div class="access-denied"><i class="fas fa-exclamation-triangle"></i> ${result.error || 'Unable to load deliverables'}</div>`;
+                    container.innerHTML = `<div class="access-denied"><i class="fas fa-exclamation-triangle"></i> ${result?.error || 'Unable to load deliverables'}</div>`;
                 }
                 return;
             }
@@ -1177,11 +1672,11 @@
             }
             
             if (data.delivery_notes) {
-                html += `<div style="margin-top: 0.8rem; padding: 0.8rem; background: rgba(255,255,255,0.05); border-radius: 12px;"><strong><i class="fas fa-sticky-note"></i> 📝 Delivery Notes:</strong><p style="margin-top: 0.3rem;">${escapeHtml(data.delivery_notes)}</p></div>`;
+                html += `<div style="margin-top: 0.8rem; padding: 0.8rem; background: var(--surface); border-radius: var(--radius-md); border: 1px solid var(--border);"><strong><i class="fas fa-sticky-note"></i> 📝 Delivery Notes:</strong><p style="margin-top: 0.3rem;">${escapeHtml(data.delivery_notes)}</p></div>`;
             }
             
             if (data.message) {
-                html += `<div style="margin-top: 0.8rem; padding: 0.8rem; background: rgba(255,107,53,0.1); border-radius: 12px; color: #ff6b35;"><i class="fas fa-info-circle"></i> ℹ️ ${data.message}</div>`;
+                html += `<div style="margin-top: 0.8rem; padding: 0.8rem; background: rgba(255,107,53,0.1); border-radius: var(--radius-md); color: var(--accent);"><i class="fas fa-info-circle"></i> ℹ️ ${data.message}</div>`;
             }
             
             container.innerHTML = html || '<p style="text-align: center;">📭 No deliverables available yet. Check back after payment.</p>';
@@ -1201,7 +1696,7 @@
             // First verify the order is ready for balance
             try {
                 console.log(`🔍 Checking order ${orderId} status before payment...`);
-                const checkRes = await fetch(`${CONFIG.API}/my-orders`, {
+                const checkRes = await fetch(`${CONFIG.API}${CONFIG.ENDPOINTS.MY_ORDERS}`, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
                 const data = await checkRes.json();
@@ -1215,7 +1710,6 @@
                 console.log('Order status:', order.status);
                 console.log('Balance due:', amount);
                 
-                // 🔥 FIXED: Allow payment for 'ready_for_balance' OR 'delivered' with balance due
                 if (order.status !== 'ready_for_balance' && order.status !== 'delivered') {
                     showToast(`❌ Cannot pay balance: Order is "${order.status}". Wait for admin to mark as ready.`, 'error');
                     return;
@@ -1241,7 +1735,7 @@
             try {
                 console.log(`💰 Initiating balance payment for order ${orderId}, amount: ₹${amount}`);
                 
-                const res = await fetch(`${CONFIG.API}/order/${orderId}/pay-balance`, {
+                const res = await fetch(`${CONFIG.API}${CONFIG.ENDPOINTS.ORDER}/${orderId}/pay-balance`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -1306,7 +1800,7 @@
                     btn.innerHTML = originalText;
                     
                     // Log failure to backend
-                    fetch(`${CONFIG.API}/payment-failed`, {
+                    fetch(`${CONFIG.API}${CONFIG.ENDPOINTS.PAYMENT_FAILED}`, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
@@ -1332,7 +1826,6 @@
         }
 
         function showManualConfirm(orderId, amount, response) {
-            // Store for manual confirmation
             localStorage.setItem('pending_balance_payment', JSON.stringify({
                 order_id: orderId,
                 amount: amount,
@@ -1342,7 +1835,6 @@
                 timestamp: new Date().toISOString()
             }));
             
-            // Create manual confirm button if needed
             const existingConfirm = document.getElementById('manual-balance-confirm');
             if (!existingConfirm) {
                 const confirmDiv = document.createElement('div');
@@ -1351,17 +1843,18 @@
                     position: fixed;
                     bottom: 80px;
                     right: 20px;
-                    background: linear-gradient(135deg, #10b981, #059669);
+                    background: linear-gradient(135deg, var(--green), #059669);
                     padding: 12px 20px;
-                    border-radius: 50px;
+                    border-radius: var(--radius-full);
                     cursor: pointer;
                     z-index: 9999;
-                    box-shadow: 0 4px 15px rgba(16,185,129,0.4);
+                    box-shadow: 0 4px 15px var(--green-glow);
                     font-weight: 600;
                     font-size: 0.9rem;
                     display: flex;
                     align-items: center;
                     gap: 8px;
+                    min-height: 44px;
                 `;
                 confirmDiv.innerHTML = '<i class="fas fa-check-circle"></i> Payment Completed? Click to Confirm';
                 confirmDiv.onclick = () => manualConfirmBalance();
@@ -1384,7 +1877,7 @@
             const token = Auth.getToken();
             
             try {
-                const res = await fetch(`${CONFIG.API}/verify-balance-payment`, {
+                const res = await fetch(`${CONFIG.API}${CONFIG.ENDPOINTS.ORDER}/verify-balance-payment`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -1428,32 +1921,26 @@
             document.querySelector('#deliverablesModal h2').innerHTML = '<i class="fas fa-history"></i> Payment History';
             
             try {
-                // Try to fetch payment history from the order's payment details
-                const res = await fetch(`${CONFIG.API}/order/${orderId}/payment-status`, {
-                    headers: { 'Authorization': `Bearer ${token}` }
-                });
-                
-                const orderRes = await fetch(`${CONFIG.API}/my-orders`, {
+                const orderRes = await fetch(`${CONFIG.API}${CONFIG.ENDPOINTS.MY_ORDERS}`, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
                 const ordersData = await orderRes.json();
                 const order = ordersData.orders?.find(o => o.id === orderId);
                 
                 if (!order) {
-                    content.innerHTML = '<p style="color: #ef4444;">Order not found</p>';
+                    content.innerHTML = '<p style="color: var(--error);">Order not found</p>';
                     return;
                 }
                 
-                // Display payment information from the order data
                 let historyHtml = `
                     <div style="margin-top: 0.5rem;">
                         <div class="payment-card" style="margin-bottom: 1rem;">
                             <div class="payment-header"><i class="fas fa-credit-card"></i> Payment Summary</div>
                             <div class="payment-row"><span>Total Amount:</span><span>₹${(order.price || 0).toLocaleString()}</span></div>
-                            <div class="payment-row"><span>Advance Paid (15%):</span><span style="color: #10b981;">₹${(order.advance_paid || 0).toLocaleString()}</span></div>
-                            ${order.balance_paid ? `<div class="payment-row"><span>Balance Paid:</span><span style="color: #10b981;">₹${(order.balance_paid).toLocaleString()}</span></div>` : ''}
-                            <div class="payment-row"><span>Total Paid:</span><span style="color: #10b981;">₹${(order.total_paid || order.advance_paid || 0).toLocaleString()}</span></div>
-                            <div class="payment-row"><span>Balance Due:</span><span style="color: #ff6b35;">₹${((order.price || 0) - (order.total_paid || order.advance_paid || 0)).toLocaleString()}</span></div>
+                            <div class="payment-row"><span>Advance Paid (15%):</span><span style="color: var(--green);">₹${(order.advance_paid || 0).toLocaleString()}</span></div>
+                            ${order.balance_paid ? `<div class="payment-row"><span>Balance Paid:</span><span style="color: var(--green);">₹${(order.balance_paid).toLocaleString()}</span></div>` : ''}
+                            <div class="payment-row"><span>Total Paid:</span><span style="color: var(--green);">₹${(order.total_paid || order.advance_paid || 0).toLocaleString()}</span></div>
+                            <div class="payment-row"><span>Balance Due:</span><span style="color: var(--accent);">₹${((order.price || 0) - (order.total_paid || order.advance_paid || 0)).toLocaleString()}</span></div>
                             <div class="progress-bar"><div class="progress-fill" style="width: ${((order.total_paid || order.advance_paid || 0) / (order.price || 1) * 100)}%"></div></div>
                         </div>
                         <div class="timeline-section">
@@ -1489,7 +1976,7 @@
                 
             } catch (error) {
                 console.error('Failed to load payment history:', error);
-                content.innerHTML = `<p style="color: #ef4444;">Error loading payment history: ${error.message}</p>`;
+                content.innerHTML = `<p style="color: var(--error);">Error loading payment history: ${error.message}</p>`;
             }
         }
 
@@ -1505,7 +1992,7 @@
             try {
                 console.log(`🔍 Verifying balance payment for order ${orderId}...`);
                 
-                const res = await fetch(`${CONFIG.API}/verify-balance-payment`, {
+                const res = await fetch(`${CONFIG.API}${CONFIG.ENDPOINTS.ORDER}/verify-balance-payment`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -1529,7 +2016,6 @@
                 
                 showToast('✅ Balance payment successful! Order completed.', 'success');
                 
-                // Reload orders to show updated status
                 setTimeout(() => {
                     loadOrders();
                 }, 1500);
@@ -1543,7 +2029,6 @@
                     btn.innerHTML = '<i class="fas fa-credit-card"></i> 💰 Pay Balance ₹' + amount;
                 }
                 
-                // Show manual confirmation option
                 showManualConfirm(orderId, amount, response);
             }
         }
@@ -1557,7 +2042,7 @@
             modal.style.display = 'flex';
             
             try {
-                const res = await fetch(`${CONFIG.API}/order/${orderId}/deliverables`, {
+                const res = await fetch(`${CONFIG.API}${CONFIG.ENDPOINTS.ORDER}/${orderId}/deliverables`, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
                 const data = await res.json();
@@ -1566,7 +2051,7 @@
                     if (res.status === 403) {
                         content.innerHTML = `<div class="access-denied"><i class="fas fa-lock"></i> 🔒 Access Restricted<br><small>${data.error || 'Complete the balance payment to access deliverables.'}</small></div>`;
                     } else {
-                        content.innerHTML = `<p style="color: #ef4444;">${data.error}</p>`;
+                        content.innerHTML = `<p style="color: var(--error);">${data.error}</p>`;
                     }
                     return;
                 }
@@ -1600,17 +2085,17 @@
                 }
                 
                 if (deliverables.delivery_notes) {
-                    html += `<div style="margin-top: 1rem; padding: 1rem; background: rgba(255,255,255,0.05); border-radius: 12px;"><strong>📝 Delivery Notes:</strong><p style="margin-top: 0.5rem;">${deliverables.delivery_notes}</p></div>`;
+                    html += `<div style="margin-top: 1rem; padding: 1rem; background: var(--surface); border-radius: var(--radius-md); border: 1px solid var(--border);"><strong>📝 Delivery Notes:</strong><p style="margin-top: 0.5rem;">${escapeHtml(deliverables.delivery_notes)}</p></div>`;
                 }
                 
                 if (deliverables.message) {
-                    html += `<div style="margin-top: 1rem; padding: 1rem; background: rgba(255,107,53,0.1); border-radius: 12px; color: #ff6b35;"><i class="fas fa-info-circle"></i> ℹ️ ${deliverables.message}</div>`;
+                    html += `<div style="margin-top: 1rem; padding: 1rem; background: rgba(255,107,53,0.1); border-radius: var(--radius-md); color: var(--accent);"><i class="fas fa-info-circle"></i> ℹ️ ${deliverables.message}</div>`;
                 }
                 
                 content.innerHTML = html || '<p>📭 No deliverables available yet.</p>';
                 
             } catch (error) {
-                content.innerHTML = `<p style="color: #ef4444;">Error loading deliverables: ${error.message}</p>`;
+                content.innerHTML = `<p style="color: var(--error);">Error loading deliverables: ${error.message}</p>`;
             }
         }
         
@@ -1630,7 +2115,7 @@
             const token = Auth.getToken();
             if (!token) return;
             try {
-                const res = await fetch(`${CONFIG.API}/conversation/${currentConversationId}/messages`, {
+                const res = await fetch(`${CONFIG.API}${CONFIG.ENDPOINTS.CONVERSATION}/${currentConversationId}/messages`, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
                 if (res.ok) {
@@ -1670,7 +2155,7 @@
             if (!token) { showToast('Please login to send messages', 'error'); return; }
             input.value = '';
             try {
-                const res = await fetch(`${CONFIG.API}/conversation/${currentConversationId}/send`, {
+                const res = await fetch(`${CONFIG.API}${CONFIG.ENDPOINTS.CONVERSATION}/${currentConversationId}/send`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
                     body: JSON.stringify({ message })
@@ -1707,7 +2192,7 @@
             if (!reason) { showToast('Please provide a reason', 'error'); return; }
             const token = Auth.getToken();
             try {
-                const res = await fetch(`${CONFIG.API}/order/${currentOrderId}/cancel`, {
+                const res = await fetch(`${CONFIG.API}${CONFIG.ENDPOINTS.ORDER}/${currentOrderId}/cancel`, {
                     method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
                     body: JSON.stringify({ reason })
                 });
@@ -1723,7 +2208,7 @@
             if (!details) { showToast('Please describe the changes you want', 'error'); return; }
             const token = Auth.getToken();
             try {
-                const res = await fetch(`${CONFIG.API}/conversation/order_${currentOrderId}/send`, {
+                const res = await fetch(`${CONFIG.API}${CONFIG.ENDPOINTS.CONVERSATION}/order_${currentOrderId}/send`, {
                     method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
                     body: JSON.stringify({ message: `🔁 REVISION REQUEST:\n\n${details}\n\nPlease let me know when the changes are done.` })
                 });
@@ -1742,10 +2227,26 @@
             document.getElementById('revisionDetails').value = '';
         }
         
-        function logout() {
+        async function logout() { 
+            const token = Auth.getToken();
+            if (token) {
+                try {
+                    await fetch(CONFIG.API + CONFIG.ENDPOINTS.LOGOUT, {
+                        method: 'POST',
+                        headers: { 
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        }
+                    });
+                } catch (e) {
+                    console.warn('Logout API call failed:', e.message);
+                }
+            }
             localStorage.removeItem('dc_token');
             localStorage.removeItem('dc_user');
             localStorage.removeItem('dc_cart_local');
+            sessionStorage.removeItem('dc_token');
+            sessionStorage.removeItem('dc_user');
             window.location.href = 'index.html';
         }
         
@@ -1760,9 +2261,57 @@
             if (dropdown && !trigger.contains(event.target) && !dropdown.contains(event.target)) dropdown.classList.remove('show');
         });
         
-        const user = Auth.getUser();
-        if (user) updateProfileUI();
-        loadOrders();
+        // ── Initialize ────────────────────────────────────────────────────────────
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Refresh user data if logged in
+            if (Auth.isLoggedIn()) {
+                const freshUser = await Auth.fetchUser();
+                if (freshUser) {
+                    localStorage.setItem('dc_user', JSON.stringify(freshUser));
+                }
+            }
+            updateProfileUI();
+            loadOrders();
+            
+            // Handle window resize for mobile menu position
+            window.addEventListener('resize', () => {
+                const nav = document.getElementById('navbar');
+                if (window.scrollY > 50) {
+                    nav.classList.add('scrolled');
+                } else {
+                    nav.classList.remove('scrolled');
+                }
+            });
+            
+            window.addEventListener('scroll', () => {
+                const nav = document.getElementById('navbar');
+                if (window.scrollY > 50) {
+                    nav.classList.add('scrolled');
+                } else {
+                    nav.classList.remove('scrolled');
+                }
+            });
+            
+            document.addEventListener('visibilitychange', async () => {
+                if (!document.hidden && Auth.isLoggedIn()) {
+                    const freshUser = await Auth.fetchUser();
+                    if (freshUser) {
+                        localStorage.setItem('dc_user', JSON.stringify(freshUser));
+                        updateProfileUI();
+                    }
+                }
+            });
+        });
+        
+        // Prevent zoom on double-tap for iOS
+        let lastTouchEnd = 0;
+        document.addEventListener('touchend', function(event) {
+            const now = Date.now();
+            if (now - lastTouchEnd <= 300) {
+                event.preventDefault();
+            }
+            lastTouchEnd = now;
+        }, false);
         
         window.addEventListener('beforeunload', () => { if (messagePollInterval) clearInterval(messagePollInterval); });
     </script>
