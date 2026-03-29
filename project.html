@@ -1329,7 +1329,7 @@ async function loadPage() {
                   </div>
                   <div class="related-body">
                     <h4>${r.title.length > 34 ? r.title.substring(0, 34) + '…' : r.title}</h4>
-                    <span><i class="fas fa-tag"></i> From $${r.price}</span>
+                    <span><i class="fas fa-tag"></i> From ₹${r.price}</span>
                   </div>
                 </a>
               `).join('')}
@@ -1341,7 +1341,7 @@ async function loadPage() {
       <!-- Sticky Order Card -->
       <div>
         <div class="order-card" id="order-card">
-          <div class="order-price">$${parseFloat(service.price).toLocaleString()}</div>
+          <div class="order-price">₹${parseFloat(service.price).toLocaleString()}</div>
           <div class="order-price-note">Starting price — final quote after requirements discussion</div>
           
           <div class="order-details">
