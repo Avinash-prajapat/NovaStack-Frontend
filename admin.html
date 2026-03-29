@@ -53,7 +53,6 @@
     -webkit-tap-highlight-color: transparent;
     -webkit-touch-callout: none;
     -webkit-user-select: none;
-    -khtml-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
@@ -81,7 +80,6 @@ body {
     left: 0;
 }
 
-/* Full Screen Fix */
 #app-container {
     width: 100vw;
     height: 100vh;
@@ -91,7 +89,6 @@ body {
     left: 0;
 }
 
-/* Animated Background */
 body::before {
     content: '';
     position: fixed;
@@ -126,7 +123,6 @@ body::before {
     100% { transform: translateY(-20vh) rotate(720deg); opacity: 0; }
 }
 
-/* Login Screen */
 #login-screen {
     display: flex;
     align-items: center;
@@ -205,7 +201,6 @@ body::before {
 .login-box button:disabled { opacity: 0.7; cursor: not-allowed; transform: none !important; }
 .login-err { color: var(--error); font-size: 0.85rem; margin-top: 0.8rem; display: none; padding: 0.5rem; background: rgba(239, 68, 68, 0.15); border-radius: var(--radius-sm); }
 
-/* Dashboard Layout */
 #dashboard { 
     display: none; 
     min-height: 100vh; 
@@ -214,7 +209,6 @@ body::before {
     overflow: hidden;
 }
 
-/* Sidebar */
 .sidebar {
     width: var(--sidebar-width);
     background: var(--gradient-sidebar);
@@ -321,7 +315,6 @@ body::before {
 .logout-icon:hover { background: var(--error); color: white; transform: scale(1.05); }
 .logout-icon:active { transform: scale(0.95); }
 
-/* Main Content */
 .main { 
     margin-left: var(--sidebar-width); 
     display: flex; 
@@ -377,7 +370,6 @@ body::before {
 }
 .toggle-sidebar:active { transform: scale(0.95); }
 
-/* Buttons - Enhanced with Ripple */
 .btn { 
     padding: 0.55rem 1.2rem; 
     border-radius: var(--radius-full); 
@@ -434,7 +426,6 @@ body::before {
 .btn-save:active { transform: scale(0.98); }
 .btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none !important; }
 
-/* Content Area */
 .content { 
     flex: 1; 
     padding: 2rem; 
@@ -447,7 +438,6 @@ body::before {
 .panel.active { display: block; }
 @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-/* Stats Cards */
 .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.2rem; margin-bottom: 2rem; }
 .stat-card { 
     background: var(--bg-card); 
@@ -475,7 +465,6 @@ body::before {
 .stat-card .lbl { font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.08em; font-weight: 600; display: flex; align-items: center; gap: 0.4rem; }
 .stat-card .val { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 2.2rem; margin-top: 0.4rem; background: var(--gradient-accent); -webkit-background-clip: text; -webkit-text-fill-color: transparent; line-height: 1.2; }
 
-/* Table Styles */
 .tbl-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; backdrop-filter: blur(10px); margin-bottom: 1.5rem; }
 .tbl-head { padding: 1.2rem 1.5rem; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; }
 .tbl-head h3 { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1.1rem; display: flex; align-items: center; gap: 0.5rem; }
@@ -488,7 +477,7 @@ body::before {
     background: var(--surface); 
     outline: none; 
     width: 220px; 
-    background-image: url("image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%237a736a'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z'%3E%3C/path%3E%3C/svg%3E"); 
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%237a736a'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z'%3E%3C/path%3E%3C/svg%3E"); 
     background-repeat: no-repeat; 
     background-position: 0.6rem center; 
     background-size: 1rem; 
@@ -503,7 +492,6 @@ tr:hover td { background: var(--surface); }
 tr:active td { background: var(--surface-hover); }
 .empty-row { text-align: center; padding: 2rem !important; color: var(--text-muted); }
 
-/* Badges */
 .badge { display: inline-flex; align-items: center; gap: 0.35rem; padding: 0.3rem 0.75rem; border-radius: var(--radius-full); font-size: 0.75rem; font-weight: 600; text-transform: capitalize; }
 .badge-pending { background: rgba(245, 158, 11, 0.15); color: var(--warning); border: 1px solid rgba(245, 158, 11, 0.4); }
 .badge-payment_received { background: rgba(16, 185, 129, 0.15); color: var(--green); border: 1px solid rgba(16, 185, 129, 0.4); }
@@ -513,7 +501,6 @@ tr:active td { background: var(--surface-hover); }
 .badge-delivered { background: rgba(139, 92, 246, 0.15); color: var(--purple); border: 1px solid rgba(139, 92, 246, 0.4); }
 .badge-cancelled { background: rgba(239, 68, 68, 0.15); color: var(--error); border: 1px solid rgba(239, 68, 68, 0.4); }
 
-/* Modals - Fixed Close */
 .modal-ov { 
     position: fixed; 
     inset: 0; 
@@ -591,7 +578,6 @@ tr:active td { background: var(--surface-hover); }
 .fg textarea { min-height: 80px; resize: vertical; }
 .modal-foot { display: flex; gap: 0.8rem; justify-content: flex-end; margin-top: 1.5rem; padding-top: 1.2rem; border-top: 1px solid var(--border); flex-wrap: wrap; }
 
-/* Message Popup Modal - Fixed Close */
 .message-popup-ov {
     position: fixed;
     inset: 0;
@@ -669,7 +655,6 @@ tr:active td { background: var(--surface-hover); }
     word-break: break-word;
 }
 
-/* Alerts */
 .global-alert { 
     padding: 0.8rem 1.2rem; 
     border-radius: var(--radius-md); 
@@ -689,7 +674,6 @@ tr:active td { background: var(--surface-hover); }
 .ga-success { background: rgba(16, 185, 129, 0.15); color: var(--green); border-color: rgba(16, 185, 129, 0.4); }
 .ga-error { background: rgba(239, 68, 68, 0.15); color: var(--error); border-color: rgba(239, 68, 68, 0.4); }
 
-/* Order Detail Card */
 .order-detail-card { display: flex; flex-direction: column; gap: 1.5rem; }
 .detail-section { background: var(--surface); padding: 1.2rem; border-radius: var(--radius-md); border: 1px solid var(--border); }
 .section-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1rem; margin-bottom: 1rem; color: var(--accent); display: flex; align-items: center; gap: 0.5rem; }
@@ -705,7 +689,6 @@ tr:active td { background: var(--surface-hover); }
 .deliverable-link { display: inline-block; margin: 0.2rem 0; color: var(--green); text-decoration: none; }
 .deliverable-link:hover { text-decoration: underline; }
 
-/* Chat Container - With Message Delete */
 .chat-container { 
     display: grid; 
     grid-template-columns: 320px 1fr; 
@@ -749,7 +732,6 @@ tr:active td { background: var(--surface-hover); }
     margin-bottom: 1rem; 
     animation: slideUp 0.2s ease;
     position: relative;
-    group;
 }
 .message-bubble.admin { text-align: right; }
 .message-bubble.user { text-align: left; }
@@ -775,7 +757,6 @@ tr:active td { background: var(--surface-hover); }
     margin-top: 0.2rem; 
     display: block; 
 }
-/* Delete button for admin messages */
 .message-bubble.admin .delete-msg-btn {
     position: absolute;
     top: -8px;
@@ -856,7 +837,6 @@ tr:active td { background: var(--surface-hover); }
 .chat-input-area button:hover { transform: translateY(-2px); box-shadow: 0 4px 15px var(--accent-glow); }
 .chat-input-area button:active { transform: translateY(0) scale(0.98); }
 
-/* Sidebar Overlay */
 .sidebar-overlay { 
     position: fixed; 
     top: 0; left: 0; right: 0; bottom: 0; 
@@ -867,11 +847,9 @@ tr:active td { background: var(--surface-hover); }
 }
 .sidebar-overlay.active { display: block; animation: fadeIn 0.2s ease; }
 
-/* Checkbox Styling */
 .fg input[type="checkbox"] { width: auto; margin-right: 0.5rem; transform: scale(1.2); cursor: pointer; }
 .fg label:has(input[type="checkbox"]) { display: flex; align-items: center; cursor: pointer; }
 
-/* Loading States */
 .loading {
     display: inline-flex;
     align-items: center;
@@ -889,10 +867,7 @@ tr:active td { background: var(--surface-hover); }
 }
 @keyframes spin { to { transform: rotate(360deg); } }
 
-/* Responsive - Full Screen Fix */
-@media (max-width: 1200px) { 
-    .stats-grid { grid-template-columns: repeat(2, 1fr); } 
-}
+@media (max-width: 1200px) { .stats-grid { grid-template-columns: repeat(2, 1fr); } }
 @media (max-width: 992px) { 
     .sidebar { transform: translateX(-100%); width: var(--sidebar-width); } 
     .sidebar.mobile-open { transform: translateX(0); box-shadow: var(--shadow-lg); } 
@@ -945,19 +920,16 @@ tr:active td { background: var(--surface-hover); }
     .btn-sm { padding: 0.35rem 0.7rem; font-size: 0.75rem; }
 }
 
-/* Scrollbar */
 ::-webkit-scrollbar { width: 8px; height: 8px; }
 ::-webkit-scrollbar-track { background: var(--surface); border-radius: var(--radius-sm); }
 ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: var(--radius-sm); }
 ::-webkit-scrollbar-thumb:hover { background: var(--accent-glow); }
 
-/* Touch Optimizations */
 @media (hover: none) {
     .nav-item:hover, .btn:hover, .stat-card:hover { transform: none; }
     .conversation-item:hover { transform: none; }
 }
 
-/* Utilities */
 .text-truncate { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 200px; display: inline-block; }
 @media (max-width: 768px) { .text-truncate { max-width: 120px; } }
 .flex-wrap { flex-wrap: wrap; }
@@ -972,14 +944,12 @@ tr:active td { background: var(--surface-hover); }
 .hidden { display: none !important; }
 .visible { display: flex !important; }
 
-/* Animation for new messages */
 @keyframes highlight {
     0% { background: rgba(255, 107, 53, 0.3); }
     100% { background: transparent; }
 }
 .message-new { animation: highlight 2s ease; }
 
-/* Delete button for conversations */
 .conversation-item { position: relative; }
 .delete-conv-btn {
     position: absolute;
@@ -1002,7 +972,6 @@ tr:active td { background: var(--surface-hover); }
 .delete-conv-btn:hover { background: var(--error); color: white; }
 .delete-conv-btn:active { transform: scale(0.9); }
 
-/* Mobile conversation list toggle */
 .toggle-conversations {
     display: none;
     background: var(--surface);
@@ -1018,13 +987,11 @@ tr:active td { background: var(--surface-hover); }
     .toggle-conversations { display: flex; align-items: center; justify-content: center; gap: 0.5rem; }
 }
 
-/* Focus visible for accessibility */
 :focus-visible {
     outline: 2px solid var(--accent);
     outline-offset: 2px;
 }
 
-/* Prevent scroll on body when modal is open */
 body.modal-open {
     overflow: hidden;
 }
@@ -1041,9 +1008,9 @@ body.modal-open {
             <div class="icon"><i class="fas fa-shield-alt"></i></div>
             <h2>Admin Access</h2>
             <p>Enter your credentials to access the dashboard</p>
-            <input type="email" id="adm-email" placeholder="Admin email" autocomplete="email" aria-label="Admin email">
-            <input type="password" id="adm-pass" placeholder="Admin password" onkeypress="if(event.key==='Enter')doAdminLogin()" autocomplete="current-password" aria-label="Admin password">
-            <button id="login-btn" onclick="doAdminLogin()" aria-label="Login to dashboard">
+            <input type="email" id="adm-email" placeholder="Admin email" autocomplete="email">
+            <input type="password" id="adm-pass" placeholder="Admin password" onkeypress="if(event.key==='Enter')doAdminLogin()" autocomplete="current-password">
+            <button id="login-btn" onclick="doAdminLogin()">
                 <i class="fas fa-sign-in-alt"></i> Login
             </button>
             <div class="login-err" id="login-err" role="alert">
@@ -1054,54 +1021,34 @@ body.modal-open {
 
     <!-- Dashboard -->
     <div id="dashboard">
-        <aside class="sidebar" id="sidebar" aria-label="Main navigation">
+        <aside class="sidebar" id="sidebar">
             <div class="sidebar-logo">
-                <a href="#" aria-label="NovaStack Home">
-                    <i class="fas fa-code"></i> Nova<span>Stack</span>
-                </a>
+                <a href="#"><i class="fas fa-code"></i> Nova<span>Stack</span></a>
                 <small><i class="fas fa-cog"></i> Admin Dashboard</small>
             </div>
             <nav class="sidebar-nav">
                 <div class="nav-section"><i class="fas fa-chart-pie"></i> <span>Overview</span></div>
-                <button class="nav-item active" onclick="switchPanel('overview',this)" aria-label="Go to Dashboard">
-                    <span class="icon"><i class="fas fa-home"></i></span> <span>Dashboard</span>
-                </button>
+                <button class="nav-item active" onclick="switchPanel('overview',this)"><span class="icon"><i class="fas fa-home"></i></span> <span>Dashboard</span></button>
                 <div class="nav-section"><i class="fas fa-comments"></i> <span>Support</span></div>
-                <button class="nav-item" onclick="switchPanel('chat',this)" aria-label="Go to Conversations">
-                    <span class="icon"><i class="fas fa-comment-dots"></i></span> <span>Conversations</span>
-                </button>
+                <button class="nav-item" onclick="switchPanel('chat',this)"><span class="icon"><i class="fas fa-comment-dots"></i></span> <span>Conversations</span></button>
                 <div class="nav-section"><i class="fas fa-shopping-bag"></i> <span>Orders</span></div>
-                <button class="nav-item" onclick="switchPanel('orders',this)" aria-label="View All Orders">
-                    <span class="icon"><i class="fas fa-box-open"></i></span> <span>All Orders</span>
-                </button>
+                <button class="nav-item" onclick="switchPanel('orders',this)"><span class="icon"><i class="fas fa-box-open"></i></span> <span>All Orders</span></button>
                 <div class="nav-section"><i class="fas fa-cube"></i> <span>Services</span></div>
-                <button class="nav-item" onclick="switchPanel('services',this)" aria-label="Manage Services">
-                    <span class="icon"><i class="fas fa-cubes"></i></span> <span>Manage Services</span>
-                </button>
-                <button class="nav-item" onclick="openModal()" aria-label="Add New Service">
-                    <span class="icon"><i class="fas fa-plus-circle"></i></span> <span>Add New Service</span>
-                </button>
+                <button class="nav-item" onclick="switchPanel('services',this)"><span class="icon"><i class="fas fa-cubes"></i></span> <span>Manage Services</span></button>
+                <button class="nav-item" onclick="openModal()"><span class="icon"><i class="fas fa-plus-circle"></i></span> <span>Add New Service</span></button>
                 <div class="nav-section"><i class="fas fa-users"></i> <span>Users</span></div>
-                <button class="nav-item" onclick="switchPanel('users',this)" aria-label="View All Users">
-                    <span class="icon"><i class="fas fa-user-friends"></i></span> <span>All Users</span>
-                </button>
-                <button class="nav-item" onclick="switchPanel('custom-requests',this)" aria-label="View Custom Requests">
-                    <span class="icon"><i class="fas fa-file-signature"></i></span> <span>Custom Requests</span>
-                </button>
-                <button class="nav-item" onclick="switchPanel('refund-requests',this)" aria-label="View Refund Requests">
-                    <span class="icon"><i class="fas fa-money-bill-wave"></i></span> <span>Refund Requests</span>
-                </button>
+                <button class="nav-item" onclick="switchPanel('users',this)"><span class="icon"><i class="fas fa-user-friends"></i></span> <span>All Users</span></button>
+                <button class="nav-item" onclick="switchPanel('custom-requests',this)"><span class="icon"><i class="fas fa-file-signature"></i></span> <span>Custom Requests</span></button>
+                <button class="nav-item" onclick="switchPanel('refund-requests',this)"><span class="icon"><i class="fas fa-money-bill-wave"></i></span> <span>Refund Requests</span></button>
             </nav>
             <div class="sidebar-foot">
                 <div class="admin-info">
-                    <div class="admin-av" aria-hidden="true"><i class="fas fa-user"></i></div>
+                    <div class="admin-av"><i class="fas fa-user"></i></div>
                     <div>
                         <div class="admin-name" id="admin-name-disp">Admin</div>
                         <div class="admin-role"><i class="fas fa-crown"></i> Super Admin</div>
                     </div>
-                    <button class="logout-icon" onclick="doAdminLogout()" title="Logout" aria-label="Logout">
-                        <i class="fas fa-sign-out-alt"></i>
-                    </button>
+                    <button class="logout-icon" onclick="doAdminLogout()" title="Logout"><i class="fas fa-sign-out-alt"></i></button>
                 </div>
             </div>
         </aside>
@@ -1109,196 +1056,75 @@ body.modal-open {
         <div class="main" id="main">
             <div class="topbar">
                 <div style="display:flex;align-items:center;">
-                    <button class="toggle-sidebar" onclick="toggleSidebar()" aria-label="Toggle sidebar">
-                        <i class="fas fa-bars"></i>
-                    </button>
+                    <button class="toggle-sidebar" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
                     <h1><i class="fas fa-tachometer-alt"></i> <span id="panel-title">Dashboard</span></h1>
                 </div>
-                <div>
-                    <span style="font-size:0.85rem;color:var(--text-muted)" id="date-disp"></span>
-                </div>
+                <div><span style="font-size:0.85rem;color:var(--text-muted)" id="date-disp"></span></div>
             </div>
 
             <div class="content">
-                <div class="global-alert ga-success" id="ga-success" role="alert" aria-live="polite">
-                    <i class="fas fa-check-circle"></i> <span id="success-msg"></span>
-                </div>
-                <div class="global-alert ga-error" id="ga-error" role="alert" aria-live="assertive">
-                    <i class="fas fa-exclamation-triangle"></i> <span id="error-msg"></span>
-                </div>
+                <div class="global-alert ga-success" id="ga-success"><i class="fas fa-check-circle"></i> <span id="success-msg"></span></div>
+                <div class="global-alert ga-error" id="ga-error"><i class="fas fa-exclamation-triangle"></i> <span id="error-msg"></span></div>
 
-                <!-- Overview Panel -->
-                <div class="panel active" id="panel-overview" role="region" aria-labelledby="panel-title">
+                <div class="panel active" id="panel-overview">
                     <div class="stats-grid">
-                        <div class="stat-card" onclick="switchPanel('services',null)" role="button" tabindex="0" aria-label="View Services">
-                            <div class="lbl"><i class="fas fa-cube"></i> Services</div>
-                            <div class="val" id="st-svc">0</div>
-                        </div>
-                        <div class="stat-card" onclick="switchPanel('orders',null)" role="button" tabindex="0" aria-label="View Orders">
-                            <div class="lbl"><i class="fas fa-box-open"></i> Orders</div>
-                            <div class="val" id="st-ord">0</div>
-                        </div>
-                        <div class="stat-card" onclick="switchPanel('users',null)" role="button" tabindex="0" aria-label="View Users">
-                            <div class="lbl"><i class="fas fa-users"></i> Users</div>
-                            <div class="val" id="st-usr">0</div>
-                        </div>
-                        <div class="stat-card" role="button" tabindex="0" aria-label="View Revenue">
-                            <div class="lbl"><i class="fas fa-dollar-sign"></i> Revenue</div>
-                            <div class="val" id="st-rev">₹0</div>
-                        </div>
+                        <div class="stat-card" onclick="switchPanel('services',null)"><div class="lbl"><i class="fas fa-cube"></i> Services</div><div class="val" id="st-svc">0</div></div>
+                        <div class="stat-card" onclick="switchPanel('orders',null)"><div class="lbl"><i class="fas fa-box-open"></i> Orders</div><div class="val" id="st-ord">0</div></div>
+                        <div class="stat-card" onclick="switchPanel('users',null)"><div class="lbl"><i class="fas fa-users"></i> Users</div><div class="val" id="st-usr">0</div></div>
+                        <div class="stat-card"><div class="lbl"><i class="fas fa-dollar-sign"></i> Revenue</div><div class="val" id="st-rev">₹0</div></div>
                     </div>
                 </div>
 
-                <!-- All Orders Panel -->
-                <div class="panel" id="panel-orders" role="region" aria-labelledby="panel-title">
+                <div class="panel" id="panel-orders">
                     <div class="tbl-card">
-                        <div class="tbl-head">
-                            <h3><i class="fas fa-list"></i> All Orders</h3>
-                            <input type="text" class="search-inp" placeholder="Search orders..." oninput="filterOrders(this.value)" aria-label="Search orders">
-                        </div>
-                        <div class="table-responsive">
-                            <table role="table">
-                                <thead>
-                                    <tr>
-                                        <th scope="col">ID</th>
-                                        <th scope="col">Client</th>
-                                        <th scope="col">Service</th>
-                                        <th scope="col">Amount</th>
-                                        <th scope="col">Advance</th>
-                                        <th scope="col">Paid</th>
-                                        <th scope="col">Status</th>
-                                        <th scope="col">Delivered</th>
-                                        <th scope="col">Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="ord-tbody"></tbody>
-                            </table>
-                        </div>
+                        <div class="tbl-head"><h3><i class="fas fa-list"></i> All Orders</h3><input type="text" class="search-inp" placeholder="Search orders..." oninput="filterOrders(this.value)"></div>
+                        <div class="table-responsive"><table><thead><tr><th>ID</th><th>Client</th><th>Service</th><th>Amount</th><th>Advance</th><th>Paid</th><th>Status</th><th>Delivered</th><th>Actions</th></tr></thead><tbody id="ord-tbody"></tbody></table></div>
                     </div>
                 </div>
 
-                <!-- Refund Requests Panel -->
-                <div class="panel" id="panel-refund-requests" role="region" aria-labelledby="panel-title">
+                <div class="panel" id="panel-refund-requests">
                     <div class="tbl-card">
                         <div class="tbl-head"><h3><i class="fas fa-money-bill-wave"></i> Refund Requests</h3></div>
-                        <div class="table-responsive">
-                            <table role="table">
-                                <thead>
-                                    <tr>
-                                        <th scope="col">Order ID</th>
-                                        <th scope="col">Client</th>
-                                        <th scope="col">Amount</th>
-                                        <th scope="col">Reason</th>
-                                        <th scope="col">Status</th>
-                                        <th scope="col">Date</th>
-                                        <th scope="col">Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="refund-tbody"></tbody>
-                            </table>
-                        </div>
+                        <div class="table-responsive"><table><thead><tr><th>Order ID</th><th>Client</th><th>Amount</th><th>Reason</th><th>Status</th><th>Date</th><th>Actions</th></tr></thead><tbody id="refund-tbody"></tbody></table></div>
                     </div>
                 </div>
 
-                <!-- Services Panel -->
-                <div class="panel" id="panel-services" role="region" aria-labelledby="panel-title">
+                <div class="panel" id="panel-services">
                     <div class="tbl-card">
-                        <div class="tbl-head">
-                            <h3><i class="fas fa-cubes"></i> All Services</h3>
-                            <input type="text" class="search-inp" placeholder="Search services..." oninput="filterServices(this.value)" aria-label="Search services">
-                        </div>
-                        <div class="table-responsive">
-                            <table role="table">
-                                <thead>
-                                    <tr>
-                                        <th scope="col">Service</th>
-                                        <th scope="col">Category</th>
-                                        <th scope="col">Price</th>
-                                        <th scope="col">Orders</th>
-                                        <th scope="col">Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="svc-tbody"></tbody>
-                            </table>
-                        </div>
+                        <div class="tbl-head"><h3><i class="fas fa-cubes"></i> All Services</h3><input type="text" class="search-inp" placeholder="Search services..." oninput="filterServices(this.value)"></div>
+                        <div class="table-responsive"><table><thead><tr><th>Service</th><th>Category</th><th>Price</th><th>Orders</th><th>Actions</th></tr></thead><tbody id="svc-tbody"></tbody></table></div>
                     </div>
                 </div>
 
-                <!-- Users Panel -->
-                <div class="panel" id="panel-users" role="region" aria-labelledby="panel-title">
+                <div class="panel" id="panel-users">
                     <div class="tbl-card">
-                        <div class="tbl-head">
-                            <h3><i class="fas fa-users"></i> Registered Users</h3>
-                            <input type="text" class="search-inp" placeholder="Search users..." oninput="filterUsers(this.value)" aria-label="Search users">
-                        </div>
-                        <div class="table-responsive">
-                            <table role="table">
-                                <thead>
-                                    <tr>
-                                        <th scope="col">Name</th>
-                                        <th scope="col">Email</th>
-                                        <th scope="col">Verified</th>
-                                        <th scope="col">Orders</th>
-                                        <th scope="col">Total Spent</th>
-                                        <th scope="col">Joined</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="usr-tbody"></tbody>
-                            </table>
-                        </div>
+                        <div class="tbl-head"><h3><i class="fas fa-users"></i> Registered Users</h3><input type="text" class="search-inp" placeholder="Search users..." oninput="filterUsers(this.value)"></div>
+                        <div class="table-responsive"><table><thead><tr><th>Name</th><th>Email</th><th>Verified</th><th>Orders</th><th>Total Spent</th><th>Joined</th></tr></thead><tbody id="usr-tbody"></tbody></table></div>
                     </div>
                 </div>
 
-                <!-- Custom Requests Panel -->
-                <div class="panel" id="panel-custom-requests" role="region" aria-labelledby="panel-title">
+                <div class="panel" id="panel-custom-requests">
                     <div class="tbl-card">
                         <div class="tbl-head"><h3><i class="fas fa-file-signature"></i> Custom Project Requests</h3></div>
-                        <div class="table-responsive">
-                            <table role="table">
-                                <thead>
-                                    <tr>
-                                        <th scope="col">Date</th>
-                                        <th scope="col">Name</th>
-                                        <th scope="col">Email</th>
-                                        <th scope="col">WhatsApp</th>
-                                        <th scope="col">Project</th>
-                                        <th scope="col">Budget</th>
-                                        <th scope="col">Status</th>
-                                        <th scope="col">Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="custom-tbody"></tbody>
-                            </table>
-                        </div>
+                        <div class="table-responsive"><table><thead><tr><th>Date</th><th>Name</th><th>Email</th><th>WhatsApp</th><th>Project</th><th>Budget</th><th>Status</th><th>Action</th></tr></thead><tbody id="custom-tbody"></tbody></table></div>
                     </div>
                 </div>
 
-                <!-- Chat Panel -->
-                <div class="panel" id="panel-chat" role="region" aria-labelledby="panel-title">
+                <div class="panel" id="panel-chat">
                     <div class="chat-container">
-                        <button class="toggle-conversations" onclick="toggleConversationsList()" aria-label="Toggle conversations list">
-                            <i class="fas fa-list"></i> Conversations
-                        </button>
-                        <div class="conversations-list" id="conversations-list" role="list" aria-label="Message conversations">
-                            <div style="text-align:center;color:var(--text-muted);padding:2rem;">Loading conversations...</div>
-                        </div>
+                        <button class="toggle-conversations" onclick="toggleConversationsList()"><i class="fas fa-list"></i> Conversations</button>
+                        <div class="conversations-list" id="conversations-list"><div style="text-align:center;color:var(--text-muted);padding:2rem;">Loading conversations...</div></div>
                         <div class="chat-area">
                             <div class="chat-header-area">
                                 <div style="display:flex;align-items:center;justify-content:space-between;gap:1rem;">
                                     <h4 id="active-conversation-title"><i class="fas fa-comment"></i> Select a conversation</h4>
-                                    <button class="back-to-list hidden" onclick="toggleConversationsList()" aria-label="Back to conversations list">
-                                        <i class="fas fa-arrow-left"></i> Back
-                                    </button>
+                                    <button class="back-to-list hidden" onclick="toggleConversationsList()"><i class="fas fa-arrow-left"></i> Back</button>
                                 </div>
                             </div>
-                            <div class="chat-messages" id="admin-chat-messages" role="log" aria-live="polite">
-                                <div style="text-align:center;color:var(--text-muted);padding:2rem;">Select a conversation to start chatting</div>
-                            </div>
+                            <div class="chat-messages" id="admin-chat-messages"><div style="text-align:center;color:var(--text-muted);padding:2rem;">Select a conversation to start chatting</div></div>
                             <div class="chat-input-area">
-                                <textarea id="admin-chat-input" placeholder="Type your reply..." rows="2" aria-label="Type your message"></textarea>
-                                <button onclick="sendAdminReply()" aria-label="Send message">
-                                    <i class="fas fa-paper-plane"></i> Send
-                                </button>
+                                <textarea id="admin-chat-input" placeholder="Type your reply..." rows="2"></textarea>
+                                <button onclick="sendAdminReply()"><i class="fas fa-paper-plane"></i> Send</button>
                             </div>
                         </div>
                     </div>
@@ -1307,129 +1133,48 @@ body.modal-open {
         </div>
     </div>
 
-    <!-- Modals - Fixed Close -->
-    <div class="modal-ov" id="svc-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
-        <div class="modal">
-            <div class="modal-hdr">
-                <h3 id="modal-title"><i class="fas fa-edit"></i> <span>Add New Service</span></h3>
-                <button class="close-btn" onclick="closeModal()" aria-label="Close modal"><i class="fas fa-times"></i></button>
-            </div>
-            <div class="fg">
-                <label for="f-title"><i class="fas fa-heading"></i> Title *</label>
-                <input id="f-title" placeholder="e.g. Web Application" required>
-            </div>
-            <div class="fg">
-                <label for="f-desc"><i class="fas fa-align-left"></i> Description *</label>
-                <textarea id="f-desc" placeholder="Describe the service..." required></textarea>
-            </div>
-            <div class="fg">
-                <label for="f-cat"><i class="fas fa-folder"></i> Category</label>
-                <select id="f-cat">
-                    <option value="web">🌐 Web Application</option>
-                    <option value="mobile">📱 Mobile App</option>
-                    <option value="ai">🤖 AI / ML</option>
-                    <option value="ecom">🛒 E-Commerce</option>
-                    <option value="portfolio">🎨 Portfolio</option>
-                    <option value="custom">⚙️ Custom</option>
-                </select>
-            </div>
-            <div class="fg">
-                <label for="f-tech"><i class="fas fa-code"></i> Technologies</label>
-                <input id="f-tech" placeholder="React, Node.js, PostgreSQL">
-            </div>
-            <div class="fg">
-                <label for="f-price"><i class="fas fa-tag"></i> Price (₹) *</label>
-                <input type="number" id="f-price" placeholder="299" min="0" required>
-            </div>
-            <div class="modal-foot">
-                <button class="btn btn-cancel" onclick="closeModal()">Cancel</button>
-                <button class="btn btn-save" onclick="saveService()"><i class="fas fa-save"></i> Save</button>
-            </div>
-        </div>
-    </div>
+    <!-- Modals -->
+    <div class="modal-ov" id="svc-modal"><div class="modal"><div class="modal-hdr"><h3 id="modal-title"><i class="fas fa-edit"></i> <span>Add New Service</span></h3><button class="close-btn" onclick="closeModal()"><i class="fas fa-times"></i></button></div><div class="fg"><label><i class="fas fa-heading"></i> Title *</label><input id="f-title" placeholder="e.g. Web Application"></div><div class="fg"><label><i class="fas fa-align-left"></i> Description *</label><textarea id="f-desc" placeholder="Describe the service..."></textarea></div><div class="fg"><label><i class="fas fa-folder"></i> Category</label><select id="f-cat"><option value="web">🌐 Web Application</option><option value="mobile">📱 Mobile App</option><option value="ai">🤖 AI / ML</option><option value="ecom">🛒 E-Commerce</option><option value="portfolio">🎨 Portfolio</option><option value="custom">⚙️ Custom</option></select></div><div class="fg"><label><i class="fas fa-code"></i> Technologies</label><input id="f-tech" placeholder="React, Node.js, PostgreSQL"></div><div class="fg"><label><i class="fas fa-tag"></i> Price (₹) *</label><input type="number" id="f-price" placeholder="299" min="0"></div><div class="modal-foot"><button class="btn btn-cancel" onclick="closeModal()">Cancel</button><button class="btn btn-save" onclick="saveService()"><i class="fas fa-save"></i> Save</button></div></div></div>
 
-    <div class="modal-ov" id="order-detail-modal" role="dialog" aria-modal="true">
-        <div class="modal" style="max-width:800px">
-            <div class="modal-hdr">
-                <h3><i class="fas fa-info-circle"></i> Order Details</h3>
-                <button class="close-btn" onclick="closeOrderDetail()" aria-label="Close"><i class="fas fa-times"></i></button>
-            </div>
-            <div id="order-detail-content"></div>
-        </div>
-    </div>
+    <div class="modal-ov" id="order-detail-modal"><div class="modal" style="max-width:800px"><div class="modal-hdr"><h3><i class="fas fa-info-circle"></i> Order Details</h3><button class="close-btn" onclick="closeOrderDetail()"><i class="fas fa-times"></i></button></div><div id="order-detail-content"></div></div></div>
 
-    <div class="modal-ov" id="delivery-modal" role="dialog" aria-modal="true">
-        <div class="modal" style="max-width:650px">
-            <div class="modal-hdr">
-                <h3><i class="fas fa-box"></i> Deliver Project</h3>
-                <button class="close-btn" onclick="closeDeliveryModal()" aria-label="Close"><i class="fas fa-times"></i></button>
-            </div>
-            <div id="delivery-modal-content"></div>
-        </div>
-    </div>
+    <div class="modal-ov" id="delivery-modal"><div class="modal" style="max-width:650px"><div class="modal-hdr"><h3><i class="fas fa-box"></i> Deliver Project</h3><button class="close-btn" onclick="closeDeliveryModal()"><i class="fas fa-times"></i></button></div><div id="delivery-modal-content"></div></div></div>
 
-    <div class="modal-ov" id="view-deliverables-modal" role="dialog" aria-modal="true">
-        <div class="modal" style="max-width:600px">
-            <div class="modal-hdr">
-                <h3><i class="fas fa-eye"></i> Project Deliverables</h3>
-                <button class="close-btn" onclick="closeViewDeliverablesModal()" aria-label="Close"><i class="fas fa-times"></i></button>
-            </div>
-            <div id="view-deliverables-content"></div>
-        </div>
-    </div>
+    <div class="modal-ov" id="view-deliverables-modal"><div class="modal" style="max-width:600px"><div class="modal-hdr"><h3><i class="fas fa-eye"></i> Project Deliverables</h3><button class="close-btn" onclick="closeViewDeliverablesModal()"><i class="fas fa-times"></i></button></div><div id="view-deliverables-content"></div></div></div>
 
-    <div class="modal-ov" id="refund-modal" role="dialog" aria-modal="true">
-        <div class="modal" style="max-width:500px">
-            <div class="modal-hdr">
-                <h3><i class="fas fa-money-bill-wave"></i> Process Refund</h3>
-                <button class="close-btn" onclick="closeRefundModal()" aria-label="Close"><i class="fas fa-times"></i></button>
-            </div>
-            <div class="fg">
-                <label><i class="fas fa-dollar-sign"></i> Refund Amount</label>
-                <input type="number" id="refund-amount" step="0.01" readonly>
-            </div>
-            <div class="fg">
-                <label><i class="fas fa-comment"></i> Reason</label>
-                <textarea id="refund-reason" placeholder="Refund reason..."></textarea>
-            </div>
-            <div class="modal-foot">
-                <button class="btn btn-cancel" onclick="closeRefundModal()">Cancel</button>
-                <button class="btn btn-save" onclick="processRefundNow()"><i class="fas fa-check"></i> Process Refund</button>
-            </div>
-        </div>
-    </div>
+    <div class="modal-ov" id="refund-modal"><div class="modal" style="max-width:500px"><div class="modal-hdr"><h3><i class="fas fa-money-bill-wave"></i> Process Refund</h3><button class="close-btn" onclick="closeRefundModal()"><i class="fas fa-times"></i></button></div><div class="fg"><label><i class="fas fa-dollar-sign"></i> Refund Amount</label><input type="number" id="refund-amount" step="0.01" readonly></div><div class="fg"><label><i class="fas fa-comment"></i> Reason</label><textarea id="refund-reason" placeholder="Refund reason..."></textarea></div><div class="modal-foot"><button class="btn btn-cancel" onclick="closeRefundModal()">Cancel</button><button class="btn btn-save" onclick="processRefundNow()"><i class="fas fa-check"></i> Process Refund</button></div></div></div>
 
-    <!-- Message Popup Modal - Fixed Close -->
-    <div class="message-popup-ov" id="message-popup" role="dialog" aria-modal="true" aria-labelledby="message-popup-title">
-        <div class="message-popup">
-            <div class="message-popup-header">
-                <h4 id="message-popup-title"><i class="fas fa-envelope"></i> Message Details</h4>
-                <button class="close-btn" onclick="closeMessagePopup()" aria-label="Close popup"><i class="fas fa-times"></i></button>
-            </div>
-            <div class="message-popup-body">
-                <div class="message-display">
-                    <div class="meta">
-                        <span><i class="fas fa-user"></i> <strong id="msg-client-name">Client Name</strong></span>
-                        <span><i class="fas fa-envelope"></i> <a href="#" id="msg-client-email" style="color:var(--accent)">email@example.com</a></span>
-                        <span><i class="fas fa-hashtag"></i> Order #<span id="msg-order-id">123</span></span>
-                    </div>
-                    <div class="content" id="msg-content">Message content will appear here...</div>
-                </div>
-            </div>
-            <div class="message-popup-footer">
-                <button class="btn btn-chat" onclick="openChatFromPopup()" style="flex:1">
-                    <i class="fas fa-comment"></i> Reply in Chat
-                </button>
-                <button class="btn btn-primary" onclick="closeMessagePopup()" style="flex:1">
-                    <i class="fas fa-check"></i> Got it
-                </button>
-            </div>
-        </div>
-    </div>
+    <div class="message-popup-ov" id="message-popup"><div class="message-popup"><div class="message-popup-header"><h4 id="message-popup-title"><i class="fas fa-envelope"></i> Message Details</h4><button class="close-btn" onclick="closeMessagePopup()"><i class="fas fa-times"></i></button></div><div class="message-popup-body"><div class="message-display"><div class="meta"><span><i class="fas fa-user"></i> <strong id="msg-client-name">Client Name</strong></span><span><i class="fas fa-envelope"></i> <a href="#" id="msg-client-email" style="color:var(--accent)">email@example.com</a></span><span><i class="fas fa-hashtag"></i> Order #<span id="msg-order-id">123</span></span></div><div class="content" id="msg-content">Message content will appear here...</div></div></div><div class="message-popup-footer"><button class="btn btn-chat" onclick="openChatFromPopup()" style="flex:1"><i class="fas fa-comment"></i> Reply in Chat</button><button class="btn btn-primary" onclick="closeMessagePopup()" style="flex:1"><i class="fas fa-check"></i> Got it</button></div></div></div>
 </div>
 
 <script>
-// ===== API CONFIGURATION =====
+// ===== FIXED: State object with proper key names =====
+const state = {
+    token: localStorage.getItem('dc_admin_token') || '',
+    adminEmail: localStorage.getItem('dc_admin_email') || '',
+    data: {
+        services: [],
+        orders: [],
+        users: [],
+        customRequests: [],
+        refundRequests: []
+    },
+    ui: {
+        activePanel: 'overview',
+        activeConversation: null,
+        editingServiceId: null,
+        currentOrderId: null,
+        currentRefundOrderId: null,
+        currentMessageOrderId: null,
+        modalStack: []
+    },
+    chat: {
+        pollInterval: null,
+        pollingActive: false
+    }
+};
+
+// ===== API Configuration =====
 const API_CONFIG = {
     BASE_URL: 'https://novastack-backend.onrender.com',
     ENDPOINTS: {
@@ -1452,149 +1197,13 @@ const API_CONFIG = {
         GET_MESSAGES: (convId) => `/conversation/${convId}/messages`,
         SEND_MESSAGE: (convId) => `/conversation/${convId}/send`,
         DELETE_CONVERSATION: (convId) => `/conversation/${convId}`,
-        DELETE_MESSAGE: (msgId) => `/conversation/message/${msgId}/delete`,
+        DELETE_MESSAGE: (msgId) => `/conversation/message/${msgId}/delete`
     },
     TIMEOUT: 30000,
     RETRY_ATTEMPTS: 3
 };
 
-// ===== GLOBAL STATE =====
-let state = {
-    token: localStorage.getItem('dc_admin_token') || '',
-    adminEmail: localStorage.getItem('dc_admin_email') || '',
-     {
-        services: [],
-        orders: [],
-        users: [],
-        customRequests: [],
-        refundRequests: []
-    },
-    ui: {
-        activePanel: 'overview',
-        activeConversation: null,
-        editingServiceId: null,
-        currentOrderId: null,
-        currentRefundOrderId: null,
-        currentMessageOrderId: null,
-        modalStack: []
-    },
-    chat: {
-        pollInterval: null,
-        pollingActive: false
-    }
-};
-
-// ===== API CLIENT =====
-class APIClient {
-    constructor(config) {
-        this.config = config;
-        this.defaultHeaders = {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json'
-        };
-    }
-
-    _getAuthHeaders() {
-        return {
-            ...this.defaultHeaders,
-            'Authorization': `Bearer ${state.token}`
-        };
-    }
-
-    _logRequest(method, url, body = null) {
-        console.group(`📡 API ${method} Request`);
-        console.log(`URL: ${url}`);
-        if (body) console.log(`Body:`, body);
-        console.groupEnd();
-    }
-
-    _logResponse(status, data) {
-        console.log(`📥 Response [${status}]:`, data);
-    }
-
-    async _fetchWithRetry(endpoint, options, attempts = 0) {
-        const url = this.config.BASE_URL + endpoint;
-        const timeout = this.config.TIMEOUT;
-        
-        try {
-            const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), timeout);
-            
-            const response = await fetch(url, {
-                ...options,
-                signal: controller.signal,
-                headers: this._getAuthHeaders()
-            });
-            
-            clearTimeout(timeoutId);
-            
-            this._logResponse(response.status, await response.clone().json());
-            
-            if (!response.ok) {
-                const errorData = await response.json().catch(() => ({}));
-                throw new Error(errorData.error || `HTTP ${response.status}`);
-            }
-            
-            return await response.json();
-        } catch (error) {
-            if (error.name === 'AbortError') {
-                throw new Error('Request timeout. Please check your connection.');
-            }
-            
-            if (attempts < this.config.RETRY_ATTEMPTS && 
-                (error.message.includes('network') || error.message.includes('Failed to fetch'))) {
-                console.warn(`⚠️ Retry attempt ${attempts + 1} for ${endpoint}`);
-                await new Promise(resolve => setTimeout(resolve, 1000 * (attempts + 1)));
-                return this._fetchWithRetry(endpoint, options, attempts + 1);
-            }
-            
-            console.error(`❌ API Error:`, error);
-            throw error;
-        }
-    }
-
-    async request(method, endpoint, body = null) {
-        const options = {
-            method,
-            headers: this._getAuthHeaders()
-        };
-        
-        if (body && ['POST', 'PUT', 'PATCH'].includes(method)) {
-            options.body = JSON.stringify(body);
-        }
-        
-        this._logRequest(method, endpoint, body);
-        return this._fetchWithRetry(endpoint, options);
-    }
-
-    async login(email, password) {
-        return this.request('POST', this.config.ENDPOINTS.ADMIN_LOGIN, { email, password });
-    }
-
-    async getServices() { return this.request('GET', this.config.ENDPOINTS.GET_SERVICES); }
-    async addService(serviceData) { return this.request('POST', this.config.ENDPOINTS.ADD_SERVICE, serviceData); }
-    async updateService(serviceData) { return this.request('PUT', this.config.ENDPOINTS.UPDATE_SERVICE, serviceData); }
-    async deleteService(serviceId) { return this.request('DELETE', this.config.ENDPOINTS.DELETE_SERVICE, { id: serviceId }); }
-    async getOrders() { return this.request('GET', this.config.ENDPOINTS.GET_ORDERS); }
-    async getOrder(orderId) { return this.request('GET', this.config.ENDPOINTS.GET_ORDER(orderId)); }
-    async startProject(orderId) { return this.request('POST', this.config.ENDPOINTS.START_PROJECT(orderId)); }
-    async readyForBalance(orderId) { return this.request('POST', this.config.ENDPOINTS.READY_FOR_BALANCE(orderId)); }
-    async completeOrder(orderId, deliveryData = {}) { return this.request('POST', this.config.ENDPOINTS.COMPLETE_ORDER(orderId), deliveryData); }
-    async updateDelivery(orderId, deliveryData) { return this.request('POST', this.config.ENDPOINTS.UPDATE_DELIVERY(orderId), deliveryData); }
-    async processRefund(orderId, refundData) { return this.request('POST', this.config.ENDPOINTS.PROCESS_REFUND(orderId), refundData); }
-    async rejectRefund(orderId, reason) { return this.request('POST', this.config.ENDPOINTS.REJECT_REFUND(orderId), { reason }); }
-    async getUsers() { return this.request('GET', this.config.ENDPOINTS.GET_USERS); }
-    async getCustomRequests() { return this.request('GET', this.config.ENDPOINTS.GET_CUSTOM_REQUESTS); }
-    async getConversations() { return this.request('GET', this.config.ENDPOINTS.GET_CONVERSATIONS); }
-    async getMessages(conversationId) { return this.request('GET', this.config.ENDPOINTS.GET_MESSAGES(conversationId)); }
-    async sendMessage(conversationId, message) { return this.request('POST', this.config.ENDPOINTS.SEND_MESSAGE(conversationId), { message }); }
-    async deleteConversation(conversationId) { return this.request('DELETE', this.config.ENDPOINTS.DELETE_CONVERSATION(conversationId)); }
-    async deleteMessage(messageId) { return this.request('DELETE', this.config.ENDPOINTS.DELETE_MESSAGE(messageId)); }
-}
-
-const api = new APIClient(API_CONFIG);
-
-// ===== UTILITY FUNCTIONS =====
+// ===== Utility Functions =====
 function escapeHtml(text) {
     if (!text) return '';
     const map = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' };
@@ -1616,7 +1225,6 @@ function formatDate(dateString) {
 function showNotification(message, type = 'success', duration = 4000) {
     const alertEl = document.getElementById(type === 'success' ? 'ga-success' : 'ga-error');
     const msgEl = document.getElementById(type === 'success' ? 'success-msg' : 'error-msg');
-    
     if (alertEl && msgEl) {
         msgEl.textContent = message;
         alertEl.style.display = 'flex';
@@ -1636,15 +1244,13 @@ function setLoading(element, loading = true) {
     }
 }
 
-// ===== MODAL MANAGEMENT - FIXED CLOSE =====
+// ===== Modal Management =====
 function openModalOverlay(modalId) {
     const modal = document.getElementById(modalId);
     if (modal) {
         modal.classList.add('open');
         state.ui.modalStack.push(modalId);
         document.body.classList.add('modal-open');
-        
-        // Focus trap: focus first input or close button
         setTimeout(() => {
             const firstInput = modal.querySelector('input, textarea, select, button');
             if (firstInput) firstInput.focus();
@@ -1672,7 +1278,7 @@ function closeAllModals() {
     document.body.classList.remove('modal-open');
 }
 
-// ===== PARTICLES =====
+// ===== Particles =====
 function createParticles() {
     const container = document.getElementById('particles');
     if (!container) return;
@@ -1686,7 +1292,88 @@ function createParticles() {
     }
 }
 
-// ===== AUTH =====
+// ===== API Client =====
+class APIClient {
+    constructor(config) {
+        this.config = config;
+        this.defaultHeaders = { 'Content-Type': 'application/json', 'Accept': 'application/json' };
+    }
+
+    _getAuthHeaders() {
+        return { ...this.defaultHeaders, 'Authorization': `Bearer ${state.token}` };
+    }
+
+    async _fetchWithRetry(endpoint, options, attempts = 0) {
+        const url = this.config.BASE_URL + endpoint;
+        const timeout = this.config.TIMEOUT;
+        
+        try {
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), timeout);
+            
+            const response = await fetch(url, {
+                ...options,
+                signal: controller.signal,
+                headers: this._getAuthHeaders()
+            });
+            
+            clearTimeout(timeoutId);
+            
+            if (!response.ok) {
+                const errorData = await response.json().catch(() => ({}));
+                throw new Error(errorData.error || `HTTP ${response.status}`);
+            }
+            
+            return await response.json();
+        } catch (error) {
+            if (error.name === 'AbortError') {
+                throw new Error('Request timeout. Please check your connection.');
+            }
+            
+            if (attempts < this.config.RETRY_ATTEMPTS && 
+                (error.message.includes('network') || error.message.includes('Failed to fetch'))) {
+                await new Promise(resolve => setTimeout(resolve, 1000 * (attempts + 1)));
+                return this._fetchWithRetry(endpoint, options, attempts + 1);
+            }
+            
+            console.error(`❌ API Error:`, error);
+            throw error;
+        }
+    }
+
+    async request(method, endpoint, body = null) {
+        const options = { method, headers: this._getAuthHeaders() };
+        if (body && ['POST', 'PUT', 'PATCH'].includes(method)) {
+            options.body = JSON.stringify(body);
+        }
+        return this._fetchWithRetry(endpoint, options);
+    }
+
+    async login(email, password) { return this.request('POST', this.config.ENDPOINTS.ADMIN_LOGIN, { email, password }); }
+    async getServices() { return this.request('GET', this.config.ENDPOINTS.GET_SERVICES); }
+    async addService(serviceData) { return this.request('POST', this.config.ENDPOINTS.ADD_SERVICE, serviceData); }
+    async updateService(serviceData) { return this.request('PUT', this.config.ENDPOINTS.UPDATE_SERVICE, serviceData); }
+    async deleteService(serviceId) { return this.request('DELETE', this.config.ENDPOINTS.DELETE_SERVICE, { id: serviceId }); }
+    async getOrders() { return this.request('GET', this.config.ENDPOINTS.GET_ORDERS); }
+    async getOrder(orderId) { return this.request('GET', this.config.ENDPOINTS.GET_ORDER(orderId)); }
+    async startProject(orderId) { return this.request('POST', this.config.ENDPOINTS.START_PROJECT(orderId)); }
+    async readyForBalance(orderId) { return this.request('POST', this.config.ENDPOINTS.READY_FOR_BALANCE(orderId)); }
+    async completeOrder(orderId, deliveryData = {}) { return this.request('POST', this.config.ENDPOINTS.COMPLETE_ORDER(orderId), deliveryData); }
+    async updateDelivery(orderId, deliveryData) { return this.request('POST', this.config.ENDPOINTS.UPDATE_DELIVERY(orderId), deliveryData); }
+    async processRefund(orderId, refundData) { return this.request('POST', this.config.ENDPOINTS.PROCESS_REFUND(orderId), refundData); }
+    async rejectRefund(orderId, reason) { return this.request('POST', this.config.ENDPOINTS.REJECT_REFUND(orderId), { reason }); }
+    async getUsers() { return this.request('GET', this.config.ENDPOINTS.GET_USERS); }
+    async getCustomRequests() { return this.request('GET', this.config.ENDPOINTS.GET_CUSTOM_REQUESTS); }
+    async getConversations() { return this.request('GET', this.config.ENDPOINTS.GET_CONVERSATIONS); }
+    async getMessages(conversationId) { return this.request('GET', this.config.ENDPOINTS.GET_MESSAGES(conversationId)); }
+    async sendMessage(conversationId, message) { return this.request('POST', this.config.ENDPOINTS.SEND_MESSAGE(conversationId), { message }); }
+    async deleteConversation(conversationId) { return this.request('DELETE', this.config.ENDPOINTS.DELETE_CONVERSATION(conversationId)); }
+    async deleteMessage(messageId) { return this.request('DELETE', this.config.ENDPOINTS.DELETE_MESSAGE(messageId)); }
+}
+
+const api = new APIClient(API_CONFIG);
+
+// ===== Authentication =====
 async function doAdminLogin() {
     const email = document.getElementById('adm-email')?.value.trim();
     const password = document.getElementById('adm-pass')?.value;
@@ -1702,7 +1389,7 @@ async function doAdminLogin() {
         return;
     }
     
-    if (!isValidEmail(email)) {
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
         errEl.style.display = 'block';
         errMsg.textContent = 'Please enter a valid email address';
         return;
@@ -1725,10 +1412,6 @@ async function doAdminLogin() {
     } finally {
         setLoading(btn, false);
     }
-}
-
-function isValidEmail(email) {
-    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 }
 
 function showDashboard(email) {
@@ -1759,7 +1442,7 @@ function doAdminLogout() {
     showNotification('Logged out successfully', 'success');
 }
 
-// ===== DATA LOADING =====
+// ===== Data Loading =====
 async function loadAllData() {
     try {
         const [servicesRes, ordersRes, usersRes] = await Promise.allSettled([
@@ -1780,7 +1463,7 @@ async function loadAllData() {
         
         renderDashboard();
     } catch (error) {
-        console.error('❌ Error loading ', error);
+        console.error('❌ Error loading data:', error);
         showNotification('Failed to load dashboard data. Please refresh.', 'error', 6000);
     }
 }
@@ -1793,7 +1476,7 @@ function generateRefundRequests(orders) {
     }));
 }
 
-// ===== RENDERING =====
+// ===== Rendering =====
 function renderDashboard() {
     renderStats(); renderOrders(); renderRefundRequests(); renderServices();
     renderUsers(); renderCustomRequests(); loadConversations();
@@ -1945,7 +1628,7 @@ function renderCustomRequests() {
     </tr>`).join('');
 }
 
-// ===== ORDER ACTIONS =====
+// ===== Order Actions =====
 async function startProject(orderId) {
     if (!confirm(`Start working on Order #${orderId}?`)) return;
     try {
@@ -2053,7 +1736,7 @@ async function viewOrderDetails(orderId) {
 
 function closeOrderDetail() { closeModalOverlay('order-detail-modal'); }
 
-// ===== DELIVERY MODAL =====
+// ===== Delivery Modal =====
 function openDeliveryModal(orderId) {
     const order = state.data.orders.find(o => o.id === orderId);
     if (!order) { showNotification('Order not found', 'error'); return; }
@@ -2094,7 +1777,7 @@ async function submitDelivery(orderId) {
     } catch (error) { showNotification('Failed: ' + error.message, 'error'); }
 }
 
-// ===== REFUND =====
+// ===== Refund =====
 async function processRefund(orderId, amount) {
     if (!confirm(`Process refund of ${formatCurrency(amount)} for Order #${orderId}?`)) return;
     try {
@@ -2134,7 +1817,7 @@ async function processRefundNow() {
     } catch (error) { showNotification('Refund failed: ' + error.message, 'error'); }
 }
 
-// ===== MESSAGE POPUP - FIXED CLOSE =====
+// ===== Message Popup =====
 function openMessagePopup(orderId) {
     const order = state.data.orders.find(o => o.id === orderId);
     if (!order) { showNotification('Order not found', 'error'); return; }
@@ -2156,7 +1839,7 @@ function openChatFromPopup() {
     }
 }
 
-// ===== DELIVERABLES =====
+// ===== Deliverables =====
 function viewDeliverablesModal(orderId) {
     const order = state.data.orders.find(o => o.id === orderId);
     if (!order) return;
@@ -2174,7 +1857,7 @@ function viewDeliverablesModal(orderId) {
 
 function closeViewDeliverablesModal() { closeModalOverlay('view-deliverables-modal'); }
 
-// ===== SERVICES =====
+// ===== Services =====
 function openModal() {
     state.ui.editingServiceId = null;
     document.getElementById('modal-title').textContent = 'Add New Service';
@@ -2220,7 +1903,7 @@ async function deleteService(id) {
     catch (error) { showNotification('Error: ' + error.message, 'error'); }
 }
 
-// ===== CHAT - WITH MESSAGE DELETE =====
+// ===== Chat =====
 async function loadConversations() {
     try {
         const response = await api.getConversations();
@@ -2280,7 +1963,7 @@ function displayChatMessages(messages) {
     }
     container.innerHTML = messages.map(msg => `
         <div class="message-bubble ${msg.sender_role === 'admin' ? 'admin' : 'user'} ${msg.is_new ? 'message-new' : ''}">
-            ${msg.sender_role === 'admin' ? `<button class="delete-msg-btn" onclick="deleteAdminMessage('${msg.id}')" title="Delete message" aria-label="Delete message"><i class="fas fa-times"></i></button>` : ''}
+            ${msg.sender_role === 'admin' ? `<button class="delete-msg-btn" onclick="deleteAdminMessage('${msg.id}')" title="Delete message"><i class="fas fa-times"></i></button>` : ''}
             <div class="message-content">${escapeHtml(msg.message)}</div>
             <span class="message-time">${formatDate(msg.created_at)}</span>
         </div>
@@ -2288,20 +1971,15 @@ function displayChatMessages(messages) {
     container.scrollTop = container.scrollHeight;
 }
 
-// ===== NEW: Delete Admin Message =====
 async function deleteAdminMessage(messageId) {
-    if (!confirm('Are you sure you want to delete this message? This cannot be undone.')) return;
+    if (!confirm('Are you sure you want to delete this message?')) return;
     try {
         await api.deleteMessage(messageId);
         showNotification('Message deleted');
-        // Refresh messages
         if (state.ui.activeConversation) {
             await selectConversation(state.ui.activeConversation, '');
         }
-    } catch (error) {
-        console.error('Failed to delete message:', error);
-        showNotification('Failed to delete message: ' + error.message, 'error');
-    }
+    } catch (error) { showNotification('Failed: ' + error.message, 'error'); }
 }
 
 async function sendAdminReply() {
@@ -2316,10 +1994,8 @@ async function sendAdminReply() {
         input.value = '';
         await selectConversation(state.ui.activeConversation, '');
         await loadConversations();
-    } catch (error) {
-        console.error('Failed to send message:', error);
-        showNotification('Failed to send message', 'error');
-    } finally { setLoading(sendBtn, false); }
+    } catch (error) { showNotification('Failed to send message', 'error'); }
+    finally { setLoading(sendBtn, false); }
 }
 
 function startChatPolling() {
@@ -2367,7 +2043,7 @@ async function chatFromOrder(orderId) {
     showNotification(`Opened chat with ${userName}`);
 }
 
-// ===== CONTACT =====
+// ===== Contact =====
 function contactWhatsApp(phone, name) {
     if (!phone) { showNotification('No WhatsApp number provided', 'error'); return; }
     let cleanPhone = phone.replace(/[^0-9]/g, '');
@@ -2378,12 +2054,12 @@ function contactWhatsApp(phone, name) {
 
 function contactClient(email) { if (email) window.location.href = `mailto:${email}`; }
 
-// ===== FILTERS =====
+// ===== Filters =====
 function filterServices(val) { renderServices(val); }
 function filterUsers(val) { renderUsers(val); }
 function filterOrders(val) { renderOrders(val); }
 
-// ===== PANEL NAVIGATION =====
+// ===== Panel Navigation =====
 function switchPanel(panelName, navElement) {
     document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
     const targetPanel = document.getElementById(`panel-${panelName}`);
@@ -2402,7 +2078,7 @@ function switchPanel(panelName, navElement) {
     state.ui.activePanel = panelName;
 }
 
-// ===== SIDEBAR =====
+// ===== Sidebar =====
 function toggleSidebar() {
     const sidebar = document.getElementById('sidebar');
     const overlay = document.getElementById('sidebar-overlay');
@@ -2411,14 +2087,12 @@ function toggleSidebar() {
     else { sidebar.classList.toggle('collapsed'); document.getElementById('main')?.classList.toggle('expanded'); overlay.classList.remove('active'); }
 }
 
-// ===== EVENT LISTENERS =====
+// ===== Event Listeners =====
 function setupEventListeners() {
-    // Keyboard: Escape to close modals
     document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') {
             if (state.ui.modalStack.length > 0) {
-                const lastModal = state.ui.modalStack[state.ui.modalStack.length - 1];
-                closeModalOverlay(lastModal);
+                closeModalOverlay(state.ui.modalStack[state.ui.modalStack.length - 1]);
             } else {
                 closeMessagePopup();
             }
@@ -2426,7 +2100,6 @@ function setupEventListeners() {
         }
     });
     
-    // Chat input: Enter to send
     const chatInput = document.getElementById('admin-chat-input');
     if (chatInput) {
         chatInput.addEventListener('keydown', (e) => {
@@ -2434,7 +2107,6 @@ function setupEventListeners() {
         });
     }
     
-    // Window resize
     window.addEventListener('resize', () => {
         const sidebar = document.getElementById('sidebar');
         const main = document.getElementById('main');
@@ -2443,7 +2115,6 @@ function setupEventListeners() {
         else { sidebar.classList.remove('collapsed'); main?.classList.remove('expanded'); }
     });
     
-    // Close modals on overlay click
     document.querySelectorAll('.modal-ov, .message-popup-ov').forEach(overlay => {
         overlay.addEventListener('click', (e) => {
             if (e.target === overlay) {
@@ -2453,7 +2124,6 @@ function setupEventListeners() {
         });
     });
     
-    // Prevent body scroll when modal open
     const observer = new MutationObserver(() => {
         const hasOpenModal = document.querySelector('.modal-ov.open, .message-popup-ov.open');
         document.body.classList.toggle('modal-open', !!hasOpenModal);
@@ -2461,7 +2131,7 @@ function setupEventListeners() {
     observer.observe(document.body, { childList: true, subtree: true });
 }
 
-// ===== INIT =====
+// ===== Initialize =====
 function initialize() {
     createParticles();
     setupEventListeners();
