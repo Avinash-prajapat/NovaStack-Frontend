@@ -1129,40 +1129,7 @@
       flex-shrink: 0;
     }
 
-    /* ===== 💬 WhatsApp Float ===== */
-    .whatsapp-float {
-      position: fixed;
-      bottom: 2rem;
-      right: 2rem;
-      z-index: 999;
-      background: linear-gradient(135deg, #25D366, #128C7E);
-      color: white;
-      padding: 0.85rem 1.5rem;
-      border-radius: var(--radius-full);
-      display: flex;
-      align-items: center;
-      gap: 0.6rem;
-      text-decoration: none;
-      font-weight: 600;
-      font-size: 0.9rem;
-      box-shadow: 0 6px 30px rgba(37, 211, 102, 0.5);
-      transition: all var(--transition-normal);
-      animation: floatUp 0.6s ease 0.3s both;
-      white-space: nowrap;
-      min-height: 48px;
-    }
     
-    .whatsapp-float:hover {
-      transform: translateY(-4px) scale(1.03);
-      box-shadow: 0 12px 45px rgba(37, 211, 102, 0.7);
-    }
-    
-    .whatsapp-float i { font-size: 1.2rem; }
-    
-    @keyframes floatUp {
-      from { opacity: 0; transform: translateY(30px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
 
     /* ===== 🌀 Loading & Toast ===== */
     .spinner {
@@ -1258,12 +1225,7 @@
       
       .login-prompt-btns { flex-direction: column; }
       
-      .whatsapp-float {
-        bottom: 1.2rem;
-        right: 1.2rem;
-        padding: 0.7rem 1.2rem;
-        font-size: 0.85rem;
-      }
+      
       .mobile-menu { top: 68px; }
     }
 
@@ -1489,16 +1451,13 @@
         <div class="trust-note"><i class="fas fa-shield-alt"></i> Secure & confidential</div>
         <div class="trust-note"><i class="fas fa-code-branch"></i> Full source code delivered</div>
         <div class="trust-note"><i class="fas fa-sync-alt"></i> Free revisions included</div>
-        <div class="trust-note"><i class="fas fa-headset"></i> 24/7 WhatsApp support</div>
+        <div class="trust-note"><i class="fas fa-headset"></i> 24/7 WhatsApp & Chat support</div>
       </div>
     </div>
   </div>
 </div>
 
-<!-- 💬 WhatsApp Float -->
-<a href="#" class="whatsapp-float" id="wa-link" target="_blank" rel="noopener">
-  <i class="fab fa-whatsapp"></i> Chat on WhatsApp
-</a>
+
 
 <!-- 🍞 Toast Notification -->
 <div id="toast" style="display:none"></div>
@@ -1507,14 +1466,12 @@
 // ── CONFIG ─────────────────────────────────────────────────────────────────
 const CONFIG = { 
   API: 'https://novastack-backend.onrender.com', 
-  WA_NUMBER: '923001234567',
   ENDPOINTS: {
     CART: '/cart',
     USER: '/user',
     LOGOUT: '/auth/logout'
   }
 };
-document.getElementById('wa-link').href = `https://wa.me/${CONFIG.WA_NUMBER}`;
 
 // ── Create Floating Particles ─────────────────────────────────────────────
 function createParticles() {
