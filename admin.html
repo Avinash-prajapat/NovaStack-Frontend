@@ -9,7 +9,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <link rel="icon" type="image/png" href="logo.png">
 <style>
-/* ===== Modern CSS Variables ===== */
+/* ===== CSS Variables ===== */
 :root {
     --bg-primary: #0f0c1a;
     --bg-secondary: #1a162a;
@@ -270,7 +270,7 @@ body::before {
 }
 .toggle-sidebar:active { transform: scale(0.95); }
 
-/* Buttons - Enhanced */
+/* Buttons */
 .btn { 
     padding: 0.55rem 1.2rem; 
     border-radius: var(--radius-full); 
@@ -348,7 +348,7 @@ body::before {
 .stat-card .lbl { font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.08em; font-weight: 600; display: flex; align-items: center; gap: 0.4rem; }
 .stat-card .val { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 2.2rem; margin-top: 0.4rem; background: var(--gradient-accent); -webkit-background-clip: text; -webkit-text-fill-color: transparent; line-height: 1.2; }
 
-/* Table Styles - Mobile Optimized */
+/* Table Styles */
 .tbl-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; backdrop-filter: blur(10px); margin-bottom: 1.5rem; }
 .tbl-head { padding: 1.2rem 1.5rem; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; }
 .tbl-head h3 { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1.1rem; display: flex; align-items: center; gap: 0.5rem; }
@@ -386,7 +386,7 @@ tr:active td { background: var(--surface-hover); }
 .badge-delivered { background: rgba(139, 92, 246, 0.15); color: var(--purple); border: 1px solid rgba(139, 92, 246, 0.4); }
 .badge-cancelled { background: rgba(239, 68, 68, 0.15); color: var(--error); border: 1px solid rgba(239, 68, 68, 0.4); }
 
-/* Modals - Enhanced */
+/* Modals */
 .modal-ov { 
     position: fixed; 
     inset: 0; 
@@ -449,7 +449,7 @@ tr:active td { background: var(--surface-hover); }
 .fg textarea { min-height: 80px; resize: vertical; }
 .modal-foot { display: flex; gap: 0.8rem; justify-content: flex-end; margin-top: 1.5rem; padding-top: 1.2rem; border-top: 1px solid var(--border); flex-wrap: wrap; }
 
-/* Message Popup Modal - NEW */
+/* Message Popup Modal */
 .message-popup-ov {
     position: fixed;
     inset: 0;
@@ -663,10 +663,8 @@ tr:active td { background: var(--surface-hover); }
 }
 @keyframes spin { to { transform: rotate(360deg); } }
 
-/* Responsive Design - Enhanced */
-@media (max-width: 1200px) { 
-    .stats-grid { grid-template-columns: repeat(2, 1fr); } 
-}
+/* Responsive */
+@media (max-width: 1200px) { .stats-grid { grid-template-columns: repeat(2, 1fr); } }
 @media (max-width: 992px) { 
     .sidebar { transform: translateX(-100%); width: var(--sidebar-width); } 
     .sidebar.mobile-open { transform: translateX(0); box-shadow: var(--shadow-lg); } 
@@ -719,7 +717,7 @@ tr:active td { background: var(--surface-hover); }
     .btn-sm { padding: 0.35rem 0.7rem; font-size: 0.75rem; }
 }
 
-/* Scrollbar Styling */
+/* Scrollbar */
 ::-webkit-scrollbar { width: 8px; height: 8px; }
 ::-webkit-scrollbar-track { background: var(--surface); border-radius: var(--radius-sm); }
 ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: var(--radius-sm); }
@@ -731,17 +729,9 @@ tr:active td { background: var(--surface-hover); }
     .conversation-item:hover { transform: none; }
 }
 
-/* Utility Classes */
-.text-truncate { 
-    overflow: hidden; 
-    text-overflow: ellipsis; 
-    white-space: nowrap; 
-    max-width: 200px; 
-    display: inline-block;
-}
-@media (max-width: 768px) {
-    .text-truncate { max-width: 120px; }
-}
+/* Utilities */
+.text-truncate { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 200px; display: inline-block; }
+@media (max-width: 768px) { .text-truncate { max-width: 120px; } }
 .flex-wrap { flex-wrap: wrap; }
 .gap-2 { gap: 0.5rem; }
 .mt-1 { margin-top: 0.5rem; }
@@ -1169,7 +1159,7 @@ tr:active td { background: var(--surface-hover); }
     </div>
 </div>
 
-<!-- Message Popup Modal - NEW FEATURE -->
+<!-- Message Popup Modal -->
 <div class="message-popup-ov" id="message-popup" role="dialog" aria-modal="true" aria-labelledby="message-popup-title">
     <div class="message-popup">
         <div class="message-popup-header">
@@ -1198,48 +1188,298 @@ tr:active td { background: var(--surface-hover); }
 </div>
 
 <script>
-// ===== CONFIG & GLOBALS =====
-const CONFIG = { API: 'https://novastack-backend.onrender.com' };
-let adminToken = '';
-let editingId = null;
-let activeConversation = null;
-let chatPollInterval = null;
-let adminData = { services: [], orders: [], users: [], customRequests: [], refundRequests: [] };
-let currentOrderIdForRefund = null;
-let currentMessageOrderId = null;
+// ===== API CONFIGURATION =====
+const API_CONFIG = {
+    BASE_URL: 'https://novastack-backend.onrender.com',
+    ENDPOINTS: {
+        // Auth
+        ADMIN_LOGIN: '/admin/login',
+        
+        // Services
+        GET_SERVICES: '/admin/services',
+        ADD_SERVICE: '/admin/service/add',
+        UPDATE_SERVICE: '/admin/service/update',
+        DELETE_SERVICE: '/admin/service/delete',
+        
+        // Orders
+        GET_ORDERS: '/admin/orders',
+        GET_ORDER: (id) => `/admin/order/${id}`,
+        START_PROJECT: (id) => `/admin/order/${id}/start-project`,
+        READY_FOR_BALANCE: (id) => `/admin/order/${id}/ready-for-balance`,
+        COMPLETE_ORDER: (id) => `/admin/order/${id}/complete`,
+        UPDATE_DELIVERY: (id) => `/admin/order/${id}/update-delivery`,
+        PROCESS_REFUND: (id) => `/admin/order/${id}/refund`,
+        REJECT_REFUND: (id) => `/admin/order/${id}/reject-refund`,
+        
+        // Users
+        GET_USERS: '/admin/users',
+        
+        // Custom Requests
+        GET_CUSTOM_REQUESTS: '/custom-requests',
+        
+        // Chat/Conversations
+        GET_CONVERSATIONS: '/conversations',
+        GET_MESSAGES: (convId) => `/conversation/${convId}/messages`,
+        SEND_MESSAGE: (convId) => `/conversation/${convId}/send`,
+        DELETE_CONVERSATION: (convId) => `/conversation/${convId}`,
+    },
+    TIMEOUT: 30000,
+    RETRY_ATTEMPTS: 3
+};
 
-// ===== API Helper with Logging =====
-function logAPI(method, url, body = null) {
-    console.group(`📡 API ${method} Request`);
-    console.log(`URL: ${url}`);
-    if (body) console.log(`Body:`, body);
-    console.groupEnd();
-}
+// ===== GLOBAL STATE =====
+let state = {
+    token: localStorage.getItem('dc_admin_token') || '',
+    adminEmail: localStorage.getItem('dc_admin_email') || '',
+    data: {
+        services: [],
+        orders: [],
+        users: [],
+        customRequests: [],
+        refundRequests: []
+    },
+    ui: {
+        activePanel: 'overview',
+        activeConversation: null,
+        editingServiceId: null,
+        currentOrderId: null,
+        currentRefundOrderId: null,
+        currentMessageOrderId: null
+    },
+    chat: {
+        pollInterval: null,
+        pollingActive: false
+    }
+};
 
-async function adminFetch(method, path, body = null) {
-    const headers = { 'Content-Type': 'application/json', 'Authorization': `Bearer ${adminToken}` };
-    const opts = { method, headers };
-    if (body) opts.body = JSON.stringify(body);
-    
-    const url = CONFIG.API + path;
-    logAPI(method, url, body);
-    
-    try {
-        const res = await fetch(url, opts);
-        const json = await res.json();
-        console.log(`📥 Response:`, json);
-        if (!res.ok) throw new Error(json.error || `HTTP ${res.status}`);
-        return json;
-    } catch (error) {
-        console.error(`❌ API Error:`, error);
-        throw error;
+// ===== API CLIENT =====
+class APIClient {
+    constructor(config) {
+        this.config = config;
+        this.defaultHeaders = {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+        };
+    }
+
+    _getAuthHeaders() {
+        return {
+            ...this.defaultHeaders,
+            'Authorization': `Bearer ${state.token}`
+        };
+    }
+
+    _logRequest(method, url, body = null) {
+        console.group(`📡 API ${method} Request`);
+        console.log(`URL: ${url}`);
+        if (body) console.log(`Body:`, body);
+        console.groupEnd();
+    }
+
+    _logResponse(status, data) {
+        console.log(`📥 Response [${status}]:`, data);
+    }
+
+    async _fetchWithRetry(endpoint, options, attempts = 0) {
+        const url = this.config.BASE_URL + endpoint;
+        const timeout = this.config.TIMEOUT;
+        
+        try {
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), timeout);
+            
+            const response = await fetch(url, {
+                ...options,
+                signal: controller.signal,
+                headers: this._getAuthHeaders()
+            });
+            
+            clearTimeout(timeoutId);
+            
+            this._logResponse(response.status, await response.clone().json());
+            
+            if (!response.ok) {
+                const errorData = await response.json().catch(() => ({}));
+                throw new Error(errorData.error || `HTTP ${response.status}`);
+            }
+            
+            return await response.json();
+        } catch (error) {
+            if (error.name === 'AbortError') {
+                throw new Error('Request timeout. Please check your connection.');
+            }
+            
+            if (attempts < this.config.RETRY_ATTEMPTS && 
+                (error.message.includes('network') || error.message.includes('Failed to fetch'))) {
+                console.warn(`⚠️ Retry attempt ${attempts + 1} for ${endpoint}`);
+                await new Promise(resolve => setTimeout(resolve, 1000 * (attempts + 1)));
+                return this._fetchWithRetry(endpoint, options, attempts + 1);
+            }
+            
+            console.error(`❌ API Error:`, error);
+            throw error;
+        }
+    }
+
+    async request(method, endpoint, body = null) {
+        const options = {
+            method,
+            headers: this._getAuthHeaders()
+        };
+        
+        if (body && ['POST', 'PUT', 'PATCH'].includes(method)) {
+            options.body = JSON.stringify(body);
+        }
+        
+        this._logRequest(method, endpoint, body);
+        return this._fetchWithRetry(endpoint, options);
+    }
+
+    // Auth Methods
+    async login(email, password) {
+        return this.request('POST', this.config.ENDPOINTS.ADMIN_LOGIN, { email, password });
+    }
+
+    // Service Methods
+    async getServices() {
+        return this.request('GET', this.config.ENDPOINTS.GET_SERVICES);
+    }
+
+    async addService(serviceData) {
+        return this.request('POST', this.config.ENDPOINTS.ADD_SERVICE, serviceData);
+    }
+
+    async updateService(serviceData) {
+        return this.request('PUT', this.config.ENDPOINTS.UPDATE_SERVICE, serviceData);
+    }
+
+    async deleteService(serviceId) {
+        return this.request('DELETE', this.config.ENDPOINTS.DELETE_SERVICE, { id: serviceId });
+    }
+
+    // Order Methods
+    async getOrders() {
+        return this.request('GET', this.config.ENDPOINTS.GET_ORDERS);
+    }
+
+    async getOrder(orderId) {
+        return this.request('GET', this.config.ENDPOINTS.GET_ORDER(orderId));
+    }
+
+    async startProject(orderId) {
+        return this.request('POST', this.config.ENDPOINTS.START_PROJECT(orderId));
+    }
+
+    async readyForBalance(orderId) {
+        return this.request('POST', this.config.ENDPOINTS.READY_FOR_BALANCE(orderId));
+    }
+
+    async completeOrder(orderId, deliveryData = {}) {
+        return this.request('POST', this.config.ENDPOINTS.COMPLETE_ORDER(orderId), deliveryData);
+    }
+
+    async updateDelivery(orderId, deliveryData) {
+        return this.request('POST', this.config.ENDPOINTS.UPDATE_DELIVERY(orderId), deliveryData);
+    }
+
+    async processRefund(orderId, refundData) {
+        return this.request('POST', this.config.ENDPOINTS.PROCESS_REFUND(orderId), refundData);
+    }
+
+    async rejectRefund(orderId, reason) {
+        return this.request('POST', this.config.ENDPOINTS.REJECT_REFUND(orderId), { reason });
+    }
+
+    // User Methods
+    async getUsers() {
+        return this.request('GET', this.config.ENDPOINTS.GET_USERS);
+    }
+
+    // Custom Requests
+    async getCustomRequests() {
+        return this.request('GET', this.config.ENDPOINTS.GET_CUSTOM_REQUESTS);
+    }
+
+    // Chat Methods
+    async getConversations() {
+        return this.request('GET', this.config.ENDPOINTS.GET_CONVERSATIONS);
+    }
+
+    async getMessages(conversationId) {
+        return this.request('GET', this.config.ENDPOINTS.GET_MESSAGES(conversationId));
+    }
+
+    async sendMessage(conversationId, message) {
+        return this.request('POST', this.config.ENDPOINTS.SEND_MESSAGE(conversationId), { message });
+    }
+
+    async deleteConversation(conversationId) {
+        return this.request('DELETE', this.config.ENDPOINTS.DELETE_CONVERSATION(conversationId));
     }
 }
 
-// ===== Particles Animation =====
+// Initialize API Client
+const api = new APIClient(API_CONFIG);
+
+// ===== UTILITY FUNCTIONS =====
+function escapeHtml(text) {
+    if (!text) return '';
+    const map = {
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#039;'
+    };
+    return String(text).replace(/[&<>"']/g, m => map[m]);
+}
+
+function formatCurrency(amount) {
+    return '₹' + (parseFloat(amount) || 0).toLocaleString('en-IN');
+}
+
+function formatDate(dateString) {
+    if (!dateString) return '—';
+    return new Date(dateString).toLocaleString('en-US', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+    });
+}
+
+function showNotification(message, type = 'success', duration = 4000) {
+    const alertEl = document.getElementById(type === 'success' ? 'ga-success' : 'ga-error');
+    const msgEl = document.getElementById(type === 'success' ? 'success-msg' : 'error-msg');
+    
+    if (alertEl && msgEl) {
+        msgEl.textContent = message;
+        alertEl.style.display = 'flex';
+        
+        setTimeout(() => {
+            alertEl.style.display = 'none';
+        }, duration);
+    }
+}
+
+function setLoading(element, loading = true) {
+    if (!element) return;
+    if (loading) {
+        element.dataset.originalContent = element.innerHTML;
+        element.innerHTML = '<span class="loading"></span> Loading...';
+        element.disabled = true;
+    } else {
+        element.innerHTML = element.dataset.originalContent || element.innerHTML;
+        element.disabled = false;
+    }
+}
+
+// ===== PARTICLES ANIMATION =====
 function createParticles() {
     const container = document.getElementById('particles');
     if (!container) return;
+    
     for (let i = 0; i < 30; i++) {
         const p = document.createElement('div');
         p.className = 'particle';
@@ -1249,91 +1489,165 @@ function createParticles() {
         container.appendChild(p);
     }
 }
-createParticles();
 
-// ===== Sidebar Toggle =====
-function toggleSidebar() { 
-    const sidebar = document.getElementById('sidebar');
-    const overlay = document.getElementById('sidebar-overlay');
-    const isMobile = window.innerWidth <= 992;
-    
-    if (isMobile) {
-        sidebar.classList.toggle('mobile-open');
-        overlay.classList.toggle('active');
-    } else {
-        sidebar.classList.toggle('collapsed');
-        document.getElementById('main').classList.toggle('expanded');
-        overlay.classList.remove('active');
-    }
-}
-
-// ===== Login/Logout =====
+// ===== AUTHENTICATION =====
 async function doAdminLogin() {
-    const email = document.getElementById('adm-email').value.trim();
-    const password = document.getElementById('adm-pass').value;
+    const email = document.getElementById('adm-email')?.value.trim();
+    const password = document.getElementById('adm-pass')?.value;
     const btn = document.getElementById('login-btn');
     const errEl = document.getElementById('login-err');
     const errMsg = document.getElementById('login-err-msg');
     
     errEl.style.display = 'none';
     
-    if (!email || !password) { 
-        errEl.style.display = 'block'; 
+    if (!email || !password) {
+        errEl.style.display = 'block';
         errMsg.textContent = 'Please fill all fields';
-        return; 
+        return;
     }
     
-    btn.disabled = true; 
-    btn.innerHTML = '<span class="loading"></span> Logging in...';
+    if (!isValidEmail(email)) {
+        errEl.style.display = 'block';
+        errMsg.textContent = 'Please enter a valid email address';
+        return;
+    }
+    
+    setLoading(btn, true);
     
     try {
-        const res = await fetch(CONFIG.API + '/admin/login', { 
-            method: 'POST', 
-            headers: { 'Content-Type': 'application/json' }, 
-            body: JSON.stringify({ email, password }) 
-        });
-        const data = await res.json();
+        const response = await api.login(email, password);
         
-        if (!res.ok) throw new Error(data.error || 'Login failed');
+        state.token = response.token;
+        state.adminEmail = email;
         
-        adminToken = data.token;
-        localStorage.setItem('dc_admin_token', adminToken);
-        localStorage.setItem('dc_admin_email', email);
+        localStorage.setItem('dc_admin_token', state.token);
+        localStorage.setItem('dc_admin_email', state.adminEmail);
+        
         showDashboard(email);
-    } catch(e) { 
-        errEl.style.display = 'block'; 
-        errMsg.textContent = e.message || 'Login failed. Please try again.';
+        showNotification('Welcome back, Admin!');
+        
+    } catch (error) {
+        errEl.style.display = 'block';
+        errMsg.textContent = error.message || 'Login failed. Please try again.';
+        console.error('Login error:', error);
+        
     } finally {
-        btn.disabled = false; 
-        btn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Login';
+        setLoading(btn, false);
     }
+}
+
+function isValidEmail(email) {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 }
 
 function showDashboard(email) {
     document.getElementById('login-screen').style.display = 'none';
     document.getElementById('dashboard').style.display = 'flex';
+    
     document.getElementById('admin-name-disp').textContent = email.split('@')[0];
-    document.getElementById('date-disp').textContent = new Date().toLocaleDateString('en-US', { 
-        weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' 
+    document.getElementById('date-disp').textContent = new Date().toLocaleDateString('en-US', {
+        weekday: 'short',
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric'
     });
-    loadAll();
+    
+    loadAllData();
 }
 
 function doAdminLogout() {
     localStorage.removeItem('dc_admin_token');
     localStorage.removeItem('dc_admin_email');
-    adminToken = '';
+    
+    state.token = '';
+    state.adminEmail = '';
+    state.data = {
+        services: [],
+        orders: [],
+        users: [],
+        customRequests: [],
+        refundRequests: []
+    };
+    
+    if (state.chat.pollInterval) {
+        clearInterval(state.chat.pollInterval);
+        state.chat.pollInterval = null;
+    }
+    state.chat.pollingActive = false;
+    state.ui.activeConversation = null;
+    
     document.getElementById('dashboard').style.display = 'none';
     document.getElementById('login-screen').style.display = 'flex';
-    if (chatPollInterval) clearInterval(chatPollInterval);
-    activeConversation = null;
+    
+    showNotification('Logged out successfully', 'success');
 }
 
-// ===== Data Loading =====
-function loadRefundRequests() {
+// ===== DATA LOADING =====
+async function loadAllData() {
     try {
-        const cancelledOrders = adminData.orders.filter(o => o.status === 'cancellation_requested');
-        adminData.refundRequests = cancelledOrders.map(o => ({
+        console.log('🔄 Loading all dashboard data...');
+        
+        const [servicesRes, ordersRes, usersRes] = await Promise.allSettled([
+            api.getServices(),
+            api.getOrders(),
+            api.getUsers()
+        ]);
+        
+        // Handle services
+        if (servicesRes.status === 'fulfilled') {
+            state.data.services = servicesRes.value.services || [];
+        } else {
+            console.error('Failed to load services:', servicesRes.reason);
+            state.data.services = [];
+        }
+        
+        // Handle orders
+        if (ordersRes.status === 'fulfilled') {
+            state.data.orders = ordersRes.value.orders || [];
+            // Generate refund requests from cancelled orders
+            state.data.refundRequests = generateRefundRequests(state.data.orders);
+        } else {
+            console.error('Failed to load orders:', ordersRes.reason);
+            state.data.orders = [];
+            state.data.refundRequests = [];
+        }
+        
+        // Handle users
+        if (usersRes.status === 'fulfilled') {
+            state.data.users = usersRes.value.users || [];
+        } else {
+            console.error('Failed to load users:', usersRes.reason);
+            state.data.users = [];
+        }
+        
+        // Load custom requests separately (different endpoint)
+        try {
+            const customRes = await api.getCustomRequests();
+            state.data.customRequests = customRes.requests || [];
+        } catch (e) {
+            console.error('Failed to load custom requests:', e);
+            state.data.customRequests = [];
+        }
+        
+        console.log('✅ Data loaded:', {
+            services: state.data.services.length,
+            orders: state.data.orders.length,
+            users: state.data.users.length,
+            customRequests: state.data.customRequests.length
+        });
+        
+        renderDashboard();
+        
+    } catch (error) {
+        console.error('❌ Error loading dashboard data:', error);
+        showNotification('Failed to load dashboard data. Please refresh.', 'error', 6000);
+    }
+}
+
+function generateRefundRequests(orders) {
+    return orders
+        .filter(o => o.status === 'cancellation_requested')
+        .map(o => ({
             id: o.id,
             order_id: o.id,
             user_name: o.user_name,
@@ -1343,60 +1657,11 @@ function loadRefundRequests() {
             status: 'pending',
             created_at: o.created_at
         }));
-    } catch(e) {
-        console.error('Error loading refund requests:', e);
-        adminData.refundRequests = [];
-    }
 }
 
-async function loadAll() {
-    try {
-        console.log('🔄 Loading all data...');
-        const [sd, od, ud] = await Promise.all([
-            adminFetch('GET', '/admin/services'),
-            adminFetch('GET', '/admin/orders'),
-            adminFetch('GET', '/admin/users'),
-        ]);
-        adminData.services = sd.services || [];
-        adminData.orders = od.orders || [];
-        adminData.users = ud.users || [];
-        loadRefundRequests();
-        
-        try {
-            const res = await fetch(`${CONFIG.API}/custom-requests`, { 
-                headers: { 'Authorization': `Bearer ${adminToken}` } 
-            });
-            if (res.ok) { 
-                const data = await res.json(); 
-                adminData.customRequests = data.requests || []; 
-            }
-        } catch(e) { 
-            adminData.customRequests = []; 
-        }
-        
-        console.log('✅ Data loaded:', { 
-            services: adminData.services.length, 
-            orders: adminData.orders.length, 
-            users: adminData.users.length 
-        });
-    } catch(e) { 
-        showGlobalErr('Failed to load data: ' + e.message); 
-    }
-    renderAll();
-}
-
-// ===== Rendering =====
-function renderAll() {
-    const paidOrders = adminData.orders.filter(o => 
-        ['payment_received', 'in_progress', 'ready_for_balance', 'completed', 'delivered'].includes(o.status)
-    );
-    const revenue = paidOrders.reduce((s, o) => s + (parseFloat(o.total_paid) || parseFloat(o.advance_paid) || 0), 0);
-    
-    document.getElementById('st-svc').textContent = adminData.services.length;
-    document.getElementById('st-ord').textContent = adminData.orders.length;
-    document.getElementById('st-usr').textContent = adminData.users.length;
-    document.getElementById('st-rev').textContent = '₹' + Math.round(revenue).toLocaleString();
-    
+// ===== RENDERING =====
+function renderDashboard() {
+    renderStats();
     renderOrders();
     renderRefundRequests();
     renderServices();
@@ -1405,17 +1670,35 @@ function renderAll() {
     loadConversations();
 }
 
+function renderStats() {
+    const paidStatuses = ['payment_received', 'in_progress', 'ready_for_balance', 'completed', 'delivered'];
+    const paidOrders = state.data.orders.filter(o => paidStatuses.includes(o.status));
+    
+    const revenue = paidOrders.reduce((sum, o) => {
+        return sum + (parseFloat(o.total_paid) || parseFloat(o.advance_paid) || 0);
+    }, 0);
+    
+    document.getElementById('st-svc').textContent = state.data.services.length;
+    document.getElementById('st-ord').textContent = state.data.orders.length;
+    document.getElementById('st-usr').textContent = state.data.users.length;
+    document.getElementById('st-rev').textContent = formatCurrency(Math.round(revenue));
+}
+
 function renderOrders(filter = '') {
     const tbody = document.getElementById('ord-tbody');
-    const filtered = filter ? adminData.orders.filter(o => 
-        o.user_name?.toLowerCase().includes(filter.toLowerCase()) || 
-        o.id?.toString().includes(filter) || 
-        o.service_title?.toLowerCase().includes(filter.toLowerCase())
-    ) : adminData.orders;
+    if (!tbody) return;
     
-    if (!filtered.length) { 
-        tbody.innerHTML = '<tr><td colspan="9" class="empty-row">No orders found</td></tr>'; 
-        return; 
+    const filtered = filter 
+        ? state.data.orders.filter(o => 
+            o.user_name?.toLowerCase().includes(filter.toLowerCase()) ||
+            o.id?.toString().includes(filter) ||
+            o.service_title?.toLowerCase().includes(filter.toLowerCase())
+        )
+        : state.data.orders;
+    
+    if (!filtered.length) {
+        tbody.innerHTML = '<tr><td colspan="9" class="empty-row">No orders found</td></tr>';
+        return;
     }
     
     tbody.innerHTML = filtered.map(o => {
@@ -1424,18 +1707,22 @@ function renderOrders(filter = '') {
         const paid = parseFloat(o.total_paid) || advance;
         const hasDeliverables = o.live_url || o.github_repo || o.source_code_url || o.documentation_url;
         
-        return `<tr>
+        return `
+        <tr>
             <td><span style="font-family:monospace;color:var(--accent)">#${o.id}</span></td>
             <td>
                 <strong>${escapeHtml(o.user_name || '—')}</strong><br>
                 <small style="color:var(--text-muted)">${escapeHtml(o.user_email || '')}</small>
             </td>
             <td class="text-truncate" title="${escapeHtml(o.service_title || '')}">${escapeHtml(o.service_title || '—')}</td>
-            <td><strong style="color:var(--green)">₹${total.toLocaleString()}</strong></td>
-            <td><span style="color:var(--warning)">₹${advance.toLocaleString()}</span></td>
-            <td><span style="color:var(--green)">₹${paid.toLocaleString()}</span></td>
-            <td><span class="badge badge-${o.status}">${escapeHtml(o.status?.replace(/_/g, ' ') || 'unknown')}</span></td>
-            <td>${hasDeliverables ? '<i class="fas fa-check-circle" style="color:var(--green)"></i> Yes' : '<i class="fas fa-times-circle" style="color:var(--error)"></i> No'}</td>
+            <td><strong style="color:var(--green)">${formatCurrency(total)}</strong></td>
+            <td><span style="color:var(--warning)">${formatCurrency(advance)}</span></td>
+            <td><span style="color:var(--green)">${formatCurrency(paid)}</span></td>
+            <td><span class="badge badge-${o.status || 'unknown'}">${escapeHtml((o.status || 'unknown').replace(/_/g, ' '))}</span></td>
+            <td>${hasDeliverables 
+                ? '<i class="fas fa-check-circle" style="color:var(--green)"></i> Yes' 
+                : '<i class="fas fa-times-circle" style="color:var(--error)"></i> No'
+            }</td>
             <td>
                 <div style="display:flex;gap:0.5rem;flex-wrap:wrap">
                     <button class="btn btn-sm btn-view" onclick="viewOrderDetails(${o.id})" title="View Details" aria-label="View order details">
@@ -1462,10 +1749,12 @@ function renderOrders(filter = '') {
                     <button class="btn btn-sm btn-primary" onclick="markAsCompleted(${o.id})" title="Mark Complete" aria-label="Mark as completed">
                         <i class="fas fa-check-circle"></i>
                     </button>
-                    ${o.status === 'cancellation_requested' ? 
-                        `<button class="btn btn-sm btn-danger" onclick="openRefundModalFromOrder(${o.id}, ${advance})" title="Process Refund" aria-label="Process refund">
+                    ${o.status === 'cancellation_requested' 
+                        ? `<button class="btn btn-sm btn-danger" onclick="openRefundModalFromOrder(${o.id}, ${advance})" title="Process Refund" aria-label="Process refund">
                             <i class="fas fa-money-bill-wave"></i>
-                        </button>` : ''}
+                        </button>` 
+                        : ''
+                    }
                 </div>
             </td>
         </tr>`;
@@ -1474,222 +1763,374 @@ function renderOrders(filter = '') {
 
 function renderRefundRequests() {
     const tbody = document.getElementById('refund-tbody');
-    if (!adminData.refundRequests.length) { 
-        tbody.innerHTML = '<tr><td colspan="7" class="empty-row">No refund requests</td></tr>'; 
-        return; 
-    }
-    tbody.innerHTML = adminData.refundRequests.map(r => `<tr>
-        <td><span style="color:var(--accent)">#${r.order_id}</span></td>
-        <td>
-            <strong>${escapeHtml(r.user_name || 'Unknown')}</strong><br>
-            <small>${escapeHtml(r.user_email || '')}</small>
-        </td>
-        <td><strong style="color:var(--warning)">₹${r.amount_to_refund}</strong></td>
-        <td class="text-truncate" title="${escapeHtml(r.reason || '')}">${escapeHtml((r.reason || '').substring(0, 50))}</td>
-        <td><span class="badge badge-pending">${escapeHtml(r.status)}</span></td>
-        <td>${new Date(r.created_at).toLocaleDateString()}</td>
-        <td>
-            <button class="btn btn-sm btn-success" onclick="processRefund(${r.order_id}, ${r.amount_to_refund})">
-                <i class="fas fa-check"></i> Approve
-            </button>
-            <button class="btn btn-sm btn-danger" onclick="rejectRefund(${r.order_id})">
-                <i class="fas fa-times"></i> Reject
-            </button>
-        </td>
-    </tr>`).join('');
-}
-
-// ===== Refund Functions =====
-async function processRefund(orderId, amount) {
-    if (!confirm(`Process refund of ₹${amount} for Order #${orderId}?`)) return;
-    try {
-        await adminFetch('POST', `/admin/order/${orderId}/refund`, { 
-            amount, 
-            reason: 'Refund approved by admin' 
-        });
-        showGlobalSuccess(`Refund of ₹${amount} processed for Order #${orderId}`);
-        await loadAll();
-    } catch(e) { 
-        showGlobalErr('Refund failed: ' + e.message); 
-    }
-}
-
-async function rejectRefund(orderId) {
-    if (!confirm(`Reject refund request for Order #${orderId}?`)) return;
-    try {
-        await adminFetch('POST', `/admin/order/${orderId}/reject-refund`, { 
-            reason: 'Refund rejected by admin' 
-        });
-        showGlobalSuccess(`Refund request rejected for Order #${orderId}`);
-        await loadAll();
-    } catch(e) { 
-        showGlobalErr('Failed: ' + e.message); 
-    }
-}
-
-function openRefundModalFromOrder(orderId, amount) {
-    currentOrderIdForRefund = orderId;
-    document.getElementById('refund-amount').value = amount;
-    document.getElementById('refund-reason').value = '';
-    document.getElementById('refund-modal').classList.add('open');
-}
-
-function closeRefundModal() { 
-    document.getElementById('refund-modal').classList.remove('open'); 
-}
-
-async function processRefundNow() {
-    const amount = document.getElementById('refund-amount').value;
-    const reason = document.getElementById('refund-reason').value;
-    if (!amount) { showGlobalErr('Amount required'); return; }
-    try {
-        await adminFetch('POST', `/admin/order/${currentOrderIdForRefund}/refund`, { 
-            amount: parseFloat(amount), 
-            reason: reason || 'Admin initiated refund' 
-        });
-        closeRefundModal();
-        await loadAll();
-        showGlobalSuccess(`Refund of ₹${amount} processed for Order #${currentOrderIdForRefund}`);
-    } catch(e) { 
-        showGlobalErr('Refund failed: ' + e.message); 
-    }
-}
-
-// ===== Message Popup - NEW FEATURE =====
-function openMessagePopup(orderId) {
-    const order = adminData.orders.find(o => o.id === orderId);
-    if (!order) {
-        showGlobalErr('Order not found');
+    if (!tbody) return;
+    
+    if (!state.data.refundRequests.length) {
+        tbody.innerHTML = '<tr><td colspan="7" class="empty-row">No refund requests</td></tr>';
         return;
     }
     
-    currentMessageOrderId = orderId;
+    tbody.innerHTML = state.data.refundRequests.map(r => `
+        <tr>
+            <td><span style="color:var(--accent)">#${r.order_id}</span></td>
+            <td>
+                <strong>${escapeHtml(r.user_name || 'Unknown')}</strong><br>
+                <small>${escapeHtml(r.user_email || '')}</small>
+            </td>
+            <td><strong style="color:var(--warning)">${formatCurrency(r.amount_to_refund)}</strong></td>
+            <td class="text-truncate" title="${escapeHtml(r.reason || '')}">${escapeHtml((r.reason || '').substring(0, 50))}</td>
+            <td><span class="badge badge-pending">${escapeHtml(r.status)}</span></td>
+            <td>${formatDate(r.created_at)}</td>
+            <td>
+                <button class="btn btn-sm btn-success" onclick="processRefund(${r.order_id}, ${r.amount_to_refund})">
+                    <i class="fas fa-check"></i> Approve
+                </button>
+                <button class="btn btn-sm btn-danger" onclick="rejectRefund(${r.order_id})">
+                    <i class="fas fa-times"></i> Reject
+                </button>
+            </td>
+        </tr>
+    `).join('');
+}
+
+function renderServices(filter = '') {
+    const tbody = document.getElementById('svc-tbody');
+    if (!tbody) return;
     
-    // Populate popup with order message info
-    document.getElementById('msg-client-name').textContent = order.user_name || 'Client';
-    document.getElementById('msg-client-email').textContent = order.user_email || 'N/A';
-    document.getElementById('msg-client-email').href = `mailto:${order.user_email}`;
-    document.getElementById('msg-order-id').textContent = orderId;
+    const filtered = filter
+        ? state.data.services.filter(s => s.title?.toLowerCase().includes(filter.toLowerCase()))
+        : state.data.services;
     
-    // Show message content (from requirements or custom notes)
-    const messageContent = order.requirements || order.custom_notes || 'No message content available.';
-    document.getElementById('msg-content').textContent = messageContent;
+    if (!filtered.length) {
+        tbody.innerHTML = '<tr><td colspan="5" class="empty-row">No services found</td></tr>';
+        return;
+    }
     
-    // Open popup
-    document.getElementById('message-popup').classList.add('open');
+    // Count orders per service
+    const orderCounts = {};
+    state.data.orders.forEach(o => {
+        orderCounts[o.service_id] = (orderCounts[o.service_id] || 0) + 1;
+    });
     
-    // Close sidebar on mobile
-    if (window.innerWidth <= 992) {
-        document.getElementById('sidebar').classList.remove('mobile-open');
-        document.getElementById('sidebar-overlay').classList.remove('active');
+    tbody.innerHTML = filtered.map(s => `
+        <tr>
+            <td><strong>${s.emoji || '💻'} ${escapeHtml(s.title)}</strong></td>
+            <td><span class="badge badge-progress">${escapeHtml(s.category)}</span></td>
+            <td><strong style="color:var(--green)">${formatCurrency(s.price || 0)}</strong></td>
+            <td>${orderCounts[s.id] || 0}</td>
+            <td>
+                <div style="display:flex;gap:0.5rem">
+                    <button class="btn btn-sm btn-edit" onclick="editService(${s.id})" aria-label="Edit service">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                    <button class="btn btn-sm btn-danger" onclick="deleteService(${s.id})" aria-label="Delete service">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            </td>
+        </tr>
+    `).join('');
+}
+
+function renderUsers(filter = '') {
+    const tbody = document.getElementById('usr-tbody');
+    if (!tbody) return;
+    
+    const filtered = filter
+        ? state.data.users.filter(u => 
+            u.email?.toLowerCase().includes(filter.toLowerCase()) ||
+            u.name?.toLowerCase().includes(filter.toLowerCase())
+        )
+        : state.data.users;
+    
+    if (!filtered.length) {
+        tbody.innerHTML = '<tr><td colspan="6" class="empty-row">No users found</td></tr>';
+        return;
+    }
+    
+    // Calculate order counts and spending per user
+    const userStats = {};
+    state.data.orders.forEach(o => {
+        const uid = o.user_id;
+        if (!userStats[uid]) {
+            userStats[uid] = { orders: 0, spent: 0 };
+        }
+        userStats[uid].orders++;
+        userStats[uid].spent += parseFloat(o.total_paid || o.advance_paid || 0);
+    });
+    
+    tbody.innerHTML = filtered.map(u => `
+        <tr>
+            <td><strong>${escapeHtml(u.name || '—')}</strong></td>
+            <td class="text-truncate" title="${escapeHtml(u.email)}">${escapeHtml(u.email)}</td>
+            <td>${u.verified 
+                ? '<span class="badge badge-done"><i class="fas fa-check"></i> Verified</span>' 
+                : '<span class="badge badge-pending"><i class="fas fa-clock"></i> Pending</span>'
+            }</td>
+            <td><strong>${userStats[u.id]?.orders || 0}</strong></td>
+            <td><strong style="color:var(--green)">${formatCurrency(userStats[u.id]?.spent || 0)}</strong></td>
+            <td>${formatDate(u.created_at).split(',')[0]}</td>
+        </tr>
+    `).join('');
+}
+
+function renderCustomRequests() {
+    const tbody = document.getElementById('custom-tbody');
+    if (!tbody) return;
+    
+    if (!state.data.customRequests.length) {
+        tbody.innerHTML = '<tr><td colspan="8" class="empty-row">No custom requests</td></tr>';
+        return;
+    }
+    
+    tbody.innerHTML = state.data.customRequests.map(r => `
+        <tr>
+            <td>${formatDate(r.created_at).split(',')[0]}</td>
+            <td>${escapeHtml(r.name)}</td>
+            <td class="text-truncate" title="${escapeHtml(r.email)}">${escapeHtml(r.email)}</td>
+            <td><i class="fab fa-whatsapp" style="color: #25D366;"></i> ${escapeHtml(r.whatsapp || '—')}</td>
+            <td class="text-truncate" title="${escapeHtml(r.title)}">${escapeHtml(r.title)}</td>
+            <td><strong style="color:var(--green)">${escapeHtml(r.budget)}</strong></td>
+            <td><span class="badge badge-pending">${escapeHtml(r.status || 'pending')}</span></td>
+            <td>
+                <div style="display:flex;gap:0.5rem;">
+                    <button class="btn btn-sm btn-success" onclick="contactClient('${r.email}')" aria-label="Email client">
+                        <i class="fas fa-envelope"></i>
+                    </button>
+                    ${r.whatsapp 
+                        ? `<button class="btn btn-sm btn-chat" onclick="contactWhatsApp('${r.whatsapp}', '${r.name}')" aria-label="WhatsApp client">
+                            <i class="fab fa-whatsapp"></i>
+                        </button>` 
+                        : ''
+                    }
+                </div>
+            </td>
+        </tr>
+    `).join('');
+}
+
+// ===== ORDER ACTIONS =====
+async function startProject(orderId) {
+    if (!confirm(`Start working on Order #${orderId}?`)) return;
+    
+    try {
+        await api.startProject(orderId);
+        showNotification(`Project started for Order #${orderId}`);
+        await loadAllData();
+        closeOrderDetail();
+    } catch (error) {
+        console.error('Failed to start project:', error);
+        showNotification('Failed to start project: ' + error.message, 'error');
     }
 }
 
-function closeMessagePopup() {
-    document.getElementById('message-popup').classList.remove('open');
-    currentMessageOrderId = null;
-}
-
-function openChatFromPopup() {
-    if (currentMessageOrderId) {
-        closeMessagePopup();
-        chatFromOrder(currentMessageOrderId);
+async function markReadyForBalance(orderId) {
+    if (!confirm(`Mark Order #${orderId} as ready for balance payment?`)) return;
+    
+    try {
+        await api.readyForBalance(orderId);
+        showNotification(`Order #${orderId} is ready for balance payment`);
+        await loadAllData();
+        closeOrderDetail();
+    } catch (error) {
+        console.error('Failed to mark ready:', error);
+        showNotification('Failed: ' + error.message, 'error');
     }
 }
 
-// ===== Deliverables Modal =====
-function viewDeliverablesModal(orderId) {
-    const order = adminData.orders.find(o => o.id === orderId);
-    if (!order) return;
-    const content = document.getElementById('view-deliverables-content');
+async function markAsCompleted(orderId) {
+    const liveUrl = prompt("Enter live URL (optional):") || '';
+    const githubRepo = prompt("Enter GitHub repo URL (optional):") || '';
+    const notes = prompt("Enter delivery notes (optional):") || '';
     
-    let html = `<div style="margin-bottom:1rem">
-        <strong>Client:</strong> ${escapeHtml(order.user_name || 'N/A')}
-    </div>`;
-    
-    html += `<div class="detail-section">
-        <div class="section-title"><i class="fas fa-link"></i> Deliverables</div>
-        <div class="info-grid">`;
-    
-    html += `<div class="info-item">
-        <div class="label">Live URL</div>
-        <div class="value">${order.live_url ? 
-            `<a href="${order.live_url}" target="_blank" class="deliverable-link" rel="noopener">${escapeHtml(order.live_url.substring(0,40))}${order.live_url.length > 40 ? '...' : ''}</a>` : 
-            '<span style="color:var(--text-muted)">Not provided</span>'}</div>
-    </div>`;
-    
-    html += `<div class="info-item">
-        <div class="label">GitHub Repository</div>
-        <div class="value">${order.github_repo ? 
-            `<a href="${order.github_repo}" target="_blank" class="deliverable-link" rel="noopener">View Repo</a>` : 
-            '<span style="color:var(--text-muted)">Not provided</span>'}</div>
-    </div>`;
-    
-    html += `<div class="info-item">
-        <div class="label">Source Code</div>
-        <div class="value">${order.source_code_url ? 
-            `<a href="${order.source_code_url}" target="_blank" class="deliverable-link" rel="noopener">Download</a>` : 
-            '<span style="color:var(--text-muted)">Not provided</span>'}</div>
-    </div>`;
-    
-    html += `<div class="info-item">
-        <div class="label">Documentation</div>
-        <div class="value">${order.documentation_url ? 
-            `<a href="${order.documentation_url}" target="_blank" class="deliverable-link" rel="noopener">View Docs</a>` : 
-            '<span style="color:var(--text-muted)">Not provided</span>'}</div>
-    </div>`;
-    
-    html += `</div>`;
-    
-    if (order.delivery_notes) {
-        html += `<div style="margin-top:1rem">
-            <strong>Delivery Notes:</strong>
-            <p style="margin-top:0.3rem">${escapeHtml(order.delivery_notes)}</p>
+    try {
+        await api.completeOrder(orderId, {
+            live_url: liveUrl,
+            github_repo: githubRepo,
+            delivery_notes: notes
+        });
+        showNotification(`Order #${orderId} marked as completed`);
+        await loadAllData();
+        closeOrderDetail();
+    } catch (error) {
+        console.error('Failed to complete order:', error);
+        showNotification('Failed: ' + error.message, 'error');
+    }
+}
+
+async function viewOrderDetails(orderId) {
+    try {
+        // Try to fetch fresh order data, fallback to cached
+        let order;
+        try {
+            const res = await api.getOrder(orderId);
+            order = res.order;
+        } catch {
+            order = state.data.orders.find(o => o.id === orderId);
+        }
+        
+        if (!order) {
+            showNotification('Order not found', 'error');
+            return;
+        }
+        
+        const custom = order.customization || {};
+        const customHtml = Object.keys(custom).length > 0
+            ? Object.entries(custom).map(([k, v]) => 
+                `<div class="customization-item"><strong>${escapeHtml(k)}:</strong> ${typeof v === 'boolean' ? (v ? 'Yes' : 'No') : escapeHtml(v)}</div>`
+            ).join('')
+            : '<p style="color:var(--text-muted)">No customizations</p>';
+        
+        const total = parseFloat(order.price) || 0;
+        const advance = parseFloat(order.advance_paid) || 0;
+        const paid = parseFloat(order.total_paid) || advance;
+        const balance = total - paid;
+        
+        const canStart = order.status === 'payment_received';
+        const canMarkReady = ['payment_received', 'in_progress'].includes(order.status);
+        const canComplete = ['ready_for_balance', 'in_progress'].includes(order.status);
+        
+        const html = `
+        <div class="order-detail-card">
+            <div class="detail-section">
+                <div class="section-title"><i class="fas fa-info-circle"></i> Order Information</div>
+                <div class="info-grid">
+                    <div class="info-item"><div class="label">Order ID</div><div class="value" style="color:var(--accent)">#${order.id}</div></div>
+                    <div class="info-item"><div class="label">Date</div><div class="value">${formatDate(order.created_at)}</div></div>
+                    <div class="info-item"><div class="label">Status</div><div class="value"><span class="badge badge-${order.status}">${escapeHtml((order.status || 'unknown').replace(/_/g, ' '))}</span></div></div>
+                    <div class="info-item"><div class="label">Total Price</div><div class="value" style="color:var(--green)">${formatCurrency(total)}</div></div>
+                </div>
+            </div>
+            
+            <div class="detail-section">
+                <div class="section-title"><i class="fas fa-user-circle"></i> Client Information</div>
+                <div class="info-grid">
+                    <div class="info-item"><div class="label">Client Name</div><div class="value"><strong>${escapeHtml(order.user_name || 'N/A')}</strong></div></div>
+                    <div class="info-item"><div class="label">Email Address</div><div class="value"><a href="mailto:${order.user_email}" style="color:var(--accent)">${escapeHtml(order.user_email || 'N/A')}</a></div></div>
+                    ${order.user_phone ? `<div class="info-item"><div class="label">Phone</div><div class="value">${escapeHtml(order.user_phone)}</div></div>` : ''}
+                    ${order.user_whatsapp ? `<div class="info-item"><div class="label">WhatsApp</div><div class="value"><a href="https://wa.me/${order.user_whatsapp.replace(/[^0-9]/g,'')}" target="_blank" style="color:var(--green)">${escapeHtml(order.user_whatsapp)}</a></div></div>` : ''}
+                </div>
+            </div>
+            
+            <div class="detail-section">
+                <div class="section-title"><i class="fas fa-credit-card"></i> Payment Details</div>
+                <div class="info-grid">
+                    <div class="info-item"><div class="label">Advance Paid (15%)</div><div class="value" style="color:var(--warning)">${formatCurrency(advance)}</div></div>
+                    <div class="info-item"><div class="label">Total Paid</div><div class="value" style="color:var(--green)">${formatCurrency(paid)}</div></div>
+                    <div class="info-item"><div class="label">Balance Due</div><div class="value" style="color:var(--accent)">${formatCurrency(balance)}</div></div>
+                </div>
+                <div class="progress-bar"><div class="progress-fill" style="width:${total > 0 ? (paid/total)*100 : 0}%"></div></div>
+                <div style="text-align:center;margin-top:0.5rem">${total > 0 ? Math.round((paid/total)*100) : 0}% Paid</div>
+            </div>
+            
+            <div class="detail-section">
+                <div class="section-title"><i class="fas fa-sliders-h"></i> Customizations</div>
+                ${customHtml}
+            </div>
+            
+            ${order.requirements 
+                ? `<div class="detail-section">
+                    <div class="section-title"><i class="fas fa-clipboard-list"></i> Requirements</div>
+                    <div style="background:var(--bg-card);padding:1rem;border-radius:var(--radius-md);white-space:pre-wrap">${escapeHtml(order.requirements)}</div>
+                </div>` 
+                : ''
+            }
+            
+            <div class="detail-section">
+                <div class="section-title"><i class="fas fa-link"></i> Deliverables</div>
+                <div class="info-grid">
+                    <div class="info-item"><div class="label">Live URL</div><div class="value">${order.live_url 
+                        ? `<a href="${order.live_url}" target="_blank" class="deliverable-link" rel="noopener">${escapeHtml(order.live_url.substring(0,40))}${order.live_url.length > 40 ? '...' : ''}</a>` 
+                        : '—'
+                    }</div></div>
+                    <div class="info-item"><div class="label">GitHub Repo</div><div class="value">${order.github_repo 
+                        ? `<a href="${order.github_repo}" target="_blank" class="deliverable-link" rel="noopener">View</a>` 
+                        : '—'
+                    }</div></div>
+                    <div class="info-item"><div class="label">Preview Ready</div><div class="value">${order.preview_ready 
+                        ? '<i class="fas fa-check-circle" style="color:var(--green)"></i> Yes' 
+                        : '<i class="fas fa-times-circle" style="color:var(--error)"></i> No'
+                    }</div></div>
+                    <div class="info-item"><div class="label">Full Access Ready</div><div class="value">${order.full_access_ready 
+                        ? '<i class="fas fa-check-circle" style="color:var(--green)"></i> Yes' 
+                        : '<i class="fas fa-times-circle" style="color:var(--error)"></i> No'
+                    }</div></div>
+                </div>
+                ${order.delivery_notes 
+                    ? `<div style="margin-top:1rem"><strong>Delivery Notes:</strong><p style="margin-top:0.3rem">${escapeHtml(order.delivery_notes)}</p></div>` 
+                    : ''
+                }
+            </div>
+            
+            <div class="detail-section">
+                <div class="section-title"><i class="fas fa-cog"></i> Actions</div>
+                <div style="display:flex;gap:0.5rem;flex-wrap:wrap">
+                    ${canStart ? `<button class="btn btn-success" onclick="startProject(${order.id})"><i class="fas fa-play"></i> Start Project</button>` : ''}
+                    ${canMarkReady ? `<button class="btn btn-warning" onclick="markReadyForBalance(${order.id})"><i class="fas fa-money-bill"></i> Ready for Balance</button>` : ''}
+                    ${canComplete ? `<button class="btn btn-primary" onclick="markAsCompleted(${order.id})"><i class="fas fa-check-circle"></i> Mark Complete</button>` : ''}
+                    <button class="btn btn-primary" onclick="openDeliveryModal(${order.id})"><i class="fas fa-box"></i> Edit Deliverables</button>
+                    <button class="btn btn-view" onclick="viewDeliverablesModal(${order.id})"><i class="fas fa-eye"></i> View Deliverables</button>
+                    <button class="btn btn-chat" onclick="openMessagePopup(${order.id})"><i class="fas fa-envelope"></i> View Message</button>
+                    <button class="btn btn-chat" onclick="chatFromOrder(${order.id})"><i class="fas fa-comment"></i> Chat</button>
+                    ${order.status === 'cancellation_requested' 
+                        ? `<button class="btn btn-danger" onclick="openRefundModalFromOrder(${order.id}, ${advance})"><i class="fas fa-money-bill-wave"></i> Process Refund</button>` 
+                        : ''
+                    }
+                </div>
+            </div>
         </div>`;
+        
+        document.getElementById('order-detail-content').innerHTML = html;
+        document.getElementById('order-detail-modal').classList.add('open');
+        
+    } catch (error) {
+        console.error('Failed to load order details:', error);
+        showNotification('Failed to load order details', 'error');
     }
-    html += `</div>`;
-    
-    content.innerHTML = html;
-    document.getElementById('view-deliverables-modal').classList.add('open');
 }
 
-function closeViewDeliverablesModal() { 
-    document.getElementById('view-deliverables-modal').classList.remove('open'); 
+function closeOrderDetail() {
+    document.getElementById('order-detail-modal').classList.remove('open');
 }
 
-// ===== Delivery Modal =====
+// ===== DELIVERY MODAL =====
 function openDeliveryModal(orderId) {
-    const order = adminData.orders.find(o => o.id === orderId);
+    const order = state.data.orders.find(o => o.id === orderId);
+    if (!order) {
+        showNotification('Order not found', 'error');
+        return;
+    }
+    
     const html = `
         <div class="fg">
             <label for="del-github"><i class="fab fa-github"></i> GitHub Repository URL</label>
-            <input id="del-github" value="${order?.github_repo || ''}" placeholder="https://github.com/username/repo">
+            <input id="del-github" value="${order.github_repo || ''}" placeholder="https://github.com/username/repo">
         </div>
         <div class="fg">
             <label for="del-live"><i class="fas fa-globe"></i> Live Demo URL</label>
-            <input id="del-live" value="${order?.live_url || ''}" placeholder="https://example.com">
+            <input id="del-live" value="${order.live_url || ''}" placeholder="https://example.com">
         </div>
         <div class="fg">
             <label for="del-source"><i class="fas fa-code"></i> Source Code URL</label>
-            <input id="del-source" value="${order?.source_code_url || ''}" placeholder="https://drive.google.com/...">
+            <input id="del-source" value="${order.source_code_url || ''}" placeholder="https://drive.google.com/...">
         </div>
         <div class="fg">
             <label for="del-docs"><i class="fas fa-book"></i> Documentation URL</label>
-            <input id="del-docs" value="${order?.documentation_url || ''}" placeholder="https://docs.example.com">
+            <input id="del-docs" value="${order.documentation_url || ''}" placeholder="https://docs.example.com">
         </div>
         <div class="fg">
             <label for="del-notes"><i class="fas fa-sticky-note"></i> Delivery Notes</label>
-            <textarea id="del-notes" rows="3" placeholder="Add any delivery notes...">${order?.delivery_notes || ''}</textarea>
+            <textarea id="del-notes" rows="3" placeholder="Add any delivery notes...">${order.delivery_notes || ''}</textarea>
         </div>
         <div class="fg">
             <label>
-                <input type="checkbox" id="del-preview" ${order?.preview_ready ? 'checked' : ''}> 
+                <input type="checkbox" id="del-preview" ${order.preview_ready ? 'checked' : ''}> 
                 <i class="fas fa-eye"></i> Preview Ready (15% payment ke baad client dekhega)
             </label>
         </div>
         <div class="fg">
             <label>
-                <input type="checkbox" id="del-full" ${order?.full_access_ready ? 'checked' : ''}> 
+                <input type="checkbox" id="del-full" ${order.full_access_ready ? 'checked' : ''}> 
                 <i class="fas fa-download"></i> Full Access Ready (85% payment ke baad client download karega)
             </label>
         </div>
@@ -1706,395 +2147,329 @@ function openDeliveryModal(orderId) {
             </button>
         </div>
     `;
+    
     document.getElementById('delivery-modal-content').innerHTML = html;
     document.getElementById('delivery-modal').classList.add('open');
 }
 
-function closeDeliveryModal() { 
-    document.getElementById('delivery-modal').classList.remove('open'); 
+function closeDeliveryModal() {
+    document.getElementById('delivery-modal').classList.remove('open');
 }
 
 async function submitDelivery(orderId) {
-    const github = document.getElementById('del-github')?.value || '';
-    const live = document.getElementById('del-live')?.value || '';
-    const source = document.getElementById('del-source')?.value || '';
-    const docs = document.getElementById('del-docs')?.value || '';
-    const notes = document.getElementById('del-notes')?.value || '';
-    const preview = document.getElementById('del-preview')?.checked || false;
-    const full = document.getElementById('del-full')?.checked || false;
-    const markDelivered = document.getElementById('del-mark-delivered')?.checked || false;
-    
-    console.log('📦 Submitting delivery for order:', orderId);
+    const deliveryData = {
+        delivery_notes: document.getElementById('del-notes')?.value || '',
+        github_repo: document.getElementById('del-github')?.value || '',
+        live_url: document.getElementById('del-live')?.value || '',
+        source_code_url: document.getElementById('del-source')?.value || '',
+        documentation_url: document.getElementById('del-docs')?.value || '',
+        preview_ready: document.getElementById('del-preview')?.checked || false,
+        full_access_ready: document.getElementById('del-full')?.checked || false,
+        mark_delivered: document.getElementById('del-mark-delivered')?.checked || false
+    };
     
     try {
-        await adminFetch('POST', `/admin/order/${orderId}/update-delivery`, { 
-            delivery_notes: notes, 
-            github_repo: github, 
-            live_url: live, 
-            source_code_url: source, 
-            documentation_url: docs, 
-            preview_ready: preview, 
-            full_access_ready: full,
-            mark_delivered: markDelivered
-        });
+        await api.updateDelivery(orderId, deliveryData);
         closeDeliveryModal();
         closeOrderDetail();
-        await loadAll();
-        showGlobalSuccess(`Delivery info saved for Order #${orderId}`);
-    } catch(e) { 
-        console.error('❌ Delivery failed:', e);
-        showGlobalErr('Failed: ' + e.message); 
+        await loadAllData();
+        showNotification(`Delivery info saved for Order #${orderId}`);
+    } catch (error) {
+        console.error('Failed to save delivery:', error);
+        showNotification('Failed: ' + error.message, 'error');
     }
 }
 
-// ===== Order Actions =====
-async function startProject(orderId) {
-    if (!confirm(`Start working on Order #${orderId}?`)) return;
-    try {
-        await adminFetch('POST', `/admin/order/${orderId}/start-project`);
-        showGlobalSuccess(`Project started for Order #${orderId}`);
-        await loadAll();
-        closeOrderDetail();
-    } catch(e) { 
-        console.error('❌ Start project failed:', e);
-        showGlobalErr('Failed to start project: ' + e.message); 
-    }
-}
-
-async function markReadyForBalance(orderId) {
-    if (!confirm(`Mark Order #${orderId} as ready for balance payment?`)) return;
-    try {
-        await adminFetch('POST', `/admin/order/${orderId}/ready-for-balance`);
-        showGlobalSuccess(`Order #${orderId} is ready for balance payment`);
-        await loadAll();
-        closeOrderDetail();
-    } catch(e) { 
-        console.error('❌ Mark ready failed:', e);
-        showGlobalErr('Failed: ' + e.message); 
-    }
-}
-
-async function markAsCompleted(orderId) {
-    const liveUrl = prompt("Enter live URL (optional):") || '';
-    const githubRepo = prompt("Enter GitHub repo URL (optional):") || '';
-    const notes = prompt("Enter delivery notes (optional):") || '';
+// ===== REFUND FUNCTIONS =====
+async function processRefund(orderId, amount) {
+    if (!confirm(`Process refund of ${formatCurrency(amount)} for Order #${orderId}?`)) return;
     
     try {
-        await adminFetch('POST', `/admin/order/${orderId}/complete`, {
-            live_url: liveUrl,
-            github_repo: githubRepo,
-            delivery_notes: notes
+        await api.processRefund(orderId, {
+            amount: parseFloat(amount),
+            reason: 'Refund approved by admin'
         });
-        showGlobalSuccess(`Order #${orderId} marked as completed`);
-        await loadAll();
-        closeOrderDetail();
-    } catch(e) { 
-        console.error('❌ Mark complete failed:', e);
-        showGlobalErr('Failed: ' + e.message); 
+        showNotification(`Refund of ${formatCurrency(amount)} processed for Order #${orderId}`);
+        await loadAllData();
+    } catch (error) {
+        console.error('Refund failed:', error);
+        showNotification('Refund failed: ' + error.message, 'error');
     }
 }
 
-// ===== Order Detail View - Enhanced =====
-async function viewOrderDetails(orderId) {
-    const order = adminData.orders.find(o => o.id === orderId);
+async function rejectRefund(orderId) {
+    if (!confirm(`Reject refund request for Order #${orderId}?`)) return;
+    
+    try {
+        await api.rejectRefund(orderId, 'Refund rejected by admin');
+        showNotification(`Refund request rejected for Order #${orderId}`);
+        await loadAllData();
+    } catch (error) {
+        console.error('Reject refund failed:', error);
+        showNotification('Failed: ' + error.message, 'error');
+    }
+}
+
+function openRefundModalFromOrder(orderId, amount) {
+    state.ui.currentRefundOrderId = orderId;
+    document.getElementById('refund-amount').value = amount;
+    document.getElementById('refund-reason').value = '';
+    document.getElementById('refund-modal').classList.add('open');
+}
+
+function closeRefundModal() {
+    document.getElementById('refund-modal').classList.remove('open');
+    state.ui.currentRefundOrderId = null;
+}
+
+async function processRefundNow() {
+    const amount = document.getElementById('refund-amount')?.value;
+    const reason = document.getElementById('refund-reason')?.value || 'Admin initiated refund';
+    
+    if (!amount || !state.ui.currentRefundOrderId) {
+        showNotification('Invalid refund data', 'error');
+        return;
+    }
+    
+    try {
+        await api.processRefund(state.ui.currentRefundOrderId, {
+            amount: parseFloat(amount),
+            reason: reason
+        });
+        closeRefundModal();
+        await loadAllData();
+        showNotification(`Refund of ${formatCurrency(amount)} processed`);
+    } catch (error) {
+        console.error('Refund failed:', error);
+        showNotification('Refund failed: ' + error.message, 'error');
+    }
+}
+
+// ===== MESSAGE POPUP =====
+function openMessagePopup(orderId) {
+    const order = state.data.orders.find(o => o.id === orderId);
+    if (!order) {
+        showNotification('Order not found', 'error');
+        return;
+    }
+    
+    state.ui.currentMessageOrderId = orderId;
+    
+    document.getElementById('msg-client-name').textContent = order.user_name || 'Client';
+    document.getElementById('msg-client-email').textContent = order.user_email || 'N/A';
+    document.getElementById('msg-client-email').href = `mailto:${order.user_email}`;
+    document.getElementById('msg-order-id').textContent = orderId;
+    
+    const messageContent = order.requirements || order.custom_notes || 'No message content available.';
+    document.getElementById('msg-content').textContent = messageContent;
+    
+    document.getElementById('message-popup').classList.add('open');
+    
+    if (window.innerWidth <= 992) {
+        document.getElementById('sidebar').classList.remove('mobile-open');
+        document.getElementById('sidebar-overlay').classList.remove('active');
+    }
+}
+
+function closeMessagePopup() {
+    document.getElementById('message-popup').classList.remove('open');
+    state.ui.currentMessageOrderId = null;
+}
+
+function openChatFromPopup() {
+    if (state.ui.currentMessageOrderId) {
+        closeMessagePopup();
+        chatFromOrder(state.ui.currentMessageOrderId);
+    }
+}
+
+// ===== DELIVERABLES MODAL =====
+function viewDeliverablesModal(orderId) {
+    const order = state.data.orders.find(o => o.id === orderId);
     if (!order) return;
     
-    const custom = order.customization || {};
-    const customHtml = Object.keys(custom).length > 0 ? 
-        Object.entries(custom).map(([k,v]) => 
-            `<div class="customization-item"><strong>${escapeHtml(k)}:</strong> ${typeof v === 'boolean' ? (v ? 'Yes' : 'No') : escapeHtml(v)}</div>`
-        ).join('') : 
-        '<p style="color:var(--text-muted)">No customizations</p>';
+    const content = document.getElementById('view-deliverables-content');
     
-    const total = parseFloat(order.price) || 0;
-    const advance = parseFloat(order.advance_paid) || 0;
-    const paid = parseFloat(order.total_paid) || advance;
-    const balance = total - paid;
-    const canStart = order.status === 'payment_received';
-    const canMarkReady = ['payment_received', 'in_progress'].includes(order.status);
-    const canComplete = ['ready_for_balance', 'in_progress'].includes(order.status);
-    
-    const html = `<div class="order-detail-card">
-        <div class="detail-section">
-            <div class="section-title"><i class="fas fa-info-circle"></i> Order Information</div>
-            <div class="info-grid">
-                <div class="info-item"><div class="label">Order ID</div><div class="value" style="color:var(--accent)">#${order.id}</div></div>
-                <div class="info-item"><div class="label">Date</div><div class="value">${new Date(order.created_at).toLocaleString()}</div></div>
-                <div class="info-item"><div class="label">Status</div><div class="value"><span class="badge badge-${order.status}">${escapeHtml(order.status?.replace(/_/g, ' ') || 'unknown')}</span></div></div>
-                <div class="info-item"><div class="label">Total Price</div><div class="value" style="color:var(--green)">₹${total.toLocaleString()}</div></div>
-            </div>
-        </div>
-        
-        <div class="detail-section">
-            <div class="section-title"><i class="fas fa-user-circle"></i> Client Information</div>
-            <div class="info-grid">
-                <div class="info-item"><div class="label">Client Name</div><div class="value"><strong>${escapeHtml(order.user_name || 'N/A')}</strong></div></div>
-                <div class="info-item"><div class="label">Email Address</div><div class="value"><a href="mailto:${order.user_email}" style="color:var(--accent)">${escapeHtml(order.user_email || 'N/A')}</a></div></div>
-                ${order.user_phone ? `<div class="info-item"><div class="label">Phone</div><div class="value">${escapeHtml(order.user_phone)}</div></div>` : ''}
-                ${order.user_whatsapp ? `<div class="info-item"><div class="label">WhatsApp</div><div class="value"><a href="https://wa.me/${order.user_whatsapp.replace(/[^0-9]/g,'')}" target="_blank" style="color:var(--green)">${escapeHtml(order.user_whatsapp)}</a></div></div>` : ''}
-            </div>
-        </div>
-        
-        <div class="detail-section">
-            <div class="section-title"><i class="fas fa-credit-card"></i> Payment Details</div>
-            <div class="info-grid">
-                <div class="info-item"><div class="label">Advance Paid (15%)</div><div class="value" style="color:var(--warning)">₹${advance.toLocaleString()}</div></div>
-                <div class="info-item"><div class="label">Total Paid</div><div class="value" style="color:var(--green)">₹${paid.toLocaleString()}</div></div>
-                <div class="info-item"><div class="label">Balance Due</div><div class="value" style="color:var(--accent)">₹${balance.toLocaleString()}</div></div>
-            </div>
-            <div class="progress-bar"><div class="progress-fill" style="width:${total > 0 ? (paid/total)*100 : 0}%"></div></div>
-            <div style="text-align:center;margin-top:0.5rem">${total > 0 ? Math.round((paid/total)*100) : 0}% Paid</div>
-        </div>
-        
-        <div class="detail-section">
-            <div class="section-title"><i class="fas fa-sliders-h"></i> Customizations</div>
-            ${customHtml}
-        </div>
-        
-        ${order.requirements ? 
-            `<div class="detail-section">
-                <div class="section-title"><i class="fas fa-clipboard-list"></i> Requirements</div>
-                <div style="background:var(--bg-card);padding:1rem;border-radius:var(--radius-md);white-space:pre-wrap">${escapeHtml(order.requirements)}</div>
-            </div>` : ''}
-        
-        <div class="detail-section">
-            <div class="section-title"><i class="fas fa-link"></i> Deliverables</div>
-            <div class="info-grid">
-                <div class="info-item"><div class="label">Live URL</div><div class="value">${order.live_url ? `<a href="${order.live_url}" target="_blank" class="deliverable-link" rel="noopener">${escapeHtml(order.live_url.substring(0,40))}${order.live_url.length > 40 ? '...' : ''}</a>` : '—'}</div></div>
-                <div class="info-item"><div class="label">GitHub Repo</div><div class="value">${order.github_repo ? `<a href="${order.github_repo}" target="_blank" class="deliverable-link" rel="noopener">View</a>` : '—'}</div></div>
-                <div class="info-item"><div class="label">Preview Ready</div><div class="value">${order.preview_ready ? '<i class="fas fa-check-circle" style="color:var(--green)"></i> Yes' : '<i class="fas fa-times-circle" style="color:var(--error)"></i> No'}</div></div>
-                <div class="info-item"><div class="label">Full Access Ready</div><div class="value">${order.full_access_ready ? '<i class="fas fa-check-circle" style="color:var(--green)"></i> Yes' : '<i class="fas fa-times-circle" style="color:var(--error)"></i> No'}</div></div>
-            </div>
-            ${order.delivery_notes ? `<div style="margin-top:1rem"><strong>Delivery Notes:</strong><p style="margin-top:0.3rem">${escapeHtml(order.delivery_notes)}</p></div>` : ''}
-        </div>
-        
-        <div class="detail-section">
-            <div class="section-title"><i class="fas fa-cog"></i> Actions</div>
-            <div style="display:flex;gap:0.5rem;flex-wrap:wrap">
-                ${canStart ? `<button class="btn btn-success" onclick="startProject(${order.id})"><i class="fas fa-play"></i> Start Project</button>` : ''}
-                ${canMarkReady ? `<button class="btn btn-warning" onclick="markReadyForBalance(${order.id})"><i class="fas fa-money-bill"></i> Ready for Balance</button>` : ''}
-                ${canComplete ? `<button class="btn btn-primary" onclick="markAsCompleted(${order.id})"><i class="fas fa-check-circle"></i> Mark Complete</button>` : ''}
-                <button class="btn btn-primary" onclick="openDeliveryModal(${order.id})"><i class="fas fa-box"></i> Edit Deliverables</button>
-                <button class="btn btn-view" onclick="viewDeliverablesModal(${order.id})"><i class="fas fa-eye"></i> View Deliverables</button>
-                <button class="btn btn-chat" onclick="openMessagePopup(${order.id})"><i class="fas fa-envelope"></i> View Message</button>
-                <button class="btn btn-chat" onclick="chatFromOrder(${order.id})"><i class="fas fa-comment"></i> Chat</button>
-                ${order.status === 'cancellation_requested' ? `<button class="btn btn-danger" onclick="openRefundModalFromOrder(${order.id}, ${advance})"><i class="fas fa-money-bill-wave"></i> Process Refund</button>` : ''}
-            </div>
-        </div>
+    let html = `<div style="margin-bottom:1rem">
+        <strong>Client:</strong> ${escapeHtml(order.user_name || 'N/A')}
     </div>`;
     
-    document.getElementById('order-detail-content').innerHTML = html;
-    document.getElementById('order-detail-modal').classList.add('open');
-}
-
-function closeOrderDetail() { 
-    document.getElementById('order-detail-modal').classList.remove('open'); 
-}
-
-// ===== Services, Users, Custom Requests =====
-function renderServices(filter = '') {
-    const tbody = document.getElementById('svc-tbody');
-    const filtered = filter ? adminData.services.filter(s => 
-        s.title?.toLowerCase().includes(filter.toLowerCase())
-    ) : adminData.services;
+    html += `<div class="detail-section">
+        <div class="section-title"><i class="fas fa-link"></i> Deliverables</div>
+        <div class="info-grid">`;
     
-    if (!filtered.length) { 
-        tbody.innerHTML = '<tr><td colspan="5" class="empty-row">No services found</td></tr>'; 
-        return; 
+    html += `<div class="info-item">
+        <div class="label">Live URL</div>
+        <div class="value">${order.live_url 
+            ? `<a href="${order.live_url}" target="_blank" class="deliverable-link" rel="noopener">${escapeHtml(order.live_url.substring(0,40))}${order.live_url.length > 40 ? '...' : ''}</a>` 
+            : '<span style="color:var(--text-muted)">Not provided</span>'
+        }</div>
+    </div>`;
+    
+    html += `<div class="info-item">
+        <div class="label">GitHub Repository</div>
+        <div class="value">${order.github_repo 
+            ? `<a href="${order.github_repo}" target="_blank" class="deliverable-link" rel="noopener">View Repo</a>` 
+            : '<span style="color:var(--text-muted)">Not provided</span>'
+        }</div>
+    </div>`;
+    
+    html += `<div class="info-item">
+        <div class="label">Source Code</div>
+        <div class="value">${order.source_code_url 
+            ? `<a href="${order.source_code_url}" target="_blank" class="deliverable-link" rel="noopener">Download</a>` 
+            : '<span style="color:var(--text-muted)">Not provided</span>'
+        }</div>
+    </div>`;
+    
+    html += `<div class="info-item">
+        <div class="label">Documentation</div>
+        <div class="value">${order.documentation_url 
+            ? `<a href="${order.documentation_url}" target="_blank" class="deliverable-link" rel="noopener">View Docs</a>` 
+            : '<span style="color:var(--text-muted)">Not provided</span>'
+        }</div>
+    </div>`;
+    
+    html += `</div>`;
+    
+    if (order.delivery_notes) {
+        html += `<div style="margin-top:1rem">
+            <strong>Delivery Notes:</strong>
+            <p style="margin-top:0.3rem">${escapeHtml(order.delivery_notes)}</p>
+        </div>`;
     }
+    html += `</div>`;
     
-    const counts = {}; 
-    adminData.orders.forEach(o => { 
-        counts[o.service_id] = (counts[o.service_id] || 0) + 1; 
-    });
-    
-    tbody.innerHTML = filtered.map(s => `<tr>
-        <td><strong>${s.emoji || '💻'} ${escapeHtml(s.title)}</strong></td>
-        <td><span class="badge badge-progress">${escapeHtml(s.category)}</span></td>
-        <td><strong style="color:var(--green)">₹${(s.price || 0).toLocaleString()}</strong></td>
-        <td>${counts[s.id] || 0}</td>
-        <td>
-            <div style="display:flex;gap:0.5rem">
-                <button class="btn btn-sm btn-edit" onclick="editService(${s.id})" aria-label="Edit service">
-                    <i class="fas fa-edit"></i>
-                </button>
-                <button class="btn btn-sm btn-danger" onclick="deleteService(${s.id})" aria-label="Delete service">
-                    <i class="fas fa-trash"></i>
-                </button>
-            </div>
-        </td>
-    </tr>`).join('');
+    content.innerHTML = html;
+    document.getElementById('view-deliverables-modal').classList.add('open');
 }
 
-function renderUsers(filter = '') {
-    const tbody = document.getElementById('usr-tbody');
-    const filtered = filter ? adminData.users.filter(u => 
-        u.email?.toLowerCase().includes(filter.toLowerCase()) || 
-        u.name?.toLowerCase().includes(filter.toLowerCase())
-    ) : adminData.users;
+function closeViewDeliverablesModal() {
+    document.getElementById('view-deliverables-modal').classList.remove('open');
+}
+
+// ===== SERVICE MANAGEMENT =====
+function openModal() {
+    state.ui.editingServiceId = null;
+    document.getElementById('modal-title').textContent = 'Add New Service';
     
-    if (!filtered.length) { 
-        tbody.innerHTML = '<tr><td colspan="6" class="empty-row">No users found</td></tr>'; 
-        return; 
-    }
-    
-    const counts = {}; 
-    const spent = {};
-    adminData.orders.forEach(o => { 
-        counts[o.user_id] = (counts[o.user_id] || 0) + 1; 
-        spent[o.user_id] = (spent[o.user_id] || 0) + parseFloat(o.total_paid || o.advance_paid || 0); 
-    });
-    
-    tbody.innerHTML = filtered.map(u => `<tr>
-        <td><strong>${escapeHtml(u.name || '—')}</strong></td>
-        <td class="text-truncate" title="${escapeHtml(u.email)}">${escapeHtml(u.email)}</td>
-        <td>${u.verified ? '<span class="badge badge-done"><i class="fas fa-check"></i> Verified</span>' : '<span class="badge badge-pending"><i class="fas fa-clock"></i> Pending</span>'}</td>
-        <td><strong>${counts[u.id] || 0}</strong></td>
-        <td><strong style="color:var(--green)">₹${(spent[u.id] || 0).toLocaleString()}</strong></td>
-        <td>${(u.created_at || '').substring(0,10)}</td>
-    </tr>`).join('');
-}
-
-function renderCustomRequests() {
-    const tbody = document.getElementById('custom-tbody');
-    if (!adminData.customRequests.length) { 
-        tbody.innerHTML = '<tr><td colspan="8" class="empty-row">No custom requests</td></tr>'; 
-        return; 
-    }
-    tbody.innerHTML = adminData.customRequests.map(r => `<tr>
-        <td>${(r.created_at || '').substring(0,10)}</td>
-        <td>${escapeHtml(r.name)}</td>
-        <td class="text-truncate" title="${escapeHtml(r.email)}">${escapeHtml(r.email)}</td>
-        <td><i class="fab fa-whatsapp" style="color: #25D366;"></i> ${escapeHtml(r.whatsapp || '—')}</td>
-        <td class="text-truncate" title="${escapeHtml(r.title)}">${escapeHtml(r.title)}</td>
-        <td><strong style="color:var(--green)">${escapeHtml(r.budget)}</strong></td>
-        <td><span class="badge badge-pending">${escapeHtml(r.status || 'pending')}</span></td>
-        <td>
-            <div style="display:flex;gap:0.5rem;">
-                <button class="btn btn-sm btn-success" onclick="contactClient('${r.email}')" aria-label="Email client">
-                    <i class="fas fa-envelope"></i>
-                </button>
-                ${r.whatsapp ? `<button class="btn btn-sm btn-chat" onclick="contactWhatsApp('${r.whatsapp}', '${r.name}')" aria-label="WhatsApp client">
-                    <i class="fab fa-whatsapp"></i>
-                </button>` : ''}
-            </div>
-        </td>
-    </tr>`).join('');
-}
-
-function contactWhatsApp(phone, name) {
-    if (!phone) { showGlobalErr('No WhatsApp number provided'); return; }
-    let cleanPhone = phone.replace(/[^0-9]/g, '');
-    if (!cleanPhone.startsWith('91') && cleanPhone.length === 10) cleanPhone = '91' + cleanPhone;
-    const message = encodeURIComponent(`Hi ${name}, I'm contacting you regarding your custom project request on NovaStack.`);
-    window.open(`https://wa.me/${cleanPhone}?text=${message}`, '_blank', 'noopener');
-}
-
-function contactClient(email) { 
-    if (email) window.location.href = `mailto:${email}`; 
-}
-
-// ===== Service Modal Functions =====
-function openModal() { 
-    editingId = null; 
-    document.getElementById('modal-title').textContent = 'Add New Service'; 
-    ['f-title','f-desc','f-tech'].forEach(id => {
+    const fields = ['f-title', 'f-desc', 'f-tech', 'f-price'];
+    fields.forEach(id => {
         const el = document.getElementById(id);
         if (el) el.value = '';
-    }); 
-    const priceEl = document.getElementById('f-price');
-    if (priceEl) priceEl.value = '';
+    });
+    
     const catEl = document.getElementById('f-cat');
     if (catEl) catEl.value = 'web';
-    document.getElementById('svc-modal').classList.add('open'); 
+    
+    document.getElementById('svc-modal').classList.add('open');
 }
 
-function editService(id) { 
-    const s = adminData.services.find(s => s.id === id); 
-    if (!s) return; 
-    editingId = id; 
-    document.getElementById('modal-title').textContent = 'Edit Service'; 
-    document.getElementById('f-title').value = s.title || ''; 
-    document.getElementById('f-desc').value = s.description || ''; 
-    document.getElementById('f-cat').value = s.category || 'web'; 
-    document.getElementById('f-tech').value = s.technologies || ''; 
-    document.getElementById('f-price').value = s.price || ''; 
-    document.getElementById('svc-modal').classList.add('open'); 
+function editService(id) {
+    const service = state.data.services.find(s => s.id === id);
+    if (!service) {
+        showNotification('Service not found', 'error');
+        return;
+    }
+    
+    state.ui.editingServiceId = id;
+    document.getElementById('modal-title').textContent = 'Edit Service';
+    
+    document.getElementById('f-title').value = service.title || '';
+    document.getElementById('f-desc').value = service.description || '';
+    document.getElementById('f-cat').value = service.category || 'web';
+    document.getElementById('f-tech').value = service.technologies || '';
+    document.getElementById('f-price').value = service.price || '';
+    
+    document.getElementById('svc-modal').classList.add('open');
 }
 
-function closeModal() { 
-    document.getElementById('svc-modal').classList.remove('open'); 
+function closeModal() {
+    document.getElementById('svc-modal').classList.remove('open');
+    state.ui.editingServiceId = null;
 }
 
 async function saveService() {
     const title = document.getElementById('f-title')?.value.trim();
     const price = document.getElementById('f-price')?.value;
     
-    if (!title || !price) { 
-        showGlobalErr('Title and price are required'); 
-        return; 
+    if (!title || !price) {
+        showNotification('Title and price are required', 'error');
+        return;
     }
     
-    const payload = { 
-        title, 
-        price: parseFloat(price), 
-        description: document.getElementById('f-desc')?.value.trim() || '', 
-        category: document.getElementById('f-cat')?.value || 'web', 
-        technologies: document.getElementById('f-tech')?.value.trim() || '' 
+    const serviceData = {
+        title,
+        price: parseFloat(price),
+        description: document.getElementById('f-desc')?.value.trim() || '',
+        category: document.getElementById('f-cat')?.value || 'web',
+        technologies: document.getElementById('f-tech')?.value.trim() || ''
     };
     
-    try { 
-        if (editingId) { 
-            payload.id = editingId; 
-            await adminFetch('PUT', '/admin/service/update', payload); 
-            showGlobalSuccess('Service updated!'); 
-        } else { 
-            await adminFetch('POST', '/admin/service/add', payload); 
-            showGlobalSuccess('Service added!'); 
-        } 
-        closeModal(); 
-        await loadAll(); 
-    } catch(e) { 
-        showGlobalErr('Error: ' + e.message); 
+    const btn = document.querySelector('#svc-modal .btn-save');
+    setLoading(btn, true);
+    
+    try {
+        if (state.ui.editingServiceId) {
+            serviceData.id = state.ui.editingServiceId;
+            await api.updateService(serviceData);
+            showNotification('Service updated successfully');
+        } else {
+            await api.addService(serviceData);
+            showNotification('Service added successfully');
+        }
+        closeModal();
+        await loadAllData();
+    } catch (error) {
+        console.error('Failed to save service:', error);
+        showNotification('Error: ' + error.message, 'error');
+    } finally {
+        setLoading(btn, false);
     }
 }
 
-async function deleteService(id) { 
-    if (!confirm('Are you sure you want to delete this service?')) return; 
-    try { 
-        await adminFetch('DELETE', '/admin/service/delete', { id }); 
-        await loadAll(); 
-        showGlobalSuccess('Service deleted'); 
-    } catch(e) { 
-        showGlobalErr('Error: ' + e.message); 
-    } 
+async function deleteService(id) {
+    if (!confirm('Are you sure you want to delete this service? This action cannot be undone.')) return;
+    
+    try {
+        await api.deleteService(id);
+        await loadAllData();
+        showNotification('Service deleted successfully');
+    } catch (error) {
+        console.error('Failed to delete service:', error);
+        showNotification('Error: ' + error.message, 'error');
+    }
 }
 
-// ===== Chat Functions =====
+// ===== CHAT SYSTEM =====
 async function loadConversations() {
     try {
-        const res = await fetch(`${CONFIG.API}/conversations`, { 
-            headers: { 'Authorization': `Bearer ${adminToken}` } 
-        });
-        const data = await res.json();
-        if (res.ok) displayConversations(data.conversations || []);
-    } catch(e) { 
-        console.error('Failed to load conversations:', e); 
+        const response = await api.getConversations();
+        displayConversations(response.conversations || []);
+    } catch (error) {
+        console.error('Failed to load conversations:', error);
+        document.getElementById('conversations-list').innerHTML = 
+            '<div style="text-align:center;padding:2rem;color:var(--error)">Failed to load conversations</div>';
     }
 }
 
 function displayConversations(conversations) {
     const container = document.getElementById('conversations-list');
-    if (!conversations || !conversations.length) { 
-        container.innerHTML = '<div style="text-align:center;padding:2rem;color:var(--text-muted)">No conversations yet</div>'; 
-        return; 
+    if (!container) return;
+    
+    if (!conversations || !conversations.length) {
+        container.innerHTML = '<div style="text-align:center;padding:2rem;color:var(--text-muted)">No conversations yet</div>';
+        return;
     }
-    container.innerHTML = conversations.map(conv => { 
-        const isActive = activeConversation === conv.id; 
-        const hasUnread = conv.unread_count > 0; 
-        const userName = conv.users?.name || 'User'; 
-        const orderId = conv.id.replace('order_', ''); 
-        return `<div class="conversation-item ${hasUnread ? 'unread' : ''} ${isActive ? 'active' : ''}" role="listitem">
+    
+    container.innerHTML = conversations.map(conv => {
+        const isActive = state.ui.activeConversation === conv.id;
+        const hasUnread = conv.unread_count > 0;
+        const userName = conv.users?.name || 'User';
+        const orderId = conv.id.replace('order_', '');
+        
+        return `
+        <div class="conversation-item ${hasUnread ? 'unread' : ''} ${isActive ? 'active' : ''}" role="listitem">
             <div onclick="selectConversation('${conv.id}', '${escapeHtml(userName)}')" style="cursor:pointer" role="button" tabindex="0">
                 <div style="font-weight:600;margin-bottom:0.3rem">
                     <i class="fas fa-user-circle"></i> ${escapeHtml(userName)} 
@@ -2105,49 +2480,21 @@ function displayConversations(conversations) {
                     ${escapeHtml((conv.last_message || 'No messages').substring(0, 50))}${(conv.last_message?.length || 0) > 50 ? '...' : ''}
                 </div>
                 <div style="font-size:0.7rem;color:var(--text-muted)">
-                    ${conv.last_message_at ? new Date(conv.last_message_at).toLocaleString() : ''}
+                    ${conv.last_message_at ? formatDate(conv.last_message_at) : ''}
                 </div>
             </div>
             <button class="delete-conv-btn" onclick="deleteConversation('${conv.id}')" aria-label="Delete conversation">
                 <i class="fas fa-trash"></i>
             </button>
-        </div>`; 
+        </div>`;
     }).join('');
 }
 
-async function deleteConversation(conversationId) {
-    if (!confirm(`Are you sure you want to delete this entire conversation? This action cannot be undone.`)) {
-        return;
-    }
-    
-    try {
-        const response = await fetch(`${CONFIG.API}/conversation/${conversationId}`, { 
-            method: 'DELETE',
-            headers: { 'Authorization': `Bearer ${adminToken}` }
-        });
-        
-        const data = await response.json();
-        
-        if (response.ok) {
-            showGlobalSuccess(`Conversation deleted successfully`);
-            if (activeConversation === conversationId) {
-                activeConversation = null;
-                document.getElementById('active-conversation-title').innerHTML = '<i class="fas fa-comment"></i> Select a conversation';
-                document.getElementById('admin-chat-messages').innerHTML = '<div style="text-align:center;padding:2rem;color:var(--text-muted)">Select a conversation to start chatting</div>';
-            }
-            await loadConversations();
-        } else {
-            showGlobalErr('Failed to delete: ' + (data.error || 'Unknown error'));
-        }
-    } catch(e) {
-        console.error('Delete error:', e);
-        showGlobalErr('Failed to delete conversation: ' + e.message);
-    }
-}
-
 async function selectConversation(conversationId, userName) {
-    activeConversation = conversationId;
-    document.getElementById('active-conversation-title').innerHTML = `<i class="fas fa-comment"></i> Chat with ${escapeHtml(userName)} (Order #${conversationId.replace('order_', '')})`;
+    state.ui.activeConversation = conversationId;
+    
+    document.getElementById('active-conversation-title').innerHTML = 
+        `<i class="fas fa-comment"></i> Chat with ${escapeHtml(userName)} (Order #${conversationId.replace('order_', '')})`;
     
     // Hide conversations list on mobile
     if (window.innerWidth <= 992) {
@@ -2156,78 +2503,123 @@ async function selectConversation(conversationId, userName) {
     }
     
     try {
-        const res = await fetch(`${CONFIG.API}/conversation/${conversationId}/messages`, { 
-            headers: { 'Authorization': `Bearer ${adminToken}` } 
-        });
-        const data = await res.json();
-        if (res.ok) displayChatMessages(data.messages || []);
-    } catch(e) { 
-        console.error('Failed to load messages:', e); 
+        const response = await api.getMessages(conversationId);
+        displayChatMessages(response.messages || []);
+    } catch (error) {
+        console.error('Failed to load messages:', error);
+        document.getElementById('admin-chat-messages').innerHTML = 
+            '<div style="text-align:center;padding:2rem;color:var(--error)">Failed to load messages</div>';
     }
+    
+    // Refresh conversation list to update unread counts
     loadConversations();
 }
 
 function displayChatMessages(messages) {
     const container = document.getElementById('admin-chat-messages');
-    if (!messages || !messages.length) { 
-        container.innerHTML = '<div style="text-align:center;padding:2rem;color:var(--text-muted)">No messages yet</div>'; 
-        return; 
+    if (!container) return;
+    
+    if (!messages || !messages.length) {
+        container.innerHTML = '<div style="text-align:center;padding:2rem;color:var(--text-muted)">No messages yet</div>';
+        return;
     }
+    
     container.innerHTML = messages.map(msg => `
         <div class="message-bubble ${msg.sender_role === 'admin' ? 'admin' : 'user'} ${msg.is_new ? 'message-new' : ''}">
             <div class="message-content">${escapeHtml(msg.message)}</div>
-            <span class="message-time">${new Date(msg.created_at).toLocaleString()}</span>
+            <span class="message-time">${formatDate(msg.created_at)}</span>
         </div>
     `).join('');
+    
+    // Auto-scroll to bottom
     container.scrollTop = container.scrollHeight;
 }
 
 async function sendAdminReply() {
-    if (!activeConversation) { 
-        showGlobalErr('Select a conversation first'); 
-        return; 
+    if (!state.ui.activeConversation) {
+        showNotification('Select a conversation first', 'error');
+        return;
     }
+    
     const input = document.getElementById('admin-chat-input');
-    const message = input.value.trim();
+    const message = input?.value.trim();
+    
     if (!message) return;
     
+    const sendBtn = input?.closest('.chat-input-area')?.querySelector('button');
+    setLoading(sendBtn, true);
+    
     try {
-        const res = await fetch(`${CONFIG.API}/conversation/${activeConversation}/send`, { 
-            method: 'POST', 
-            headers: { 
-                'Content-Type': 'application/json', 
-                'Authorization': `Bearer ${adminToken}` 
-            }, 
-            body: JSON.stringify({ message }) 
-        });
-        if (res.ok) { 
-            input.value = ''; 
-            await selectConversation(activeConversation, ''); 
-            await loadConversations(); 
-        }
-    } catch(e) { 
-        showGlobalErr('Failed to send message'); 
+        await api.sendMessage(state.ui.activeConversation, message);
+        input.value = '';
+        
+        // Refresh messages and conversations
+        await selectConversation(state.ui.activeConversation, '');
+        await loadConversations();
+        
+    } catch (error) {
+        console.error('Failed to send message:', error);
+        showNotification('Failed to send message', 'error');
+    } finally {
+        setLoading(sendBtn, false);
     }
 }
 
-function startChatPolling() { 
-    if (chatPollInterval) clearInterval(chatPollInterval); 
-    chatPollInterval = setInterval(() => { 
-        if (document.getElementById('panel-chat')?.classList.contains('active') && activeConversation) { 
-            selectConversation(activeConversation, ''); 
-            loadConversations(); 
-        } 
-    }, 3000); 
+function startChatPolling() {
+    if (state.chat.pollInterval) {
+        clearInterval(state.chat.pollInterval);
+    }
+    
+    state.chat.pollingActive = true;
+    
+    state.chat.pollInterval = setInterval(async () => {
+        if (state.chat.pollingActive && 
+            document.getElementById('panel-chat')?.classList.contains('active') && 
+            state.ui.activeConversation) {
+            
+            try {
+                await selectConversation(state.ui.activeConversation, '');
+                await loadConversations();
+            } catch (e) {
+                console.warn('Polling error:', e);
+            }
+        }
+    }, 5000); // Poll every 5 seconds
 }
 
-function stopChatPolling() { 
-    if (chatPollInterval) { 
-        clearInterval(chatPollInterval); 
-        chatPollInterval = null; 
-    } 
+function stopChatPolling() {
+    state.chat.pollingActive = false;
+    if (state.chat.pollInterval) {
+        clearInterval(state.chat.pollInterval);
+        state.chat.pollInterval = null;
+    }
 }
 
-// Mobile conversation list toggle
+async function deleteConversation(conversationId) {
+    if (!confirm('Are you sure you want to delete this entire conversation? This action cannot be undone.')) {
+        return;
+    }
+    
+    try {
+        await api.deleteConversation(conversationId);
+        showNotification('Conversation deleted successfully');
+        
+        // Clear active conversation if it was deleted
+        if (state.ui.activeConversation === conversationId) {
+            state.ui.activeConversation = null;
+            document.getElementById('active-conversation-title').innerHTML = 
+                '<i class="fas fa-comment"></i> Select a conversation';
+            document.getElementById('admin-chat-messages').innerHTML = 
+                '<div style="text-align:center;padding:2rem;color:var(--text-muted)">Select a conversation to start chatting</div>';
+        }
+        
+        await loadConversations();
+    } catch (error) {
+        console.error('Delete conversation failed:', error);
+        showNotification('Failed to delete: ' + error.message, 'error');
+    }
+}
+
 function toggleConversationsList() {
     const list = document.getElementById('conversations-list');
     const backBtn = document.querySelector('.back-to-list');
@@ -2241,61 +2633,76 @@ function toggleConversationsList() {
     }
 }
 
-// ===== Filters =====
-function filterServices(val) { renderServices(val); }
-function filterUsers(val) { renderUsers(val); }
-function filterOrders(val) { renderOrders(val); }
-
-// ===== Chat from Order =====
-async function chatFromOrder(orderId) { 
-    const order = adminData.orders.find(o => o.id === orderId);
+async function chatFromOrder(orderId) {
+    const order = state.data.orders.find(o => o.id === orderId);
     const userName = order?.user_name || 'Client';
-    await selectConversation(`order_${orderId}`, userName); 
-    switchPanel('chat', document.querySelector('[onclick*="chat"]')); 
-    showGlobalSuccess(`Opened chat with ${userName}`); 
+    
+    await selectConversation(`order_${orderId}`, userName);
+    switchPanel('chat', document.querySelector('[onclick*="chat"]'));
+    showNotification(`Opened chat with ${userName}`);
 }
 
-// ===== Utilities =====
-function escapeHtml(text) { 
-    if (!text) return ''; 
-    return String(text)
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#039;'); 
+// ===== CONTACT FUNCTIONS =====
+function contactWhatsApp(phone, name) {
+    if (!phone) {
+        showNotification('No WhatsApp number provided', 'error');
+        return;
+    }
+    
+    let cleanPhone = phone.replace(/[^0-9]/g, '');
+    if (!cleanPhone.startsWith('91') && cleanPhone.length === 10) {
+        cleanPhone = '91' + cleanPhone;
+    }
+    
+    const message = encodeURIComponent(`Hi ${name}, I'm contacting you regarding your custom project request on NovaStack.`);
+    window.open(`https://wa.me/${cleanPhone}?text=${message}`, '_blank', 'noopener');
 }
 
-function showGlobalSuccess(msg) { 
-    const el = document.getElementById('ga-success'); 
-    document.getElementById('success-msg').textContent = msg; 
-    el.style.display = 'flex'; 
-    setTimeout(() => el.style.display = 'none', 4000); 
+function contactClient(email) {
+    if (email) {
+        window.location.href = `mailto:${email}`;
+    }
 }
 
-function showGlobalErr(msg) { 
-    const el = document.getElementById('ga-error'); 
-    document.getElementById('error-msg').textContent = msg; 
-    el.style.display = 'flex'; 
-    setTimeout(() => el.style.display = 'none', 6000); 
+// ===== FILTERS =====
+function filterServices(val) {
+    renderServices(val);
 }
 
-function switchPanel(name, el) {
+function filterUsers(val) {
+    renderUsers(val);
+}
+
+function filterOrders(val) {
+    renderOrders(val);
+}
+
+// ===== PANEL NAVIGATION =====
+function switchPanel(panelName, navElement) {
+    // Hide all panels
     document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-    const targetPanel = document.getElementById('panel-' + name);
-    if (targetPanel) targetPanel.classList.add('active');
     
+    // Show target panel
+    const targetPanel = document.getElementById(`panel-${panelName}`);
+    if (targetPanel) {
+        targetPanel.classList.add('active');
+    }
+    
+    // Update navigation active state
     document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-    if (el) el.classList.add('active');
+    if (navElement) {
+        navElement.classList.add('active');
+    }
     
-    const titles = { 
-        overview: 'Dashboard', 
-        orders: 'All Orders', 
-        services: 'Services', 
-        users: 'Users', 
-        'custom-requests': 'Custom Requests', 
-        chat: 'Support Chat', 
-        'refund-requests': 'Refund Requests' 
+    // Update title
+    const titles = {
+        overview: 'Dashboard',
+        orders: 'All Orders',
+        services: 'Services',
+        users: 'Users',
+        'custom-requests': 'Custom Requests',
+        chat: 'Support Chat',
+        'refund-requests': 'Refund Requests'
     };
     
     const icons = {
@@ -2308,7 +2715,8 @@ function switchPanel(name, el) {
         'refund-requests': 'money-bill-wave'
     };
     
-    document.getElementById('panel-title').innerHTML = `<i class="fas fa-${icons[name] || 'tachometer-alt'}"></i> ${titles[name] || 'Dashboard'}`;
+    document.getElementById('panel-title').innerHTML = 
+        `<i class="fas fa-${icons[panelName] || 'tachometer-alt'}"></i> ${titles[panelName] || 'Dashboard'}`;
     
     // Close sidebar on mobile
     if (window.innerWidth <= 992) {
@@ -2317,51 +2725,46 @@ function switchPanel(name, el) {
     }
     
     // Handle chat polling
-    if (name === 'chat') { 
-        loadConversations(); 
-        startChatPolling(); 
-    } else { 
-        stopChatPolling(); 
+    if (panelName === 'chat') {
+        loadConversations();
+        startChatPolling();
+    } else {
+        stopChatPolling();
+    }
+    
+    state.ui.activePanel = panelName;
+}
+
+// ===== SIDEBAR TOGGLE =====
+function toggleSidebar() {
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('sidebar-overlay');
+    const isMobile = window.innerWidth <= 992;
+    
+    if (isMobile) {
+        sidebar.classList.toggle('mobile-open');
+        overlay.classList.toggle('active');
+    } else {
+        sidebar.classList.toggle('collapsed');
+        document.getElementById('main')?.classList.toggle('expanded');
+        overlay.classList.remove('active');
     }
 }
 
-// ===== Event Listeners =====
-window.addEventListener('resize', () => { 
-    const sidebar = document.getElementById('sidebar'); 
-    const main = document.getElementById('main'); 
-    const overlay = document.getElementById('sidebar-overlay'); 
+// ===== EVENT LISTENERS =====
+function setupEventListeners() {
+    // Keyboard navigation
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            // Close all modals
+            document.querySelectorAll('.modal-ov.open, .message-popup-ov.open').forEach(modal => {
+                modal.classList.remove('open');
+            });
+            closeMessagePopup();
+        }
+    });
     
-    if (window.innerWidth > 992) { 
-        sidebar.classList.remove('mobile-open'); 
-        overlay.classList.remove('active'); 
-    } else { 
-        sidebar.classList.remove('collapsed'); 
-        main.classList.remove('expanded'); 
-    }
-});
-
-// Keyboard navigation for panels
-document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') {
-        // Close modals
-        document.querySelectorAll('.modal-ov.open, .message-popup-ov.open').forEach(modal => {
-            modal.classList.remove('open');
-        });
-        // Close message popup
-        closeMessagePopup();
-    }
-});
-
-// Initialize
-window.onload = () => { 
-    const t = localStorage.getItem('dc_admin_token'); 
-    const e = localStorage.getItem('dc_admin_email'); 
-    if (t && e) { 
-        adminToken = t; 
-        showDashboard(e); 
-    }
-    
-    // Add enter key support for chat input
+    // Chat input - send on Enter (Shift+Enter for newline)
     const chatInput = document.getElementById('admin-chat-input');
     if (chatInput) {
         chatInput.addEventListener('keydown', (e) => {
@@ -2371,7 +2774,51 @@ window.onload = () => {
             }
         });
     }
-};
+    
+    // Window resize handler
+    window.addEventListener('resize', () => {
+        const sidebar = document.getElementById('sidebar');
+        const main = document.getElementById('main');
+        const overlay = document.getElementById('sidebar-overlay');
+        
+        if (window.innerWidth > 992) {
+            sidebar.classList.remove('mobile-open');
+            overlay.classList.remove('active');
+        } else {
+            sidebar.classList.remove('collapsed');
+            main?.classList.remove('expanded');
+        }
+    });
+    
+    // Close modals when clicking overlay
+    document.querySelectorAll('.modal-ov, .message-popup-ov').forEach(overlay => {
+        overlay.addEventListener('click', (e) => {
+            if (e.target === overlay) {
+                overlay.classList.remove('open');
+            }
+        });
+    });
+}
+
+// ===== INITIALIZATION =====
+function initialize() {
+    createParticles();
+    setupEventListeners();
+    
+    // Check for existing session
+    if (state.token && state.adminEmail) {
+        showDashboard(state.adminEmail);
+    }
+    
+    console.log('🚀 NovaStack Admin Dashboard initialized');
+}
+
+// Start the app
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initialize);
+} else {
+    initialize();
+}
 </script>
 </body>
 </html>
