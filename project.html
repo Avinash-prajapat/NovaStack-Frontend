@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <!-- 🔧 Enhanced viewport for all mobile devices including Samsung Galaxy -->
+  <!-- 🔧 Fixed viewport for Samsung/Android devices -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover">
   <meta name="theme-color" content="#0f0c1a">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -17,11 +17,11 @@
   <link rel="icon" type="image/png" href="logo.png">
   
   <style>
-    /* ===== 🎨 CSS Variables (Enhanced) ===== */
+    /* ===== 🎨 Modern CSS Variables ===== */
     :root {
       --bg-primary: #0f0c1a;
       --bg-secondary: #1a162a;
-      --bg-card: rgba(26, 22, 42, 0.9);
+      --bg-card: rgba(26, 22, 42, 0.95);
       --surface: rgba(255, 255, 255, 0.08);
       --surface-hover: rgba(255, 255, 255, 0.15);
       --border: rgba(255, 255, 255, 0.12);
@@ -36,19 +36,17 @@
       --green-glow: rgba(16, 185, 129, 0.35);
       --blue: #3b82f6;
       --blue-glow: rgba(59, 130, 246, 0.3);
-      --error: #ef4444;
+      --danger: #ef4444;
       --gradient-accent: linear-gradient(135deg, #ff6b35 0%, #f7c531 100%);
       --gradient-1: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
       --gradient-2: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
       --gradient-3: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
       --gradient-ecom: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
       --gradient-default: linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%);
-      --gradient-success: linear-gradient(135deg, #10b981 0%, #059669 100%);
       --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.25);
       --shadow-md: 0 8px 30px rgba(0, 0, 0, 0.4);
       --shadow-lg: 0 20px 60px rgba(0, 0, 0, 0.55);
       --shadow-glow: 0 0 40px var(--accent-glow);
-      --shadow-success: 0 0 40px var(--green-glow);
       --transition-fast: 150ms ease;
       --transition-normal: 300ms cubic-bezier(0.4, 0, 0.2, 1);
       --transition-slow: 500ms cubic-bezier(0.4, 0, 0.2, 1);
@@ -57,23 +55,25 @@
       --radius-lg: 20px;
       --radius-xl: 28px;
       --radius-full: 9999px;
-      /* Safe area insets for notched devices */
-      --safe-top: env(safe-area-inset-top);
-      --safe-bottom: env(safe-area-inset-bottom);
-      --safe-left: env(safe-area-inset-left);
-      --safe-right: env(safe-area-inset-right);
+      --safe-area-top: env(safe-area-inset-top);
+      --safe-area-bottom: env(safe-area-inset-bottom);
+      --safe-area-left: env(safe-area-inset-left);
+      --safe-area-right: env(safe-area-inset-right);
     }
 
     /* ===== 🌟 Base Reset ===== */
     *, *::before, *::after { 
-      margin: 0; 
-      padding: 0; 
-      box-sizing: border-box; 
+      margin: 0; padding: 0; box-sizing: border-box; 
       -webkit-tap-highlight-color: transparent;
+      -webkit-touch-callout: none;
+      -webkit-user-select: none;
+      user-select: none;
     }
     
+    input, textarea, [contenteditable] { -webkit-user-select: text; user-select: text; }
+    
     html { 
-      scroll-behavior: smooth;
+      scroll-behavior: smooth; 
       -webkit-text-size-adjust: 100%;
     }
     
@@ -84,24 +84,13 @@
       line-height: 1.7;
       overflow-x: hidden;
       min-height: 100vh;
-      min-height: -webkit-fill-available; /* iOS fix */
+      min-height: -webkit-fill-available;
       position: relative;
-      padding-top: var(--safe-top);
-      padding-bottom: var(--safe-bottom);
-      overscroll-behavior-y: contain; /* Prevent pull-to-refresh bounce */
+      padding-top: var(--safe-area-top);
+      padding-bottom: var(--safe-area-bottom);
     }
 
-    /* Prevent text selection on interactive elements */
-    .btn, .nav-link, .project-links a, .related-card {
-      -webkit-user-select: none;
-      user-select: none;
-    }
-    
-    /* Allow text selection in content */
-    .project-desc, .feature-item, .tech-tag {
-      -webkit-user-select: text;
-      user-select: text;
-    }
+    body.pull-disabled { overscroll-behavior-y: contain; }
 
     /* Animated Background */
     body::before {
@@ -122,7 +111,7 @@
       50% { opacity: 0.85; transform: scale(1.03); }
     }
 
-    /* Floating Particles - Reduced on mobile for performance */
+    /* Floating Particles */
     .particles {
       position: fixed;
       top: 0; left: 0; width: 100%; height: 100%;
@@ -137,7 +126,6 @@
       border-radius: 50%;
       opacity: 0.25;
       animation: float 18s infinite linear;
-      will-change: transform, opacity;
     }
     
     @keyframes float {
@@ -152,21 +140,21 @@
       position: fixed;
       top: 0; left: 0; right: 0;
       z-index: 1000;
-      background: rgba(15, 12, 26, 0.9);
+      background: rgba(15, 12, 26, 0.95);
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
       border-bottom: 1px solid var(--border);
       padding: 0 5%;
-      padding-top: var(--safe-top);
       display: flex;
       align-items: center;
       justify-content: space-between;
-      height: calc(72px + var(--safe-top));
+      height: calc(72px + var(--safe-area-top));
+      padding-top: var(--safe-area-top);
       transition: all var(--transition-normal);
     }
     
     nav.scrolled {
-      height: calc(64px + var(--safe-top));
+      height: calc(64px + var(--safe-area-top));
       background: rgba(15, 12, 26, 0.98);
       box-shadow: var(--shadow-md);
     }
@@ -192,56 +180,219 @@
       background-clip: text;
     }
     
-    .nav-right {
+    .nav-links {
       display: flex;
-      gap: clamp(0.5rem, 2vw, 0.7rem);
+      gap: clamp(1rem, 3vw, 2rem);
       align-items: center;
-      flex-wrap: wrap;
-      justify-content: flex-end;
+    }
+    
+    .nav-links a {
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: clamp(0.85rem, 2.5vw, 0.95rem);
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.5rem 0;
+      position: relative;
+      transition: color var(--transition-fast);
+      white-space: nowrap;
+    }
+    
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0;
+      width: 0; height: 2px;
+      background: var(--gradient-accent);
+      border-radius: var(--radius-full);
+      transition: width var(--transition-fast);
+    }
+    
+    .nav-links a:hover::after, .nav-links a.active::after { width: 100%; }
+    .nav-links a:hover, .nav-links a.active { color: var(--text-primary); }
+    .nav-links a.active { color: var(--accent); }
+
+    /* Profile Section */
+    .profile-section {
+      position: relative;
+      display: flex;
+      align-items: center;
+      flex-shrink: 0;
     }
 
-    /* ===== ✨ Modern Buttons - Touch Optimized ===== */
-    .btn {
-      padding: clamp(0.5rem, 2vw, 0.55rem) clamp(0.8rem, 3vw, 1.2rem);
+    .profile-trigger {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      padding: 0.4rem 0.8rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
       border-radius: var(--radius-full);
-      font-size: clamp(0.8rem, 2.5vw, 0.85rem);
-      font-weight: 600;
       cursor: pointer;
       transition: all var(--transition-normal);
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.5rem;
+      min-height: 40px;
+      min-width: 40px;
+    }
+
+    .profile-trigger:hover, .profile-trigger.active {
+      background: var(--surface-hover);
+      border-color: var(--accent);
+      transform: translateY(-1px);
+    }
+
+    .profile-avatar {
+      width: 32px; height: 32px;
+      background: var(--gradient-accent);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 600; font-size: 0.85rem;
+      color: white; text-transform: uppercase;
+      flex-shrink: 0; overflow: hidden;
+    }
+
+    .profile-avatar img {
+      width: 100%; height: 100%;
+      object-fit: cover; border-radius: 50%;
+    }
+
+    .profile-name {
+      font-size: 0.9rem; font-weight: 500;
+      color: var(--text-primary);
+      max-width: 120px;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+
+    .profile-trigger i.chevron {
+      font-size: 0.7rem; color: var(--text-muted);
+      transition: transform var(--transition-normal);
+      flex-shrink: 0;
+    }
+
+    .profile-trigger.active i.chevron { transform: rotate(180deg); }
+
+    .profile-dropdown {
+      position: absolute;
+      top: calc(100% + 12px); right: 0;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      min-width: 240px; max-width: 90vw;
+      padding: 0.5rem 0;
+      box-shadow: var(--shadow-lg);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      opacity: 0; visibility: hidden;
+      transform: translateY(-10px);
+      transition: all var(--transition-normal);
+      z-index: 1001;
+    }
+
+    .profile-dropdown.show {
+      opacity: 1; visibility: visible; transform: translateY(0);
+    }
+
+    .profile-dropdown::before {
+      content: ''; position: absolute;
+      top: -6px; right: 24px;
+      width: 12px; height: 12px;
+      background: var(--bg-card);
+      border-left: 1px solid var(--border);
+      border-top: 1px solid var(--border);
+      transform: rotate(45deg);
+    }
+
+    .dropdown-header {
+      padding: 0.8rem 1.2rem;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 0.3rem;
+    }
+
+    .dropdown-header .profile-avatar {
+      width: 40px; height: 40px; font-size: 1rem; margin-bottom: 0.4rem;
+    }
+
+    .dropdown-header .profile-name {
+      font-size: 1rem; font-weight: 600; max-width: none;
+    }
+
+    .dropdown-header .user-email {
+      font-size: 0.8rem; color: var(--text-muted);
+      word-break: break-all;
+    }
+
+    .dropdown-item {
+      display: flex; align-items: center; gap: 0.8rem;
+      padding: 0.7rem 1.2rem;
+      color: var(--text-secondary);
       text-decoration: none;
-      border: none;
-      position: relative;
-      overflow: hidden;
-      min-height: 44px; /* Touch target */
-      min-width: 44px;
+      font-size: 0.9rem;
+      transition: all var(--transition-normal);
+      border-left: 3px solid transparent;
+      min-height: 44px;
+    }
+
+    .dropdown-item:hover {
+      background: var(--surface-hover);
+      color: var(--text-primary);
+      border-left-color: var(--accent);
+      padding-left: 1.5rem;
+    }
+
+    .dropdown-item i {
+      width: 20px; text-align: center;
+      color: var(--accent); font-size: 0.9rem; flex-shrink: 0;
+    }
+
+    .dropdown-divider {
+      height: 1px; background: var(--border); margin: 0.4rem 0;
+    }
+
+    .logout-btn {
+      color: var(--danger) !important;
+      border-top: 1px solid var(--border);
+      margin-top: 0.3rem; padding-top: 0.7rem;
+    }
+
+    .logout-btn i { color: var(--danger) !important; }
+
+    /* Nav Right Buttons */
+    .nav-right {
+      display: flex; gap: 0.7rem; align-items: center;
+    }
+
+    /* ===== ✨ Modern Buttons ===== */
+    .btn {
+      padding: 0.55rem 1.2rem;
+      border-radius: var(--radius-full);
+      font-size: 0.85rem; font-weight: 600;
+      cursor: pointer;
+      transition: all var(--transition-normal);
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      text-decoration: none; border: none;
+      position: relative; overflow: hidden;
+      min-height: 40px; min-width: 44px;
     }
     
     .btn::before {
-      content: '';
-      position: absolute;
-      top: 0; left: -100%;
+      content: ''; position: absolute; top: 0; left: -100%;
       width: 100%; height: 100%;
       background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
       transition: left 0.5s;
-      pointer-events: none;
     }
     
     .btn:hover::before { left: 100%; }
     
     .btn-sm {
-      padding: clamp(0.4rem, 2vw, 0.45rem) clamp(0.7rem, 2.5vw, 1rem);
-      font-size: clamp(0.75rem, 2.3vw, 0.82rem);
+      padding: 0.45rem 1rem;
+      font-size: 0.82rem;
       border-radius: var(--radius-full);
       border: 1.5px solid var(--border);
       background: var(--surface);
       color: var(--text-primary);
       transition: all var(--transition-normal);
-      min-height: 40px;
-      white-space: nowrap;
+      min-height: 36px;
     }
     
     .btn-sm:hover {
@@ -249,10 +400,6 @@
       background: var(--surface-hover);
       transform: translateY(-2px);
       box-shadow: 0 6px 20px var(--accent-glow);
-    }
-    
-    .btn-sm:active {
-      transform: translateY(0);
     }
     
     .btn-accent {
@@ -265,10 +412,6 @@
       transform: translateY(-2px);
       box-shadow: 0 8px 30px var(--accent-glow);
     }
-    
-    .btn-accent:active {
-      transform: translateY(0);
-    }
 
     /* Cart Badge */
     .cart-btn { position: relative; }
@@ -279,11 +422,8 @@
       color: white;
       border-radius: var(--radius-full);
       width: 20px; height: 20px;
-      font-size: 0.7rem;
-      font-weight: 700;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      font-size: 0.7rem; font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
       animation: pulse 2s infinite;
       box-shadow: 0 0 10px var(--accent-glow);
       flex-shrink: 0;
@@ -294,19 +434,140 @@
       50% { transform: scale(1.15); }
     }
 
+    /* Mobile Menu Toggle */
+    .menu-toggle {
+      display: none;
+      font-size: 1.4rem; color: var(--accent);
+      cursor: pointer; padding: 0.6rem;
+      border-radius: var(--radius-md);
+      transition: background var(--transition-normal);
+      min-width: 44px; min-height: 44px;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .menu-toggle:hover, .menu-toggle.active {
+      background: var(--surface);
+    }
+
+    .menu-toggle i { transition: transform var(--transition-normal); }
+    .menu-toggle.active i { transform: rotate(90deg); }
+
+    /* Mobile Menu Panel */
+    .mobile-menu {
+      position: fixed;
+      top: calc(72px + var(--safe-area-top));
+      left: 0; right: 0;
+      background: var(--bg-secondary);
+      border-bottom: 1px solid var(--border);
+      padding: 1rem 5%;
+      max-height: 0; overflow: hidden;
+      transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
+      opacity: 0; z-index: 999;
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+    }
+
+    .mobile-menu.active {
+      max-height: 80vh; opacity: 1; overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .mobile-menu-inner {
+      display: flex; flex-direction: column; gap: 0.5rem;
+      padding-bottom: 1rem;
+    }
+
+    .mobile-nav-link {
+      display: flex; align-items: center; gap: 0.8rem;
+      padding: 1rem 1.2rem;
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 1rem; font-weight: 500;
+      border-radius: var(--radius-md);
+      transition: all var(--transition-normal);
+      min-height: 48px; min-width: 100%;
+    }
+
+    .mobile-nav-link:hover, .mobile-nav-link.active {
+      background: var(--surface-hover);
+      color: var(--text-primary);
+      transform: translateX(4px);
+    }
+
+    .mobile-nav-link i {
+      width: 24px; text-align: center;
+      color: var(--accent); flex-shrink: 0;
+    }
+
+    .mobile-nav-link.active {
+      color: var(--accent);
+      border-left: 3px solid var(--accent);
+      padding-left: 0.9rem;
+    }
+
+    .mobile-divider {
+      height: 1px; background: var(--border); margin: 0.5rem 0;
+    }
+
+    .mobile-profile-section { padding: 0.5rem 0; }
+
+    .mobile-profile-header {
+      display: flex; align-items: center; gap: 0.8rem;
+      padding: 0.8rem 1.2rem;
+      background: var(--surface);
+      border-radius: var(--radius-md);
+      margin-bottom: 0.5rem; cursor: pointer;
+      min-height: 56px;
+    }
+
+    .mobile-profile-avatar {
+      width: 40px; height: 40px; border-radius: 50%;
+      background: var(--gradient-accent);
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 600; color: white;
+      text-transform: uppercase; flex-shrink: 0;
+    }
+
+    .mobile-profile-avatar img {
+      width: 100%; height: 100%;
+      border-radius: 50%; object-fit: cover;
+    }
+
+    .mobile-profile-info { flex: 1; min-width: 0; }
+
+    .mobile-profile-name {
+      font-weight: 600; color: var(--text-primary);
+      font-size: 0.95rem;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+
+    .mobile-profile-email {
+      font-size: 0.8rem; color: var(--text-muted);
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+
+    .mobile-logout-btn {
+      width: calc(100% - 2.4rem);
+      justify-content: center;
+      color: var(--danger) !important;
+      border-color: rgba(239, 68, 68, 0.3) !important;
+      margin: 0.5rem 1.2rem;
+      min-height: 44px;
+    }
+
+    .mobile-logout-btn:hover {
+      background: rgba(239, 68, 68, 0.1) !important;
+    }
+
     /* ===== 🥖 Breadcrumb ===== */
     .breadcrumb {
       padding: 1rem 5%;
-      padding-top: calc(1rem + var(--safe-top));
-      max-width: 1400px;
-      margin: 0 auto;
-      font-size: clamp(0.8rem, 2.5vw, 0.85rem);
-      color: var(--text-muted);
-      display: flex;
-      align-items: center;
-      gap: 0.4rem;
-      flex-wrap: wrap;
+      max-width: 1400px; margin: 0 auto;
+      font-size: 0.85rem; color: var(--text-muted);
+      display: flex; align-items: center; gap: 0.4rem;
       animation: slideInDown 0.4s ease-out;
+      flex-wrap: wrap;
     }
     
     @keyframes slideInDown {
@@ -318,45 +579,23 @@
       color: var(--text-secondary);
       text-decoration: none;
       transition: color var(--transition-fast);
-      display: flex;
-      align-items: center;
-      gap: 0.3rem;
-      padding: 4px 8px;
-      border-radius: var(--radius-sm);
+      display: flex; align-items: center; gap: 0.3rem;
     }
     
-    .breadcrumb a:hover { 
-      color: var(--accent); 
-      background: var(--surface);
-    }
-    
+    .breadcrumb a:hover { color: var(--accent); }
     .breadcrumb a i { font-size: 0.7rem; }
     .breadcrumb span { color: var(--border); }
-    .breadcrumb .current { 
-      color: var(--text-primary); 
-      font-weight: 500;
-      padding: 4px 8px;
-      background: var(--surface);
-      border-radius: var(--radius-sm);
-    }
+    .breadcrumb .current { color: var(--text-primary); font-weight: 500; }
 
     /* ===== 📐 Main Layout ===== */
     .layout {
       max-width: 1400px;
       margin: 0 auto;
       padding: 1rem 5% 4rem;
-      padding-top: calc(1rem + var(--safe-top));
       display: grid;
-      grid-template-columns: 1fr;
-      gap: 2rem;
+      grid-template-columns: 1fr 360px;
+      gap: 2.5rem;
       align-items: start;
-    }
-    
-    @media (min-width: 1100px) {
-      .layout {
-        grid-template-columns: 1fr 360px;
-        gap: 2.5rem;
-      }
     }
 
     /* ===== 🖼️ Project Hero Thumbnail ===== */
@@ -364,15 +603,12 @@
       position: relative;
       border-radius: var(--radius-xl);
       overflow: hidden;
-      height: clamp(220px, 35vw, 320px);
+      height: 320px;
       margin-bottom: 2rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: clamp(3rem, 12vw, 5.5rem);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 5.5rem;
       animation: fadeIn 0.6s ease-out;
       box-shadow: var(--shadow-lg);
-      contain: content;
     }
     
     @keyframes fadeIn {
@@ -381,20 +617,14 @@
     }
     
     .project-hero::before {
-      content: '';
-      position: absolute;
-      inset: 0;
+      content: ''; position: absolute; inset: 0;
       background: linear-gradient(180deg, transparent 40%, rgba(0,0,0,0.6));
       z-index: 1;
-      pointer-events: none;
     }
     
     .project-hero::after {
-      content: '';
-      position: absolute;
-      inset: -2px;
-      border-radius: inherit;
-      padding: 2px;
+      content: ''; position: absolute; inset: -2px;
+      border-radius: inherit; padding: 2px;
       background: var(--gradient-accent);
       -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
       -webkit-mask-composite: xor;
@@ -418,24 +648,18 @@
     
     .cat-badge {
       position: absolute;
-      top: 1.2rem;
-      left: 1.2rem;
-      background: rgba(15, 12, 26, 0.95);
+      top: 1.2rem; left: 1.2rem;
+      background: rgba(15, 12, 26, 0.9);
       border: 1px solid var(--border);
       border-radius: var(--radius-full);
-      padding: clamp(0.3rem, 1.5vw, 0.35rem) clamp(0.7rem, 2.5vw, 1rem);
-      font-size: clamp(0.72rem, 2.3vw, 0.78rem);
-      font-weight: 600;
+      padding: 0.35rem 1rem;
+      font-size: 0.78rem; font-weight: 600;
       text-transform: capitalize;
       color: var(--text-primary);
       z-index: 2;
-      display: flex;
-      align-items: center;
-      gap: 0.4rem;
+      display: flex; align-items: center; gap: 0.4rem;
       backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
       animation: slideInLeft 0.5s ease-out 0.2s both;
-      max-width: calc(100% - 2.4rem);
     }
     
     @keyframes slideInLeft {
@@ -444,8 +668,7 @@
     }
     
     .project-hero .emoji {
-      position: relative;
-      z-index: 2;
+      position: relative; z-index: 2;
       animation: floatIcon 4s ease-in-out infinite;
       filter: drop-shadow(0 10px 30px rgba(0,0,0,0.3));
     }
@@ -459,7 +682,6 @@
     .content-section {
       animation: slideUp 0.5s ease-out 0.3s both;
       opacity: 0;
-      will-change: opacity, transform;
     }
     
     .content-section.visible { opacity: 1; }
@@ -472,7 +694,7 @@
     .project-title {
       font-family: 'Syne', sans-serif;
       font-weight: 800;
-      font-size: clamp(1.6rem, 5vw, 2.4rem);
+      font-size: clamp(1.8rem, 4vw, 2.4rem);
       margin-bottom: 0.8rem;
       line-height: 1.2;
       word-break: break-word;
@@ -486,30 +708,20 @@
     }
     
     .project-meta {
-      display: flex;
-      align-items: center;
-      gap: clamp(0.6rem, 2vw, 1rem);
-      margin-bottom: 1.5rem;
-      flex-wrap: wrap;
+      display: flex; align-items: center; gap: 1rem;
+      margin-bottom: 1.5rem; flex-wrap: wrap;
     }
     
     .meta-item {
-      display: flex;
-      align-items: center;
-      gap: 0.4rem;
-      font-size: clamp(0.8rem, 2.3vw, 0.85rem);
-      color: var(--text-muted);
-      padding: 4px 8px;
-      background: var(--surface);
-      border-radius: var(--radius-sm);
+      display: flex; align-items: center; gap: 0.4rem;
+      font-size: 0.85rem; color: var(--text-muted);
     }
     
     .meta-item i { color: var(--accent); }
     
     .project-desc {
       color: var(--text-secondary);
-      font-size: clamp(0.95rem, 2.8vw, 1rem);
-      line-height: 1.8;
+      font-size: 1rem; line-height: 1.8;
       margin-bottom: 2.2rem;
     }
     
@@ -520,15 +732,11 @@
     /* ===== 🏷️ Section Labels ===== */
     .section-lbl {
       font-family: 'Syne', sans-serif;
-      font-weight: 700;
-      font-size: clamp(0.75rem, 2.2vw, 0.8rem);
-      text-transform: uppercase;
-      letter-spacing: 0.12em;
+      font-weight: 700; font-size: 0.8rem;
+      text-transform: uppercase; letter-spacing: 0.12em;
       color: var(--text-muted);
       margin: 2rem 0 1rem;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
+      display: flex; align-items: center; gap: 0.5rem;
       padding-bottom: 0.6rem;
       border-bottom: 1px solid var(--border);
     }
@@ -537,9 +745,7 @@
 
     /* ===== 🔧 Technology Tags ===== */
     .tech-list {
-      display: flex;
-      flex-wrap: wrap;
-      gap: clamp(0.4rem, 1.5vw, 0.5rem);
+      display: flex; flex-wrap: wrap; gap: 0.5rem;
       margin-bottom: 1.8rem;
     }
     
@@ -547,15 +753,11 @@
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: var(--radius-full);
-      padding: clamp(0.3rem, 1.5vw, 0.35rem) clamp(0.7rem, 2.5vw, 0.9rem);
-      font-size: clamp(0.78rem, 2.3vw, 0.82rem);
-      font-weight: 500;
+      padding: 0.35rem 0.9rem;
+      font-size: 0.82rem; font-weight: 500;
       color: var(--text-secondary);
       transition: all var(--transition-fast);
-      display: flex;
-      align-items: center;
-      gap: 0.4rem;
-      min-height: 36px;
+      display: flex; align-items: center; gap: 0.4rem;
     }
     
     .tech-tag:hover {
@@ -565,42 +767,28 @@
       transform: translateY(-2px);
     }
     
-    .tech-tag:active {
-      transform: translateY(0);
-    }
-    
     .tech-tag i { font-size: 0.75rem; color: var(--accent); }
 
     /* ===== ✅ Features Grid ===== */
     .features-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: clamp(0.5rem, 2vw, 0.7rem);
-      margin-bottom: 2rem;
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 0.7rem; margin-bottom: 2rem;
     }
     
     .feature-item {
-      display: flex;
-      align-items: flex-start;
-      gap: 0.6rem;
-      font-size: clamp(0.85rem, 2.5vw, 0.9rem);
-      color: var(--text-secondary);
-      padding: 0.5rem;
-      border-radius: var(--radius-sm);
+      display: flex; align-items: flex-start; gap: 0.6rem;
+      font-size: 0.9rem; color: var(--text-secondary);
+      padding: 0.5rem; border-radius: var(--radius-sm);
       transition: background var(--transition-fast);
-      min-height: 44px;
     }
     
     .feature-item:hover { background: var(--surface); }
     
     .feature-item::before {
       content: '\f00c';
-      font-family: 'Font Awesome 6 Free';
-      font-weight: 900;
-      color: var(--green);
-      font-size: 0.85rem;
-      flex-shrink: 0;
-      margin-top: 3px;
+      font-family: 'Font Awesome 6 Free'; font-weight: 900;
+      color: var(--green); font-size: 0.85rem;
+      flex-shrink: 0; margin-top: 3px;
       animation: checkPop 0.3s ease-out;
     }
     
@@ -612,33 +800,21 @@
 
     /* ===== 🔗 Project Links ===== */
     .project-links {
-      display: flex;
-      gap: 0.8rem;
-      flex-wrap: wrap;
+      display: flex; gap: 0.8rem; flex-wrap: wrap;
       margin-bottom: 2.5rem;
     }
     
     .link-btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.5rem;
-      padding: clamp(0.55rem, 2vw, 0.6rem) clamp(0.9rem, 3vw, 1.2rem);
-      border-radius: var(--radius-md);
-      font-size: clamp(0.8rem, 2.3vw, 0.85rem);
-      font-weight: 500;
-      text-decoration: none;
-      transition: all var(--transition-normal);
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      padding: 0.6rem 1.2rem; border-radius: var(--radius-md);
+      font-size: 0.85rem; font-weight: 500;
+      text-decoration: none; transition: all var(--transition-normal);
       border: 1px solid var(--border);
-      background: var(--surface);
-      color: var(--text-primary);
+      background: var(--surface); color: var(--text-primary);
       min-height: 44px;
-      min-width: 44px;
-      flex: 1;
-      max-width: 100%;
     }
     
-    .link-btn i { font-size: 0.9rem; flex-shrink: 0; }
+    .link-btn i { font-size: 0.9rem; }
     
     .link-github {
       background: rgba(255, 255, 255, 0.05);
@@ -646,8 +822,7 @@
     }
     
     .link-github:hover {
-      background: #fff;
-      color: #1a1714;
+      background: #fff; color: #1a1714;
       border-color: #fff;
       transform: translateY(-2px);
       box-shadow: 0 8px 25px rgba(255, 255, 255, 0.15);
@@ -660,15 +835,10 @@
     }
     
     .link-demo:hover {
-      background: var(--blue);
-      color: white;
+      background: var(--blue); color: white;
       border-color: var(--blue);
       transform: translateY(-2px);
       box-shadow: 0 8px 25px var(--blue-glow);
-    }
-    
-    .link-btn:active {
-      transform: translateY(0);
     }
     
     .link-na {
@@ -677,13 +847,11 @@
       border-style: dashed;
       cursor: not-allowed;
       opacity: 0.7;
-      pointer-events: none;
     }
 
     /* ===== 🔗 Related Services ===== */
     .related-section {
-      margin-top: 3rem;
-      padding-top: 2rem;
+      margin-top: 3rem; padding-top: 2rem;
       border-top: 1px solid var(--border);
       animation: slideUp 0.5s ease-out 0.5s both;
       opacity: 0;
@@ -693,20 +861,16 @@
     
     .related-section h3 {
       font-family: 'Syne', sans-serif;
-      font-weight: 700;
-      font-size: clamp(1.1rem, 3.5vw, 1.2rem);
+      font-weight: 700; font-size: 1.2rem;
       margin-bottom: 1.2rem;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      word-break: break-word;
+      display: flex; align-items: center; gap: 0.5rem;
     }
     
     .related-section h3 i { color: var(--accent); }
     
     .related-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
       gap: 1rem;
     }
     
@@ -715,13 +879,10 @@
       border: 1px solid var(--border);
       border-radius: var(--radius-lg);
       overflow: hidden;
-      text-decoration: none;
-      color: var(--text-primary);
+      text-decoration: none; color: var(--text-primary);
       transition: all var(--transition-normal);
       display: block;
       backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-      contain: content;
     }
     
     .related-card:hover {
@@ -730,38 +891,23 @@
       box-shadow: var(--shadow-md), 0 0 30px var(--accent-glow);
     }
     
-    .related-card:active {
-      transform: translateY(0);
-    }
-    
     .related-thumb {
       height: 100px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: clamp(1.8rem, 6vw, 2.3rem);
-      position: relative;
-      overflow: hidden;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 2.3rem; position: relative; overflow: hidden;
     }
     
     .related-thumb::after {
-      content: '';
-      position: absolute;
-      inset: 0;
+      content: ''; position: absolute; inset: 0;
       background: linear-gradient(180deg, transparent 50%, rgba(0,0,0,0.4));
-      pointer-events: none;
     }
     
-    .related-body {
-      padding: 1rem;
-    }
+    .related-body { padding: 1rem; }
     
     .related-body h4 {
       font-family: 'Syne', sans-serif;
-      font-weight: 700;
-      font-size: clamp(0.85rem, 2.8vw, 0.9rem);
-      margin-bottom: 0.3rem;
-      line-height: 1.3;
+      font-weight: 700; font-size: 0.9rem;
+      margin-bottom: 0.3rem; line-height: 1.3;
       transition: color var(--transition-fast);
       word-break: break-word;
     }
@@ -769,12 +915,9 @@
     .related-card:hover .related-body h4 { color: var(--accent); }
     
     .related-body span {
-      font-size: clamp(0.78rem, 2.3vw, 0.82rem);
-      color: var(--accent);
+      font-size: 0.82rem; color: var(--accent);
       font-weight: 700;
-      display: flex;
-      align-items: center;
-      gap: 0.3rem;
+      display: flex; align-items: center; gap: 0.3rem;
     }
 
     /* ===== 🛒 Order Card (Sticky Sidebar) ===== */
@@ -782,24 +925,13 @@
       background: var(--bg-card);
       border: 1px solid var(--border);
       border-radius: var(--radius-lg);
-      padding: clamp(1.2rem, 4vw, 1.8rem);
-      position: sticky;
-      top: calc(80px + var(--safe-top));
+      padding: 1.8rem;
+      position: sticky; top: calc(90px + var(--safe-area-top));
       backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
       box-shadow: var(--shadow-lg);
       border-top: 3px solid var(--gradient-accent);
       animation: slideInRight 0.5s ease-out 0.4s both;
       opacity: 0;
-      z-index: 10;
-    }
-    
-    @media (max-width: 1099px) {
-      .order-card {
-        position: static;
-        order: -1;
-        top: auto;
-      }
     }
     
     .order-card.visible { opacity: 1; }
@@ -811,96 +943,65 @@
     
     .order-price {
       font-family: 'Syne', sans-serif;
-      font-weight: 800;
-      font-size: clamp(1.8rem, 6vw, 2.3rem);
+      font-weight: 800; font-size: 2.3rem;
       background: var(--gradient-accent);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
       margin-bottom: 0.4rem;
-      line-height: 1.1;
     }
     
     .order-price-note {
-      font-size: clamp(0.8rem, 2.3vw, 0.85rem);
-      color: var(--text-muted);
-      margin-bottom: 1.5rem;
-      padding-bottom: 1.2rem;
+      font-size: 0.85rem; color: var(--text-muted);
+      margin-bottom: 1.5rem; padding-bottom: 1.2rem;
       border-bottom: 1px solid var(--border);
-      line-height: 1.5;
     }
     
     .order-details {
-      display: flex;
-      flex-direction: column;
-      gap: 0.8rem;
-      margin-bottom: 1.5rem;
-      padding-bottom: 1.3rem;
+      display: flex; flex-direction: column; gap: 0.8rem;
+      margin-bottom: 1.5rem; padding-bottom: 1.3rem;
       border-bottom: 1px solid var(--border);
     }
     
     .order-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: clamp(0.85rem, 2.5vw, 0.9rem);
-      padding: 0.4rem 0.6rem;
-      border-radius: var(--radius-sm);
+      display: flex; justify-content: space-between;
+      align-items: center; font-size: 0.9rem;
+      padding: 0.4rem 0.6rem; border-radius: var(--radius-sm);
       transition: background var(--transition-fast);
-      flex-wrap: wrap;
-      gap: 0.4rem;
     }
     
     .order-row:hover { background: var(--surface); }
     
     .order-row .lbl {
       color: var(--text-secondary);
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      flex: 1;
-      min-width: 0;
+      display: flex; align-items: center; gap: 0.5rem;
     }
     
-    .order-row .lbl i { color: var(--accent); font-size: 0.85rem; flex-shrink: 0; }
-    .order-row .val { 
-      font-weight: 600; 
-      color: var(--text-primary);
-      text-align: right;
-      flex-shrink: 0;
-    }
+    .order-row .lbl i { color: var(--accent); font-size: 0.85rem; }
+    .order-row .val { font-weight: 600; color: var(--text-primary); }
     
     .btn-add-cart {
       width: 100%;
-      padding: clamp(0.85rem, 3vw, 1rem);
+      padding: 1rem;
       background: var(--gradient-accent);
-      color: #fff;
-      border: none;
+      color: #fff; border: none;
       border-radius: var(--radius-lg);
       font-family: 'Syne', sans-serif;
-      font-weight: 700;
-      font-size: clamp(0.9rem, 2.8vw, 0.95rem);
+      font-weight: 700; font-size: 0.95rem;
       cursor: pointer;
       transition: all var(--transition-normal);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.6rem;
-      margin-bottom: 0.7rem;
+      display: flex; align-items: center; justify-content: center;
+      gap: 0.6rem; margin-bottom: 0.7rem;
       box-shadow: var(--shadow-glow);
-      position: relative;
-      overflow: hidden;
+      position: relative; overflow: hidden;
       min-height: 48px;
     }
     
     .btn-add-cart::before {
-      content: '';
-      position: absolute;
-      top: 0; left: -100%;
+      content: ''; position: absolute; top: 0; left: -100%;
       width: 100%; height: 100%;
       background: linear-gradient(90deg, transparent, rgba(255,255,255,0.25), transparent);
       transition: left 0.5s;
-      pointer-events: none;
     }
     
     .btn-add-cart:hover:not(:disabled)::before { left: 100%; }
@@ -909,13 +1010,9 @@
       box-shadow: 0 12px 45px var(--accent-glow);
     }
     
-    .btn-add-cart:active:not(:disabled) {
-      transform: translateY(0);
-    }
-    
     .btn-add-cart.in-cart {
-      background: var(--gradient-success);
-      box-shadow: var(--shadow-success);
+      background: linear-gradient(135deg, var(--green), #059669);
+      box-shadow: 0 0 40px var(--green-glow);
     }
     
     .btn-add-cart.in-cart:hover {
@@ -924,21 +1021,17 @@
     
     .btn-contact {
       width: 100%;
-      padding: clamp(0.75rem, 2.8vw, 0.85rem);
+      padding: 0.85rem;
       background: var(--surface);
       color: var(--text-primary);
       border: 1.5px solid var(--border);
       border-radius: var(--radius-lg);
-      font-size: clamp(0.85rem, 2.5vw, 0.9rem);
-      font-weight: 500;
+      font-size: 0.9rem; font-weight: 500;
       cursor: pointer;
       transition: all var(--transition-normal);
       text-decoration: none;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.5rem;
-      text-align: center;
+      display: flex; align-items: center; justify-content: center;
+      gap: 0.5rem; text-align: center;
       min-height: 44px;
     }
     
@@ -948,14 +1041,8 @@
       transform: translateY(-2px);
     }
     
-    .btn-contact:active {
-      transform: translateY(0);
-    }
-    
     .guarantee {
-      display: flex;
-      align-items: flex-start;
-      gap: 0.7rem;
+      display: flex; align-items: flex-start; gap: 0.7rem;
       padding: 1rem;
       background: rgba(16, 185, 129, 0.12);
       border: 1px solid rgba(16, 185, 129, 0.4);
@@ -968,35 +1055,25 @@
     .guarantee.visible { opacity: 1; }
     
     .guarantee i {
-      font-size: 1.3rem;
-      color: var(--green);
-      flex-shrink: 0;
-      margin-top: 2px;
+      font-size: 1.3rem; color: var(--green);
+      flex-shrink: 0; margin-top: 2px;
       animation: pulse 2s infinite;
     }
     
     .guarantee p {
-      font-size: clamp(0.8rem, 2.3vw, 0.85rem);
-      color: var(--text-secondary);
-      line-height: 1.5;
-      margin: 0;
-      word-break: break-word;
+      font-size: 0.85rem; color: var(--text-secondary);
+      line-height: 1.5; margin: 0; word-break: break-word;
     }
 
     /* ===== ⚠️ Error State ===== */
     .error-state {
-      text-align: center;
-      padding: clamp(4rem, 15vw, 6rem) 2rem;
+      text-align: center; padding: 6rem 2rem;
       animation: fadeIn 0.5s ease-out;
-      max-width: 500px;
-      margin: 0 auto;
     }
     
     .error-state .icon {
-      font-size: clamp(3rem, 10vw, 4rem);
-      display: block;
-      margin-bottom: 1.2rem;
-      color: var(--error);
+      font-size: 4rem; display: block;
+      margin-bottom: 1.2rem; color: var(--danger);
       animation: shake 0.5s ease-in-out;
     }
     
@@ -1008,27 +1085,23 @@
     
     .error-state h2 {
       font-family: 'Syne', sans-serif;
-      font-weight: 700;
-      font-size: clamp(1.3rem, 4vw, 1.5rem);
+      font-weight: 700; font-size: 1.5rem;
       margin-bottom: 0.6rem;
     }
     
     .error-state p {
       color: var(--text-muted);
-      margin-bottom: 1.8rem;
-      font-size: clamp(0.9rem, 2.8vw, 0.95rem);
+      margin-bottom: 1.8rem; font-size: 0.95rem;
     }
 
     /* ===== 🌀 Loading Spinner ===== */
     .spinner {
-      width: 48px;
-      height: 48px;
+      width: 48px; height: 48px;
       border: 3px solid var(--border);
       border-top-color: var(--accent);
       border-radius: 50%;
       animation: spin 1s linear infinite;
       margin: 5rem auto;
-      flex-shrink: 0;
     }
     
     @keyframes spin { to { transform: rotate(360deg); } }
@@ -1036,234 +1109,89 @@
     /* ===== 🍞 Toast Notification ===== */
     #toast {
       position: fixed;
-      bottom: calc(2rem + var(--safe-bottom));
+      bottom: calc(2rem + var(--safe-area-bottom));
       left: 50%;
       transform: translateX(-50%) translateY(100px);
-      padding: clamp(0.75rem, 2.5vw, 0.85rem) clamp(1.2rem, 4vw, 1.8rem);
+      padding: 0.85rem 1.8rem;
       border-radius: var(--radius-full);
-      font-size: clamp(0.85rem, 2.5vw, 0.9rem);
-      font-weight: 500;
+      font-size: 0.9rem; font-weight: 500;
       z-index: 9999;
       transition: transform var(--transition-normal);
-      white-space: nowrap;
-      color: #fff;
-      display: flex;
-      align-items: center;
-      gap: 0.6rem;
+      white-space: nowrap; color: #fff;
+      display: flex; align-items: center; gap: 0.6rem;
       box-shadow: var(--shadow-lg);
       backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
       font-family: 'DM Sans', sans-serif;
-      max-width: 90vw;
-      text-align: center;
-      pointer-events: none;
+      max-width: 90vw; text-align: center;
     }
     
     #toast.success { background: linear-gradient(135deg, var(--green), #059669); }
-    #toast.error { background: linear-gradient(135deg, var(--error), #b91c1c); }
+    #toast.error { background: linear-gradient(135deg, var(--danger), #b91c1c); }
     #toast.show { transform: translateX(-50%) translateY(0); }
 
     /* ===== 📱 Responsive Design - Mobile First ===== */
+    @media (max-width: 1100px) {
+      .layout { grid-template-columns: 1fr; }
+      .order-card { position: static; order: -1; }
+    }
+    
     @media (max-width: 768px) {
-      nav { 
-        padding: 0 4%; 
-        height: calc(68px + var(--safe-top));
-      }
+      nav { padding: 0 4%; height: calc(68px + var(--safe-area-top)); }
+      .nav-links { display: none; }
+      .nav-right { gap: 0.5rem; }
+      .btn-sm { padding: 0.4rem 0.8rem; font-size: 0.78rem; }
+      .menu-toggle { display: flex; }
+      .profile-name { display: none; }
       
-      .nav-right { 
-        gap: 0.4rem;
-        flex-wrap: wrap;
-      }
+      .layout { padding: 1rem 4% 3rem; }
+      .project-hero { height: 260px; font-size: 4.5rem; }
+      .project-title { font-size: 1.6rem; }
       
-      .btn-sm { 
-        padding: 0.35rem 0.7rem; 
-        font-size: 0.75rem;
-        min-height: 36px;
-      }
+      .features-grid { grid-template-columns: 1fr; }
+      .project-links { flex-direction: column; }
+      .link-btn { width: 100%; justify-content: center; }
       
-      .breadcrumb {
-        padding: 0.8rem 4%;
-        padding-top: calc(0.8rem + var(--safe-top));
-        font-size: 0.8rem;
-      }
+      .order-card { padding: 1.5rem; }
+      .order-price { font-size: 2rem; }
       
-      .layout { 
-        padding: 0.8rem 4% 3rem;
-        padding-top: calc(0.8rem + var(--safe-top));
-      }
-      
-      .project-hero { 
-        height: clamp(200px, 40vw, 260px); 
-        font-size: clamp(2.8rem, 14vw, 4.5rem);
-        margin-bottom: 1.5rem;
-      }
-      
-      .project-title { 
-        font-size: clamp(1.5rem, 5.5vw, 1.8rem);
-        margin-bottom: 0.6rem;
-      }
-      
-      .project-meta {
-        gap: 0.5rem;
-        margin-bottom: 1.2rem;
-      }
-      
-      .meta-item {
-        font-size: 0.8rem;
-        padding: 3px 6px;
-      }
-      
-      .features-grid { 
-        grid-template-columns: 1fr;
-        gap: 0.5rem;
-      }
-      
-      .project-links { 
-        flex-direction: column;
-        gap: 0.6rem;
-      }
-      
-      .link-btn { 
-        width: 100%; 
-        justify-content: center;
-        min-height: 48px;
-      }
-      
-      .order-card { 
-        padding: 1.2rem;
-        margin-bottom: 1rem;
-      }
-      
-      .order-price { 
-        font-size: clamp(1.6rem, 6vw, 2rem);
-      }
-      
-      .order-row {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 0.3rem;
-      }
-      
-      .order-row .val {
-        text-align: left;
-        width: 100%;
-      }
-      
-      .related-grid { 
-        grid-template-columns: repeat(2, 1fr);
-        gap: 0.8rem;
-      }
-      
-      .related-thumb {
-        height: 80px;
-        font-size: 1.8rem;
-      }
-      
-      .related-body h4 {
-        font-size: 0.85rem;
-      }
-      
-      .guarantee {
-        padding: 0.8rem;
-        gap: 0.5rem;
-      }
-      
-      .guarantee p {
-        font-size: 0.8rem;
-      }
+      .related-grid { grid-template-columns: repeat(2, 1fr); }
     }
     
     @media (max-width: 480px) {
-      .project-hero { 
-        height: clamp(180px, 45vw, 220px); 
-        font-size: clamp(2.5rem, 16vw, 3.5rem);
-      }
-      
-      .cat-badge { 
-        padding: 0.25rem 0.7rem; 
-        font-size: 0.7rem;
-        left: 0.8rem;
-        top: 0.8rem;
-      }
-      
-      .tech-list { 
-        gap: 0.35rem;
-      }
-      
-      .tech-tag { 
-        padding: 0.25rem 0.6rem; 
-        font-size: 0.75rem;
-        min-height: 32px;
-      }
-      
-      .related-grid { 
-        grid-template-columns: 1fr;
-      }
-      
-      .btn-add-cart, 
-      .btn-contact { 
-        padding: 0.8rem; 
-        font-size: 0.85rem;
-        min-height: 44px;
-      }
-      
-      .section-lbl {
-        font-size: 0.75rem;
-        margin: 1.5rem 0 0.8rem;
-      }
+      .project-hero { height: 220px; font-size: 3.5rem; }
+      .cat-badge { padding: 0.3rem 0.8rem; font-size: 0.72rem; }
+      .tech-list { gap: 0.4rem; }
+      .tech-tag { padding: 0.3rem 0.7rem; font-size: 0.78rem; }
+      .related-grid { grid-template-columns: 1fr; }
+      .btn-add-cart, .btn-contact { padding: 0.9rem; font-size: 0.9rem; }
     }
 
-    /* ===== 🔄 Samsung/Android Specific Fixes ===== */
-    @supports (-webkit-touch-callout: none) {
-      /* iOS specific optimizations */
-      .modal-content, .chat-messages, .order-card {
-        -webkit-overflow-scrolling: touch;
-      }
+    /* ===== 🎭 Scroll Animations ===== */
+    .animate-on-scroll {
+      opacity: 0; transform: translateY(30px);
+      transition: opacity 0.5s ease-out, transform 0.5s ease-out;
     }
-
-    @media screen and (-webkit-min-device-pixel-ratio: 2), 
-           screen and (min-resolution: 192dpi) {
-      /* High-DPI screens - optimize rendering */
-      .order-card, .related-card, .btn, .link-btn {
-        will-change: transform;
-        backface-visibility: hidden;
-      }
+    
+    .animate-on-scroll.visible {
+      opacity: 1; transform: translateY(0);
     }
 
     /* ===== ♿ Accessibility ===== */
-    a:focus, button:focus, .link-btn:focus, .btn-add-cart:focus, .btn-contact:focus {
+    a:focus, button:focus, .profile-trigger:focus, .menu-toggle:focus {
       outline: 2px solid var(--accent);
       outline-offset: 2px;
     }
-    
-    /* Skip link for keyboard users */
-    .skip-link {
-      position: absolute;
-      top: -40px;
-      left: 0;
-      background: var(--accent);
-      color: white;
-      padding: 0.5rem 1rem;
-      z-index: 10000;
-      transition: top 0.2s;
-    }
-    
-    .skip-link:focus {
-      top: 0;
-    }
 
-    /* Reduce motion for users who prefer it */
     @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after {
         animation-duration: 0.01ms !important;
         animation-iteration-count: 1 !important;
         transition-duration: 0.01ms !important;
       }
-      html { scroll-behavior: auto; }
     }
 
     /* ===== 🎨 Scrollbar ===== */
-    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar { width: 7px; }
     ::-webkit-scrollbar-track { background: var(--bg-secondary); }
     ::-webkit-scrollbar-thumb {
       background: var(--gradient-accent);
@@ -1272,134 +1200,129 @@
     ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
   </style>
 </head>
-<body>
+<body class="pull-disabled">
 
-<!-- Skip link for accessibility -->
-<a href="#main-content" class="skip-link">Skip to content</a>
-
-<!-- Animated Particles Background (reduced count on mobile) -->
-<div class="particles" id="particles" aria-hidden="true"></div>
+<!-- Animated Particles Background -->
+<div class="particles" id="particles"></div>
 
 <!-- 🔗 Navigation -->
-<nav id="navbar" role="navigation" aria-label="Main navigation">
-  <a class="logo" href="index.html" aria-label="NovaStack Home">
-    <i class="fas fa-code" aria-hidden="true"></i> Nova<span>Stack</span>
-  </a>
+<nav id="navbar">
+  <a class="logo" href="index.html"><i class="fas fa-code"></i> Nova<span>Stack</span></a>
+  
+  <!-- Desktop Navigation -->
+  <div class="nav-links" id="navLinks">
+    <a href="index.html"><i class="fas fa-home"></i> Home</a>
+    <a href="services.html" class="active"><i class="fas fa-layer-group"></i> Services</a>
+    <a href="my-orders.html"><i class="fas fa-shopping-bag"></i> My Orders</a>
+    <a href="cart.html"><i class="fas fa-shopping-cart"></i> Cart</a>
+  </div>
+  
+  <!-- Nav Right: Cart + Auth -->
   <div class="nav-right">
     <a href="cart.html" class="btn-sm cart-btn" aria-label="View cart">
-      <i class="fas fa-shopping-cart" aria-hidden="true"></i> 
-      <span class="cart-count" id="cart-count" aria-live="polite">0</span>
+      <i class="fas fa-shopping-cart"></i> 
+      <span class="cart-count" id="cart-count">0</span>
     </a>
+    
+    <!-- Profile Section -->
+    <div class="profile-section">
+      <div class="profile-trigger" id="profileTrigger" role="button" tabindex="0" aria-expanded="false" aria-label="Profile menu">
+        <div class="profile-avatar" id="profileAvatar"><i class="fas fa-user"></i></div>
+        <span class="profile-name" id="profileName">User</span>
+        <i class="fas fa-chevron-down chevron"></i>
+      </div>
+      
+      <div class="profile-dropdown" id="profileDropdown" role="menu">
+        <div class="dropdown-header">
+          <div class="profile-avatar" id="dropdownAvatar"><i class="fas fa-user"></i></div>
+          <div class="profile-name" id="dropdownName">User Name</div>
+          <div class="user-email" id="dropdownEmail">user@example.com</div>
+        </div>
+        <a href="services.html" class="dropdown-item" role="menuitem"><i class="fas fa-cube"></i> Browse Services</a>
+        <a href="my-orders.html" class="dropdown-item" role="menuitem"><i class="fas fa-shopping-bag"></i> My Orders</a>
+        <a href="cart.html" class="dropdown-item" role="menuitem"><i class="fas fa-shopping-cart"></i> Cart</a>
+        <div class="dropdown-divider"></div>
+        <a href="#" class="dropdown-item logout-btn" id="dropdownLogout" role="menuitem"><i class="fas fa-sign-out-alt"></i> Logout</a>
+      </div>
+    </div>
+    
+    <!-- Legacy Auth Buttons (hidden when logged in) -->
     <a href="login.html" class="btn-sm" id="login-btn">Login</a>
     <a href="signup.html" class="btn-sm btn-accent" id="signup-btn">Sign Up</a>
-    <span id="user-nav" style="display:none;font-size:0.83rem;color:var(--text-secondary)" aria-live="polite"></span>
-    <button id="logout-btn" style="display:none;" class="btn-sm" onclick="logout()" aria-label="Logout">
-      <i class="fas fa-sign-out-alt" aria-hidden="true"></i> Logout
+    
+    <!-- Mobile Menu Toggle -->
+    <button class="menu-toggle" id="menuToggle" aria-label="Toggle menu" aria-expanded="false">
+      <i class="fas fa-bars"></i>
     </button>
   </div>
 </nav>
 
+<!-- Mobile Menu Panel -->
+<div class="mobile-menu" id="mobileMenu" role="dialog" aria-modal="true" aria-label="Mobile navigation">
+  <div class="mobile-menu-inner">
+    <a href="index.html" class="mobile-nav-link"><i class="fas fa-home"></i> Home</a>
+    <a href="services.html" class="mobile-nav-link active"><i class="fas fa-layer-group"></i> Services</a>
+    <a href="my-orders.html" class="mobile-nav-link"><i class="fas fa-shopping-bag"></i> My Orders</a>
+    <a href="cart.html" class="mobile-nav-link"><i class="fas fa-shopping-cart"></i> Cart</a>
+    <div class="mobile-divider"></div>
+    <div class="mobile-profile-section">
+      <div class="mobile-profile-header" id="mobileProfileToggle" role="button" tabindex="0">
+        <div class="mobile-profile-avatar" id="mobileProfileAvatar"><i class="fas fa-user"></i></div>
+        <div class="mobile-profile-info">
+          <div class="mobile-profile-name" id="mobileProfileName">User</div>
+          <div class="mobile-profile-email" id="mobileProfileEmail">user@example.com</div>
+        </div>
+        <i class="fas fa-chevron-down" style="color: var(--text-muted);"></i>
+      </div>
+      <div id="mobileProfileMenu" style="display: none; flex-direction: column; gap: 0.3rem; padding: 0.3rem 0;">
+        <a href="services.html" class="mobile-nav-link" style="padding-left: 2.8rem;"><i class="fas fa-cube"></i> Browse Services</a>
+        <a href="cart.html" class="mobile-nav-link" style="padding-left: 2.8rem;"><i class="fas fa-shopping-cart"></i> Cart</a>
+        <button class="btn-action mobile-logout-btn" id="mobileLogoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- 🥖 Breadcrumb -->
-<div class="breadcrumb" role="navigation" aria-label="Breadcrumb">
-  <a href="index.html"><i class="fas fa-home" aria-hidden="true"></i> Home</a>
-  <span aria-hidden="true"><i class="fas fa-chevron-right" style="font-size:0.65rem"></i></span>
-  <a href="services.html"><i class="fas fa-layer-group" aria-hidden="true"></i> Services</a>
-  <span aria-hidden="true"><i class="fas fa-chevron-right" style="font-size:0.65rem"></i></span>
-  <span class="current" id="bc-title" aria-current="page">Loading...</span>
+<div class="breadcrumb">
+  <a href="index.html"><i class="fas fa-home"></i> Home</a>
+  <span><i class="fas fa-chevron-right" style="font-size:0.65rem"></i></span>
+  <a href="services.html"><i class="fas fa-layer-group"></i> Services</a>
+  <span><i class="fas fa-chevron-right" style="font-size:0.65rem"></i></span>
+  <span class="current" id="bc-title">Loading...</span>
 </div>
 
 <!-- 📐 Main Content -->
-<main id="main-content">
-  <div id="page-body">
-    <div style="text-align:center;padding:5rem">
-      <div class="spinner" role="status" aria-label="Loading"></div>
-      <p style="color:var(--text-muted);margin-top:1.2rem;font-size:0.95rem">Loading service details...</p>
-    </div>
+<div id="page-body">
+  <div style="text-align:center;padding:5rem">
+    <div class="spinner" role="status" aria-label="Loading"></div>
+    <p style="color:var(--text-muted);margin-top:1.2rem;font-size:0.95rem">Loading service details...</p>
   </div>
-</main>
+</div>
 
 <!-- 🍞 Toast Notification -->
-<div id="toast" role="alert" aria-live="assertive" style="display:none"></div>
+<div id="toast" style="display:none" role="alert" aria-live="assertive"></div>
 
 <script>
-// ── 🔧 CONFIG - API Setup ─────────────────────────────────────────────────
+// ── CONFIG ─────────────────────────────────────────────────────────────────
 const CONFIG = {
-  // 🔁 Use mock mode for testing without backend
-  USE_MOCK: false,
-  
+  USE_MOCK: false, // 🔁 Set true for testing without backend
   API: 'https://novastack-backend.onrender.com',
   WA_NUMBER: '9015277062',
-  
   ENDPOINTS: {
     SERVICE: '/api/service',
     SERVICES: '/api/services',
     CART_ADD: '/api/cart/add',
-    CART_REMOVE: '/api/cart/remove'
-  },
-  
-  // Mock data for testing
-  MOCK_SERVICES: {
-    'web-dev': {
-      id: 'web-dev',
-      title: 'Professional Web Development',
-      category: 'web',
-      emoji: '🌐',
-      price: 15000,
-      delivery_days: 14,
-      revisions: 3,
-      description: 'Get a stunning, responsive website built with modern technologies.\n\nWe specialize in React, Next.js, and Node.js to deliver fast, scalable web applications that look great on all devices.',
-      technologies: 'React,Node.js,Next.js,Tailwind CSS,MongoDB',
-      features: [
-        'Responsive design for all devices',
-        'SEO optimized structure',
-        'Fast loading performance',
-        'Secure authentication system',
-        'Admin dashboard included'
-      ],
-      github_link: 'https://github.com/novastack/demo-web',
-      live_url: 'https://demo.novastack.com/web'
-    },
-    'mobile-app': {
-      id: 'mobile-app',
-      title: 'Cross-Platform Mobile App',
-      category: 'mobile',
-      emoji: '📱',
-      price: 25000,
-      delivery_days: 21,
-      revisions: 4,
-      description: 'Native-quality mobile apps for iOS and Android using React Native or Flutter.\n\nFrom concept to app store submission, we handle the entire development lifecycle.',
-      technologies: 'React Native,Flutter,Firebase,Redux,TypeScript',
-      features: [
-        'iOS & Android compatibility',
-        'Push notifications',
-        'Offline functionality',
-        'App store optimization',
-        'Post-launch support'
-      ],
-      github_link: '',
-      live_url: ''
-    }
+    CART_REMOVE: '/api/cart/remove',
+    USER: '/api/user'
   }
 };
 
-// Set WhatsApp button link
-document.addEventListener('DOMContentLoaded', () => {
-  const waBtn = document.getElementById('wa-btn');
-  if (waBtn) {
-    waBtn.href = `https://wa.me/${CONFIG.WA_NUMBER}`;
-  }
-});
-
-// ── ✨ Create Floating Particles (Performance Optimized) ─────────────────
+// ── Create Floating Particles ─────────────────────────────────────────────
 function createParticles() {
   const container = document.getElementById('particles');
   if (!container) return;
-  
-  // Reduce particle count on mobile for better performance
-  const isMobile = window.innerWidth < 768;
-  const count = isMobile ? 15 : 30;
-  
-  for (let i = 0; i < count; i++) {
+  for (let i = 0; i < 30; i++) {
     const particle = document.createElement('div');
     particle.className = 'particle';
     particle.style.left = Math.random() * 100 + '%';
@@ -1411,81 +1334,52 @@ function createParticles() {
 }
 createParticles();
 
-// ── 🧭 Navbar Scroll Effect (Debounced) ─────────────────────────────────
-function debounce(func, wait) {
-  let timeout;
-  return function executedFunction(...args) {
-    const later = () => {
-      clearTimeout(timeout);
-      func(...args);
-    };
-    clearTimeout(timeout);
-    timeout = setTimeout(later, wait);
-  };
-}
-
-const handleScroll = debounce(() => {
-  const nav = document.getElementById('navbar');
-  if (nav) {
-    if (window.scrollY > 50) {
-      nav.classList.add('scrolled');
-    } else {
-      nav.classList.remove('scrolled');
+// ── Navbar Scroll Effect ──────────────────────────────────────────────────
+const handleScroll = (() => {
+  let ticking = false;
+  return () => {
+    if (!ticking) {
+      requestAnimationFrame(() => {
+        const nav = document.getElementById('navbar');
+        if (nav) {
+          nav.classList.toggle('scrolled', window.scrollY > 50);
+        }
+        ticking = false;
+      });
+      ticking = true;
     }
-  }
-}, 100);
-
+  };
+})();
 window.addEventListener('scroll', handleScroll, { passive: true });
 
-// ── 🔐 Auth & Cart Helpers ──────────────────────────────────────────────
+// ── Auth & Cart Helpers ───────────────────────────────────────────────────
 const Auth = {
-  getToken() { 
-    return localStorage.getItem('dc_token') || sessionStorage.getItem('dc_token') || ''; 
-  },
-  getUser() {  
+  getToken() { return localStorage.getItem('dc_token') || sessionStorage.getItem('dc_token') || ''; },
+  getUser()  { 
     try { 
-      const user = localStorage.getItem('dc_user') || sessionStorage.getItem('dc_user');
-      return user ? JSON.parse(user) : null; 
+      const u = localStorage.getItem('dc_user') || sessionStorage.getItem('dc_user');
+      return u ? JSON.parse(u) : null; 
     } catch { return null; } 
   },
-  isLoggedIn() { return !!this.getToken() && !!this.getUser(); },
+  isLoggedIn() { return !!this.getToken() && !!this.getUser(); }
 };
 
 const CartLocal = {
   key: 'dc_cart_local',
-  get() { 
-    try { 
-      return JSON.parse(localStorage.getItem(this.key) || '[]'); 
-    } catch { return []; } 
-  },
-  set(items) { 
-    try {
-      localStorage.setItem(this.key, JSON.stringify(items));
-    } catch (e) {
-      console.warn('Failed to save cart:', e);
-    }
-  },
+  get()  { try { return JSON.parse(localStorage.getItem(this.key) || '[]'); } catch { return []; } },
+  set(items) { localStorage.setItem(this.key, JSON.stringify(items)); },
   has(id) { return this.get().some(c => c.id === id); },
   add(item) { 
     const cart = this.get(); 
-    if (!this.has(item.id)) { 
-      cart.push(item); 
-      this.set(cart); 
-      return true;
-    }
-    return false;
+    if (!this.has(item.id)) { cart.push(item); this.set(cart); } 
   },
-  remove(id) { 
-    const cart = this.get().filter(c => c.id !== id);
-    this.set(cart);
-    return true;
-  },
+  remove(id) { this.set(this.get().filter(c => c.id !== id)); },
   count() { return this.get().length; }
 };
 
 function logout() { 
-  localStorage.removeItem('dc_token'); 
-  localStorage.removeItem('dc_user'); 
+  localStorage.removeItem('dc_token');
+  localStorage.removeItem('dc_user');
   localStorage.removeItem(CartLocal.key);
   sessionStorage.removeItem('dc_token');
   sessionStorage.removeItem('dc_user');
@@ -1493,10 +1387,8 @@ function logout() {
 }
 
 function renderNav() {
-  const cartCount = document.getElementById('cart-count');
-  if (cartCount) {
-    cartCount.textContent = CartLocal.count();
-  }
+  const countEl = document.getElementById('cart-count');
+  if (countEl) countEl.textContent = CartLocal.count();
   
   const user = Auth.getUser();
   const loginBtn = document.getElementById('login-btn');
@@ -1509,177 +1401,141 @@ function renderNav() {
     if (signupBtn) signupBtn.style.display = 'none';
     if (userNav) {
       userNav.style.display = 'inline';
-      const name = user.name || user.email?.split('@')[0] || 'User';
-      userNav.textContent = `👤 ${name.length > 12 ? name.substring(0, 10) + '...' : name}`;
-      userNav.title = user.email || '';
+      userNav.textContent = `👤 ${user.name || user.email?.split('@')[0] || 'User'}`;
     }
     if (logoutBtn) logoutBtn.style.display = 'inline-flex';
+    
+    // Update profile UI
+    updateProfileUI(user);
   } else {
-    if (loginBtn) loginBtn.style.display = 'inline-flex';
-    if (signupBtn) signupBtn.style.display = 'inline-flex';
     if (userNav) userNav.style.display = 'none';
     if (logoutBtn) logoutBtn.style.display = 'none';
+    if (loginBtn) loginBtn.style.display = 'inline-flex';
+    if (signupBtn) signupBtn.style.display = 'inline-flex';
   }
 }
 
-// ── 🌐 API Fetch with Mock Support & Retry Logic ────────────────────────
+function updateProfileUI(user) {
+  if (!user) return;
+  const name = user.name || user.email?.split('@')[0] || 'User';
+  const initial = name.charAt(0).toUpperCase();
+  
+  const updateAvatar = (el, imgId) => {
+    if (!el) return;
+    if (user.avatar) {
+      el.innerHTML = `<img src="${user.avatar}" alt="${name}" loading="lazy">`;
+    } else {
+      el.textContent = initial;
+    }
+  };
+  
+  updateAvatar(document.getElementById('profileAvatar'));
+  updateAvatar(document.getElementById('dropdownAvatar'));
+  updateAvatar(document.getElementById('mobileProfileAvatar'));
+  
+  const updateText = (id, text) => { const el = document.getElementById(id); if (el) el.textContent = text; };
+  updateText('profileName', name.length > 15 ? name.substring(0, 12) + '...' : name);
+  updateText('dropdownName', name);
+  updateText('dropdownEmail', user.email || '');
+  updateText('mobileProfileName', name);
+  updateText('mobileProfileEmail', user.email || '');
+}
+
+// ── API Fetch with Mock Support ───────────────────────────────────────────
 async function apiFetch(path, opts = {}) {
-  // Mock mode for development/testing
+  // Mock mode for testing
   if (CONFIG.USE_MOCK) {
-    await new Promise(resolve => setTimeout(resolve, 600)); // Simulate network delay
+    await new Promise(r => setTimeout(r, 600));
     
     if (path.includes('/service/')) {
       const id = path.split('/').pop();
-      const service = CONFIG.MOCK_SERVICES[id];
-      if (!service) throw new Error('Service not found');
-      return { service };
+      return { service: {
+        id: parseInt(id) || 1,
+        title: 'React Web Application',
+        category: 'web',
+        emoji: '⚛️',
+        price: 15000,
+        delivery_days: 14,
+        revisions: 3,
+        description: 'Professional React web application with modern UI/UX.\n\nIncludes responsive design, API integration, and clean code architecture.',
+        technologies: 'React,Node.js,MongoDB,Tailwind CSS',
+        features: ['Responsive Design', 'API Integration', 'Clean Code', 'Documentation'],
+        github_link: 'https://github.com/example',
+        live_url: 'https://demo.example.com'
+      }};
     }
     
     if (path.includes('/services')) {
-      return { services: Object.values(CONFIG.MOCK_SERVICES) };
+      return { services: [
+        { id: 1, title: 'React Web App', category: 'web', emoji: '⚛️', price: 15000 },
+        { id: 2, title: 'Mobile App UI', category: 'mobile', emoji: '📱', price: 12000 },
+        { id: 3, title: 'AI Integration', category: 'ai', emoji: '🤖', price: 25000 }
+      ]};
     }
     
-    if (path.includes('/cart/')) {
-      return { success: true };
-    }
-    
-    return {};
+    return {  {} };
   }
   
-  // Real API call with retry logic
-  const headers = { 
-    'Content-Type': 'application/json', 
-    ...(opts.headers || {}) 
-  };
-  
+  // Real API call
+  const headers = { 'Content-Type': 'application/json', ...(opts.headers || {}) };
   const token = Auth.getToken();
-  if (token) {
-    headers['Authorization'] = `Bearer ${token}`;
-  }
+  if (token) headers['Authorization'] = `Bearer ${token}`;
   
   const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), 15000); // 15s timeout
+  const timeout = setTimeout(() => controller.abort(), 15000);
   
-  let lastError;
-  
-  // Retry up to 2 times on network errors
-  for (let attempt = 0; attempt < 3; attempt++) {
-    try {
-      const res = await fetch(CONFIG.API + path, { 
-        ...opts, 
-        headers,
-        credentials: 'include',
-        signal: controller.signal
-      });
-      
-      clearTimeout(timeoutId);
-      
-      const contentType = res.headers.get('content-type');
-      const json = contentType?.includes('application/json') 
-        ? await res.json() 
-        : { error: 'Invalid response format' };
-      
-      if (!res.ok) {
-        throw new Error(json.error || json.message || `HTTP ${res.status}`);
-      }
-      
-      return json;
-      
-    } catch (error) {
-      clearTimeout(timeoutId);
-      lastError = error;
-      
-      if (error.name === 'AbortError') {
-        throw new Error('Request timeout. Please check your connection.');
-      }
-      
-      if (error.message.includes('Failed to fetch')) {
-        if (attempt < 2) {
-          // Wait before retrying
-          await new Promise(resolve => setTimeout(resolve, 1000 * (attempt + 1)));
-          continue;
-        }
-        throw new Error('Cannot connect to server. Please check your internet connection.');
-      }
-      
-      throw error;
-    }
+  try {
+    const res = await fetch(CONFIG.API + path, { ...opts, headers, signal: controller.signal });
+    clearTimeout(timeout);
+    
+    const ct = res.headers.get('content-type');
+    const json = ct?.includes('application/json') ? await res.json() : { error: 'Invalid response' };
+    
+    if (!res.ok) throw new Error(json.error || `HTTP ${res.status}`);
+    return json;
+  } catch (err) {
+    clearTimeout(timeout);
+    if (err.name === 'AbortError') throw new Error('Request timeout. Check connection.');
+    if (err.message.includes('Failed to fetch')) throw new Error('Cannot connect to server.');
+    throw err;
   }
-  
-  throw lastError;
 }
 
-// ── 🍞 Toast Notification (Enhanced) ────────────────────────────────────
-function showToast(msg, type = 'default') {
-  let toast = document.getElementById('toast');
-  
-  if (!toast) {
-    toast = document.createElement('div');
-    toast.id = 'toast';
-    toast.setAttribute('role', 'alert');
-    toast.setAttribute('aria-live', 'assertive');
-    toast.style.cssText = `
-      position:fixed;bottom:calc(2rem + var(--safe-bottom));left:50%;
-      transform:translateX(-50%) translateY(100px);
-      padding:0.85rem 1.8rem;border-radius:9999px;font-size:0.9rem;font-weight:500;
-      z-index:9999;transition:transform 0.3s cubic-bezier(0.4,0,0.2,1);
-      white-space:nowrap;color:#fff;display:flex;align-items:center;gap:0.6rem;
-      box-shadow:0 20px 60px rgba(0,0,0,0.4);backdrop-filter:blur(10px);
-      font-family:'DM Sans',sans-serif;max-width:90vw;text-align:center;
-      pointer-events:none;
-    `;
-    document.body.appendChild(toast);
-  }
+// ── Toast Notification ────────────────────────────────────────────────────
+function showToast(msg, type = 'success') {
+  const toast = document.getElementById('toast');
+  if (!toast) return;
   
   toast.className = type;
-  toast.innerHTML = `<i class="fas fa-${type === 'error' ? 'exclamation-triangle' : 'check-circle'}" aria-hidden="true"></i> ${msg}`;
+  toast.innerHTML = `<i class="fas fa-${type === 'error' ? 'exclamation-triangle' : 'check-circle'}"></i> ${msg}`;
   toast.style.display = 'flex';
   
-  // Trigger animation
   requestAnimationFrame(() => toast.classList.add('show'));
   
-  // Clear existing timeout
   if (toast._t) clearTimeout(toast._t);
-  
   toast._t = setTimeout(() => {
     toast.classList.remove('show');
     setTimeout(() => { toast.style.display = 'none'; }, 300);
   }, 3000);
 }
 
-// ── 🖼️ Service Thumbnail Mapping ───────────────────────────────────────
+// ── Service Thumbnail Mapping ─────────────────────────────────────────────
 const THUMB = {
-  web: 'thumb-web',
-  mobile: 'thumb-mobile', 
-  ai: 'thumb-ai',
-  portfolio: 'thumb-portfolio',
-  ecom: 'thumb-ecom',
-  custom: 'thumb-custom'
+  web: 'thumb-web', mobile: 'thumb-mobile', ai: 'thumb-ai',
+  portfolio: 'thumb-portfolio', ecom: 'thumb-ecom', custom: 'thumb-custom'
 };
 
-// ── 📝 Format Description with Paragraphs ──────────────────────────────
+// ── Format Description with Paragraphs ────────────────────────────────────
 function formatDescription(text) {
   if (!text) return '<p>No description available.</p>';
   return text.split('\n')
     .filter(p => p.trim())
-    .map(p => `<p>${escapeHtml(p.trim())}</p>`)
+    .map(p => `<p>${p.trim()}</p>`)
     .join('');
 }
 
-function escapeHtml(text) {
-  if (!text) return '';
-  const div = document.createElement('div');
-  div.textContent = text;
-  return div.innerHTML;
-}
-
-// ── 🔄 Load Page Content ───────────────────────────────────────────────
-let pageLoadPromise = null;
-
+// ── Load Page Content ─────────────────────────────────────────────────────
 async function loadPage() {
-  // Prevent duplicate loads
-  if (pageLoadPromise) return pageLoadPromise;
-  
   const params = new URLSearchParams(window.location.search);
   const id = params.get('id');
   
@@ -1690,33 +1546,14 @@ async function loadPage() {
   
   const pageBody = document.getElementById('page-body');
   
-  pageLoadPromise = (async () => {
-    let service, allServices;
+  try {
+    const [singleRes, allRes] = await Promise.all([
+      apiFetch(`${CONFIG.ENDPOINTS.SERVICE}/${id}`),
+      apiFetch(CONFIG.ENDPOINTS.SERVICES)
+    ]);
     
-    try {
-      // Fetch service details and all services (for related) in parallel
-      const [singleRes, allRes] = await Promise.all([
-        apiFetch(`${CONFIG.ENDPOINTS.SERVICE}/${id}`),
-        apiFetch(CONFIG.ENDPOINTS.SERVICES)
-      ]);
-      
-      service = singleRes.service;
-      allServices = allRes.services || [];
-      
-    } catch (e) {
-      console.error('Failed to load service:', e);
-      pageBody.innerHTML = `
-        <div class="error-state animate-on-scroll visible">
-          <span class="icon"><i class="fas fa-exclamation-triangle" aria-hidden="true"></i></span>
-          <h2>Could Not Load Service</h2>
-          <p>${escapeHtml(e.message || 'An unexpected error occurred')}</p>
-          <a href="services.html" class="btn btn-accent">
-            <i class="fas fa-arrow-left" aria-hidden="true"></i> Back to Services
-          </a>
-        </div>
-      `;
-      return;
-    }
+    const service = singleRes.service || singleRes.data;
+    const allServices = allRes.services || allRes.data || [];
     
     if (!service) {
       window.location.href = 'services.html';
@@ -1726,38 +1563,29 @@ async function loadPage() {
     // Update page title and breadcrumb
     document.title = `${service.title} — NovaStack`;
     const bcTitle = document.getElementById('bc-title');
-    if (bcTitle) {
-      bcTitle.textContent = service.title;
-    }
+    if (bcTitle) bcTitle.textContent = service.title;
     
-    // Find related services (same category, exclude current)
-    const related = (allServices || [])
+    // Find related services
+    const related = allServices
       .filter(s => s.id !== service.id && s.category === service.category)
       .slice(0, 3);
     
     const inCart = CartLocal.has(service.id);
     const categoryLabel = (service.category || 'development').replace(/[-_]/g, ' ');
     
-    // Format price with Indian numbering
-    const formatPrice = (price) => {
-      return new Intl.NumberFormat('en-IN').format(parseFloat(price) || 0);
-    };
-    
     // Render the page
     pageBody.innerHTML = `
       <div class="layout">
         <!-- Main Content Column -->
-        <article>
+        <div>
           <!-- Hero Thumbnail -->
           <div class="project-hero ${THUMB[service.category] || 'thumb-custom'}" role="img" aria-label="${service.title} preview">
-            <span class="emoji" aria-hidden="true">${service.emoji || '💻'}</span>
-            <div class="cat-badge">
-              <i class="fas fa-tag" aria-hidden="true"></i> ${escapeHtml(categoryLabel)}
-            </div>
+            <span class="emoji" aria-hidden="true">${service.emoji || '<i class="fas fa-laptop-code"></i>'}</span>
+            <div class="cat-badge"><i class="fas fa-tag" aria-hidden="true"></i> ${categoryLabel}</div>
           </div>
           
           <!-- Title & Meta -->
-          <h1 class="project-title">${escapeHtml(service.title)}</h1>
+          <h1 class="project-title">${service.title}</h1>
           <div class="project-meta">
             <span class="meta-item"><i class="fas fa-clock" aria-hidden="true"></i> ${service.delivery_days || 14} days delivery</span>
             <span class="meta-item"><i class="fas fa-sync-alt" aria-hidden="true"></i> ${service.revisions || 3} revisions</span>
@@ -1783,11 +1611,10 @@ async function loadPage() {
                 'postgresql': 'fas fa-database', 'mysql': 'fas fa-database', 'firebase': 'fas fa-fire',
                 'aws': 'fab fa-aws', 'docker': 'fab fa-docker', 'kubernetes': 'fas fa-dharmachakra',
                 'tensorflow': 'fas fa-brain', 'pytorch': 'fas fa-brain', 'nextjs': 'fab fa-react',
-                'vue': 'fab fa-vuejs', 'angular': 'fab fa-angular', 'typescript': 'fab fa-js',
-                'flutter': 'fas fa-mobile-alt', 'react native': 'fab fa-react'
+                'vue': 'fab fa-vuejs', 'angular': 'fab fa-angular', 'typescript': 'fab fa-js'
               };
               const icon = icons[tech.toLowerCase()] || 'fas fa-code';
-              return `<span class="tech-tag" role="listitem"><i class="${icon}" aria-hidden="true"></i> ${escapeHtml(tech)}</span>`;
+              return `<span class="tech-tag" role="listitem"><i class="${icon}" aria-hidden="true"></i> ${tech}</span>`;
             }).filter(Boolean).join('')}
           </div>
           
@@ -1797,7 +1624,7 @@ async function loadPage() {
               <i class="fas fa-list-check" aria-hidden="true"></i> What's Included
             </div>
             <div class="features-grid content-section" id="features-grid">
-              ${service.features.map(f => `<div class="feature-item">${escapeHtml(f)}</div>`).join('')}
+              ${service.features.map(f => `<div class="feature-item">${f}</div>`).join('')}
             </div>
           ` : ''}
           
@@ -1808,14 +1635,14 @@ async function loadPage() {
           <div class="project-links content-section" id="project-links">
             <a href="${service.github_link || '#'}" 
                class="link-btn ${service.github_link ? 'link-github' : 'link-na'}" 
-               ${service.github_link ? 'target="_blank" rel="noopener noreferrer"' : ''}
+               ${service.github_link ? 'target="_blank" rel="noopener"' : ''}
                aria-label="${service.github_link ? 'View GitHub repository' : 'GitHub link not available'}">
               <i class="fab fa-github" aria-hidden="true"></i> 
               ${service.github_link ? 'View GitHub Repo' : 'Private (Shared on Delivery)'}
             </a>
             <a href="${service.live_url || '#'}" 
                class="link-btn ${service.live_url ? 'link-demo' : 'link-na'}" 
-               ${service.live_url ? 'target="_blank" rel="noopener noreferrer"' : ''}
+               ${service.live_url ? 'target="_blank" rel="noopener"' : ''}
                aria-label="${service.live_url ? 'View live demo' : 'Demo link not available'}">
               <i class="fas fa-external-link-alt" aria-hidden="true"></i> 
               ${service.live_url ? 'View Live Demo' : 'Demo on Request'}
@@ -1830,23 +1657,23 @@ async function loadPage() {
                 ${related.map(r => `
                   <a href="project.html?id=${r.id}" class="related-card">
                     <div class="related-thumb ${THUMB[r.category] || 'thumb-custom'}" aria-hidden="true">
-                      ${r.emoji || '💻'}
+                      ${r.emoji || '<i class="fas fa-laptop-code"></i>'}
                     </div>
                     <div class="related-body">
-                      <h4>${escapeHtml(r.title.length > 34 ? r.title.substring(0, 34) + '…' : r.title)}</h4>
-                      <span><i class="fas fa-tag" aria-hidden="true"></i> From ₹${formatPrice(r.price)}</span>
+                      <h4>${r.title.length > 34 ? r.title.substring(0, 34) + '…' : r.title}</h4>
+                      <span><i class="fas fa-tag" aria-hidden="true"></i> From ₹${r.price}</span>
                     </div>
                   </a>
                 `).join('')}
               </div>
             </div>
           ` : ''}
-        </article>
+        </div>
         
         <!-- Sticky Order Card -->
-        <aside>
+        <div>
           <div class="order-card" id="order-card">
-            <div class="order-price">₹${formatPrice(service.price)}</div>
+            <div class="order-price">₹${parseFloat(service.price).toLocaleString('en-IN')}</div>
             <div class="order-price-note">Starting price — final quote after requirements discussion</div>
             
             <div class="order-details">
@@ -1873,14 +1700,15 @@ async function loadPage() {
             </div>
             
             <button class="btn-add-cart ${inCart ? 'in-cart' : ''}" id="cart-btn"
-              onclick="toggleCart('${service.id}', '${escapeHtml(service.title).replace(/'/g, "\\'")}', ${service.price}, '${service.emoji || '💻'}', '${service.category || ''}')"
+              onclick="toggleCart(${service.id}, '${service.title.replace(/'/g, "\\'")}', ${service.price}, '${service.emoji || '💻'}', '${service.category || ''}')"
               aria-label="${inCart ? 'Remove from cart' : 'Add to cart'}">
               <i class="fas ${inCart ? 'fa-check' : 'fa-cart-plus'}" aria-hidden="true"></i> 
               ${inCart ? 'Added to Cart' : 'Add to Cart'}
             </button>
             
-            <a href="https://wa.me/${CONFIG.WA_NUMBER}?text=Hi!%20I'm%20interested%20in%20${encodeURIComponent(service.title)}%20(₹${service.price}).%20Can%20we%20discuss%20my%20project%20requirements?" 
-               class="btn-contact" target="_blank" rel="noopener noreferrer">
+            <a href="https://wa.me/${CONFIG.WA_NUMBER}?text=Hi!%20I'm%20interested%20in%20${encodeURIComponent(service.title)}%20(%E2%82%B9${service.price}).%20Can%20we%20discuss%20my%20project%20requirements?" 
+               class="btn-contact" target="_blank" rel="noopener"
+               aria-label="Discuss this project on WhatsApp">
               <i class="fab fa-whatsapp" aria-hidden="true"></i> Discuss This Project
             </a>
             
@@ -1889,172 +1717,190 @@ async function loadPage() {
               <p>100% satisfaction guarantee. We work iteratively until you're completely happy with the result.</p>
             </div>
           </div>
-        </aside>
+        </div>
       </div>
     `;
     
-    // Trigger content animations with staggered delay
+    // Trigger content animations
     setTimeout(() => {
-      const sections = [
-        'content-desc', 'lbl-tech', 'tech-list', 
-        'lbl-features', 'features-grid', 'lbl-links', 
-        'project-links', 'order-card', 'guarantee', 'related-section'
-      ];
-      
-      sections.forEach((id, index) => {
-        const el = document.getElementById(id);
-        if (el) {
-          setTimeout(() => el.classList.add('visible'), index * 80);
-        }
-      });
+      document.getElementById('content-desc')?.classList.add('visible');
+      document.getElementById('lbl-tech')?.classList.add('visible');
+      document.getElementById('tech-list')?.classList.add('visible');
+      document.getElementById('lbl-features')?.classList.add('visible');
+      document.getElementById('features-grid')?.classList.add('visible');
+      document.getElementById('lbl-links')?.classList.add('visible');
+      document.getElementById('project-links')?.classList.add('visible');
+      document.getElementById('order-card')?.classList.add('visible');
+      document.getElementById('guarantee')?.classList.add('visible');
+      document.getElementById('related-section')?.classList.add('visible');
     }, 100);
     
-    // Setup intersection observer for scroll animations
-    setupScrollAnimations();
-    
-  })();
-  
-  return pageLoadPromise;
+  } catch (e) {
+    console.error('Load error:', e);
+    pageBody.innerHTML = `
+      <div class="error-state animate-on-scroll visible" role="alert">
+        <span class="icon" aria-hidden="true"><i class="fas fa-exclamation-triangle"></i></span>
+        <h2>Could Not Load Service</h2>
+        <p>${e.message || 'An unexpected error occurred'}</p>
+        <a href="services.html" class="btn btn-accent">
+          <i class="fas fa-arrow-left" aria-hidden="true"></i> Back to Services
+        </a>
+      </div>
+    `;
+  }
 }
 
-// ── 🛒 Toggle Cart Item ─────────────────────────────────────────────────
+// ── Toggle Cart Item ──────────────────────────────────────────────────────
 async function toggleCart(id, title, price, emoji, category) {
   const inCart = CartLocal.has(id);
-  const btn = document.getElementById('cart-btn');
   
-  // Visual feedback
-  if (btn) {
-    btn.disabled = true;
-    btn.style.opacity = '0.7';
-  }
-  
-  try {
-    if (inCart) {
-      CartLocal.remove(id);
-    } else {
-      CartLocal.add({ id, title, price, emoji, category });
-    }
-    
-    // Update UI
-    const cartCount = document.getElementById('cart-count');
-    if (cartCount) {
-      cartCount.textContent = CartLocal.count();
-    }
-    
-    const nowInCart = CartLocal.has(id);
-    
-    if (btn) {
-      btn.innerHTML = `<i class="fas ${nowInCart ? 'fa-check' : 'fa-cart-plus'}" aria-hidden="true"></i> ${nowInCart ? 'Added to Cart' : 'Add to Cart'}`;
-      btn.classList.toggle('in-cart', nowInCart);
-      btn.setAttribute('aria-label', nowInCart ? 'Remove from cart' : 'Add to cart');
-      
-      // Button animation
-      btn.style.transform = 'scale(0.98)';
-      setTimeout(() => {
-        btn.style.transform = '';
-        btn.disabled = false;
-        btn.style.opacity = '1';
-      }, 150);
-    }
-    
-    // Show toast
-    showToast(nowInCart ? '✓ Added to cart!' : 'Removed from cart', nowInCart ? 'success' : 'default');
-    
-    // Sync with backend if logged in
-    if (Auth.isLoggedIn() && !CONFIG.USE_MOCK) {
-      try {
-        const endpoint = nowInCart ? CONFIG.ENDPOINTS.CART_ADD : CONFIG.ENDPOINTS.CART_REMOVE;
-        const method = nowInCart ? 'POST' : 'DELETE';
-        
-        await apiFetch(endpoint, {
-          method,
-          body: JSON.stringify({ service_id: id }),
-          headers: { 'Content-Type': 'application/json' }
-        });
-      } catch (e) {
-        console.warn('Cart sync warning:', e.message);
-        // Don't show error to user - local cart still works
-      }
-    }
-    
-  } catch (error) {
-    console.error('Cart toggle error:', error);
-    showToast('Failed to update cart', 'error');
-    if (btn) {
-      btn.disabled = false;
-      btn.style.opacity = '1';
-    }
-  }
-}
-
-// ── 🔄 Scroll Animation Observer ───────────────────────────────────────
-function setupScrollAnimations() {
-  if ('IntersectionObserver' in window) {
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('visible');
-          observer.unobserve(entry.target);
-        }
-      });
-    }, { 
-      threshold: 0.1, 
-      rootMargin: '0px 0px -30px 0px' 
-    });
-    
-    document.querySelectorAll('.animate-on-scroll, .content-section').forEach(el => {
-      if (!el.classList.contains('visible')) {
-        observer.observe(el);
-      }
-    });
+  if (inCart) {
+    CartLocal.remove(id);
   } else {
-    // Fallback: show all immediately
-    document.querySelectorAll('.animate-on-scroll, .content-section').forEach(el => {
-      el.classList.add('visible');
-    });
+    CartLocal.add({ id, title, price, emoji, category });
+  }
+  
+  // Update UI
+  const countEl = document.getElementById('cart-count');
+  if (countEl) countEl.textContent = CartLocal.count();
+  
+  const btn = document.getElementById('cart-btn');
+  const nowInCart = CartLocal.has(id);
+  
+  if (btn) {
+    btn.innerHTML = `<i class="fas ${nowInCart ? 'fa-check' : 'fa-cart-plus'}" aria-hidden="true"></i> ${nowInCart ? 'Added to Cart' : 'Add to Cart'}`;
+    btn.classList.toggle('in-cart', nowInCart);
+    btn.setAttribute('aria-label', nowInCart ? 'Remove from cart' : 'Add to cart');
+    
+    // Button animation
+    btn.style.transform = 'scale(0.98)';
+    setTimeout(() => btn.style.transform = '', 150);
+  }
+  
+  // Show toast
+  showToast(nowInCart ? '✓ Added to cart!' : 'Removed from cart', nowInCart ? 'success' : 'default');
+  
+  // Sync with backend if logged in
+  if (Auth.isLoggedIn() && !CONFIG.USE_MOCK) {
+    try {
+      const endpoint = nowInCart ? CONFIG.ENDPOINTS.CART_ADD : CONFIG.ENDPOINTS.CART_REMOVE;
+      const method = nowInCart ? 'POST' : 'DELETE';
+      await apiFetch(endpoint, {
+        method,
+        body: JSON.stringify({ service_id: id }),
+        headers: { 'Authorization': `Bearer ${Auth.getToken()}` }
+      });
+    } catch (e) {
+      console.warn('Cart sync warning:', e.message);
+      // Don't show error - local cart still works
+    }
   }
 }
 
-// ── 🚀 Initialize ──────────────────────────────────────────────────────
+// ── Scroll Animation Observer ─────────────────────────────────────────────
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+      observer.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.1, rootMargin: '0px 0px -30px 0px' });
+
+// ── Navigation Event Handlers ─────────────────────────────────────────────
+function toggleMobileMenu() {
+  const menu = document.getElementById('mobileMenu');
+  const toggle = document.getElementById('menuToggle');
+  if (!menu || !toggle) return;
+  
+  const isActive = menu.classList.toggle('active');
+  toggle.classList.toggle('active', isActive);
+  toggle.setAttribute('aria-expanded', isActive);
+  
+  document.body.style.overflow = isActive ? 'hidden' : '';
+  document.body.classList.toggle('pull-disabled', isActive);
+}
+
+function toggleProfileDropdown() {
+  const dropdown = document.getElementById('profileDropdown');
+  const trigger = document.getElementById('profileTrigger');
+  if (!dropdown || !trigger) return;
+  
+  const isActive = dropdown.classList.toggle('show');
+  trigger.classList.toggle('active', isActive);
+  trigger.setAttribute('aria-expanded', isActive);
+}
+
+// ── Initialize ────────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', async () => {
-  // Initialize navigation
+  // Render navigation
   renderNav();
   
   // Load page content
   await loadPage();
   
-  // Add smooth scroll for anchor links
-  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-    anchor.addEventListener('click', function(e) {
-      const href = this.getAttribute('href');
-      if (href && href !== '#') {
-        e.preventDefault();
-        const target = document.querySelector(href);
-        if (target) {
-          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
-      }
-    });
+  // Observe animate-on-scroll elements
+  document.querySelectorAll('.animate-on-scroll, .content-section').forEach(el => {
+    if (!el.classList.contains('visible')) observer.observe(el);
   });
   
-  // Keyboard shortcut: Press 'A' to add to cart (when not in input)
-  document.addEventListener('keydown', (e) => {
-    if (e.key.toLowerCase() === 'a' && 
-        !e.target.matches('input, textarea, [contenteditable]') &&
-        !e.ctrlKey && !e.metaKey && !e.altKey) {
-      const cartBtn = document.getElementById('cart-btn');
-      if (cartBtn && !cartBtn.disabled) {
-        e.preventDefault();
-        cartBtn.click();
-      }
+  // Profile dropdown toggle
+  const profileTrigger = document.getElementById('profileTrigger');
+  if (profileTrigger) {
+    profileTrigger.addEventListener('click', (e) => { e.stopPropagation(); toggleProfileDropdown(); });
+    profileTrigger.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleProfileDropdown(); }
+    });
+  }
+  
+  // Mobile menu toggle
+  const menuToggle = document.getElementById('menuToggle');
+  if (menuToggle) {
+    menuToggle.addEventListener('click', toggleMobileMenu);
+    menuToggle.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleMobileMenu(); }
+    });
+  }
+  
+  // Mobile profile toggle
+  const mobileProfileToggle = document.getElementById('mobileProfileToggle');
+  if (mobileProfileToggle) {
+    mobileProfileToggle.addEventListener('click', () => {
+      const menu = document.getElementById('mobileProfileMenu');
+      if (menu) menu.style.display = menu.style.display === 'flex' ? 'none' : 'flex';
+    });
+  }
+  
+  // Logout handlers
+  document.getElementById('dropdownLogout')?.addEventListener('click', (e) => { e.preventDefault(); logout(); });
+  document.getElementById('mobileLogoutBtn')?.addEventListener('click', logout);
+  
+  // Close dropdowns on outside click
+  document.addEventListener('click', (e) => {
+    const dropdown = document.getElementById('profileDropdown');
+    const trigger = document.getElementById('profileTrigger');
+    if (dropdown && trigger && !trigger.contains(e.target) && !dropdown.contains(e.target)) {
+      dropdown.classList.remove('show');
+      trigger.classList.remove('active');
+      trigger.setAttribute('aria-expanded', 'false');
+    }
+    
+    const mobileMenu = document.getElementById('mobileMenu');
+    if (mobileMenu?.classList.contains('active') && 
+        !mobileMenu.contains(e.target) && 
+        !menuToggle?.contains(e.target)) {
+      toggleMobileMenu();
     }
   });
   
-  // Handle page visibility change - refresh if needed
-  document.addEventListener('visibilitychange', () => {
-    if (!document.hidden && Auth.isLoggedIn()) {
-      // Could refresh cart count or user data here
-      renderNav();
+  // Close on Escape key
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      document.getElementById('profileDropdown')?.classList.remove('show');
+      document.getElementById('profileTrigger')?.classList.remove('active');
+      if (document.getElementById('mobileMenu')?.classList.contains('active')) {
+        toggleMobileMenu();
+      }
     }
   });
   
@@ -2062,23 +1908,21 @@ document.addEventListener('DOMContentLoaded', async () => {
   let lastTouchEnd = 0;
   document.addEventListener('touchend', (e) => {
     const now = Date.now();
-    if (now - lastTouchEnd <= 300) {
-      e.preventDefault();
-    }
+    if (now - lastTouchEnd <= 300) e.preventDefault();
     lastTouchEnd = now;
   }, { passive: false });
   
-  // Prevent gesture zoom on iOS
-  document.addEventListener('gesturestart', (e) => e.preventDefault());
+  // Keyboard shortcut: Press 'A' to add to cart
+  document.addEventListener('keydown', (e) => {
+    if (e.key.toLowerCase() === 'a' && !e.target.matches('input, textarea')) {
+      const cartBtn = document.getElementById('cart-btn');
+      if (cartBtn && !cartBtn.disabled) cartBtn.click();
+    }
+  });
 });
 
-// ── 🧹 Cleanup on unload ──────────────────────────────────────────────
-window.addEventListener('beforeunload', () => {
-  // Clear any pending timeouts
-  if (pageLoadPromise) {
-    // Could abort fetch here if needed
-  }
-});
+// Prevent gesture zoom on mobile
+document.addEventListener('gesturestart', (e) => e.preventDefault());
 </script>
 </body>
 </html>
