@@ -2,17 +2,14 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <!-- 🔧 Fixed viewport for Samsung/Android devices -->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover">
-    <meta name="theme-color" content="#0f0c1a">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, maximum-scale=5.0">
     <title>My Orders - NovaStack</title>
     
-    <!-- Preconnect for performance -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+    <!-- SEO -->
+    <meta name="description" content="Track your NovaStack orders, view deliverables, make payments, and chat with support.">
+    
+    <!-- Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
     <link rel="icon" type="image/png" href="logo.png">
@@ -22,2834 +19,1587 @@
         :root {
             --bg-primary: #0f0c1a;
             --bg-secondary: #1a162a;
-            --bg-card: rgba(26, 22, 42, 0.95);
+            --bg-card: rgba(26, 22, 42, 0.85);
             --surface: rgba(255, 255, 255, 0.08);
             --surface-hover: rgba(255, 255, 255, 0.15);
             --border: rgba(255, 255, 255, 0.12);
             --border-hover: rgba(232, 93, 38, 0.6);
             --text-primary: #ffffff;
-            --text-secondary: rgba(255, 255, 255, 0.7);
+            --text-secondary: rgba(255, 255, 255, 0.75);
             --text-muted: rgba(255, 255, 255, 0.45);
             --accent: #ff6b35;
             --accent-glow: rgba(255, 107, 53, 0.4);
+            --accent-secondary: #7c3aed;
             --success: #10b981;
             --warning: #f59e0b;
             --danger: #ef4444;
-            --info: #3b82f6;
             --gradient-accent: linear-gradient(135deg, #ff6b35 0%, #f7c531 100%);
+            --gradient-purple: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.2);
             --shadow-md: 0 8px 30px rgba(0, 0, 0, 0.35);
             --shadow-lg: 0 20px 60px rgba(0, 0, 0, 0.5);
+            --shadow-glow: 0 0 40px var(--accent-glow);
+            --transition: 300ms cubic-bezier(0.4, 0, 0.2, 1);
+            --radius-sm: 8px;
             --radius-md: 16px;
             --radius-lg: 24px;
             --radius-full: 9999px;
-            --transition: 300ms cubic-bezier(0.4, 0, 0.2, 1);
-            --safe-area-top: env(safe-area-inset-top);
-            --safe-area-bottom: env(safe-area-inset-bottom);
-            --safe-area-left: env(safe-area-inset-left);
-            --safe-area-right: env(safe-area-inset-right);
         }
 
         /* ===== 🌟 Base Reset ===== */
-        *, *::before, *::after { 
-            margin: 0; 
-            padding: 0; 
-            box-sizing: border-box; 
-            -webkit-tap-highlight-color: transparent;
-            -webkit-touch-callout: none;
-            -webkit-user-select: none;
-            -khtml-user-select: none;
-            -moz-user-select: none;
-            -ms-user-select: none;
-            user-select: none;
-        }
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         
-        /* Allow text selection in inputs */
-        input, textarea, [contenteditable] {
-            -webkit-user-select: text;
-            user-select: text;
-        }
-        
-        html {
-            scroll-behavior: smooth;
-            -webkit-text-size-adjust: 100%;
-        }
+        html { scroll-behavior: smooth; }
         
         body {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            background: linear-gradient(135deg, #0f0c1a 0%, #1a162a 100%);
+            font-family: 'DM Sans', sans-serif;
+            background: var(--bg-primary);
             color: var(--text-primary);
-            min-height: 100vh;
-            min-height: -webkit-fill-available; /* iOS fix */
             line-height: 1.6;
+            min-height: 100vh;
             overflow-x: hidden;
-            padding-top: var(--safe-area-top);
-            padding-bottom: var(--safe-area-bottom);
         }
+        
+        body.menu-open { overflow: hidden; position: fixed; width: 100%; }
 
-        /* Prevent pull-to-refresh bounce on mobile */
-        body.pull-disabled {
-            overscroll-behavior-y: contain;
+        /* Animated Background */
+        body::before {
+            content: ''; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background: radial-gradient(ellipse at 20% 80%, rgba(124, 58, 237, 0.12) 0%, transparent 50%),
+                        radial-gradient(ellipse at 80% 20%, rgba(255, 107, 53, 0.1) 0%, transparent 50%);
+            z-index: -2; pointer-events: none; animation: bgPulse 20s ease-in-out infinite;
+        }
+        @keyframes bgPulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.85; } }
+
+        .particles { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; }
+        .particle {
+            position: absolute; width: 4px; height: 4px; background: var(--accent);
+            border-radius: 50%; opacity: 0.3; animation: float 15s infinite linear;
+        }
+        @keyframes float {
+            0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+            10%, 90% { opacity: 0.3; }
+            100% { transform: translateY(-20vh) rotate(720deg); opacity: 0; }
         }
 
         /* ===== 🔗 Navigation ===== */
         nav {
-            background: rgba(26, 22, 42, 0.95);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            padding: 0 5%;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+            background: rgba(15, 12, 26, 0.9); backdrop-filter: blur(20px);
             border-bottom: 1px solid var(--border);
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            height: calc(72px + var(--safe-area-top));
-            padding-top: var(--safe-area-top);
-            transition: all var(--transition);
+            padding: 0 5%; display: flex; align-items: center; justify-content: space-between;
+            height: 72px; transition: all var(--transition);
         }
-
-        nav.scrolled {
-            height: calc(64px + var(--safe-area-top));
-            background: rgba(15, 12, 26, 0.98);
-            box-shadow: var(--shadow-md);
-        }
+        nav.scrolled { height: 64px; background: rgba(15, 12, 26, 0.95); box-shadow: var(--shadow-md); }
 
         .logo {
-            font-family: 'Syne', sans-serif;
-            font-weight: 800;
-            font-size: clamp(1.3rem, 4vw, 1.5rem);
-            background: var(--gradient-accent);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            gap: 0.3rem;
-            flex-shrink: 0;
+            font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.5rem;
+            color: var(--text-primary); text-decoration: none;
+            display: flex; align-items: center; gap: 0.3rem;
         }
-
-        .logo i { 
-            -webkit-text-fill-color: var(--accent); 
-            color: var(--accent); 
-            font-size: 1.3rem; 
+        .logo span {
+            background: var(--gradient-accent); -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent; background-clip: text;
         }
+        .logo i { color: var(--accent); }
 
-        .nav-links {
-            display: flex;
-            gap: clamp(1rem, 3vw, 2rem);
-            align-items: center;
-        }
-
+        .nav-links { display: flex; gap: 2rem; align-items: center; }
         .nav-links a {
-            color: var(--text-secondary);
-            text-decoration: none;
-            font-size: clamp(0.85rem, 2.5vw, 0.95rem);
-            font-weight: 500;
-            display: flex;
-            align-items: center;
-            gap: 0.4rem;
-            padding: 0.5rem 0;
-            position: relative;
-            transition: color var(--transition);
-            white-space: nowrap;
+            color: var(--text-secondary); text-decoration: none; font-size: 0.95rem;
+            font-weight: 500; padding: 0.5rem 0; transition: color var(--transition);
+            display: flex; align-items: center; gap: 0.4rem;
         }
+        .nav-links a:hover, .nav-links a.active { color: var(--accent); }
 
-        .nav-links a::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 0;
-            height: 2px;
-            background: var(--gradient-accent);
-            border-radius: var(--radius-full);
-            transition: width var(--transition);
+        /* User Toggle */
+        .user-toggle-wrapper { position: relative; display: flex; align-items: center; }
+        .user-toggle {
+            display: flex; align-items: center; gap: 0.6rem;
+            padding: 0.4rem 0.8rem; background: var(--surface);
+            border: 1px solid var(--border); border-radius: var(--radius-full);
+            cursor: pointer; transition: all var(--transition); min-height: 40px;
         }
-
-        .nav-links a:hover, .nav-links a.active {
-            color: var(--text-primary);
+        .user-toggle:hover, .user-toggle.active {
+            background: var(--surface-hover); border-color: var(--accent);
         }
-
-        .nav-links a:hover::after, .nav-links a.active::after {
-            width: 100%;
+        .user-avatar {
+            width: 32px; height: 32px; border-radius: 50%;
+            background: var(--gradient-accent); display: flex;
+            align-items: center; justify-content: center;
+            font-weight: 600; font-size: 0.85rem; color: white;
+            text-transform: uppercase; flex-shrink: 0; overflow: hidden;
         }
+        .user-avatar img { width: 100%; height: 100%; object-fit: cover; }
+        .user-name { font-size: 0.9rem; font-weight: 500; max-width: 120px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .user-toggle i.chevron { font-size: 0.75rem; color: var(--text-muted); transition: transform 150ms; }
+        .user-toggle.active i.chevron { transform: rotate(180deg); }
 
-        .nav-links a.active {
-            color: var(--accent);
+        .user-dropdown {
+            position: absolute; top: calc(100% + 12px); right: 0;
+            background: var(--bg-card); border: 1px solid var(--border);
+            border-radius: var(--radius-md); min-width: 240px; padding: 0.5rem 0;
+            box-shadow: var(--shadow-lg); backdrop-filter: blur(20px);
+            opacity: 0; visibility: hidden; transform: translateY(-10px);
+            transition: all var(--transition); z-index: 1001;
         }
-
-        /* Profile Section */
-        .profile-section {
-            position: relative;
-            display: flex;
-            align-items: center;
-            flex-shrink: 0;
-        }
-
-        .profile-trigger {
-            display: flex;
-            align-items: center;
-            gap: 0.6rem;
-            padding: 0.4rem 0.8rem;
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: var(--radius-full);
-            cursor: pointer;
-            transition: all var(--transition);
-            min-height: 40px;
-            min-width: 40px;
-        }
-
-        .profile-trigger:hover, .profile-trigger.active {
-            background: var(--surface-hover);
-            border-color: var(--accent);
-            transform: translateY(-1px);
-        }
-
-        .profile-avatar {
-            width: 32px;
-            height: 32px;
-            background: var(--gradient-accent);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 600;
-            font-size: 0.85rem;
-            color: white;
-            text-transform: uppercase;
-            flex-shrink: 0;
-            overflow: hidden;
-        }
-
-        .profile-avatar img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            border-radius: 50%;
-        }
-
-        .profile-name {
-            font-size: 0.9rem;
-            font-weight: 500;
-            color: var(--text-primary);
-            max-width: 120px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .profile-trigger i.chevron {
-            font-size: 0.7rem;
-            color: var(--text-muted);
-            transition: transform var(--transition);
-            flex-shrink: 0;
-        }
-
-        .profile-trigger.active i.chevron {
-            transform: rotate(180deg);
-        }
-
-        .profile-dropdown {
-            position: absolute;
-            top: calc(100% + 12px);
-            right: 0;
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: var(--radius-md);
-            min-width: 240px;
-            max-width: 90vw;
-            padding: 0.5rem 0;
-            box-shadow: var(--shadow-lg);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            opacity: 0;
-            visibility: hidden;
-            transform: translateY(-10px);
-            transition: all var(--transition);
-            z-index: 1001;
-        }
-
-        .profile-dropdown.show {
-            opacity: 1;
-            visibility: visible;
-            transform: translateY(0);
-        }
-
-        .profile-dropdown::before {
-            content: '';
-            position: absolute;
-            top: -6px;
-            right: 24px;
-            width: 12px;
-            height: 12px;
-            background: var(--bg-card);
-            border-left: 1px solid var(--border);
-            border-top: 1px solid var(--border);
+        .user-dropdown.active { opacity: 1; visibility: visible; transform: translateY(0); }
+        .user-dropdown::before {
+            content: ''; position: absolute; top: -6px; right: 24px;
+            width: 12px; height: 12px; background: var(--bg-card);
+            border-left: 1px solid var(--border); border-top: 1px solid var(--border);
             transform: rotate(45deg);
         }
-
-        .dropdown-header {
-            padding: 0.8rem 1.2rem;
-            border-bottom: 1px solid var(--border);
-            margin-bottom: 0.3rem;
-        }
-
-        .dropdown-header .profile-avatar {
-            width: 40px;
-            height: 40px;
-            font-size: 1rem;
-            margin-bottom: 0.4rem;
-        }
-
-        .dropdown-header .profile-name {
-            font-size: 1rem;
-            font-weight: 600;
-            max-width: none;
-        }
-
-        .dropdown-header .user-email {
-            font-size: 0.8rem;
-            color: var(--text-muted);
-            word-break: break-all;
-        }
-
+        .dropdown-header { padding: 0.8rem 1.2rem; border-bottom: 1px solid var(--border); margin-bottom: 0.3rem; }
+        .dropdown-header .user-avatar { width: 40px; height: 40px; font-size: 1rem; margin-bottom: 0.4rem; }
+        .dropdown-header .user-name { font-size: 1rem; font-weight: 600; max-width: none; }
+        .dropdown-header .user-email { font-size: 0.8rem; color: var(--text-muted); }
         .dropdown-item {
-            display: flex;
-            align-items: center;
-            gap: 0.8rem;
-            padding: 0.7rem 1.2rem;
-            color: var(--text-secondary);
-            text-decoration: none;
-            font-size: 0.9rem;
-            transition: all var(--transition);
+            display: flex; align-items: center; gap: 0.8rem;
+            padding: 0.7rem 1.2rem; color: var(--text-secondary);
+            text-decoration: none; font-size: 0.9rem; transition: all 150ms;
             border-left: 3px solid transparent;
-            min-height: 44px; /* Touch target */
         }
-
         .dropdown-item:hover {
-            background: var(--surface-hover);
-            color: var(--text-primary);
-            border-left-color: var(--accent);
-            padding-left: 1.5rem;
+            background: var(--surface-hover); color: var(--text-primary);
+            border-left-color: var(--accent); padding-left: 1.5rem;
+        }
+        .dropdown-item i { width: 20px; text-align: center; color: var(--accent); }
+        .dropdown-divider { height: 1px; background: var(--border); margin: 0.4rem 0; }
+        .dropdown-logout { color: var(--danger) !important; border-top: 1px solid var(--border); margin-top: 0.3rem; padding-top: 0.7rem; }
+        .dropdown-logout i { color: var(--danger) !important; }
+
+        .nav-right { display: flex; align-items: center; gap: 0.8rem; }
+        .auth-buttons { display: flex; align-items: center; gap: 0.6rem; }
+        .auth-buttons.hidden { display: none; }
+
+        /* Buttons */
+        .btn {
+            padding: 0.6rem 1.4rem; border-radius: var(--radius-full);
+            font-family: 'DM Sans', sans-serif; font-size: 0.9rem; font-weight: 600;
+            cursor: pointer; text-decoration: none; display: inline-flex;
+            align-items: center; gap: 0.5rem; transition: all var(--transition);
+            position: relative; overflow: hidden; border: none; min-height: 44px;
+        }
+        .btn-outline {
+            background: transparent; color: var(--text-primary);
+            border: 1.5px solid var(--border);
+        }
+        .btn-outline:hover {
+            border-color: var(--accent); box-shadow: 0 0 20px var(--accent-glow);
+            transform: translateY(-2px);
+        }
+        .btn-primary {
+            background: var(--gradient-accent); color: white;
+            box-shadow: 0 4px 20px var(--accent-glow);
+        }
+        .btn-primary:hover {
+            transform: translateY(-3px); box-shadow: 0 8px 35px var(--accent-glow);
         }
 
-        .dropdown-item i {
-            width: 20px;
-            text-align: center;
-            color: var(--accent);
-            font-size: 0.9rem;
-            flex-shrink: 0;
-        }
-
-        .dropdown-divider {
-            height: 1px;
-            background: var(--border);
-            margin: 0.4rem 0;
-        }
-
-        .logout-btn {
-            color: var(--danger) !important;
-            border-top: 1px solid var(--border);
-            margin-top: 0.3rem;
-            padding-top: 0.7rem;
-        }
-
-        .logout-btn i {
-            color: var(--danger) !important;
-        }
-
-        /* Mobile Menu Toggle */
+        /* Menu Toggle */
         .menu-toggle {
-            display: none;
-            font-size: 1.4rem;
-            color: var(--accent);
-            cursor: pointer;
-            padding: 0.6rem;
-            border-radius: var(--radius-md);
-            transition: background var(--transition);
-            min-width: 44px;
-            min-height: 44px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
+            display: none; font-size: 1.4rem; color: var(--accent);
+            cursor: pointer; padding: 0.6rem; border-radius: var(--radius-sm);
+            transition: background 150ms; min-width: 44px; min-height: 44px;
+            display: flex; align-items: center; justify-content: center;
         }
+        .menu-toggle:hover, .menu-toggle.active { background: var(--surface); }
 
-        .menu-toggle:hover, .menu-toggle.active {
-            background: var(--surface);
-        }
-
-        .menu-toggle i {
-            transition: transform var(--transition);
-        }
-
-        .menu-toggle.active i {
-            transform: rotate(90deg);
-        }
-
-        /* Mobile Menu Panel */
+        /* Mobile Menu */
         .mobile-menu {
-            position: fixed;
-            top: calc(72px + var(--safe-area-top));
-            left: 0;
-            right: 0;
-            background: var(--bg-secondary);
-            border-bottom: 1px solid var(--border);
-            padding: 1rem 5%;
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
-            opacity: 0;
-            z-index: 999;
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
+            position: fixed; top: 72px; left: 0; right: 0;
+            background: var(--bg-secondary); border-bottom: 1px solid var(--border);
+            padding: 1rem 5%; max-height: 0; overflow: hidden;
+            transition: max-height 0.4s ease, opacity 0.3s ease;
+            opacity: 0; z-index: 999; backdrop-filter: blur(20px);
         }
-
-        .mobile-menu.active {
-            max-height: 80vh;
-            opacity: 1;
-            overflow-y: auto;
-            -webkit-overflow-scrolling: touch;
-        }
-
-        .mobile-menu-inner {
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-            padding-bottom: 1rem;
-        }
-
+        .mobile-menu.active { max-height: 80vh; opacity: 1; overflow-y: auto; }
+        .mobile-menu-inner { display: flex; flex-direction: column; gap: 0.5rem; padding-bottom: 1rem; }
         .mobile-nav-link {
-            display: flex;
-            align-items: center;
-            gap: 0.8rem;
-            padding: 1rem 1.2rem;
-            color: var(--text-secondary);
-            text-decoration: none;
-            font-size: 1rem;
-            font-weight: 500;
-            border-radius: var(--radius-md);
-            transition: all var(--transition);
-            min-height: 48px;
-            min-width: 100%;
+            display: flex; align-items: center; gap: 0.8rem;
+            padding: 1rem 1.2rem; color: var(--text-secondary);
+            text-decoration: none; font-size: 1rem; font-weight: 500;
+            border-radius: var(--radius-md); transition: all 150ms; min-height: 48px;
         }
-
-        .mobile-nav-link:hover, .mobile-nav-link.active {
-            background: var(--surface-hover);
-            color: var(--text-primary);
-            transform: translateX(4px);
-        }
-
-        .mobile-nav-link i {
-            width: 24px;
-            text-align: center;
-            color: var(--accent);
-            flex-shrink: 0;
-        }
-
-        .mobile-nav-link.active {
-            color: var(--accent);
-            border-left: 3px solid var(--accent);
-            padding-left: 0.9rem;
-        }
-
-        .mobile-divider {
-            height: 1px;
-            background: var(--border);
-            margin: 0.5rem 0;
-        }
-
-        .mobile-profile-section {
-            padding: 0.5rem 0;
-        }
-
+        .mobile-nav-link:hover { background: var(--surface-hover); color: var(--text-primary); transform: translateX(4px); }
+        .mobile-nav-link i { width: 24px; text-align: center; color: var(--accent); }
+        .mobile-divider { height: 1px; background: var(--border); margin: 0.5rem 0; }
+        .mobile-auth-section, .mobile-profile-section { display: flex; flex-direction: column; gap: 0.8rem; padding: 0.5rem 0; }
+        .mobile-auth-section.hidden, .mobile-profile-section.hidden { display: none; }
+        .mobile-auth-section .btn { width: 100%; justify-content: center; }
         .mobile-profile-header {
-            display: flex;
-            align-items: center;
-            gap: 0.8rem;
-            padding: 0.8rem 1.2rem;
-            background: var(--surface);
-            border-radius: var(--radius-md);
-            margin-bottom: 0.5rem;
-            cursor: pointer;
-            min-height: 56px;
+            display: flex; align-items: center; gap: 0.8rem;
+            padding: 0.8rem 1.2rem; background: var(--surface);
+            border-radius: var(--radius-md); cursor: pointer;
         }
-
         .mobile-profile-avatar {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: var(--gradient-accent);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 600;
-            color: white;
-            text-transform: uppercase;
-            flex-shrink: 0;
+            width: 40px; height: 40px; border-radius: 50%;
+            background: var(--gradient-accent); display: flex;
+            align-items: center; justify-content: center;
+            font-weight: 600; color: white; text-transform: uppercase; flex-shrink: 0;
         }
-
-        .mobile-profile-avatar img {
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            object-fit: cover;
-        }
-
-        .mobile-profile-info {
-            flex: 1;
-            min-width: 0;
-        }
-
-        .mobile-profile-name {
-            font-weight: 600;
-            color: var(--text-primary);
-            font-size: 0.95rem;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .mobile-profile-email {
-            font-size: 0.8rem;
-            color: var(--text-muted);
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
+        .mobile-profile-info { flex: 1; min-width: 0; }
+        .mobile-profile-name { font-weight: 600; font-size: 0.95rem; }
+        .mobile-profile-email { font-size: 0.8rem; color: var(--text-muted); }
+        .mobile-profile-menu { display: none; flex-direction: column; gap: 0.3rem; padding: 0.3rem 0; }
+        .mobile-profile-menu.visible { display: flex; }
         .mobile-logout-btn {
-            width: calc(100% - 2.4rem);
-            justify-content: center;
-            color: var(--danger) !important;
+            width: 100%; justify-content: center; color: var(--danger) !important;
             border-color: rgba(239, 68, 68, 0.3) !important;
-            margin: 0.5rem 1.2rem;
-            min-height: 44px;
         }
 
-        .mobile-logout-btn:hover {
-            background: rgba(239, 68, 68, 0.1) !important;
-        }
-
-        /* ===== 📦 Main Container ===== */
-        .container {
-            max-width: 1200px;
-            margin: 2rem auto;
-            padding: 0 5%;
-            padding-bottom: calc(2rem + var(--safe-area-bottom));
-        }
-
+        /* ===== 📦 Page Content ===== */
+        .container { max-width: 1200px; margin: 100px auto 3rem; padding: 0 5%; }
+        
         .page-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 2rem;
-            flex-wrap: wrap;
-            gap: 1rem;
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem;
         }
-
         .page-header h1 {
-            font-family: 'Syne', sans-serif;
-            font-size: clamp(1.5rem, 5vw, 1.8rem);
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            word-break: break-word;
+            font-family: 'Syne', sans-serif; font-weight: 800;
+            font-size: clamp(1.5rem, 4vw, 2rem);
+            display: flex; align-items: center; gap: 0.5rem;
         }
-
         .btn-new-order {
-            background: var(--gradient-accent);
-            color: white;
-            text-decoration: none;
-            padding: 0.7rem 1.5rem;
-            border-radius: var(--radius-full);
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            transition: all var(--transition);
-            font-weight: 600;
-            font-size: 0.9rem;
-            border: none;
-            cursor: pointer;
-            min-height: 44px;
-            white-space: nowrap;
+            background: var(--gradient-accent); color: white;
+            text-decoration: none; padding: 0.7rem 1.5rem;
+            border-radius: var(--radius-full); display: inline-flex;
+            align-items: center; gap: 0.5rem; transition: all var(--transition);
+            font-weight: 600; font-size: 0.9rem;
         }
+        .btn-new-order:hover { transform: translateY(-2px); box-shadow: var(--shadow-glow); }
 
-        .btn-new-order:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px var(--accent-glow);
-        }
-
-        .btn-new-order:active {
-            transform: translateY(0);
-        }
-
-        /* ===== 📋 Compact Order Card ===== */
-        .orders-grid {
-            display: grid;
-            gap: 1rem;
-        }
-
+        /* Orders Grid */
+        .orders-grid { display: grid; gap: 1.2rem; }
+        
         .order-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: var(--radius-lg);
-            padding: 1rem 1.2rem;
-            transition: all var(--transition);
-            cursor: pointer;
-            position: relative;
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            contain: content;
+            background: var(--bg-card); border: 1px solid var(--border);
+            border-radius: var(--radius-lg); padding: 1rem 1.2rem;
+            transition: all var(--transition); cursor: pointer;
+            backdrop-filter: blur(10px); animation: fadeInUp 0.4s ease-out;
         }
-
         .order-card:hover {
-            border-color: var(--accent);
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-lg);
+            border-color: var(--accent); transform: translateY(-3px);
+            box-shadow: var(--shadow-lg), 0 0 30px var(--accent-glow);
         }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-        .order-card:active {
-            transform: translateY(0);
+        .order-card-header {
+            display: flex; justify-content: space-between; align-items: flex-start;
+            gap: 1rem; margin-bottom: 0.8rem; flex-wrap: wrap;
         }
-
-        .order-card.expanded {
-            border-color: var(--accent);
+        .service-preview { display: flex; align-items: center; gap: 0.8rem; flex: 1; min-width: 0; }
+        .service-icon {
+            width: 48px; height: 48px; background: var(--surface);
+            border-radius: var(--radius-md); display: flex;
+            align-items: center; justify-content: center;
+            font-size: 1.5rem; flex-shrink: 0;
         }
-
-        .order-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 0.8rem;
-            flex-wrap: wrap;
+        .service-info { flex: 1; min-width: 0; }
+        .service-name {
+            font-family: 'Syne', sans-serif; font-weight: 700;
+            font-size: 1rem; margin-bottom: 0.2rem; white-space: nowrap;
+            overflow: hidden; text-overflow: ellipsis;
         }
-
-        .order-id {
-            font-family: monospace;
-            font-size: 0.85rem;
-            color: var(--text-muted);
-            display: flex;
-            align-items: center;
-            gap: 0.3rem;
-            cursor: pointer;
-            transition: color var(--transition);
-            padding: 4px 8px;
-            border-radius: var(--radius-md);
-        }
-
-        .order-id:hover {
-            color: var(--accent);
-            background: var(--surface);
-        }
-
-        .order-id.copied {
-            color: var(--success);
-        }
+        .service-meta { display: flex; gap: 1rem; font-size: 0.8rem; color: var(--text-muted); flex-wrap: wrap; }
+        .service-meta span { display: flex; align-items: center; gap: 0.3rem; }
 
         .order-status {
-            padding: 0.25rem 0.8rem;
-            border-radius: var(--radius-full);
-            font-size: 0.7rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            display: flex;
-            align-items: center;
-            gap: 0.3rem;
-            flex-shrink: 0;
+            padding: 0.3rem 0.9rem; border-radius: var(--radius-full);
+            font-size: 0.75rem; font-weight: 600; text-transform: uppercase;
+            letter-spacing: 0.5px; white-space: nowrap;
         }
-
-        .status-dot {
-            width: 6px;
-            height: 6px;
-            border-radius: 50%;
-            display: inline-block;
-            flex-shrink: 0;
-        }
-
-        .status-pending { background: rgba(245, 158, 11, 0.2); color: #f59e0b; }
-        .status-pending .status-dot { background: #f59e0b; }
-        .status-payment_received { background: rgba(16, 185, 129, 0.2); color: #10b981; }
-        .status-payment_received .status-dot { background: #10b981; }
+        .status-pending { background: rgba(245, 158, 11, 0.2); color: var(--warning); }
+        .status-payment_received { background: rgba(16, 185, 129, 0.2); color: var(--success); }
         .status-in_progress { background: rgba(59, 130, 246, 0.2); color: #3b82f6; }
-        .status-in_progress .status-dot { background: #3b82f6; }
-        .status-ready_for_balance { background: rgba(255, 107, 53, 0.2); color: #ff6b35; }
-        .status-ready_for_balance .status-dot { background: #ff6b35; }
-        .status-completed { background: rgba(16, 185, 129, 0.2); color: #10b981; }
-        .status-completed .status-dot { background: #10b981; }
-        .status-delivered { background: rgba(139, 92, 246, 0.2); color: #8b5cf6; }
-        .status-delivered .status-dot { background: #8b5cf6; }
-        .status-cancelled { background: rgba(239, 68, 68, 0.2); color: #ef4444; }
-        .status-cancelled .status-dot { background: #ef4444; }
+        .status-ready_for_balance { background: rgba(255, 107, 53, 0.2); color: var(--accent); }
+        .status-completed, .status-delivered { background: rgba(16, 185, 129, 0.2); color: var(--success); }
+        .status-cancelled { background: rgba(239, 68, 68, 0.2); color: var(--danger); }
 
-        .order-main {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            padding: 0.8rem 0;
-            border-bottom: 1px solid var(--border);
+        .order-card-body {
+            padding-top: 0.8rem; border-top: 1px solid var(--border);
+            display: flex; justify-content: space-between; align-items: center;
+            flex-wrap: wrap; gap: 0.8rem;
         }
+        .price-section { display: flex; flex-direction: column; gap: 0.2rem; }
+        .price-label { font-size: 0.75rem; color: var(--text-muted); }
+        .price-value { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.1rem; }
+        .price-value span { font-size: 0.8rem; font-weight: 400; color: var(--text-muted); }
 
-        .service-icon {
-            width: 48px;
-            height: 48px;
-            background: var(--surface);
-            border-radius: var(--radius-md);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-            flex-shrink: 0;
+        .progress-mini {
+            display: flex; align-items: center; gap: 0.5rem;
+            background: var(--surface); padding: 0.4rem 0.8rem;
+            border-radius: var(--radius-full); font-size: 0.75rem;
+        }
+        .progress-bar-mini {
+            width: 60px; height: 4px; background: rgba(255,255,255,0.1);
+            border-radius: 2px; overflow: hidden;
+        }
+        .progress-fill-mini {
+            height: 100%; background: var(--gradient-accent);
+            border-radius: 2px; transition: width 0.3s ease;
         }
 
-        .service-info {
-            flex: 1;
-            min-width: 0;
+        .order-actions-mini { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+        .btn-mini {
+            padding: 0.4rem 0.9rem; border-radius: var(--radius-sm);
+            font-size: 0.75rem; font-weight: 500; cursor: pointer;
+            display: inline-flex; align-items: center; gap: 0.3rem;
+            transition: all 150ms; border: 1px solid; min-height: 36px;
         }
+        .btn-chat-mini { background: rgba(16, 185, 129, 0.15); border-color: var(--success); color: var(--success); }
+        .btn-chat-mini:hover { background: var(--success); color: white; }
+        .btn-details-mini { background: var(--surface); border-color: var(--border); color: var(--text-primary); }
+        .btn-details-mini:hover { border-color: var(--accent); color: var(--accent); }
+        .btn-pay-mini { background: var(--gradient-accent); border: none; color: white; }
+        .btn-pay-mini:hover { transform: translateY(-1px); box-shadow: 0 4px 15px var(--accent-glow); }
 
-        .service-info h3 {
-            font-size: 1rem;
-            font-weight: 600;
-            margin-bottom: 0.2rem;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
+        .badge-access {
+            display: inline-flex; align-items: center; gap: 0.3rem;
+            font-size: 0.7rem; padding: 0.2rem 0.6rem;
+            border-radius: var(--radius-sm); margin-top: 0.3rem;
         }
-
-        .service-meta {
-            display: flex;
-            gap: 1rem;
-            font-size: 0.8rem;
-            color: var(--text-muted);
-            flex-wrap: wrap;
-        }
-
-        .service-price {
-            color: var(--accent);
-            font-weight: 700;
-        }
-
-        .order-summary {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0.8rem 0;
-            font-size: 0.85rem;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-        }
-
-        .payment-progress {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            flex: 1;
-            min-width: 200px;
-        }
-
-        .progress-bar {
-            width: 80px;
-            height: 4px;
-            background: var(--surface);
-            border-radius: 10px;
-            overflow: hidden;
-            flex-shrink: 0;
-        }
-
-        .progress-fill {
-            height: 100%;
-            background: var(--gradient-accent);
-            border-radius: 10px;
-            transition: width 0.5s ease;
-        }
-
-        .access-badge {
-            display: flex;
-            align-items: center;
-            gap: 0.3rem;
-            font-size: 0.75rem;
-            padding: 0.2rem 0.6rem;
-            border-radius: var(--radius-full);
-            background: var(--surface);
-            flex-shrink: 0;
-        }
-
-        .access-badge.full {
-            background: rgba(16, 185, 129, 0.2);
-            color: #10b981;
-        }
-
-        .access-badge.preview {
-            background: rgba(255, 107, 53, 0.2);
-            color: #ff6b35;
-        }
-
-        .access-badge.locked {
-            background: var(--surface);
-            color: var(--text-muted);
-        }
-
-        .order-actions {
-            display: flex;
-            gap: 0.5rem;
-            padding-top: 0.8rem;
-            flex-wrap: wrap;
-        }
-
-        .btn-action {
-            padding: 0.5rem 1rem;
-            border-radius: var(--radius-md);
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.4rem;
-            font-size: 0.8rem;
-            border: 1px solid;
-            transition: all var(--transition);
-            font-weight: 500;
-            background: transparent;
-            min-height: 40px;
-            min-width: 44px;
-            justify-content: center;
-        }
-
-        .btn-action i {
-            font-size: 0.85rem;
-        }
-
-        .btn-chat {
-            border-color: var(--success);
-            color: var(--success);
-        }
-        .btn-chat:hover {
-            background: var(--success);
-            color: white;
-        }
-
-        .btn-view {
-            border-color: var(--info);
-            color: var(--info);
-        }
-        .btn-view:hover {
-            background: var(--info);
-            color: white;
-        }
-
-        .btn-balance {
-            background: var(--gradient-accent);
-            color: white;
-            border: none;
-        }
-        .btn-balance:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 4px 15px var(--accent-glow);
-        }
-
-        .btn-balance:active {
-            transform: translateY(0);
-        }
-
-        .btn-cancel {
-            border-color: var(--danger);
-            color: var(--danger);
-        }
-        .btn-cancel:hover {
-            background: var(--danger);
-            color: white;
-        }
-
-        .btn-revision {
-            border-color: var(--warning);
-            color: var(--warning);
-        }
-        .btn-revision:hover {
-            background: var(--warning);
-            color: white;
-        }
-
-        .btn-toggle {
-            border-color: var(--border);
-            color: var(--text-secondary);
-            margin-left: auto;
-        }
-        .btn-toggle:hover, .btn-toggle.active {
-            background: var(--surface-hover);
-            color: var(--text-primary);
-        }
-
-        .btn-toggle i {
-            transition: transform var(--transition);
-        }
-
-        .btn-toggle.active i {
-            transform: rotate(180deg);
-        }
-
-        /* Expanded Details Section */
-        .order-details-expanded {
-            display: none;
-            padding-top: 1rem;
-            border-top: 1px solid var(--border);
-            animation: slideDown 0.3s ease;
-        }
-
-        @keyframes slideDown {
-            from { opacity: 0; transform: translateY(-10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .order-card.expanded .order-details-expanded {
-            display: block;
-        }
-
-        .details-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-            gap: 0.8rem;
-            margin-bottom: 1rem;
-        }
-
-        .detail-item {
-            background: var(--surface);
-            padding: 0.8rem;
-            border-radius: var(--radius-md);
-        }
-
-        .detail-item label {
-            display: block;
-            font-size: 0.75rem;
-            color: var(--text-muted);
-            margin-bottom: 0.3rem;
-        }
-
-        .detail-item span {
-            font-size: 0.9rem;
-            font-weight: 500;
-            word-break: break-word;
-        }
-
-        .detail-actions {
-            display: flex;
-            gap: 0.5rem;
-            flex-wrap: wrap;
-        }
-
-        .detail-actions .btn-action {
-            flex: 1;
-            min-width: 120px;
-            justify-content: center;
-        }
+        .badge-preview { background: rgba(255, 107, 53, 0.2); color: var(--accent); }
+        .badge-full { background: rgba(16, 185, 129, 0.2); color: var(--success); }
+        .badge-locked { background: rgba(255,255,255,0.1); color: var(--text-muted); }
 
         /* ===== 🪟 Modal Styles ===== */
         .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.8);
-            align-items: center;
-            justify-content: center;
-            z-index: 2000;
-            padding: 1rem;
-            padding-top: calc(1rem + var(--safe-area-top));
-            padding-bottom: calc(1rem + var(--safe-area-bottom));
+            display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0, 0, 0, 0.85); align-items: center;
+            justify-content: center; z-index: 2000; padding: 1rem;
         }
-
-        .modal.show {
-            display: flex;
-        }
+        .modal.active { display: flex; animation: fadeIn 0.2s ease; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
         .modal-content {
-            background: var(--bg-secondary);
-            border: 1px solid var(--border);
-            border-radius: var(--radius-lg);
-            padding: 1.5rem;
-            max-width: 600px;
-            width: 100%;
-            max-height: 85vh;
-            overflow-y: auto;
-            -webkit-overflow-scrolling: touch;
-            animation: modalSlide 0.3s ease;
-            position: relative;
+            background: var(--bg-secondary); border: 1px solid var(--border);
+            border-radius: var(--radius-lg); width: 100%; max-width: 600px;
+            max-height: 85vh; overflow-y: auto; backdrop-filter: blur(20px);
+            animation: slideUp 0.3s ease;
         }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
 
-        @keyframes modalSlide {
-            from { opacity: 0; transform: translateY(-20px) scale(0.95); }
-            to { opacity: 1; transform: translateY(0) scale(1); }
+        .modal-header {
+            padding: 1.2rem 1.5rem; border-bottom: 1px solid var(--border);
+            display: flex; justify-content: space-between; align-items: center;
+            position: sticky; top: 0; background: var(--bg-secondary);
+            z-index: 1;
         }
-
+        .modal-header h3 { font-family: 'Syne', sans-serif; font-weight: 700; display: flex; align-items: center; gap: 0.5rem; }
         .modal-close {
-            position: absolute;
-            top: 1rem;
-            right: 1rem;
-            background: var(--surface);
-            border: none;
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            color: var(--text-secondary);
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all var(--transition);
-            flex-shrink: 0;
-            min-width: 32px;
-            min-height: 32px;
+            background: none; border: none; color: var(--text-muted);
+            font-size: 1.2rem; cursor: pointer; padding: 0.3rem;
+            border-radius: var(--radius-sm); transition: all 150ms;
         }
+        .modal-close:hover { color: var(--text-primary); background: var(--surface); }
 
-        .modal-close:hover {
-            background: var(--danger);
-            color: white;
-        }
+        .modal-body { padding: 1.2rem 1.5rem; }
 
-        .modal h3 {
-            font-family: 'Syne', sans-serif;
-            font-size: 1.3rem;
-            margin-bottom: 1rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            word-break: break-word;
-        }
-
-        .modal-section {
-            margin-bottom: 1.2rem;
-            padding-bottom: 1rem;
-            border-bottom: 1px solid var(--border);
-        }
-
-        .modal-section:last-child {
-            border-bottom: none;
-            margin-bottom: 0;
-            padding-bottom: 0;
-        }
-
-        .modal-section h4 {
-            font-size: 0.95rem;
-            color: var(--text-secondary);
-            margin-bottom: 0.5rem;
-            display: flex;
-            align-items: center;
-            gap: 0.4rem;
-        }
-
-        .timeline-list {
-            display: flex;
-            flex-direction: column;
-            gap: 0.8rem;
-        }
-
+        /* Timeline Modal */
+        .timeline-list { display: flex; flex-direction: column; gap: 1rem; }
         .timeline-item {
-            display: flex;
-            gap: 0.8rem;
-            padding: 0.6rem;
-            background: var(--surface);
-            border-radius: var(--radius-md);
+            display: flex; gap: 1rem; padding: 0.8rem;
+            background: var(--surface); border-radius: var(--radius-md);
             border-left: 3px solid var(--accent);
         }
-
-        .timeline-item .time {
-            font-size: 0.75rem;
-            color: var(--text-muted);
-            min-width: 140px;
-            flex-shrink: 0;
+        .timeline-item::before {
+            content: ''; width: 10px; height: 10px; background: var(--accent);
+            border-radius: 50%; margin-top: 0.3rem; flex-shrink: 0;
         }
+        .timeline-content { flex: 1; }
+        .timeline-status { font-weight: 600; font-size: 0.9rem; margin-bottom: 0.2rem; }
+        .timeline-message { color: var(--text-secondary); font-size: 0.85rem; margin-bottom: 0.3rem; }
+        .timeline-time { font-size: 0.75rem; color: var(--text-muted); }
 
-        .timeline-item .content {
-            flex: 1;
-            min-width: 0;
-        }
-
-        .timeline-item .status {
-            font-weight: 600;
-            color: var(--accent);
-            font-size: 0.85rem;
-            margin-bottom: 0.2rem;
-        }
-
-        .timeline-item .message {
-            font-size: 0.85rem;
-            color: var(--text-secondary);
-            word-break: break-word;
-        }
-
-        .deliverables-list {
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-        }
-
+        /* Deliverables Modal */
+        .deliverables-list { display: flex; flex-direction: column; gap: 0.8rem; }
         .deliverable-item {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0.8rem;
-            background: var(--surface);
-            border-radius: var(--radius-md);
-            gap: 0.8rem;
-            flex-wrap: wrap;
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 0.9rem 1.2rem; background: var(--surface);
+            border-radius: var(--radius-md); transition: all 150ms;
         }
-
-        .deliverable-item .info {
-            display: flex;
-            align-items: center;
-            gap: 0.6rem;
-            flex: 1;
-            min-width: 0;
+        .deliverable-item:hover { background: var(--surface-hover); }
+        .deliverable-info { display: flex; align-items: center; gap: 0.8rem; }
+        .deliverable-icon {
+            width: 36px; height: 36px; border-radius: var(--radius-sm);
+            background: var(--gradient-accent); display: flex;
+            align-items: center; justify-content: center; color: white;
         }
-
-        .deliverable-item .info i {
-            color: var(--accent);
-            font-size: 1.1rem;
-            flex-shrink: 0;
-        }
-
-        .deliverable-item .name {
-            font-size: 0.9rem;
-            font-weight: 500;
-            word-break: break-word;
-        }
-
-        .deliverable-item .type {
-            font-size: 0.75rem;
-            color: var(--text-muted);
-        }
-
+        .deliverable-name { font-weight: 500; }
+        .deliverable-desc { font-size: 0.8rem; color: var(--text-muted); }
         .btn-download {
-            padding: 0.4rem 1rem;
-            background: var(--success);
-            color: white;
-            border: none;
-            border-radius: var(--radius-md);
-            font-size: 0.8rem;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.3rem;
-            transition: all var(--transition);
-            text-decoration: none;
-            min-height: 36px;
-            flex-shrink: 0;
+            padding: 0.4rem 1rem; background: var(--success); color: white;
+            border: none; border-radius: var(--radius-sm); font-size: 0.8rem;
+            cursor: pointer; display: inline-flex; align-items: center; gap: 0.3rem;
+            transition: all 150ms; text-decoration: none;
         }
+        .btn-download:hover { background: #059669; transform: translateY(-1px); }
 
-        .btn-download:hover {
-            background: #059669;
-            transform: translateY(-1px);
+        /* Payment Modal */
+        .payment-summary { background: var(--surface); border-radius: var(--radius-md); padding: 1rem; margin-bottom: 1rem; }
+        .payment-row { display: flex; justify-content: space-between; padding: 0.4rem 0; font-size: 0.9rem; }
+        .payment-row.total { border-top: 1px solid var(--border); margin-top: 0.5rem; padding-top: 0.8rem; font-weight: 600; }
+        .payment-history { display: flex; flex-direction: column; gap: 0.8rem; }
+        .payment-entry {
+            padding: 0.8rem; background: var(--surface);
+            border-radius: var(--radius-md); border-left: 3px solid var(--success);
         }
+        .payment-entry.cancelled { border-left-color: var(--danger); }
 
-        .btn-download:disabled {
-            background: var(--surface);
-            color: var(--text-muted);
-            cursor: not-allowed;
-            transform: none;
+        /* Customization Modal */
+        .customization-list { display: flex; flex-direction: column; gap: 0.6rem; }
+        .custom-item {
+            display: flex; justify-content: space-between; padding: 0.6rem 0;
+            border-bottom: 1px solid var(--border); font-size: 0.9rem;
         }
+        .custom-item:last-child { border-bottom: none; }
+        .custom-label { color: var(--text-secondary); }
+        .custom-value { font-weight: 500; color: var(--accent); }
 
-        .payment-history-list {
-            display: flex;
-            flex-direction: column;
-            gap: 0.6rem;
-        }
-
-        .payment-item {
-            display: flex;
-            justify-content: space-between;
-            padding: 0.8rem;
-            background: var(--surface);
-            border-radius: var(--radius-md);
-            flex-wrap: wrap;
-            gap: 0.4rem;
-        }
-
-        .payment-item .label {
-            color: var(--text-secondary);
-        }
-
-        .payment-item .value {
-            font-weight: 600;
-        }
-
-        .payment-item.success .value {
-            color: var(--success);
-        }
-
-        .payment-item.pending .value {
-            color: var(--warning);
-        }
-
-        .customization-list {
-            display: flex;
-            flex-direction: column;
-            gap: 0.4rem;
-        }
-
-        .customization-item {
-            display: flex;
-            justify-content: space-between;
-            padding: 0.5rem 0;
-            font-size: 0.9rem;
-            flex-wrap: wrap;
-            gap: 0.4rem;
-        }
-
-        .customization-item .key {
-            color: var(--text-muted);
-            text-transform: capitalize;
-        }
-
-        .customization-item .value {
-            font-weight: 500;
-            word-break: break-word;
-        }
-
+        /* Requirements Modal */
         .requirements-text {
-            background: var(--surface);
-            padding: 0.8rem;
-            border-radius: var(--radius-md);
-            font-size: 0.9rem;
-            line-height: 1.5;
-            white-space: pre-wrap;
-            word-break: break-word;
+            background: var(--surface); border-radius: var(--radius-md);
+            padding: 1rem; font-size: 0.9rem; line-height: 1.6;
+            white-space: pre-wrap; color: var(--text-secondary);
         }
+
+        /* Cancel/Revision Modals */
+        .modal-textarea {
+            width: 100%; padding: 0.8rem; margin: 1rem 0;
+            background: var(--surface); border: 1px solid var(--border);
+            border-radius: var(--radius-md); color: var(--text-primary);
+            font-family: inherit; font-size: 0.9rem; resize: vertical;
+            min-height: 100px;
+        }
+        .modal-buttons { display: flex; gap: 0.8rem; margin-top: 1rem; }
+        .modal-buttons .btn { flex: 1; justify-content: center; }
 
         /* ===== 💬 Chat Widget ===== */
         .chat-widget {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            width: 380px;
-            max-width: calc(100vw - 40px);
-            background: var(--bg-secondary);
-            border: 1px solid var(--border);
-            border-radius: var(--radius-lg);
-            box-shadow: var(--shadow-lg);
-            z-index: 1500;
-            display: none;
-            flex-direction: column;
-            overflow: hidden;
-            margin-bottom: var(--safe-area-bottom);
+            position: fixed; bottom: 20px; right: 20px;
+            width: 360px; max-height: 500px;
+            background: var(--bg-secondary); border: 1px solid var(--border);
+            border-radius: var(--radius-lg); box-shadow: var(--shadow-lg);
+            z-index: 1500; display: none; flex-direction: column;
+            overflow: hidden; backdrop-filter: blur(20px);
         }
-
-        .chat-widget.show {
-            display: flex;
-        }
+        .chat-widget.active { display: flex; animation: slideIn 0.3s ease; }
+        @keyframes slideIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
         .chat-header {
-            padding: 1rem 1.2rem;
-            background: var(--gradient-accent);
-            display: flex;
-            align-items: center;
-            gap: 0.6rem;
-            color: white;
+            padding: 1rem 1.2rem; background: var(--gradient-accent);
+            display: flex; align-items: center; gap: 0.8rem; color: white;
             cursor: pointer;
-            min-height: 56px;
         }
+        .chat-header h4 { flex: 1; font-weight: 600; }
+        .chat-toggle { background: none; border: none; color: white; font-size: 1.2rem; cursor: pointer; }
+        .chat-close { background: none; border: none; color: white; font-size: 1rem; cursor: pointer; padding: 0.3rem; }
 
-        .chat-header .order-ref {
-            font-size: 0.75rem;
-            background: rgba(0,0,0,0.2);
-            padding: 2px 8px;
-            border-radius: var(--radius-full);
-            flex-shrink: 0;
-        }
-
-        .chat-header .close {
-            margin-left: auto;
-            cursor: pointer;
-            padding: 0.3rem;
-            border-radius: 50%;
-            transition: background var(--transition);
-            min-width: 32px;
-            min-height: 32px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .chat-header .close:hover {
-            background: rgba(0,0,0,0.2);
-        }
-
-        .chat-body {
-            display: flex;
-            flex-direction: column;
-            max-height: 450px;
-        }
-
+        .chat-body { flex: 1; display: flex; flex-direction: column; min-height: 300px; }
         .chat-messages {
-            flex: 1;
-            overflow-y: auto;
-            -webkit-overflow-scrolling: touch;
-            padding: 1rem;
-            background: var(--bg-primary);
-            display: flex;
-            flex-direction: column;
-            gap: 0.8rem;
+            flex: 1; padding: 1rem; overflow-y: auto;
+            background: var(--bg-primary); display: flex; flex-direction: column; gap: 0.8rem;
         }
-
-        .message {
-            max-width: 85%;
-            padding: 0.6rem 1rem;
-            border-radius: var(--radius-md);
-            font-size: 0.9rem;
-            line-height: 1.4;
-            word-break: break-word;
-        }
-
+        .message { max-width: 85%; padding: 0.7rem 1rem; border-radius: var(--radius-md); font-size: 0.85rem; }
         .message.user {
-            align-self: flex-end;
-            background: var(--gradient-accent);
-            color: white;
-            border-bottom-right-radius: 4px;
+            align-self: flex-end; background: var(--gradient-accent);
+            color: white; border-bottom-right-radius: 4px;
         }
-
         .message.admin {
-            align-self: flex-start;
-            background: var(--surface);
-            color: var(--text-primary);
-            border-bottom-left-radius: 4px;
+            align-self: flex-start; background: var(--surface);
+            color: var(--text-primary); border-bottom-left-radius: 4px;
         }
-
-        .message-time {
-            font-size: 0.7rem;
-            color: var(--text-muted);
-            margin-top: 0.3rem;
-            text-align: right;
-        }
-
-        .message.user .message-time {
-            color: rgba(255,255,255,0.8);
-        }
+        .message-time { font-size: 0.7rem; color: var(--text-muted); margin-top: 0.3rem; }
 
         .chat-input {
-            padding: 0.8rem;
-            border-top: 1px solid var(--border);
-            display: flex;
-            gap: 0.6rem;
-            background: var(--bg-card);
-            align-items: flex-end;
+            padding: 0.8rem; border-top: 1px solid var(--border);
+            display: flex; gap: 0.5rem; background: var(--bg-secondary);
         }
-
         .chat-input textarea {
-            flex: 1;
-            padding: 0.6rem 1rem;
-            border: 1px solid var(--border);
-            border-radius: var(--radius-md);
-            background: var(--surface);
-            color: var(--text-primary);
-            font-family: inherit;
-            font-size: 0.9rem;
-            resize: none;
-            min-height: 40px;
-            max-height: 120px;
-            line-height: 1.4;
+            flex: 1; padding: 0.6rem 1rem; background: var(--surface);
+            border: 1px solid var(--border); border-radius: var(--radius-full);
+            color: var(--text-primary); font-family: inherit; font-size: 0.85rem;
+            resize: none; min-height: 40px; max-height: 100px;
         }
-
-        .chat-input textarea:focus {
-            outline: none;
-            border-color: var(--accent);
-        }
-
         .chat-input button {
-            padding: 0.6rem 1.2rem;
-            background: var(--gradient-accent);
-            color: white;
-            border: none;
-            border-radius: var(--radius-md);
-            cursor: pointer;
+            padding: 0.6rem 1.2rem; background: var(--gradient-accent);
+            color: white; border: none; border-radius: var(--radius-full);
+            cursor: pointer; transition: all 150ms;
+        }
+        .chat-input button:hover { transform: scale(1.05); }
+
+        .chat-toggle-btn {
+            position: fixed; bottom: 20px; right: 20px;
+            width: 56px; height: 56px; border-radius: 50%;
+            background: var(--gradient-accent); color: white;
+            border: none; font-size: 1.5rem; cursor: pointer;
+            box-shadow: var(--shadow-glow); z-index: 1400;
+            display: flex; align-items: center; justify-content: center;
             transition: all var(--transition);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.3rem;
-            min-width: 44px;
-            min-height: 44px;
-            flex-shrink: 0;
         }
+        .chat-toggle-btn:hover { transform: scale(1.1); }
+        .chat-widget.active + .chat-toggle-btn { display: none; }
 
-        .chat-input button:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 4px 15px var(--accent-glow);
-        }
-
-        .chat-input button:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        /* ===== 🍞 Toast Notifications ===== */
+        /* ===== 🔔 Toast ===== */
         .toast {
-            position: fixed;
-            bottom: calc(2rem + var(--safe-area-bottom));
-            left: 50%;
-            transform: translateX(-50%) translateY(100px);
-            padding: 0.8rem 1.5rem;
-            background: var(--success);
-            color: white;
-            border-radius: var(--radius-full);
-            font-size: 0.9rem;
-            font-weight: 500;
-            z-index: 3000;
-            transition: transform 0.3s ease;
-            white-space: nowrap;
-            max-width: 90vw;
-            text-align: center;
+            position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%) translateY(100px);
+            padding: 0.8rem 1.5rem; background: var(--success); color: white;
+            border-radius: var(--radius-full); font-size: 0.9rem;
+            z-index: 9999; transition: transform 0.3s ease;
+            white-space: nowrap; max-width: 90vw; text-align: center;
             box-shadow: var(--shadow-md);
         }
-
-        .toast.show {
-            transform: translateX(-50%) translateY(0);
-        }
-
-        .toast.error {
-            background: var(--danger);
-        }
-
-        .toast.warning {
-            background: var(--warning);
-            color: #1a162a;
-        }
+        .toast.show { transform: translateX(-50%) translateY(0); }
+        .toast.error { background: var(--danger); }
+        .toast.warning { background: var(--warning); color: #1a162a; }
 
         /* ===== 🌀 Loading & Empty States ===== */
         .spinner {
-            width: 40px;
-            height: 40px;
-            border: 3px solid var(--border);
-            border-top-color: var(--accent);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin: 2rem auto;
-            flex-shrink: 0;
+            width: 40px; height: 40px; border: 3px solid var(--border);
+            border-top-color: var(--accent); border-radius: 50%;
+            animation: spin 1s linear infinite; margin: 2rem auto;
         }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
+        @keyframes spin { to { transform: rotate(360deg); } }
 
         .empty-state {
-            text-align: center;
-            padding: 4rem 2rem;
-            background: var(--bg-card);
-            border-radius: var(--radius-lg);
+            text-align: center; padding: 4rem 2rem;
+            background: var(--bg-card); border-radius: var(--radius-lg);
             border: 1px dashed var(--border);
         }
+        .empty-state i { font-size: 3rem; color: var(--text-muted); margin-bottom: 1rem; }
+        .empty-state h3 { margin-bottom: 0.5rem; }
+        .empty-state p { color: var(--text-muted); margin-bottom: 1.5rem; }
 
-        .empty-state i {
-            font-size: 3rem;
-            color: var(--text-muted);
-            margin-bottom: 1rem;
-            display: block;
-        }
-
-        .empty-state h3 {
-            margin-bottom: 0.5rem;
-            font-size: 1.2rem;
-        }
-
-        .empty-state p {
-            color: var(--text-muted);
-            margin-bottom: 1.5rem;
-        }
-
-        .loading-text {
-            text-align: center;
-            color: var(--text-muted);
-            padding: 2rem;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        /* ===== 📱 Responsive Design - Mobile First ===== */
+        /* ===== 📱 Responsive ===== */
         @media (max-width: 768px) {
-            nav {
-                padding: 0 4%;
-                height: calc(68px + var(--safe-area-top));
-            }
-
-            .nav-links {
-                display: none;
-            }
-
-            .nav-links.mobile-show {
-                display: flex;
-                flex-direction: column;
-                position: absolute;
-                top: 100%;
-                left: 0;
-                right: 0;
-                background: var(--bg-secondary);
-                padding: 1rem;
-                border-bottom: 1px solid var(--border);
-                gap: 0.5rem;
-            }
-
-            .menu-toggle {
-                display: flex;
-            }
-
-            .profile-name {
-                display: none;
-            }
-
-            .profile-dropdown {
-                right: -10px;
-                min-width: 220px;
-            }
-
-            .container {
-                padding: 0 4%;
-                margin: 1rem auto;
-            }
-
-            .page-header {
-                flex-direction: column;
-                text-align: center;
-                align-items: stretch;
-            }
-
-            .btn-new-order {
-                width: 100%;
-                justify-content: center;
-            }
-
-            .order-card {
-                padding: 0.8rem 1rem;
-            }
-
-            .order-main {
-                flex-wrap: wrap;
-            }
-
-            .service-info h3 {
-                font-size: 0.95rem;
-            }
-
-            .service-meta {
-                flex-wrap: wrap;
-                gap: 0.5rem;
-            }
-
-            .order-summary {
-                flex-wrap: wrap;
-                gap: 0.5rem;
-            }
-
-            .payment-progress {
-                min-width: 100%;
-                order: 2;
-            }
-
-            .access-badge {
-                order: 1;
-            }
-
-            .order-actions {
-                flex-wrap: wrap;
-                width: 100%;
-            }
-
-            .btn-action {
-                flex: 1;
-                min-width: 100px;
-                justify-content: center;
-                font-size: 0.75rem;
-                padding: 0.4rem 0.8rem;
-            }
-
-            .btn-toggle {
-                margin-left: 0;
-                width: 100%;
-                order: 99;
-            }
-
-            .details-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .modal-content {
-                padding: 1.2rem;
-                margin: 0.5rem;
-                max-height: calc(90vh - 2rem);
-            }
-
-            .chat-widget {
-                width: calc(100vw - 20px);
-                bottom: 10px;
-                right: 10px;
-                left: 10px;
-            }
-
-            .chat-messages {
-                max-height: 350px;
-            }
+            nav { padding: 0 4%; height: 68px; }
+            .nav-links { display: none; }
+            .nav-right { display: none; }
+            .menu-toggle { display: flex; }
+            .user-toggle-wrapper { display: none !important; }
+            .container { margin-top: 90px; padding: 0 4%; }
+            .page-header { flex-direction: column; text-align: center; }
+            .order-card { padding: 0.9rem; }
+            .order-card-header { flex-direction: column; align-items: flex-start; }
+            .order-card-body { flex-direction: column; align-items: stretch; }
+            .order-actions-mini { justify-content: center; }
+            .modal-content { max-width: 95vw; margin: 1rem; }
+            .chat-widget { width: 95vw; right: 2.5vw; bottom: 15px; max-height: 70vh; }
+            .mobile-menu { top: 68px; }
         }
 
         @media (max-width: 480px) {
-            .order-header {
-                flex-wrap: wrap;
-                gap: 0.5rem;
-            }
-
-            .order-status {
-                font-size: 0.65rem;
-                padding: 0.2rem 0.6rem;
-            }
-
-            .service-icon {
-                width: 40px;
-                height: 40px;
-                font-size: 1.2rem;
-            }
-
-            .progress-bar {
-                width: 60px;
-            }
-
-            .btn-action {
-                min-width: 90px;
-                font-size: 0.7rem;
-                padding: 0.4rem 0.6rem;
-            }
-
-            .timeline-item {
-                flex-direction: column;
-                gap: 0.4rem;
-            }
-
-            .timeline-item .time {
-                min-width: auto;
-            }
-
-            .deliverable-item {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 0.6rem;
-            }
-
-            .deliverable-item .info {
-                width: 100%;
-            }
-
-            .btn-download {
-                width: 100%;
-                justify-content: center;
-            }
-
-            .detail-actions .btn-action {
-                min-width: 100%;
-            }
-        }
-
-        /* ===== 🔄 Samsung/Android Specific Fixes ===== */
-        @supports (-webkit-touch-callout: none) {
-            /* iOS specific */
-            .modal-content, .chat-messages {
-                -webkit-overflow-scrolling: touch;
-            }
-        }
-
-        @media screen and (-webkit-min-device-pixel-ratio: 2), 
-               screen and (min-resolution: 192dpi) {
-            /* High-DPI screens */
-            .order-card, .modal-content, .dropdown-item {
-                will-change: transform;
-                backface-visibility: hidden;
-            }
+            .service-preview { width: 100%; }
+            .service-meta { gap: 0.6rem; }
+            .price-section { align-items: center; }
+            .progress-mini { width: 100%; justify-content: center; }
+            .btn-mini { width: 100%; justify-content: center; }
+            .modal-buttons { flex-direction: column; }
         }
 
         /* ===== ♿ Accessibility ===== */
-        a:focus, button:focus, .profile-trigger:focus, .order-id:focus, 
-        .btn-action:focus, .modal-close:focus {
-            outline: 2px solid var(--accent);
-            outline-offset: 2px;
+        a:focus, button:focus, .btn:focus, .modal-close:focus {
+            outline: 2px solid var(--accent); outline-offset: 2px;
         }
-
-        /* Reduce motion for users who prefer it */
         @media (prefers-reduced-motion: reduce) {
             *, *::before, *::after {
                 animation-duration: 0.01ms !important;
-                animation-iteration-count: 1 !important;
                 transition-duration: 0.01ms !important;
             }
         }
 
-        /* ===== 🎨 Scrollbar ===== */
-        ::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
-        }
-
-        ::-webkit-scrollbar-track {
-            background: var(--bg-secondary);
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: var(--accent);
-            border-radius: 10px;
-        }
-
-        ::-webkit-scrollbar-thumb:hover {
-            background: #e55a2b;
-        }
-
-        .modal-content::-webkit-scrollbar,
-        .chat-messages::-webkit-scrollbar {
-            width: 4px;
-        }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: var(--bg-secondary); }
+        ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 3px; }
+        .modal-content::-webkit-scrollbar, .chat-messages::-webkit-scrollbar { width: 4px; }
     </style>
 </head>
-<body class="pull-disabled">
+<body>
+
+<!-- Particles Background -->
+<div class="particles" id="particles"></div>
 
 <!-- Navigation -->
 <nav id="navbar">
-    <a href="index.html" class="logo">
-        <i class="fas fa-code"></i> Nova<span>Stack</span>
-    </a>
+    <a href="index.html" class="logo"><i class="fas fa-code"></i> Nova<span>Stack</span></a>
     
-    <!-- Desktop Navigation -->
+    <!-- Desktop Nav -->
     <div class="nav-links" id="navLinks">
         <a href="index.html"><i class="fas fa-home"></i> Home</a>
         <a href="services.html"><i class="fas fa-layer-group"></i> Services</a>
         <a href="my-orders.html" class="active"><i class="fas fa-shopping-bag"></i> My Orders</a>
-        <a href="cart.html"><i class="fas fa-shopping-cart"></i> Cart</a>
+        <a href="cart.html" class="auth-only"><i class="fas fa-shopping-cart"></i> Cart</a>
     </div>
     
-    <!-- Profile Section -->
-    <div class="profile-section">
-        <div class="profile-trigger" id="profileTrigger" role="button" tabindex="0" aria-expanded="false" aria-label="Profile menu">
-            <div class="profile-avatar" id="profileAvatar" aria-hidden="true">
-                <i class="fas fa-user"></i>
-            </div>
-            <span class="profile-name" id="profileName">User</span>
-            <i class="fas fa-chevron-down chevron" aria-hidden="true"></i>
+    <!-- Desktop Right -->
+    <div class="nav-right">
+        <!-- Guest Auth -->
+        <div class="auth-buttons" id="authButtons">
+            <a href="login.html" class="btn btn-outline">Login</a>
+            <a href="signup.html" class="btn btn-primary">Sign Up</a>
         </div>
         
-        <div class="profile-dropdown" id="profileDropdown" role="menu">
-            <div class="dropdown-header">
-                <div class="profile-avatar" id="dropdownAvatar" aria-hidden="true">
-                    <i class="fas fa-user"></i>
-                </div>
-                <div class="profile-name" id="dropdownName">User Name</div>
-                <div class="user-email" id="dropdownEmail">user@example.com</div>
+        <!-- Logged In User Toggle -->
+        <div class="user-toggle-wrapper" id="userToggleWrapper" style="display:none;">
+            <div class="user-toggle" id="userToggle" tabindex="0" role="button" aria-expanded="false">
+                <div class="user-avatar" id="userAvatar"><i class="fas fa-user"></i></div>
+                <span class="user-name" id="userName">User</span>
+                <i class="fas fa-chevron-down chevron"></i>
             </div>
-            <a href="services.html" class="dropdown-item" role="menuitem">
-                <i class="fas fa-cube" aria-hidden="true"></i> Browse Services
-            </a>
-            <a href="my-orders.html" class="dropdown-item" role="menuitem">
-                <i class="fas fa-shopping-bag" aria-hidden="true"></i> My Orders
-            </a>
-            <a href="cart.html" class="dropdown-item" role="menuitem">
-                <i class="fas fa-shopping-cart" aria-hidden="true"></i> Cart
-            </a>
-            <div class="dropdown-divider" role="separator"></div>
-            <a href="#" class="dropdown-item logout-btn" id="dropdownLogout" role="menuitem">
-                <i class="fas fa-sign-out-alt" aria-hidden="true"></i> Logout
-            </a>
+            <div class="user-dropdown" id="userDropdown">
+                <div class="dropdown-header">
+                    <div class="user-avatar" id="dropdownAvatar"><i class="fas fa-user"></i></div>
+                    <div class="user-name" id="dropdownName">User Name</div>
+                    <div class="user-email" id="dropdownEmail">user@example.com</div>
+                </div>
+                <a href="profile.html" class="dropdown-item"><i class="fas fa-user-circle"></i> My Profile</a>
+                <a href="my-orders.html" class="dropdown-item"><i class="fas fa-shopping-bag"></i> My Orders</a>
+                <a href="cart.html" class="dropdown-item"><i class="fas fa-shopping-cart"></i> Cart</a>
+                <div class="dropdown-divider"></div>
+                <a href="#" class="dropdown-item dropdown-logout" id="dropdownLogout"><i class="fas fa-sign-out-alt"></i> Logout</a>
+            </div>
         </div>
     </div>
     
-    <!-- Mobile Menu Toggle -->
-    <button class="menu-toggle" id="menuToggle" aria-label="Toggle navigation menu" aria-expanded="false">
-        <i class="fas fa-bars" aria-hidden="true"></i>
-    </button>
+    <!-- Mobile Toggle -->
+    <button class="menu-toggle" id="menuToggle" aria-label="Toggle menu"><i class="fas fa-bars"></i></button>
 </nav>
 
-<!-- Mobile Menu Panel -->
-<div class="mobile-menu" id="mobileMenu" role="dialog" aria-modal="true" aria-label="Mobile navigation">
+<!-- Mobile Menu -->
+<div class="mobile-menu" id="mobileMenu">
     <div class="mobile-menu-inner">
-        <a href="index.html" class="mobile-nav-link"><i class="fas fa-home" aria-hidden="true"></i> Home</a>
-        <a href="services.html" class="mobile-nav-link"><i class="fas fa-layer-group" aria-hidden="true"></i> Services</a>
-        <a href="my-orders.html" class="mobile-nav-link active"><i class="fas fa-shopping-bag" aria-hidden="true"></i> My Orders</a>
-        <a href="cart.html" class="mobile-nav-link"><i class="fas fa-shopping-cart" aria-hidden="true"></i> Cart</a>
-        <div class="mobile-divider" role="separator"></div>
-        <div class="mobile-profile-section">
-            <div class="mobile-profile-header" id="mobileProfileToggle" role="button" tabindex="0">
-                <div class="mobile-profile-avatar" id="mobileProfileAvatar" aria-hidden="true">
-                    <i class="fas fa-user"></i>
-                </div>
+        <a href="index.html" class="mobile-nav-link" data-close><i class="fas fa-home"></i> Home</a>
+        <a href="services.html" class="mobile-nav-link" data-close><i class="fas fa-layer-group"></i> Services</a>
+        <a href="my-orders.html" class="mobile-nav-link active" data-close><i class="fas fa-shopping-bag"></i> My Orders</a>
+        <a href="cart.html" class="mobile-nav-link auth-only" data-close><i class="fas fa-shopping-cart"></i> Cart</a>
+        <div class="mobile-divider"></div>
+        
+        <!-- Guest Auth -->
+        <div class="mobile-auth-section" id="mobileAuthButtons">
+            <a href="login.html" class="btn btn-outline" data-close>Login</a>
+            <a href="signup.html" class="btn btn-primary" data-close>Sign Up</a>
+        </div>
+        
+        <!-- Logged In Profile -->
+        <div class="mobile-profile-section hidden" id="mobileProfileSection">
+            <div class="mobile-profile-header" id="mobileProfileToggle">
+                <div class="mobile-profile-avatar" id="mobileAvatar"><i class="fas fa-user"></i></div>
                 <div class="mobile-profile-info">
-                    <div class="mobile-profile-name" id="mobileProfileName">User</div>
-                    <div class="mobile-profile-email" id="mobileProfileEmail">user@example.com</div>
+                    <div class="mobile-profile-name" id="mobileName">User</div>
+                    <div class="mobile-profile-email" id="mobileEmail">user@example.com</div>
                 </div>
-                <i class="fas fa-chevron-down" style="color: var(--text-muted);" aria-hidden="true"></i>
+                <i class="fas fa-chevron-down" style="color:var(--text-muted)"></i>
             </div>
-            <div id="mobileProfileMenu" style="display: none; flex-direction: column; gap: 0.3rem; padding: 0.3rem 0;">
-                <a href="services.html" class="mobile-nav-link" style="padding-left: 2.8rem;">
-                    <i class="fas fa-cube" aria-hidden="true"></i> Browse Services
-                </a>
-                <a href="cart.html" class="mobile-nav-link" style="padding-left: 2.8rem;">
-                    <i class="fas fa-shopping-cart" aria-hidden="true"></i> Cart
-                </a>
-                <button class="btn-action mobile-logout-btn" id="mobileLogoutBtn">
-                    <i class="fas fa-sign-out-alt" aria-hidden="true"></i> Logout
-                </button>
+            <div class="mobile-profile-menu" id="mobileProfileMenu">
+                <a href="profile.html" class="mobile-nav-link" data-close style="padding-left:2.8rem"><i class="fas fa-user-circle"></i> Profile</a>
+                <a href="my-orders.html" class="mobile-nav-link" data-close style="padding-left:2.8rem"><i class="fas fa-shopping-bag"></i> Orders</a>
+                <a href="cart.html" class="mobile-nav-link auth-only" data-close style="padding-left:2.8rem"><i class="fas fa-shopping-cart"></i> Cart</a>
+                <button class="btn btn-outline mobile-logout-btn" id="mobileLogout" data-close><i class="fas fa-sign-out-alt"></i> Logout</button>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Main Content -->
+<!-- Page Content -->
 <div class="container">
     <div class="page-header">
-        <h1><i class="fas fa-shopping-bag" aria-hidden="true"></i> My Orders</h1>
-        <a href="services.html" class="btn-new-order">
-            <i class="fas fa-plus" aria-hidden="true"></i> New Order
-        </a>
+        <h1><i class="fas fa-shopping-bag"></i> My Orders</h1>
+        <a href="services.html" class="btn-new-order"><i class="fas fa-plus"></i> New Order</a>
     </div>
     
-    <!-- Loading State -->
-    <div id="loading" class="loading-text" style="display: none;" aria-live="polite">
-        <div class="spinner" role="status" aria-label="Loading"></div>
-        <p>Loading your orders...</p>
+    <!-- Loading -->
+    <div id="loading" style="display:none;text-align:center;padding:3rem;">
+        <div class="spinner"></div>
+        <p style="color:var(--text-muted);margin-top:1rem;">Loading your orders...</p>
     </div>
     
     <!-- Orders Grid -->
-    <div id="orders-container" class="orders-grid" role="list" aria-label="Your orders"></div>
+    <div id="ordersContainer" class="orders-grid"></div>
     
     <!-- Empty State -->
-    <div id="empty-state" class="empty-state" style="display: none;" role="status">
-        <i class="fas fa-shopping-bag" aria-hidden="true"></i>
+    <div id="emptyState" class="empty-state" style="display:none;">
+        <i class="fas fa-shopping-bag"></i>
         <h3>No orders yet</h3>
-        <p>Ready to start your first project?</p>
-        <a href="services.html" class="btn-new-order">Browse Services</a>
-    </div>
-    
-    <!-- Error State -->
-    <div id="error-state" class="empty-state" style="display: none; border-color: var(--danger);" role="alert">
-        <i class="fas fa-exclamation-triangle" style="color: var(--danger);" aria-hidden="true"></i>
-        <h3 style="color: var(--danger);">Something went wrong</h3>
-        <p id="error-message">Unable to load orders</p>
-        <button class="btn-new-order" onclick="loadOrders()" aria-label="Retry loading orders">
-            <i class="fas fa-redo" aria-hidden="true"></i> Try Again
-        </button>
+        <p>Start your first project with us!</p>
+        <a href="services.html" class="btn btn-primary">Browse Services</a>
     </div>
 </div>
 
-<!-- Modals -->
-<!-- Timeline Modal -->
-<div class="modal" id="timelineModal" role="dialog" aria-modal="true" aria-labelledby="timelineModalTitle">
+<!-- ========== MODALS ========== -->
+
+<!-- Details Modal -->
+<div class="modal" id="detailsModal" role="dialog" aria-modal="true" aria-labelledby="detailsTitle">
     <div class="modal-content">
-        <button class="modal-close" onclick="closeModal('timelineModal')" aria-label="Close modal"><i class="fas fa-times" aria-hidden="true"></i></button>
-        <h3 id="timelineModalTitle"><i class="fas fa-history" aria-hidden="true"></i> Order Timeline</h3>
-        <div id="timelineContent" aria-live="polite">
-            <div class="spinner"></div>
-            <p style="text-align: center; color: var(--text-muted);">Loading timeline...</p>
+        <div class="modal-header">
+            <h3 id="detailsTitle"><i class="fas fa-info-circle"></i> Order Details</h3>
+            <button class="modal-close" onclick="closeModal('detailsModal')" aria-label="Close">&times;</button>
+        </div>
+        <div class="modal-body" id="detailsContent"></div>
+    </div>
+</div>
+
+<!-- Timeline Modal -->
+<div class="modal" id="timelineModal" role="dialog" aria-modal="true" aria-labelledby="timelineTitle">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 id="timelineTitle"><i class="fas fa-history"></i> Order Timeline</h3>
+            <button class="modal-close" onclick="closeModal('timelineModal')" aria-label="Close">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div id="timelineContent" class="timeline-list">
+                <div style="text-align:center;padding:2rem;"><div class="spinner" style="margin:0 auto;"></div></div>
+            </div>
         </div>
     </div>
 </div>
 
 <!-- Deliverables Modal -->
-<div class="modal" id="deliverablesModal" role="dialog" aria-modal="true" aria-labelledby="deliverablesModalTitle">
+<div class="modal" id="deliverablesModal" role="dialog" aria-modal="true" aria-labelledby="deliverablesTitle">
     <div class="modal-content">
-        <button class="modal-close" onclick="closeModal('deliverablesModal')" aria-label="Close modal"><i class="fas fa-times" aria-hidden="true"></i></button>
-        <h3 id="deliverablesModalTitle"><i class="fas fa-download" aria-hidden="true"></i> Project Deliverables</h3>
-        <div id="deliverablesContent" aria-live="polite">
-            <div class="spinner"></div>
-            <p style="text-align: center; color: var(--text-muted);">Loading deliverables...</p>
+        <div class="modal-header">
+            <h3 id="deliverablesTitle"><i class="fas fa-download"></i> Project Deliverables</h3>
+            <button class="modal-close" onclick="closeModal('deliverablesModal')" aria-label="Close">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div id="deliverablesContent" class="deliverables-list">
+                <div style="text-align:center;padding:2rem;"><div class="spinner" style="margin:0 auto;"></div></div>
+            </div>
         </div>
     </div>
 </div>
 
-<!-- Payment History Modal -->
-<div class="modal" id="paymentModal" role="dialog" aria-modal="true" aria-labelledby="paymentModalTitle">
+<!-- Payment Modal -->
+<div class="modal" id="paymentModal" role="dialog" aria-modal="true" aria-labelledby="paymentTitle">
     <div class="modal-content">
-        <button class="modal-close" onclick="closeModal('paymentModal')" aria-label="Close modal"><i class="fas fa-times" aria-hidden="true"></i></button>
-        <h3 id="paymentModalTitle"><i class="fas fa-credit-card" aria-hidden="true"></i> Payment History</h3>
-        <div id="paymentContent" aria-live="polite">
-            <div class="spinner"></div>
-            <p style="text-align: center; color: var(--text-muted);">Loading payment details...</p>
+        <div class="modal-header">
+            <h3 id="paymentTitle"><i class="fas fa-credit-card"></i> Payment History</h3>
+            <button class="modal-close" onclick="closeModal('paymentModal')" aria-label="Close">&times;</button>
         </div>
-    </div>
-</div>
-
-<!-- Customization Modal -->
-<div class="modal" id="customizationModal" role="dialog" aria-modal="true" aria-labelledby="customizationModalTitle">
-    <div class="modal-content">
-        <button class="modal-close" onclick="closeModal('customizationModal')" aria-label="Close modal"><i class="fas fa-times" aria-hidden="true"></i></button>
-        <h3 id="customizationModalTitle"><i class="fas fa-sliders-h" aria-hidden="true"></i> Order Details</h3>
-        <div id="customizationContent" aria-live="polite"></div>
+        <div class="modal-body">
+            <div id="paymentContent"></div>
+        </div>
     </div>
 </div>
 
 <!-- Cancel Modal -->
-<div class="modal" id="cancelModal" role="dialog" aria-modal="true" aria-labelledby="cancelModalTitle">
+<div class="modal" id="cancelModal" role="dialog" aria-modal="true">
     <div class="modal-content">
-        <button class="modal-close" onclick="closeModal('cancelModal')" aria-label="Close modal"><i class="fas fa-times" aria-hidden="true"></i></button>
-        <h3 id="cancelModalTitle"><i class="fas fa-ban" aria-hidden="true"></i> Cancel Order</h3>
-        <p style="color: var(--text-secondary); margin-bottom: 1rem;">Please tell us why you want to cancel:</p>
-        <textarea id="cancelReason" rows="3" placeholder="Reason for cancellation..." aria-label="Cancellation reason" style="width: 100%; padding: 0.8rem; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md); color: var(--text-primary); font-family: inherit; margin-bottom: 1rem;"></textarea>
-        <div style="display: flex; gap: 0.8rem;">
-            <button class="btn-action btn-cancel" onclick="submitCancel()" style="flex: 1;" aria-label="Submit cancellation">Submit</button>
-            <button class="btn-action" onclick="closeModal('cancelModal')" style="flex: 1; border-color: var(--border);">Close</button>
+        <div class="modal-header">
+            <h3><i class="fas fa-ban"></i> Cancel Order</h3>
+            <button class="modal-close" onclick="closeModal('cancelModal')" aria-label="Close">&times;</button>
+        </div>
+        <div class="modal-body">
+            <p style="color:var(--text-secondary);margin-bottom:1rem;">Please tell us why you want to cancel:</p>
+            <textarea id="cancelReason" class="modal-textarea" placeholder="Reason for cancellation..."></textarea>
+            <div class="modal-buttons">
+                <button class="btn btn-outline" onclick="closeModal('cancelModal')">Keep Order</button>
+                <button class="btn btn-primary" onclick="submitCancel()">Submit Request</button>
+            </div>
         </div>
     </div>
 </div>
 
 <!-- Revision Modal -->
-<div class="modal" id="revisionModal" role="dialog" aria-modal="true" aria-labelledby="revisionModalTitle">
+<div class="modal" id="revisionModal" role="dialog" aria-modal="true">
     <div class="modal-content">
-        <button class="modal-close" onclick="closeModal('revisionModal')" aria-label="Close modal"><i class="fas fa-times" aria-hidden="true"></i></button>
-        <h3 id="revisionModalTitle"><i class="fas fa-pencil-alt" aria-hidden="true"></i> Request Revision</h3>
-        <p style="color: var(--text-secondary); margin-bottom: 1rem;">Please describe what changes you'd like:</p>
-        <textarea id="revisionDetails" rows="5" placeholder="Describe the changes you want..." aria-label="Revision details" style="width: 100%; padding: 0.8rem; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md); color: var(--text-primary); font-family: inherit; margin-bottom: 1rem;"></textarea>
-        <div style="display: flex; gap: 0.8rem;">
-            <button class="btn-action btn-balance" onclick="submitRevision()" style="flex: 1;" aria-label="Send revision request">Send Request</button>
-            <button class="btn-action" onclick="closeModal('revisionModal')" style="flex: 1; border-color: var(--border);">Cancel</button>
+        <div class="modal-header">
+            <h3><i class="fas fa-pencil-alt"></i> Request Revision</h3>
+            <button class="modal-close" onclick="closeModal('revisionModal')" aria-label="Close">&times;</button>
+        </div>
+        <div class="modal-body">
+            <p style="color:var(--text-secondary);margin-bottom:1rem;">Describe the changes you'd like:</p>
+            <textarea id="revisionDetails" class="modal-textarea" placeholder="What would you like us to change?"></textarea>
+            <div class="modal-buttons">
+                <button class="btn btn-outline" onclick="closeModal('revisionModal')">Cancel</button>
+                <button class="btn btn-primary" onclick="submitRevision()">Send Request</button>
+            </div>
         </div>
     </div>
 </div>
 
-<!-- Chat Widget -->
-<div class="chat-widget" id="chatWidget" role="dialog" aria-modal="false" aria-label="Support chat">
-    <div class="chat-header" onclick="toggleChatBody()" role="button" tabindex="0">
-        <i class="fas fa-comments" aria-hidden="true"></i>
-        <span>Support Chat</span>
-        <span class="order-ref" id="chatOrderRef">#NOVA-000000</span>
-        <div class="close" onclick="closeChat(event)" role="button" aria-label="Close chat"><i class="fas fa-times" aria-hidden="true"></i></div>
+<!-- ========== CHAT WIDGET ========== -->
+<button class="chat-toggle-btn" id="chatToggleBtn" onclick="toggleChatWidget()" aria-label="Open chat">
+    <i class="fas fa-comments"></i>
+</button>
+
+<div class="chat-widget" id="chatWidget">
+    <div class="chat-header">
+        <i class="fas fa-comments"></i>
+        <h4>Support Chat</h4>
+        <button class="chat-close" onclick="closeChatWidget()" aria-label="Close chat">&times;</button>
     </div>
-    <div class="chat-body" id="chatBody" style="display: none;">
-        <div class="chat-messages" id="chatMessages" role="log" aria-live="polite" aria-label="Chat messages">
-            <div style="text-align: center; padding: 1rem; color: var(--text-muted);">
-                💬 Select an order to start chatting
+    <div class="chat-body">
+        <div class="chat-messages" id="chatMessages">
+            <div style="text-align:center;padding:2rem;color:var(--text-muted);">
+                <i class="fas fa-comment-alt" style="font-size:2rem;margin-bottom:0.5rem;display:block;"></i>
+                Select an order to start chatting
             </div>
         </div>
         <div class="chat-input">
-            <textarea id="chatMessageInput" placeholder="Type your message..." rows="1" aria-label="Chat message" onkeypress="if(event.key==='Enter' && !event.shiftKey){event.preventDefault();sendChatMessage();}"></textarea>
-            <button onclick="sendChatMessage()" id="chatSendBtn" aria-label="Send message"><i class="fas fa-paper-plane" aria-hidden="true"></i></button>
+            <textarea id="chatInput" placeholder="Type your message..." onkeypress="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendChatMessage();}"></textarea>
+            <button onclick="sendChatMessage()"><i class="fas fa-paper-plane"></i></button>
         </div>
     </div>
 </div>
 
 <!-- Toast Container -->
-<div id="toast" class="toast" role="alert" aria-live="assertive"></div>
+<div id="toastContainer"></div>
 
 <script>
-// ===== 🔧 CONFIG - API Setup =====
-const CONFIG = {
-    // 🔁 Use mock mode for testing without backend
-    USE_MOCK: false, // Set to true to use mock data
-    
-    API: 'https://novastack-backend.onrender.com',
-    ENDPOINTS: {
-        ORDERS: '/my-orders',
-        ORDER: '/order',
-        TIMELINE: '/timeline',
-        DELIVERABLES: '/deliverables',
-        PAYMENT: '/payment',
-        CANCEL: '/cancel',
-        CONVERSATION: '/conversation',
-        USER: '/user'
-    },
-    
-    // Mock data for testing
-    MOCK_ORDERS: [
-        {
-            id: 1001,
-            services: { title: 'React Web App', emoji: '⚛️' },
-            status: 'in_progress',
-            price: 15000,
-            advance_paid: 2250,
-            total_paid: 2250,
-            preview_ready: false,
-            created_at: '2024-03-15T10:30:00Z',
-            requirements: 'Build a responsive e-commerce dashboard with React, Tailwind CSS, and API integration.',
-            customization: { pages: 5, api_integration: true, dark_mode: true }
-        },
-        {
-            id: 1002,
-            services: { title: 'Mobile App UI', emoji: '📱' },
-            status: 'delivered',
-            price: 8000,
-            advance_paid: 1200,
-            total_paid: 8000,
-            preview_ready: true,
-            created_at: '2024-03-10T14:20:00Z',
-            delivered_at: '2024-03-25T16:45:00Z',
-            requirements: 'Figma designs for iOS and Android fitness tracking app.',
-            deliverables: {
-                live_url: 'https://figma.com/file/xyz',
-                source_code_url: 'https://drive.google.com/file.zip'
-            }
-        }
-    ]
-};
+// ===== CONFIG =====
+const CONFIG = { API: 'https://novastack-backend.onrender.com' };
+let currentOrderId = null;
+let currentConversationId = null;
+let messagePollInterval = null;
 
-// ===== 🔐 Auth Helper =====
+// ===== Auth Helpers =====
 const Auth = {
-    getToken() {
-        return localStorage.getItem('dc_token') || sessionStorage.getItem('dc_token') || '';
+    getToken: () => localStorage.getItem('dc_token') || '',
+    getUser: () => {
+        try { return JSON.parse(localStorage.getItem('dc_user') || 'null'); }
+        catch { return null; }
     },
-    getUser() {
-        try {
-            const user = localStorage.getItem('dc_user') || sessionStorage.getItem('dc_user');
-            return user ? JSON.parse(user) : null;
-        } catch { return null; }
-    },
-    isLoggedIn() {
-        return !!this.getToken() && !!this.getUser();
-    }
+    isLoggedIn: () => !!Auth.getToken() && !!Auth.getUser()
 };
 
-// ===== 🌐 API Helper with Mock Support =====
-async function apiFetch(endpoint, options = {}) {
-    // Mock mode for testing
-    if (CONFIG.USE_MOCK) {
-        await new Promise(resolve => setTimeout(resolve, 800)); // Simulate network delay
+// ===== Create Particles =====
+function createParticles() {
+    const container = document.getElementById('particles');
+    if (!container) return;
+    for (let i = 0; i < 20; i++) {
+        const p = document.createElement('div');
+        p.className = 'particle';
+        p.style.left = Math.random() * 100 + '%';
+        p.style.animationDelay = Math.random() * 15 + 's';
+        p.style.animationDuration = (15 + Math.random() * 10) + 's';
+        p.style.width = p.style.height = (3 + Math.random() * 4) + 'px';
+        p.style.opacity = 0.2 + Math.random() * 0.4;
+        container.appendChild(p);
+    }
+}
+createParticles();
+
+// ===== Navbar Scroll Effect =====
+window.addEventListener('scroll', () => {
+    const nav = document.getElementById('navbar');
+    const mobileMenu = document.getElementById('mobileMenu');
+    if (!nav) return;
+    if (window.scrollY > 50) {
+        nav.classList.add('scrolled');
+        if (mobileMenu) mobileMenu.style.top = '64px';
+    } else {
+        nav.classList.remove('scrolled');
+        if (mobileMenu) mobileMenu.style.top = window.innerWidth <= 768 ? '68px' : '72px';
+    }
+});
+
+// ===== Mobile Menu Toggle =====
+const menuToggle = document.getElementById('menuToggle');
+const mobileMenu = document.getElementById('mobileMenu');
+const body = document.body;
+
+function toggleMobileMenu() {
+    if (!mobileMenu || !menuToggle) return;
+    const isActive = mobileMenu.classList.toggle('active');
+    menuToggle.classList.toggle('active', isActive);
+    menuToggle.setAttribute('aria-expanded', isActive);
+    body.classList.toggle('menu-open', isActive);
+}
+if (menuToggle) menuToggle.addEventListener('click', toggleMobileMenu);
+
+document.querySelectorAll('[data-close]').forEach(link => {
+    link.addEventListener('click', () => {
+        if (mobileMenu?.classList.contains('active')) {
+            mobileMenu.classList.remove('active');
+            menuToggle?.classList.remove('active');
+            body.classList.remove('menu-open');
+        }
+    });
+});
+
+// ===== Profile Dropdown =====
+const userToggle = document.getElementById('userToggle');
+const userDropdown = document.getElementById('userDropdown');
+
+function toggleProfileDropdown() {
+    if (!userToggle || !userDropdown) return;
+    const isActive = userDropdown.classList.toggle('active');
+    userToggle.classList.toggle('active', isActive);
+    userToggle.setAttribute('aria-expanded', isActive);
+}
+if (userToggle) {
+    userToggle.addEventListener('click', (e) => { e.stopPropagation(); toggleProfileDropdown(); });
+    userToggle.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleProfileDropdown(); }});
+}
+document.addEventListener('click', (e) => {
+    if (userDropdown && userToggle && !userToggle.contains(e.target) && !userDropdown.contains(e.target)) {
+        userDropdown.classList.remove('active');
+        userToggle.classList.remove('active');
+        userToggle.setAttribute('aria-expanded', 'false');
+    }
+});
+
+// ===== Mobile Profile Toggle =====
+const mobileProfileToggle = document.getElementById('mobileProfileToggle');
+const mobileProfileMenu = document.getElementById('mobileProfileMenu');
+if (mobileProfileToggle && mobileProfileMenu) {
+    mobileProfileToggle.addEventListener('click', () => {
+        mobileProfileMenu.classList.toggle('visible');
+        const icon = mobileProfileToggle.querySelector('i');
+        if (icon) icon.style.transform = mobileProfileMenu.classList.contains('visible') ? 'rotate(180deg)' : 'rotate(0)';
+    });
+}
+
+// ===== Update Auth UI =====
+function updateAuthUI() {
+    const isLoggedIn = Auth.isLoggedIn();
+    const user = Auth.getUser();
+    
+    // Desktop
+    const authButtons = document.getElementById('authButtons');
+    const userToggleWrapper = document.getElementById('userToggleWrapper');
+    if (isLoggedIn && user) {
+        authButtons?.classList.add('hidden');
+        userToggleWrapper.style.display = 'flex';
         
-        if (endpoint.includes(CONFIG.ENDPOINTS.ORDERS)) {
-            return { orders: CONFIG.MOCK_ORDERS };
-        }
-        if (endpoint.includes(CONFIG.ENDPOINTS.ORDER)) {
-            const orderId = endpoint.split('/').pop();
-            const order = CONFIG.MOCK_ORDERS.find(o => o.id == orderId);
-            return { order: order || CONFIG.MOCK_ORDERS[0] };
-        }
-        if (endpoint.includes(CONFIG.ENDPOINTS.TIMELINE)) {
-            return { data: [
-                { created_at: '2024-03-15T10:30:00Z', status: 'payment_received', message: 'Advance payment received' },
-                { created_at: '2024-03-16T09:15:00Z', status: 'in_progress', message: 'Development started' }
-            ]};
-        }
-        if (endpoint.includes(CONFIG.ENDPOINTS.DELIVERABLES)) {
-            return { data: { live_url: 'https://demo.novastack.com', source_code_url: '#' } };
-        }
-        if (endpoint.includes(CONFIG.ENDPOINTS.PAYMENT)) {
-            return { data: { total: 15000, advance_paid: 2250, total_paid: 2250 } };
-        }
-        return { data: {} };
-    }
-    
-    // Real API call
-    const headers = {
-        'Content-Type': 'application/json',
-        ...(options.headers || {})
-    };
-    
-    const token = Auth.getToken();
-    if (token) {
-        headers['Authorization'] = `Bearer ${token}`;
-    }
-    
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 15000); // 15s timeout
-    
-    try {
-        const response = await fetch(`${CONFIG.API}${endpoint}`, {
-            ...options,
-            headers,
-            credentials: 'include',
-            signal: controller.signal
+        const initial = (user.name || user.email || 'U').charAt(0).toUpperCase();
+        document.getElementById('userAvatar').textContent = initial;
+        document.getElementById('userName').textContent = user.name || user.email || 'User';
+        document.getElementById('dropdownName').textContent = user.name || user.email || 'User';
+        document.getElementById('dropdownEmail').textContent = user.email || '';
+        
+        // Mobile
+        document.getElementById('mobileAuthButtons')?.classList.add('hidden');
+        document.getElementById('mobileProfileSection')?.classList.remove('hidden');
+        document.getElementById('mobileName').textContent = user.name || user.email || 'User';
+        document.getElementById('mobileEmail').textContent = user.email || '';
+        document.getElementById('mobileAvatar').textContent = initial;
+        
+        // Show auth-only links
+        document.querySelectorAll('.auth-only').forEach(el => {
+            el.style.display = el.tagName === 'LI' ? 'block' : (el.classList.contains('mobile-nav-link') ? 'flex' : 'inline-flex');
         });
-        
-        clearTimeout(timeoutId);
-        
-        const contentType = response.headers.get('content-type');
-        const data = contentType?.includes('application/json') 
-            ? await response.json() 
-            : { error: 'Invalid response format' };
-        
-        if (!response.ok) {
-            throw new Error(data.error || data.message || `Error ${response.status}`);
-        }
-        
-        return data;
-    } catch (error) {
-        clearTimeout(timeoutId);
-        if (error.name === 'AbortError') {
-            throw new Error('Request timeout. Please check your connection.');
-        }
-        if (error.message.includes('Failed to fetch')) {
-            throw new Error('Cannot connect to server. Please check your internet connection.');
-        }
-        throw error;
+    } else {
+        authButtons?.classList.remove('hidden');
+        userToggleWrapper.style.display = 'none';
+        document.getElementById('mobileAuthButtons')?.classList.remove('hidden');
+        document.getElementById('mobileProfileSection')?.classList.add('hidden');
+        document.querySelectorAll('.auth-only').forEach(el => { el.style.display = 'none'; });
     }
 }
 
-// ===== 🎨 UI Helpers =====
+// ===== Toast Notifications =====
 function showToast(message, type = 'success') {
-    const toast = document.getElementById('toast');
+    const container = document.getElementById('toastContainer');
+    const toast = document.createElement('div');
+    toast.className = `toast ${type}`;
     toast.textContent = message;
-    toast.className = `toast ${type} show`;
-    
-    // Clear existing timeout
-    if (toast._timeout) clearTimeout(toast._timeout);
-    
-    toast._timeout = setTimeout(() => {
+    container.appendChild(toast);
+    setTimeout(() => toast.classList.add('show'), 10);
+    setTimeout(() => {
         toast.classList.remove('show');
+        setTimeout(() => toast.remove(), 300);
     }, 4000);
 }
 
-function formatOrderNumber(id) {
-    return `#NOVA-${String(id).padStart(6, '0')}`;
-}
-
-function formatDate(dateString) {
-    if (!dateString) return '-';
-    const date = new Date(dateString);
-    return date.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
-}
-
-function formatDateTime(dateString) {
-    if (!dateString) return '-';
-    const date = new Date(dateString);
-    return date.toLocaleString('en-IN', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
-}
-
-function escapeHtml(text) {
-    if (!text) return '';
-    const div = document.createElement('div');
-    div.textContent = text;
-    return div.innerHTML;
-}
-
-// Debounce helper for scroll events
-function debounce(func, wait) {
-    let timeout;
-    return function executedFunction(...args) {
-        const later = () => {
-            clearTimeout(timeout);
-            func(...args);
-        };
-        clearTimeout(timeout);
-        timeout = setTimeout(later, wait);
-    };
-}
-
-// ===== 🧭 Navigation =====
-function toggleMobileMenu() {
-    const menu = document.getElementById('mobileMenu');
-    const toggle = document.getElementById('menuToggle');
-    const isActive = menu.classList.toggle('active');
-    toggle.classList.toggle('active', isActive);
-    toggle.setAttribute('aria-expanded', isActive);
-    
-    if (isActive) {
-        document.body.style.overflow = 'hidden';
-        document.body.classList.add('pull-disabled');
-    } else {
-        document.body.style.overflow = '';
-        document.body.classList.remove('pull-disabled');
-    }
-}
-
-function toggleProfileDropdown() {
-    const dropdown = document.getElementById('profileDropdown');
-    const trigger = document.getElementById('profileTrigger');
-    const isActive = dropdown.classList.toggle('show');
-    trigger.classList.toggle('active', isActive);
-    trigger.setAttribute('aria-expanded', isActive);
-}
-
-function updateProfileUI() {
-    const user = Auth.getUser();
-    if (!user) return;
-    
-    const name = user.name || user.email?.split('@')[0] || 'User';
-    const initial = name.charAt(0).toUpperCase();
-    
-    // Desktop
-    const avatar = document.getElementById('profileAvatar');
-    const nameEl = document.getElementById('profileName');
-    if (avatar && nameEl) {
-        if (user.avatar) {
-            avatar.innerHTML = `<img src="${user.avatar}" alt="${name}" loading="lazy">`;
-        } else {
-            avatar.textContent = initial;
-        }
-        nameEl.textContent = name.length > 15 ? name.substring(0, 12) + '...' : name;
-    }
-    
-    // Dropdown
-    const dropdownAvatar = document.getElementById('dropdownAvatar');
-    const dropdownName = document.getElementById('dropdownName');
-    const dropdownEmail = document.getElementById('dropdownEmail');
-    if (dropdownAvatar && dropdownName && dropdownEmail) {
-        if (user.avatar) {
-            dropdownAvatar.innerHTML = `<img src="${user.avatar}" alt="${name}" loading="lazy">`;
-        } else {
-            dropdownAvatar.textContent = initial;
-        }
-        dropdownName.textContent = name;
-        dropdownEmail.textContent = user.email || '';
-    }
-    
-    // Mobile
-    const mobileAvatar = document.getElementById('mobileProfileAvatar');
-    const mobileName = document.getElementById('mobileProfileName');
-    const mobileEmail = document.getElementById('mobileProfileEmail');
-    if (mobileAvatar && mobileName && mobileEmail) {
-        if (user.avatar) {
-            mobileAvatar.innerHTML = `<img src="${user.avatar}" alt="${name}" loading="lazy">`;
-        } else {
-            mobileAvatar.textContent = initial;
-        }
-        mobileName.textContent = name;
-        mobileEmail.textContent = user.email || '';
-    }
-}
-
-// ===== 📋 Order Card Rendering =====
-function getOrderStatusClass(status) {
-    return `status-${String(status).replace(/_/g, '')}`;
-}
-
-function getStatusText(status) {
-    return String(status).replace(/_/g, ' ').toUpperCase();
-}
-
-function getAccessBadge(order) {
-    const total = order.price || 0;
-    const paid = order.total_paid || order.advance_paid || 0;
-    const isFullPaid = paid >= total;
-    
-    if (isFullPaid || order.status === 'completed') {
-        return `<span class="access-badge full"><i class="fas fa-unlock" aria-hidden="true"></i> Full Access</span>`;
-    } else if (order.preview_ready && order.advance_paid > 0) {
-        return `<span class="access-badge preview"><i class="fas fa-eye" aria-hidden="true"></i> Preview</span>`;
-    } else {
-        return `<span class="access-badge locked"><i class="fas fa-lock" aria-hidden="true"></i> Locked</span>`;
-    }
-}
-
-function getPaymentProgress(order) {
-    const total = order.price || 0;
-    const paid = order.total_paid || order.advance_paid || 0;
-    const percent = total > 0 ? Math.round((paid / total) * 100) : 0;
-    return { percent, paid, total, due: Math.max(0, total - paid) };
-}
-
-function renderOrderCard(order, index) {
-    const { percent, paid, total, due } = getPaymentProgress(order);
-    const statusClass = getOrderStatusClass(order.status);
-    const canPayBalance = (order.status === 'ready_for_balance' || order.status === 'delivered') && due > 0;
-    const canCancel = (order.status === 'pending' || order.status === 'payment_received') && paid < total;
-    const canRequestRevision = (order.status === 'delivered' || order.status === 'completed') && !order.revision_requested;
-    
-    return `
-        <article class="order-card" id="order-${order.id}" data-order-id="${order.id}" role="listitem">
-            <div class="order-header">
-                <span class="order-id" onclick="copyOrderId('${order.id}', event)" title="Click to copy Order ID" role="button" tabindex="0">
-                    <i class="fas fa-hashtag" aria-hidden="true"></i> ${formatOrderNumber(order.id)}
-                </span>
-                <span class="order-status ${statusClass}" role="status">
-                    <span class="status-dot" aria-hidden="true"></span>
-                    ${getStatusText(order.status)}
-                </span>
-            </div>
-            
-            <div class="order-main">
-                <div class="service-icon" aria-hidden="true">${order.services?.emoji || '💻'}</div>
-                <div class="service-info">
-                    <h3>${escapeHtml(order.services?.title || 'Custom Project')}</h3>
-                    <div class="service-meta">
-                        <span class="service-price">₹${total.toLocaleString('en-IN')}</span>
-                        <span aria-hidden="true">•</span>
-                        <span>📅 ${formatDate(order.created_at)}</span>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="order-summary">
-                <div class="payment-progress">
-                    <span style="font-size: 0.8rem; color: var(--text-muted);">${percent}% Paid</span>
-                    <div class="progress-bar" role="progressbar" aria-valuenow="${percent}" aria-valuemin="0" aria-valuemax="100">
-                        <div class="progress-fill" style="width: ${percent}%"></div>
-                    </div>
-                </div>
-                ${getAccessBadge(order)}
-            </div>
-            
-            <div class="order-actions">
-                <button class="btn-action btn-chat" onclick="openChat(${order.id}, event)" aria-label="Chat about this order">
-                    <i class="fas fa-comment" aria-hidden="true"></i> Chat
-                </button>
-                <button class="btn-action btn-view" onclick="openModal('deliverables', ${order.id}, event)" aria-label="View deliverables">
-                    <i class="fas fa-download" aria-hidden="true"></i> Files
-                </button>
-                ${canPayBalance ? `
-                    <button class="btn-action btn-balance" onclick="payBalance(${order.id}, ${due}, event)" aria-label="Pay remaining balance">
-                        <i class="fas fa-credit-card" aria-hidden="true"></i> Pay ₹${due.toLocaleString('en-IN')}
-                    </button>
-                ` : ''}
-                ${canRequestRevision ? `
-                    <button class="btn-action btn-revision" onclick="openModal('revision', ${order.id}, event)" aria-label="Request revision">
-                        <i class="fas fa-pencil-alt" aria-hidden="true"></i> Revision
-                    </button>
-                ` : ''}
-                ${canCancel ? `
-                    <button class="btn-action btn-cancel" onclick="openModal('cancel', ${order.id}, event)" aria-label="Cancel order">
-                        <i class="fas fa-ban" aria-hidden="true"></i> Cancel
-                    </button>
-                ` : ''}
-                <button class="btn-action btn-toggle" onclick="toggleOrderDetails(${order.id}, event)" aria-expanded="false" aria-controls="details-${order.id}">
-                    <i class="fas fa-chevron-down" aria-hidden="true"></i> Details
-                </button>
-            </div>
-            
-            <div class="order-details-expanded" id="details-${order.id}">
-                <div class="details-grid">
-                    <div class="detail-item">
-                        <label>Requirements</label>
-                        <span style="font-size: 0.85rem;">${order.requirements ? escapeHtml(order.requirements.substring(0, 50)) + '...' : 'None'}</span>
-                    </div>
-                    <div class="detail-item">
-                        <label>Advance Paid</label>
-                        <span style="color: var(--success);">₹${(order.advance_paid || 0).toLocaleString('en-IN')}</span>
-                    </div>
-                    <div class="detail-item">
-                        <label>Balance Due</label>
-                        <span style="color: ${due > 0 ? 'var(--accent)' : 'var(--success)'};">₹${due.toLocaleString('en-IN')}</span>
-                    </div>
-                    <div class="detail-item">
-                        <label>Delivery Date</label>
-                        <span>${order.delivered_at ? formatDate(order.delivered_at) : 'Pending'}</span>
-                    </div>
-                </div>
-                <div class="detail-actions">
-                    <button class="btn-action btn-view" onclick="openModal('timeline', ${order.id}, event)">
-                        <i class="fas fa-history" aria-hidden="true"></i> Timeline
-                    </button>
-                    <button class="btn-action btn-view" onclick="openModal('payment', ${order.id}, event)">
-                        <i class="fas fa-credit-card" aria-hidden="true"></i> Payment History
-                    </button>
-                    <button class="btn-action btn-view" onclick="openModal('customization', ${order.id}, event)">
-                        <i class="fas fa-sliders-h" aria-hidden="true"></i> Full Details
-                    </button>
-                </div>
-            </div>
-        </article>
-    `;
-}
-
-// ===== 🔄 Load Orders =====
-let ordersLoadPromise = null;
-
-async function loadOrders() {
-    // Prevent duplicate requests
-    if (ordersLoadPromise) return ordersLoadPromise;
-    
+// ===== API Fetch =====
+async function apiFetch(path, options = {}) {
+    const headers = { 'Content-Type': 'application/json', ...(options.headers || {}) };
     const token = Auth.getToken();
-    if (!token) {
+    if (token) headers['Authorization'] = `Bearer ${token}`;
+    
+    const res = await fetch(CONFIG.API + path, { ...options, headers, credentials: 'include' });
+    const json = await res.json();
+    if (!res.ok) throw new Error(json.error || json.message || `Error ${res.status}`);
+    return json;
+}
+
+// ===== Load Orders =====
+async function loadOrders() {
+    if (!Auth.isLoggedIn()) {
         window.location.href = 'login.html?redirect=my-orders.html';
         return;
     }
     
     const loading = document.getElementById('loading');
-    const container = document.getElementById('orders-container');
-    const empty = document.getElementById('empty-state');
-    const error = document.getElementById('error-state');
+    const container = document.getElementById('ordersContainer');
+    const empty = document.getElementById('emptyState');
     
-    loading.style.display = 'flex';
+    loading.style.display = 'block';
     container.innerHTML = '';
     empty.style.display = 'none';
-    error.style.display = 'none';
-    
-    ordersLoadPromise = (async () => {
-        try {
-            const data = await apiFetch(CONFIG.ENDPOINTS.ORDERS);
-            const orders = data.orders || data.data || [];
-            
-            if (!orders || orders.length === 0) {
-                loading.style.display = 'none';
-                empty.style.display = 'block';
-                return;
-            }
-            
-            // Render with document fragment for better performance
-            const fragment = document.createDocumentFragment();
-            const tempDiv = document.createElement('div');
-            tempDiv.innerHTML = orders.map((order, index) => 
-                renderOrderCard(order, index)
-            ).join('');
-            
-            while (tempDiv.firstChild) {
-                fragment.appendChild(tempDiv.firstChild);
-            }
-            container.appendChild(fragment);
-            
-            // Add click handlers for order cards
-            container.querySelectorAll('.order-card').forEach(card => {
-                card.addEventListener('click', (e) => {
-                    // Only toggle if not clicking a button
-                    if (!e.target.closest('.btn-action') && !e.target.closest('.order-id')) {
-                        const orderId = card.dataset.orderId;
-                        toggleOrderDetails(orderId, e);
-                    }
-                });
-            });
-            
-        } catch (err) {
-            console.error('Failed to load orders:', err);
-            loading.style.display = 'none';
-            error.style.display = 'block';
-            document.getElementById('error-message').textContent = err.message || 'Unable to connect to server';
-            showToast('Failed to load orders. Please try again.', 'error');
-        } finally {
-            ordersLoadPromise = null;
-        }
-    })();
-    
-    return ordersLoadPromise;
-}
-
-// ===== 📋 Order Details Toggle =====
-function toggleOrderDetails(orderId, event) {
-    if (event) {
-        event.stopPropagation();
-        // Prevent text selection on double-tap
-        if (event.detail > 1) event.preventDefault();
-    }
-    
-    const card = document.getElementById(`order-${orderId}`);
-    if (!card) return;
-    
-    const isExpanded = card.classList.toggle('expanded');
-    const btn = card.querySelector('.btn-toggle');
-    if (btn) {
-        btn.classList.toggle('active', isExpanded);
-        btn.setAttribute('aria-expanded', isExpanded);
-    }
-    
-    // Load details if expanding
-    if (isExpanded) {
-        loadOrderFullDetails(orderId);
-    }
-}
-
-async function loadOrderFullDetails(orderId) {
-    try {
-        const data = await apiFetch(`${CONFIG.ENDPOINTS.ORDER}/${orderId}`);
-        const order = data.order || data.data;
-        if (order) {
-            // Could update UI with fresh data if needed
-            console.log('Updated order details:', order);
-        }
-    } catch (err) {
-        console.warn('Could not load full details:', err);
-        // Don't show error to user - just use cached data
-    }
-}
-
-// ===== 🪟 Modal System =====
-let currentModalOrderId = null;
-
-function openModal(type, orderId, event) {
-    if (event) {
-        event.stopPropagation();
-        event.preventDefault();
-    }
-    currentModalOrderId = orderId;
-    
-    const modals = {
-        timeline: 'timelineModal',
-        deliverables: 'deliverablesModal',
-        payment: 'paymentModal',
-        customization: 'customizationModal',
-        cancel: 'cancelModal',
-        revision: 'revisionModal'
-    };
-    
-    const modalId = modals[type];
-    if (!modalId) return;
-    
-    const modal = document.getElementById(modalId);
-    if (!modal) return;
-    
-    modal.classList.add('show');
-    document.body.style.overflow = 'hidden';
-    document.body.classList.add('pull-disabled');
-    
-    // Load content based on type
-    const loaders = {
-        timeline: () => loadTimelineContent(orderId),
-        deliverables: () => loadDeliverablesContent(orderId),
-        payment: () => loadPaymentContent(orderId),
-        customization: () => loadCustomizationContent(orderId)
-    };
-    
-    if (loaders[type]) {
-        loaders[type]();
-    }
-}
-
-function closeModal(modalId) {
-    const modal = document.getElementById(modalId);
-    if (modal) {
-        modal.classList.remove('show');
-        document.body.style.overflow = '';
-        document.body.classList.remove('pull-disabled');
-    }
-    currentModalOrderId = null;
-}
-
-// Close modal on outside click
-document.querySelectorAll('.modal').forEach(modal => {
-    modal.addEventListener('click', (e) => {
-        if (e.target === modal) {
-            closeModal(modal.id);
-        }
-    });
-});
-
-// Close on Escape key
-document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') {
-        document.querySelectorAll('.modal.show').forEach(modal => {
-            closeModal(modal.id);
-        });
-        const chatWidget = document.getElementById('chatWidget');
-        if (chatWidget?.classList.contains('show')) {
-            closeChat();
-        }
-    }
-});
-
-// ===== 📅 Timeline Content =====
-async function loadTimelineContent(orderId) {
-    const container = document.getElementById('timelineContent');
-    container.innerHTML = `<div class="spinner"></div><p style="text-align:center;color:var(--text-muted)">Loading...</p>`;
     
     try {
-        const data = await apiFetch(`${CONFIG.ENDPOINTS.ORDER}/${orderId}${CONFIG.ENDPOINTS.TIMELINE}`);
-        const timeline = data.data || data.timeline || [];
+        const data = await apiFetch('/my-orders');
+        const orders = data.orders || data.data || [];
         
-        if (!timeline || timeline.length === 0) {
-            container.innerHTML = `<p style="text-align:center;color:var(--text-muted)">No timeline events yet</p>`;
+        if (!orders.length) {
+            loading.style.display = 'none';
+            empty.style.display = 'block';
             return;
         }
         
+        container.innerHTML = orders.map(order => renderOrderCard(order)).join('');
+        loading.style.display = 'none';
+        
+    } catch (error) {
+        console.error('Failed to load orders:', error);
+        loading.style.display = 'none';
         container.innerHTML = `
-            <div class="timeline-list">
-                ${timeline.map(item => `
-                    <div class="timeline-item">
-                        <div class="time">${formatDateTime(item.created_at)}</div>
-                        <div class="content">
-                            <div class="status">${item.status?.replace(/_/g, ' ').toUpperCase() || 'Update'}</div>
-                            <div class="message">${escapeHtml(item.message || 'Status updated')}</div>
+            <div class="empty-state">
+                <i class="fas fa-exclamation-triangle"></i>
+                <h3>Unable to load orders</h3>
+                <p>${error.message}</p>
+                <button class="btn btn-primary" onclick="loadOrders()">
+                    <i class="fas fa-redo"></i> Try Again
+                </button>
+            </div>
+        `;
+    }
+}
+
+// ===== Render Compact Order Card =====
+function renderOrderCard(order) {
+    const total = order.price || 0;
+    const paid = order.total_paid || order.advance_paid || 0;
+    const balance = total - paid;
+    const percent = total > 0 ? Math.round((paid / total) * 100) : 0;
+    const isFullPaid = paid >= total;
+    const status = order.status || 'pending';
+    
+    // Access badges
+    const hasPreview = order.preview_ready && order.advance_paid > 0;
+    const hasFullAccess = (order.full_access_ready && isFullPaid) || status === 'completed' || status === 'delivered';
+    
+    // Action buttons
+    const canPayBalance = (status === 'ready_for_balance' || (status === 'delivered' && balance > 0)) && balance > 0;
+    const canCancel = (status === 'pending' || status === 'payment_received') && !isFullPaid;
+    const canRevise = (status === 'delivered' || status === 'completed') && !order.revision_requested;
+    
+    return `
+    <div class="order-card" onclick="openDetailsModal('${order.id}')">
+        <div class="order-card-header">
+            <div class="service-preview">
+                <div class="service-icon">${order.services?.emoji || '💻'}</div>
+                <div class="service-info">
+                    <div class="service-name">${escapeHtml(order.services?.title || 'Custom Project')}</div>
+                    <div class="service-meta">
+                        <span><i class="fas fa-calendar"></i> ${formatDate(order.created_at)}</span>
+                        <span><i class="fas fa-tag"></i> ${order.services?.category || 'Custom'}</span>
+                    </div>
+                    ${hasFullAccess ? '<span class="badge-access badge-full"><i class="fas fa-check"></i> Full Access</span>' : 
+                      hasPreview ? '<span class="badge-access badge-preview"><i class="fas fa-eye"></i> Preview Access</span>' :
+                      '<span class="badge-access badge-locked"><i class="fas fa-lock"></i> Locked</span>'}
+                </div>
+            </div>
+            <span class="order-status status-${status}">${formatStatus(status)}</span>
+        </div>
+        
+        <div class="order-card-body">
+            <div class="price-section">
+                <span class="price-label">Total</span>
+                <span class="price-value">₹${total.toLocaleString()}<span> INR</span></span>
+            </div>
+            
+            <div class="progress-mini">
+                <span>${percent}%</span>
+                <div class="progress-bar-mini">
+                    <div class="progress-fill-mini" style="width: ${percent}%"></div>
+                </div>
+                <span style="color:var(--text-muted);font-size:0.7rem">${isFullPaid ? 'Paid' : 'Due: ₹'+balance.toLocaleString()}</span>
+            </div>
+            
+            <div class="order-actions-mini">
+                <button class="btn-mini btn-chat-mini" onclick="event.stopPropagation(); openChat('${order.id}')">
+                    <i class="fas fa-comment"></i> Chat
+                </button>
+                ${canPayBalance ? `
+                <button class="btn-mini btn-pay-mini" onclick="event.stopPropagation(); payBalance('${order.id}', ${balance})">
+                    <i class="fas fa-credit-card"></i> Pay ₹${balance.toLocaleString()}
+                </button>` : ''}
+                <button class="btn-mini btn-details-mini" onclick="event.stopPropagation(); openDetailsModal('${order.id}')">
+                    <i class="fas fa-info-circle"></i> Details
+                </button>
+            </div>
+        </div>
+    </div>
+    `;
+}
+
+// ===== Format Helpers =====
+function formatStatus(status) {
+    return (status || '').replace(/_/g, ' ').toUpperCase();
+}
+function formatDate(dateStr) {
+    if (!dateStr) return '-';
+    const d = new Date(dateStr);
+    return d.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
+}
+function formatDateTime(dateStr) {
+    if (!dateStr) return '-';
+    const d = new Date(dateStr);
+    return d.toLocaleString('en-IN');
+}
+function escapeHtml(text) {
+    if (!text) return '';
+    return String(text).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));
+}
+
+// ===== Modals =====
+function openModal(id) { document.getElementById(id)?.classList.add('active'); document.body.style.overflow = 'hidden'; }
+function closeModal(id) { document.getElementById(id)?.classList.remove('active'); document.body.style.overflow = ''; }
+
+// Close modal on backdrop click
+document.querySelectorAll('.modal').forEach(modal => {
+    modal.addEventListener('click', (e) => { if (e.target === modal) modal.classList.remove('active'); });
+});
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape') document.querySelectorAll('.modal.active').forEach(m => m.classList.remove('active')); });
+
+// ===== Details Modal =====
+async function openDetailsModal(orderId) {
+    currentOrderId = orderId;
+    const content = document.getElementById('detailsContent');
+    content.innerHTML = '<div style="text-align:center;padding:2rem;"><div class="spinner" style="margin:0 auto;"></div></div>';
+    openModal('detailsModal');
+    
+    try {
+        const order = await apiFetch(`/order/${orderId}`);
+        const data = order.data || order;
+        
+        const total = data.price || 0;
+        const paid = data.total_paid || data.advance_paid || 0;
+        const balance = total - paid;
+        const percent = total > 0 ? Math.round((paid / total) * 100) : 0;
+        
+        content.innerHTML = `
+            <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1.2rem;padding-bottom:1rem;border-bottom:1px solid var(--border);flex-wrap:wrap;">
+                <div style="width:56px;height:56px;border-radius:var(--radius-md);background:var(--surface);display:flex;align-items:center;justify-content:center;font-size:1.8rem;flex-shrink:0;">
+                    ${data.services?.emoji || '💻'}
+                </div>
+                <div style="flex:1;min-width:0;">
+                    <h4 style="font-family:'Syne',sans-serif;font-weight:700;margin-bottom:0.2rem;">${escapeHtml(data.services?.title || 'Custom Project')}</h4>
+                    <span class="order-status status-${data.status}" style="font-size:0.75rem;">${formatStatus(data.status)}</span>
+                </div>
+            </div>
+            
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:0.8rem;margin-bottom:1.2rem;">
+                <div style="background:var(--surface);padding:0.8rem;border-radius:var(--radius-md);text-align:center;">
+                    <div style="font-size:0.75rem;color:var(--text-muted);margin-bottom:0.3rem;">Total</div>
+                    <div style="font-weight:600;">₹${total.toLocaleString()}</div>
+                </div>
+                <div style="background:var(--surface);padding:0.8rem;border-radius:var(--radius-md);text-align:center;">
+                    <div style="font-size:0.75rem;color:var(--text-muted);margin-bottom:0.3rem;">Paid</div>
+                    <div style="font-weight:600;color:var(--success);">₹${paid.toLocaleString()}</div>
+                </div>
+                <div style="background:var(--surface);padding:0.8rem;border-radius:var(--radius-md);text-align:center;">
+                    <div style="font-size:0.75rem;color:var(--text-muted);margin-bottom:0.3rem;">Balance</div>
+                    <div style="font-weight:600;color:${balance>0?'var(--accent)':'var(--success)'};">₹${balance.toLocaleString()}</div>
+                </div>
+                <div style="background:var(--surface);padding:0.8rem;border-radius:var(--radius-md);text-align:center;">
+                    <div style="font-size:0.75rem;color:var(--text-muted);margin-bottom:0.3rem;">Progress</div>
+                    <div style="font-weight:600;">${percent}%</div>
+                </div>
+            </div>
+            
+            ${data.requirements ? `
+            <div style="margin-bottom:1rem;">
+                <button class="btn btn-outline" style="width:100%;justify-content:center;" onclick="openRequirementsModal('${orderId}')">
+                    <i class="fas fa-file-alt"></i> View Requirements
+                </button>
+            </div>` : ''}
+            
+            ${data.customization && Object.keys(data.customization).length > 0 ? `
+            <div style="margin-bottom:1rem;">
+                <button class="btn btn-outline" style="width:100%;justify-content:center;" onclick="openCustomizationModal('${orderId}')">
+                    <i class="fas fa-sliders-h"></i> View Customizations (${Object.keys(data.customization).length})
+                </button>
+            </div>` : ''}
+            
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.8rem;">
+                <button class="btn btn-outline" onclick="openTimelineModal('${orderId}')">
+                    <i class="fas fa-history"></i> Timeline
+                </button>
+                <button class="btn btn-outline" onclick="openDeliverablesModal('${orderId}')">
+                    <i class="fas fa-download"></i> Deliverables
+                </button>
+                <button class="btn btn-outline" onclick="openPaymentModal('${orderId}')">
+                    <i class="fas fa-receipt"></i> Payment History
+                </button>
+                <button class="btn btn-outline" onclick="event.stopPropagation(); openChat('${orderId}')">
+                    <i class="fas fa-comments"></i> Chat Support
+                </button>
+            </div>
+            
+            ${data.status === 'delivered' || data.status === 'completed' ? `
+            <div style="margin-top:1.2rem;padding-top:1rem;border-top:1px solid var(--border);">
+                <button class="btn" style="width:100%;justify-content:center;background:rgba(245,158,11,0.15);border:1px solid var(--warning);color:var(--warning);" onclick="event.stopPropagation(); openRevisionModal('${orderId}')">
+                    <i class="fas fa-pencil-alt"></i> Request Revision
+                </button>
+            </div>` : ''}
+            
+            ${(data.status === 'pending' || data.status === 'payment_received') && percent < 100 ? `
+            <div style="margin-top:0.8rem;">
+                <button class="btn" style="width:100%;justify-content:center;background:rgba(239,68,68,0.15);border:1px solid var(--danger);color:var(--danger);" onclick="event.stopPropagation(); openCancelModal('${orderId}')">
+                    <i class="fas fa-ban"></i> Cancel Order
+                </button>
+            </div>` : ''}
+        `;
+        
+    } catch (error) {
+        content.innerHTML = `<p style="color:var(--danger);text-align:center;">Error: ${error.message}</p>`;
+    }
+}
+
+// ===== Timeline Modal =====
+async function openTimelineModal(orderId) {
+    openModal('timelineModal');
+    const content = document.getElementById('timelineContent');
+    
+    try {
+        const data = await apiFetch(`/order/${orderId}/timeline`);
+        const timeline = data.data || data.timeline || [];
+        
+        if (!timeline.length) {
+            content.innerHTML = '<p style="text-align:center;color:var(--text-muted);padding:1rem;">No timeline updates yet.</p>';
+            return;
+        }
+        
+        content.innerHTML = timeline.map(item => `
+            <div class="timeline-item">
+                <div class="timeline-content">
+                    <div class="timeline-status">${formatStatus(item.status)}</div>
+                    <div class="timeline-message">${escapeHtml(item.message || 'Status updated')}</div>
+                    <div class="timeline-time">${formatDateTime(item.created_at)}</div>
+                </div>
+            </div>
+        `).join('');
+        
+    } catch (error) {
+        content.innerHTML = `<p style="color:var(--danger);text-align:center;">Error: ${error.message}</p>`;
+    }
+}
+
+// ===== Deliverables Modal =====
+async function openDeliverablesModal(orderId) {
+    openModal('deliverablesModal');
+    const content = document.getElementById('deliverablesContent');
+    
+    try {
+        const res = await fetch(`${CONFIG.API}/order/${orderId}/deliverables`, {
+            headers: { 'Authorization': `Bearer ${Auth.getToken()}` }
+        });
+        const result = await res.json();
+        
+        if (!res.ok || !result.success) {
+            content.innerHTML = `
+                <div style="text-align:center;padding:1.5rem;background:var(--surface);border-radius:var(--radius-md);">
+                    <i class="fas fa-lock" style="font-size:2rem;color:var(--accent);margin-bottom:0.5rem;display:block;"></i>
+                    <p style="color:var(--text-secondary);">${result.error || 'Deliverables locked. Complete payment to access.'}</p>
+                </div>
+            `;
+            return;
+        }
+        
+        const data = result.data;
+        let html = '';
+        
+        if (data.live_url) html += `
+            <div class="deliverable-item">
+                <div class="deliverable-info">
+                    <div class="deliverable-icon"><i class="fas fa-globe"></i></div>
+                    <div><div class="deliverable-name">Live Demo</div><div class="deliverable-desc">View your project online</div></div>
+                </div>
+                <a href="${data.live_url}" target="_blank" class="btn-download"><i class="fas fa-external-link-alt"></i> View</a>
+            </div>`;
+        
+        if (data.github_repo) html += `
+            <div class="deliverable-item">
+                <div class="deliverable-info">
+                    <div class="deliverable-icon"><i class="fab fa-github"></i></div>
+                    <div><div class="deliverable-name">GitHub Repo</div><div class="deliverable-desc">Source code repository</div></div>
+                </div>
+                <a href="${data.github_repo}" target="_blank" class="btn-download"><i class="fas fa-external-link-alt"></i> View</a>
+            </div>`;
+        
+        if (data.source_code_url) html += `
+            <div class="deliverable-item">
+                <div class="deliverable-info">
+                    <div class="deliverable-icon"><i class="fas fa-code"></i></div>
+                    <div><div class="deliverable-name">Source Code</div><div class="deliverable-desc">Download complete code</div></div>
+                </div>
+                <a href="${data.source_code_url}" download class="btn-download"><i class="fas fa-download"></i> Download</a>
+            </div>`;
+        
+        if (data.documentation_url) html += `
+            <div class="deliverable-item">
+                <div class="deliverable-info">
+                    <div class="deliverable-icon"><i class="fas fa-book"></i></div>
+                    <div><div class="deliverable-name">Documentation</div><div class="deliverable-desc">Setup & usage guide</div></div>
+                </div>
+                <a href="${data.documentation_url}" target="_blank" class="btn-download"><i class="fas fa-external-link-alt"></i> View</a>
+            </div>`;
+        
+        if (data.deliverables?.length) {
+            data.deliverables.forEach(doc => {
+                html += `
+                    <div class="deliverable-item">
+                        <div class="deliverable-info">
+                            <div class="deliverable-icon"><i class="fas fa-file"></i></div>
+                            <div><div class="deliverable-name">${escapeHtml(doc.title)}</div><div class="deliverable-desc">${escapeHtml(doc.type || '')}</div></div>
                         </div>
+                        <a href="${doc.file_url}" download class="btn-download"><i class="fas fa-download"></i> Download</a>
+                    </div>`;
+            });
+        }
+        
+        if (data.delivery_notes) {
+            html += `
+                <div style="margin-top:1rem;padding:1rem;background:var(--surface);border-radius:var(--radius-md);">
+                    <strong style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.5rem;"><i class="fas fa-sticky-note"></i> Delivery Notes</strong>
+                    <p style="color:var(--text-secondary);font-size:0.9rem;line-height:1.5;">${escapeHtml(data.delivery_notes)}</p>
+                </div>`;
+        }
+        
+        content.innerHTML = html || '<p style="text-align:center;color:var(--text-muted);padding:1rem;">No deliverables available yet.</p>';
+        
+    } catch (error) {
+        content.innerHTML = `<p style="color:var(--danger);text-align:center;">Error: ${error.message}</p>`;
+    }
+}
+
+// ===== Payment Modal =====
+async function openPaymentModal(orderId) {
+    openModal('paymentModal');
+    const content = document.getElementById('paymentContent');
+    
+    try {
+        const order = await apiFetch(`/order/${orderId}`);
+        const data = order.data || order;
+        
+        const total = data.price || 0;
+        const advance = data.advance_paid || 0;
+        const balance = data.balance_paid || 0;
+        const paid = data.total_paid || advance;
+        
+        content.innerHTML = `
+            <div class="payment-summary">
+                <div class="payment-row"><span>Total Amount</span><strong>₹${total.toLocaleString()}</strong></div>
+                <div class="payment-row"><span>Advance (15%)</span><span style="color:var(--success);">₹${advance.toLocaleString()}</span></div>
+                ${balance > 0 ? `<div class="payment-row"><span>Balance Paid</span><span style="color:var(--success);">₹${balance.toLocaleString()}</span></div>` : ''}
+                <div class="payment-row total"><span>Total Paid</span><span style="color:var(--success);">₹${paid.toLocaleString()}</span></div>
+                <div class="payment-row"><span>Remaining</span><span style="color:${total-paid>0?'var(--accent)':'var(--success)'};">₹${(total-paid).toLocaleString()}</span></div>
+            </div>
+            
+            <div class="payment-history">
+                ${data.advance_paid_at ? `
+                <div class="payment-entry">
+                    <div style="font-weight:600;margin-bottom:0.3rem;">Advance Payment</div>
+                    <div style="color:var(--success);margin-bottom:0.3rem;">₹${advance.toLocaleString()} paid successfully</div>
+                    <div style="font-size:0.8rem;color:var(--text-muted);">${formatDateTime(data.advance_paid_at)}</div>
+                </div>` : ''}
+                ${data.balance_paid_at ? `
+                <div class="payment-entry">
+                    <div style="font-weight:600;margin-bottom:0.3rem;">Balance Payment</div>
+                    <div style="color:var(--success);margin-bottom:0.3rem;">₹${balance.toLocaleString()} paid successfully</div>
+                    <div style="font-size:0.8rem;color:var(--text-muted);">${formatDateTime(data.balance_paid_at)}</div>
+                </div>` : ''}
+                ${!data.advance_paid_at ? '<p style="color:var(--text-muted);text-align:center;padding:1rem;">No payments recorded yet.</p>' : ''}
+            </div>
+        `;
+        
+    } catch (error) {
+        content.innerHTML = `<p style="color:var(--danger);text-align:center;">Error: ${error.message}</p>`;
+    }
+}
+
+// ===== Requirements Modal =====
+async function openRequirementsModal(orderId) {
+    try {
+        const order = await apiFetch(`/order/${orderId}`);
+        const req = order.data?.requirements || '';
+        
+        const content = document.getElementById('detailsContent');
+        content.innerHTML = `
+            <button class="modal-close" onclick="openDetailsModal('${orderId}')" style="position:absolute;top:1rem;right:1rem;background:none;border:none;color:var(--text-muted);font-size:1.2rem;cursor:pointer;">&times;</button>
+            <h4 style="margin-bottom:1rem;"><i class="fas fa-file-alt"></i> Order Requirements</h4>
+            <div class="requirements-text">${escapeHtml(req || 'No requirements specified.')}</div>
+        `;
+    } catch (e) {
+        showToast('Failed to load requirements', 'error');
+    }
+}
+
+// ===== Customization Modal =====
+async function openCustomizationModal(orderId) {
+    try {
+        const order = await apiFetch(`/order/${orderId}`);
+        const custom = order.data?.customization || {};
+        
+        const content = document.getElementById('detailsContent');
+        content.innerHTML = `
+            <button class="modal-close" onclick="openDetailsModal('${orderId}')" style="position:absolute;top:1rem;right:1rem;background:none;border:none;color:var(--text-muted);font-size:1.2rem;cursor:pointer;">&times;</button>
+            <h4 style="margin-bottom:1rem;"><i class="fas fa-sliders-h"></i> Customizations</h4>
+            <div class="customization-list">
+                ${Object.entries(custom).map(([k,v]) => `
+                    <div class="custom-item">
+                        <span class="custom-label">${k.replace(/_/g,' ').replace(/\b\w/g,l=>l.toUpperCase())}</span>
+                        <span class="custom-value">${typeof v==='boolean'?(v?'Yes':'No'):escapeHtml(v)}</span>
                     </div>
                 `).join('')}
             </div>
         `;
-    } catch (err) {
-        container.innerHTML = `<p style="text-align:center;color:var(--danger)">Failed to load timeline</p>`;
-        console.error('Timeline error:', err);
+    } catch (e) {
+        showToast('Failed to load customizations', 'error');
     }
 }
 
-// ===== 📦 Deliverables Content =====
-async function loadDeliverablesContent(orderId) {
-    const container = document.getElementById('deliverablesContent');
-    container.innerHTML = `<div class="spinner"></div><p style="text-align:center;color:var(--text-muted)">Loading...</p>`;
-    
-    try {
-        const data = await apiFetch(`${CONFIG.ENDPOINTS.ORDER}/${orderId}${CONFIG.ENDPOINTS.DELIVERABLES}`);
-        const deliverables = data.data || {};
-        
-        let html = '';
-        
-        if (deliverables.live_url) {
-            html += `
-                <div class="deliverable-item">
-                    <div class="info">
-                        <i class="fas fa-globe" aria-hidden="true"></i>
-                        <div>
-                            <div class="name">Live Demo</div>
-                            <div class="type">View in browser</div>
-                        </div>
-                    </div>
-                    <a href="${deliverables.live_url}" target="_blank" rel="noopener" class="btn-download">
-                        <i class="fas fa-external-link-alt" aria-hidden="true"></i> View
-                    </a>
-                </div>
-            `;
-        }
-        
-        if (deliverables.github_repo) {
-            html += `
-                <div class="deliverable-item">
-                    <div class="info">
-                        <i class="fab fa-github" aria-hidden="true"></i>
-                        <div>
-                            <div class="name">GitHub Repository</div>
-                            <div class="type">Source code</div>
-                        </div>
-                    </div>
-                    <a href="${deliverables.github_repo}" target="_blank" rel="noopener" class="btn-download">
-                        <i class="fas fa-external-link-alt" aria-hidden="true"></i> View
-                    </a>
-                </div>
-            `;
-        }
-        
-        if (deliverables.source_code_url) {
-            html += `
-                <div class="deliverable-item">
-                    <div class="info">
-                        <i class="fas fa-code" aria-hidden="true"></i>
-                        <div>
-                            <div class="name">Source Code</div>
-                            <div class="type">Download ZIP</div>
-                        </div>
-                    </div>
-                    <a href="${deliverables.source_code_url}" download class="btn-download">
-                        <i class="fas fa-download" aria-hidden="true"></i> Download
-                    </a>
-                </div>
-            `;
-        }
-        
-        if (deliverables.documentation_url) {
-            html += `
-                <div class="deliverable-item">
-                    <div class="info">
-                        <i class="fas fa-book" aria-hidden="true"></i>
-                        <div>
-                            <div class="name">Documentation</div>
-                            <div class="type">Read guide</div>
-                        </div>
-                    </div>
-                    <a href="${deliverables.documentation_url}" target="_blank" rel="noopener" class="btn-download">
-                        <i class="fas fa-external-link-alt" aria-hidden="true"></i> View
-                    </a>
-                </div>
-            `;
-        }
-        
-        if (deliverables.deliverables?.length > 0) {
-            deliverables.deliverables.forEach(doc => {
-                html += `
-                    <div class="deliverable-item">
-                        <div class="info">
-                            <i class="fas fa-file" aria-hidden="true"></i>
-                            <div>
-                                <div class="name">${escapeHtml(doc.title || 'File')}</div>
-                                <div class="type">${doc.type || 'Document'}</div>
-                            </div>
-                        </div>
-                        <a href="${doc.file_url}" download class="btn-download">
-                            <i class="fas fa-download" aria-hidden="true"></i> Download
-                        </a>
-                    </div>
-                `;
-            });
-        }
-        
-        if (deliverables.delivery_notes) {
-            html += `
-                <div class="modal-section">
-                    <h4><i class="fas fa-sticky-note" aria-hidden="true"></i> Delivery Notes</h4>
-                    <p style="color:var(--text-secondary);font-size:0.9rem;line-height:1.5">${escapeHtml(deliverables.delivery_notes)}</p>
-                </div>
-            `;
-        }
-        
-        container.innerHTML = html || `<p style="text-align:center;color:var(--text-muted)">No deliverables available yet</p>`;
-        
-    } catch (err) {
-        container.innerHTML = `<p style="text-align:center;color:var(--danger)">Failed to load deliverables</p>`;
-        console.error('Deliverables error:', err);
-    }
+// ===== Cancel Modal =====
+let cancelOrderId = null;
+function openCancelModal(orderId) {
+    cancelOrderId = orderId;
+    document.getElementById('cancelReason').value = '';
+    openModal('cancelModal');
 }
-
-// ===== 💳 Payment Content =====
-async function loadPaymentContent(orderId) {
-    const container = document.getElementById('paymentContent');
-    container.innerHTML = `<div class="spinner"></div><p style="text-align:center;color:var(--text-muted)">Loading...</p>`;
+async function submitCancel() {
+    const reason = document.getElementById('cancelReason').value.trim();
+    if (!reason) { showToast('Please provide a reason', 'warning'); return; }
     
     try {
-        const data = await apiFetch(`${CONFIG.ENDPOINTS.ORDER}/${orderId}${CONFIG.ENDPOINTS.PAYMENT}`);
-        const payment = data.data || {};
-        
-        const { percent, paid, total, due } = getPaymentProgress({ 
-            price: payment.total || 0, 
-            total_paid: payment.total_paid || 0,
-            advance_paid: payment.advance_paid || 0
+        await apiFetch(`/order/${cancelOrderId}/cancel`, {
+            method: 'POST', body: JSON.stringify({ reason })
         });
-        
-        container.innerHTML = `
-            <div class="payment-history-list">
-                <div class="payment-item">
-                    <span class="label">Total Amount</span>
-                    <span class="value">₹${total.toLocaleString('en-IN')}</span>
-                </div>
-                <div class="payment-item success">
-                    <span class="label">Advance Paid (15%)</span>
-                    <span class="value">₹${(payment.advance_paid || 0).toLocaleString('en-IN')}</span>
-                </div>
-                ${payment.balance_paid ? `
-                <div class="payment-item success">
-                    <span class="label">Balance Paid</span>
-                    <span class="value">₹${payment.balance_paid.toLocaleString('en-IN')}</span>
-                </div>` : ''}
-                <div class="payment-item">
-                    <span class="label">Total Paid</span>
-                    <span class="value" style="color:var(--success)">₹${paid.toLocaleString('en-IN')}</span>
-                </div>
-                <div class="payment-item ${due > 0 ? 'pending' : 'success'}">
-                    <span class="label">Balance Due</span>
-                    <span class="value">₹${due.toLocaleString('en-IN')}</span>
-                </div>
-            </div>
-            <div style="margin-top:1rem">
-                <div style="display:flex;justify-content:space-between;font-size:0.85rem;margin-bottom:0.3rem">
-                    <span style="color:var(--text-muted)">Payment Progress</span>
-                    <span>${percent}%</span>
-                </div>
-                <div class="progress-bar" style="width:100%;height:8px">
-                    <div class="progress-fill" style="width:${percent}%"></div>
-                </div>
-            </div>
-            ${payment.advance_paid_at ? `
-            <div class="modal-section" style="margin-top:1rem">
-                <h4><i class="fas fa-clock" aria-hidden="true"></i> Payment Timeline</h4>
-                <div style="font-size:0.85rem;color:var(--text-secondary)">
-                    <div>• Advance: ${formatDateTime(payment.advance_paid_at)}</div>
-                    ${payment.balance_paid_at ? `<div>• Balance: ${formatDateTime(payment.balance_paid_at)}</div>` : ''}
-                </div>
-            </div>` : ''}
-        `;
-    } catch (err) {
-        container.innerHTML = `<p style="text-align:center;color:var(--danger)">Failed to load payment details</p>`;
-        console.error('Payment error:', err);
+        showToast('Cancellation requested! Admin will review.', 'success');
+        closeModal('cancelModal');
+        loadOrders();
+    } catch (error) {
+        showToast(error.message, 'error');
     }
 }
 
-// ===== ⚙️ Customization Content =====
-async function loadCustomizationContent(orderId) {
-    const container = document.getElementById('customizationContent');
-    container.innerHTML = `<div class="spinner"></div><p style="text-align:center;color:var(--text-muted)">Loading...</p>`;
+// ===== Revision Modal =====
+let revisionOrderId = null;
+function openRevisionModal(orderId) {
+    revisionOrderId = orderId;
+    document.getElementById('revisionDetails').value = '';
+    openModal('revisionModal');
+}
+async function submitRevision() {
+    const details = document.getElementById('revisionDetails').value.trim();
+    if (!details) { showToast('Please describe the changes', 'warning'); return; }
     
     try {
-        const data = await apiFetch(`${CONFIG.ENDPOINTS.ORDER}/${orderId}`);
-        const order = data.order || data.data || {};
-        
-        let html = '';
-        
-        if (order.requirements) {
-            html += `
-                <div class="modal-section">
-                    <h4><i class="fas fa-file-alt" aria-hidden="true"></i> Requirements</h4>
-                    <div class="requirements-text">${escapeHtml(order.requirements)}</div>
-                </div>
-            `;
-        }
-        
-        if (order.customization && Object.keys(order.customization).length > 0) {
-            html += `
-                <div class="modal-section">
-                    <h4><i class="fas fa-sliders-h" aria-hidden="true"></i> Customizations</h4>
-                    <div class="customization-list">
-                        ${Object.entries(order.customization).map(([key, value]) => `
-                            <div class="customization-item">
-                                <span class="key">${key.replace(/_/g, ' ')}</span>
-                                <span class="value">${typeof value === 'boolean' ? (value ? 'Yes' : 'No') : escapeHtml(value)}</span>
-                            </div>
-                        `).join('')}
-                    </div>
-                </div>
-            `;
-        }
-        
-        html += `
-            <div class="modal-section">
-                <h4><i class="fas fa-info-circle" aria-hidden="true"></i> Order Info</h4>
-                <div class="customization-list">
-                    <div class="customization-item">
-                        <span class="key">Order ID</span>
-                        <span class="value" style="font-family:monospace">${formatOrderNumber(order.id)}</span>
-                    </div>
-                    <div class="customization-item">
-                        <span class="key">Service</span>
-                        <span class="value">${escapeHtml(order.services?.title || 'Custom')}</span>
-                    </div>
-                    <div class="customization-item">
-                        <span class="key">Status</span>
-                        <span class="value">${getStatusText(order.status)}</span>
-                    </div>
-                    <div class="customization-item">
-                        <span class="key">Created</span>
-                        <span class="value">${formatDateTime(order.created_at)}</span>
-                    </div>
-                    ${order.delivered_at ? `
-                    <div class="customization-item">
-                        <span class="key">Delivered</span>
-                        <span class="value">${formatDateTime(order.delivered_at)}</span>
-                    </div>` : ''}
-                </div>
-            </div>
-        `;
-        
-        container.innerHTML = html || `<p style="text-align:center;color:var(--text-muted)">No additional details</p>`;
-        
-    } catch (err) {
-        container.innerHTML = `<p style="text-align:center;color:var(--danger)">Failed to load details</p>`;
-        console.error('Customization error:', err);
+        await apiFetch(`/conversation/order_${revisionOrderId}/send`, {
+            method: 'POST',
+            body: JSON.stringify({ message: `🔁 REVISION REQUEST:\n\n${details}\n\nPlease review and let me know.` })
+        });
+        showToast('Revision request sent! We\'ll get back to you.', 'success');
+        closeModal('revisionModal');
+        openChat(revisionOrderId);
+    } catch (error) {
+        showToast(error.message, 'error');
     }
 }
 
-// ===== 💬 Chat System =====
-let chatOrderId = null;
-let chatPollInterval = null;
-
-function openChat(orderId, event) {
-    if (event) {
-        event.stopPropagation();
-        event.preventDefault();
-    }
-    chatOrderId = orderId;
-    
-    const widget = document.getElementById('chatWidget');
-    const ref = document.getElementById('chatOrderRef');
-    
-    ref.textContent = formatOrderNumber(orderId);
-    widget.classList.add('show');
-    document.getElementById('chatBody').style.display = 'flex';
-    
-    loadChatMessages();
-    startChatPolling();
-}
-
-function closeChat(event) {
-    if (event) {
-        event.stopPropagation();
-        event.preventDefault();
-    }
-    document.getElementById('chatWidget').classList.remove('show');
-    if (chatPollInterval) {
-        clearInterval(chatPollInterval);
-        chatPollInterval = null;
-    }
-    chatOrderId = null;
-}
-
-function toggleChatBody() {
-    const body = document.getElementById('chatBody');
-    body.style.display = body.style.display === 'none' ? 'flex' : 'none';
-}
-
-async function loadChatMessages() {
-    if (!chatOrderId) return;
+// ===== Balance Payment =====
+async function payBalance(orderId, amount) {
     const token = Auth.getToken();
-    if (!token) return;
+    if (!token) { showToast('Please login to continue', 'error'); return; }
+    
+    const btn = event?.currentTarget;
+    if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...'; }
     
     try {
-        const conversationId = `order_${chatOrderId}`;
-        const data = await apiFetch(`${CONFIG.ENDPOINTS.CONVERSATION}/${conversationId}/messages`);
-        const messages = data.messages || [];
+        const res = await fetch(`${CONFIG.API}/order/${orderId}/pay-balance`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+            body: JSON.stringify({})
+        });
+        const data = await res.json();
         
+        if (!res.ok) throw new Error(data.error || 'Payment initiation failed');
+        
+        const paymentData = data.data || data;
+        if (!paymentData.key_id || !paymentData.razorpay_order_id) throw new Error('Invalid payment data');
+        
+        const options = {
+            key: paymentData.key_id,
+            amount: Math.round(amount * 100),
+            currency: 'INR',
+            name: 'NovaStack',
+            description: `Balance Payment - Order #${orderId.slice(-6)}`,
+            order_id: paymentData.razorpay_order_id,
+            handler: async (response) => {
+                await verifyBalancePayment(orderId, amount, response);
+            },
+            prefill: {
+                name: Auth.getUser()?.name || '',
+                email: Auth.getUser()?.email || '',
+                contact: Auth.getUser()?.phone || ''
+            },
+            theme: { color: '#ff6b35' },
+            modal: {
+                ondismiss: () => {
+                    showToast('Payment cancelled', 'warning');
+                    if (btn) { btn.disabled = false; btn.innerHTML = `<i class="fas fa-credit-card"></i> Pay ₹${amount.toLocaleString()}`; }
+                }
+            }
+        };
+        
+        new Razorpay(options).open();
+        
+    } catch (error) {
+        console.error('Payment error:', error);
+        showToast(error.message, 'error');
+        if (btn) { btn.disabled = false; btn.innerHTML = `<i class="fas fa-credit-card"></i> Pay ₹${amount.toLocaleString()}`; }
+    }
+}
+
+async function verifyBalancePayment(orderId, amount, response) {
+    try {
+        await apiFetch('/verify-balance-payment', {
+            method: 'POST',
+            body: JSON.stringify({
+                order_id: orderId, amount,
+                razorpay_order_id: response.razorpay_order_id,
+                razorpay_payment_id: response.razorpay_payment_id,
+                razorpay_signature: response.razorpay_signature
+            })
+        });
+        showToast('✅ Payment successful! Order updated.', 'success');
+        setTimeout(() => { loadOrders(); if (currentOrderId === orderId) openDetailsModal(orderId); }, 1500);
+    } catch (error) {
+        showToast('Payment verification failed: ' + error.message, 'error');
+    }
+}
+
+// ===== Chat Widget =====
+function toggleChatWidget() {
+    const widget = document.getElementById('chatWidget');
+    widget.classList.toggle('active');
+    if (widget.classList.contains('active') && currentConversationId) loadMessages();
+}
+function closeChatWidget() {
+    document.getElementById('chatWidget').classList.remove('active');
+    if (messagePollInterval) { clearInterval(messagePollInterval); messagePollInterval = null; }
+}
+function openChat(orderId) {
+    currentOrderId = orderId;
+    currentConversationId = `order_${orderId}`;
+    document.getElementById('chatWidget').classList.add('active');
+    loadMessages();
+    startMessagePolling();
+}
+async function loadMessages() {
+    if (!currentConversationId) return;
+    try {
+        const data = await apiFetch(`/conversation/${currentConversationId}/messages`);
+        const messages = data.messages || [];
         const container = document.getElementById('chatMessages');
         
-        if (messages.length === 0) {
-            container.innerHTML = `<div style="text-align:center;padding:1rem;color:var(--text-muted)">💬 No messages yet. Start the conversation!</div>`;
+        if (!messages.length) {
+            container.innerHTML = '<div style="text-align:center;padding:1rem;color:var(--text-muted);">💬 Start the conversation!</div>';
             return;
         }
         
@@ -2857,413 +1607,91 @@ async function loadChatMessages() {
             const isUser = msg.sender_role === 'user';
             return `
                 <div class="message ${isUser ? 'user' : 'admin'}">
-                    ${escapeHtml(msg.message || '')}
+                    <div>${escapeHtml(msg.message || '')}</div>
                     <div class="message-time">${formatDateTime(msg.created_at)}</div>
                 </div>
             `;
         }).join('');
+        container.scrollTop = container.scrollHeight;
         
-        // Smooth scroll to bottom
-        container.scrollTo({ top: container.scrollHeight, behavior: 'smooth' });
-        
-    } catch (err) {
-        console.warn('Failed to load chat:', err);
+    } catch (error) {
+        console.error('Failed to load messages:', error);
     }
 }
-
 async function sendChatMessage() {
-    const input = document.getElementById('chatMessageInput');
+    const input = document.getElementById('chatInput');
     const message = input.value.trim();
-    if (!message || !chatOrderId) return;
+    if (!message || !currentConversationId) return;
     
-    const btn = document.getElementById('chatSendBtn');
-    const originalContent = btn.innerHTML;
-    btn.disabled = true;
-    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
-    
+    input.value = '';
     try {
-        const token = Auth.getToken();
-        const conversationId = `order_${chatOrderId}`;
-        
-        await apiFetch(`${CONFIG.ENDPOINTS.CONVERSATION}/${conversationId}/send`, {
-            method: 'POST',
-            body: JSON.stringify({ message })
+        await apiFetch(`/conversation/${currentConversationId}/send`, {
+            method: 'POST', body: JSON.stringify({ message })
         });
-        
-        input.value = '';
-        input.style.height = 'auto'; // Reset textarea height
-        await loadChatMessages();
-        
-    } catch (err) {
+        await loadMessages();
+    } catch (error) {
         showToast('Failed to send message', 'error');
-        console.error('Chat send error:', err);
-    } finally {
-        btn.disabled = false;
-        btn.innerHTML = originalContent;
+        input.value = message; // restore
     }
 }
-
-function startChatPolling() {
-    if (chatPollInterval) clearInterval(chatPollInterval);
-    chatPollInterval = setInterval(() => {
-        if (chatOrderId && document.getElementById('chatWidget')?.classList.contains('show')) {
-            loadChatMessages();
+function startMessagePolling() {
+    if (messagePollInterval) clearInterval(messagePollInterval);
+    messagePollInterval = setInterval(() => {
+        if (document.getElementById('chatWidget').classList.contains('active') && currentConversationId) {
+            loadMessages();
         }
     }, 5000);
 }
 
-// ===== 💰 Payment Functions =====
-async function payBalance(orderId, amount, event) {
-    if (event) {
-        event.stopPropagation();
-        event.preventDefault();
-    }
-    
-    const btn = event?.currentTarget;
-    if (btn) {
-        btn.disabled = true;
-        const originalHTML = btn.innerHTML;
-        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
-        
-        try {
-            const token = Auth.getToken();
-            
-            // Create Razorpay order
-            const paymentData = await apiFetch(`${CONFIG.ENDPOINTS.ORDER}/${orderId}/pay-balance`, {
-                method: 'POST',
-                body: JSON.stringify({})
-            });
-            
-            const options = {
-                key: paymentData.data?.key_id,
-                amount: Math.round(amount * 100),
-                currency: "INR",
-                name: "NovaStack",
-                description: `Balance Payment for Order ${formatOrderNumber(orderId)}`,
-                order_id: paymentData.data?.razorpay_order_id,
-                handler: async function(response) {
-                    await verifyPayment(orderId, amount, response);
-                },
-                prefill: {
-                    name: Auth.getUser()?.name || '',
-                    email: Auth.getUser()?.email || '',
-                    contact: Auth.getUser()?.phone || ''
-                },
-                theme: { color: "#ff6b35" },
-                modal: {
-                    ondismiss: function() {
-                        showToast('Payment cancelled', 'warning');
-                        btn.disabled = false;
-                        btn.innerHTML = originalHTML;
-                    }
-                }
-            };
-            
-            if (typeof Razorpay !== 'undefined') {
-                new Razorpay(options).open();
-            } else {
-                throw new Error('Payment gateway not loaded');
-            }
-            
-        } catch (err) {
-            showToast(err.message, 'error');
-            console.error('Payment error:', err);
-            if (btn) {
-                btn.disabled = false;
-                btn.innerHTML = `<i class="fas fa-credit-card"></i> Pay ₹${amount.toLocaleString('en-IN')}`;
-            }
-        }
-    }
-}
-
-async function verifyPayment(orderId, amount, response) {
-    try {
-        await apiFetch(`${CONFIG.API}/verify-balance-payment`, {
-            method: 'POST',
-            body: JSON.stringify({
-                order_id: orderId,
-                amount: amount,
-                razorpay_order_id: response.razorpay_order_id,
-                razorpay_payment_id: response.razorpay_payment_id,
-                razorpay_signature: response.razorpay_signature
-            })
-        });
-        
-        showToast('✅ Payment successful! Order updated.', 'success');
-        setTimeout(() => {
-            loadOrders();
-            closeModal('deliverablesModal');
-        }, 1500);
-        
-    } catch (err) {
-        showToast('Payment verification failed: ' + err.message, 'error');
-        console.error('Verify payment error:', err);
-    }
-}
-
-// ===== ❌ Cancel & 🔄 Revision =====
-async function submitCancel() {
-    const reason = document.getElementById('cancelReason').value.trim();
-    if (!reason) {
-        showToast('Please provide a reason', 'warning');
-        return;
-    }
-    
-    const submitBtn = event?.currentTarget;
-    if (submitBtn) {
-        submitBtn.disabled = true;
-        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Submitting...';
-    }
-    
-    try {
-        await apiFetch(`${CONFIG.ENDPOINTS.ORDER}/${currentModalOrderId}${CONFIG.ENDPOINTS.CANCEL}`, {
-            method: 'POST',
-            body: JSON.stringify({ reason })
-        });
-        
-        showToast('Cancellation request submitted!', 'success');
-        closeModal('cancelModal');
-        loadOrders();
-        
-    } catch (err) {
-        showToast(err.message, 'error');
-        console.error('Cancel error:', err);
-    } finally {
-        if (submitBtn) {
-            submitBtn.disabled = false;
-            submitBtn.innerHTML = 'Submit';
-        }
-    }
-}
-
-async function submitRevision() {
-    const details = document.getElementById('revisionDetails').value.trim();
-    if (!details) {
-        showToast('Please describe the changes', 'warning');
-        return;
-    }
-    
-    const submitBtn = event?.currentTarget;
-    if (submitBtn) {
-        submitBtn.disabled = true;
-        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
-    }
-    
-    try {
-        const conversationId = `order_${currentModalOrderId}`;
-        await apiFetch(`${CONFIG.ENDPOINTS.CONVERSATION}/${conversationId}/send`, {
-            method: 'POST',
-            body: JSON.stringify({ 
-                message: `🔁 REVISION REQUEST:\n\n${details}\n\nPlease let me know when changes are done.` 
-            })
-        });
-        
-        showToast('✅ Revision request sent!', 'success');
-        closeModal('revisionModal');
-        openChat(currentModalOrderId);
-        
-    } catch (err) {
-        showToast(err.message, 'error');
-        console.error('Revision error:', err);
-    } finally {
-        if (submitBtn) {
-            submitBtn.disabled = false;
-            submitBtn.innerHTML = 'Send Request';
-        }
-    }
-}
-
-// ===== 📋 Copy Order ID =====
-function copyOrderId(orderId, event) {
-    if (event) {
-        event.stopPropagation();
-        event.preventDefault();
-    }
-    
-    const formatted = formatOrderNumber(orderId);
-    navigator.clipboard.writeText(formatted).then(() => {
-        const el = event?.currentTarget;
-        if (el) {
-            el.classList.add('copied');
-            showToast('Order ID copied!', 'success');
-            setTimeout(() => el.classList.remove('copied'), 2000);
-        }
-    }).catch(err => {
-        console.warn('Copy failed:', err);
-        showToast('Failed to copy', 'error');
-    });
-}
-
-// ===== 🚪 Logout =====
+// ===== Logout =====
 function logout() {
     localStorage.removeItem('dc_token');
     localStorage.removeItem('dc_user');
     localStorage.removeItem('dc_cart_local');
-    sessionStorage.removeItem('dc_token');
-    sessionStorage.removeItem('dc_user');
     window.location.href = 'index.html';
 }
+document.getElementById('dropdownLogout')?.addEventListener('click', (e) => { e.preventDefault(); logout(); });
+document.getElementById('mobileLogout')?.addEventListener('click', logout);
 
-// ===== 🔄 Initialize =====
+// ===== Initialize =====
 document.addEventListener('DOMContentLoaded', async () => {
-    // Auth check
-    if (!Auth.isLoggedIn() && !CONFIG.USE_MOCK) {
-        window.location.href = 'login.html?redirect=my-orders.html';
-        return;
-    }
-    
-    // Refresh user data (only if not using mock)
-    if (!CONFIG.USE_MOCK) {
+    // Refresh user if logged in
+    if (Auth.isLoggedIn()) {
         try {
-            const freshUser = await apiFetch(CONFIG.ENDPOINTS.USER);
-            if (freshUser.user) {
-                localStorage.setItem('dc_user', JSON.stringify(freshUser.user));
-            }
-        } catch (err) {
-            console.warn('Could not refresh user:', err);
-        }
+            const fresh = await apiFetch('/user');
+            if (fresh.user) localStorage.setItem('dc_user', JSON.stringify(fresh.user));
+        } catch {}
     }
     
-    // Update UI
-    updateProfileUI();
+    updateAuthUI();
+    if (Auth.isLoggedIn()) loadOrders();
     
-    // Load orders
-    await loadOrders();
-    
-    // Event listeners
-    const profileTrigger = document.getElementById('profileTrigger');
-    if (profileTrigger) {
-        profileTrigger.addEventListener('click', (e) => {
-            e.stopPropagation();
-            toggleProfileDropdown();
-        });
-        profileTrigger.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter' || e.key === ' ') {
-                e.preventDefault();
-                toggleProfileDropdown();
-            }
-        });
+    // Auto-refresh cart count (if needed)
+    if (Auth.isLoggedIn()) {
+        setInterval(async () => {
+            try {
+                const cart = await apiFetch('/cart');
+                // Update cart badges if they exist
+            } catch {}
+        }, 30000);
     }
     
-    const menuToggle = document.getElementById('menuToggle');
-    if (menuToggle) {
-        menuToggle.addEventListener('click', toggleMobileMenu);
-        menuToggle.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter' || e.key === ' ') {
-                e.preventDefault();
-                toggleMobileMenu();
-            }
-        });
-    }
-    
-    const mobileProfileToggle = document.getElementById('mobileProfileToggle');
-    if (mobileProfileToggle) {
-        mobileProfileToggle.addEventListener('click', () => {
-            const menu = document.getElementById('mobileProfileMenu');
-            menu.style.display = menu.style.display === 'flex' ? 'none' : 'flex';
-        });
-        mobileProfileToggle.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter' || e.key === ' ') {
-                e.preventDefault();
-                const menu = document.getElementById('mobileProfileMenu');
-                menu.style.display = menu.style.display === 'flex' ? 'none' : 'flex';
-            }
-        });
-    }
-    
-    const dropdownLogout = document.getElementById('dropdownLogout');
-    if (dropdownLogout) {
-        dropdownLogout.addEventListener('click', (e) => {
-            e.preventDefault();
-            logout();
-        });
-    }
-    
-    const mobileLogoutBtn = document.getElementById('mobileLogoutBtn');
-    if (mobileLogoutBtn) {
-        mobileLogoutBtn.addEventListener('click', logout);
-    }
-    
-    // Close dropdowns on outside click
-    document.addEventListener('click', (e) => {
-        const dropdown = document.getElementById('profileDropdown');
-        const trigger = document.getElementById('profileTrigger');
-        if (dropdown && trigger && !trigger.contains(e.target) && !dropdown.contains(e.target)) {
-            dropdown.classList.remove('show');
-            trigger.classList.remove('active');
-            trigger.setAttribute('aria-expanded', 'false');
+    // Close mobile menu on resize
+    window.addEventListener('resize', () => {
+        if (window.innerWidth > 768 && mobileMenu?.classList.contains('active')) {
+            mobileMenu.classList.remove('active');
+            menuToggle?.classList.remove('active');
+            body.classList.remove('menu-open');
         }
-        
-        // Close mobile menu on outside click
-        const mobileMenu = document.getElementById('mobileMenu');
-        const menuToggle = document.getElementById('menuToggle');
-        if (mobileMenu?.classList.contains('active') && 
-            !mobileMenu.contains(e.target) && 
-            !menuToggle?.contains(e.target)) {
-            toggleMobileMenu();
-        }
-    });
-    
-    // Navbar scroll effect - debounced for performance
-    const handleScroll = debounce(() => {
-        const nav = document.getElementById('navbar');
-        if (nav) {
-            if (window.scrollY > 50) {
-                nav.classList.add('scrolled');
-            } else {
-                nav.classList.remove('scrolled');
-            }
-        }
-    }, 100);
-    
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    
-    // Auto-refresh orders every 30 seconds (only when visible)
-    setInterval(() => {
-        if (Auth.isLoggedIn() && document.visibilityState === 'visible' && !CONFIG.USE_MOCK) {
-            loadOrders();
-        }
-    }, 30000);
-    
-    // Handle page visibility
-    document.addEventListener('visibilitychange', () => {
-        if (!document.hidden && Auth.isLoggedIn() && !CONFIG.USE_MOCK) {
-            loadOrders();
-        }
-    });
-    
-    // Auto-resize chat textarea
-    const chatInput = document.getElementById('chatMessageInput');
-    if (chatInput) {
-        chatInput.addEventListener('input', function() {
-            this.style.height = 'auto';
-            this.style.height = Math.min(this.scrollHeight, 120) + 'px';
-        });
-    }
-    
-    // Prevent zoom on double-tap (iOS fix)
-    let lastTouchEnd = 0;
-    document.addEventListener('touchend', (e) => {
-        const now = Date.now();
-        if (now - lastTouchEnd <= 300) {
-            e.preventDefault();
-        }
-        lastTouchEnd = now;
-    }, { passive: false });
-    
-    // Handle keyboard navigation for order IDs
-    document.querySelectorAll('.order-id').forEach(el => {
-        el.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter' || e.key === ' ') {
-                e.preventDefault();
-                copyOrderId(el.closest('.order-card').dataset.orderId, { currentTarget: el });
-            }
-        });
     });
 });
 
-// Prevent accidental zoom on mobile
-document.addEventListener('gesturestart', (e) => e.preventDefault());
+// Prevent zoom on double-tap (iOS)
+let lastTouchEnd = 0;
+document.addEventListener('touchend', (e) => {
+    if (Date.now() - lastTouchEnd <= 300) e.preventDefault();
+    lastTouchEnd = Date.now();
+}, { passive: false });
 </script>
 </body>
 </html>
