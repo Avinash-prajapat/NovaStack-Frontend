@@ -1910,27 +1910,47 @@ async function payBalance(orderId, amount) {
     }
     
     const btn = event?.currentTarget;
+    const originalText = btn?.innerHTML;
+    
     if (btn) {
         btn.disabled = true;
         btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
     }
     
     try {
-        const checkRes = await fetch(`${CONFIG.API}/my-orders`, {
+        // First verify the order status
+        console.log(`🔍 Checking order ${orderId} status...`);
+        const ordersRes = await fetch(`${CONFIG.API}/my-orders`, {
             headers: { 'Authorization': `Bearer ${token}` }
         });
-        const data = await checkRes.json();
-        const order = data.orders?.find(o => o.id === orderId);
         
-        if (!order) throw new Error('Order not found');
-        if (order.status !== 'ready_for_balance' && order.status !== 'delivered') {
-            throw new Error(`Cannot pay balance: Order status is "${order.status}"`);
+        if (!ordersRes.ok) {
+            throw new Error('Failed to fetch orders');
         }
+        
+        const ordersData = await ordersRes.json();
+        const order = ordersData.orders?.find(o => o.id === orderId);
+        
+        if (!order) {
+            throw new Error('Order not found');
+        }
+        
+        console.log('Order status:', order.status);
+        console.log('Balance due:', amount);
+        
+        // Check if payment is allowed
+        if (order.status !== 'ready_for_balance' && order.status !== 'delivered') {
+            throw new Error(`Cannot pay balance: Order is "${order.status}". Wait for admin to mark as ready.`);
+        }
+        
         if (amount <= 0) {
             showToast('✅ Order is already fully paid!', 'success');
+            if (btn) btn.disabled = false;
             return;
         }
         
+        // Initiate payment
+        console.log(`💰 Initiating balance payment for ₹${amount}`);
         const res = await fetch(`${CONFIG.API}/order/${orderId}/pay-balance`, {
             method: 'POST',
             headers: {
@@ -1939,21 +1959,33 @@ async function payBalance(orderId, amount) {
             }
         });
         
-        const paymentData = await res.json();
-        if (!res.ok) throw new Error(paymentData.error || 'Payment initiation failed');
+        const data = await res.json();
+        console.log('Payment initiation response:', data);
         
-        if (!paymentData.key_id || !paymentData.razorpay_order_id) {
-            throw new Error('Invalid payment configuration');
+        if (!res.ok) {
+            throw new Error(data.error || `Server error: ${res.status}`);
         }
         
+        if (!data.success || !data.data) {
+            throw new Error(data.error || 'Invalid response from server');
+        }
+        
+        const paymentData = data.data;
+        
+        if (!paymentData.key_id || !paymentData.razorpay_order_id) {
+            throw new Error('Invalid payment configuration from server');
+        }
+        
+        // Prepare Razorpay options
         const options = {
             key: paymentData.key_id,
             amount: Math.round(amount * 100),
-            currency: 'INR',
-            name: 'NovaStack',
+            currency: "INR",
+            name: "NovaStack",
             description: `Balance Payment - Order #${orderId}`,
             order_id: paymentData.razorpay_order_id,
             handler: async function(response) {
+                console.log('✅ Razorpay payment success:', response);
                 await verifyBalancePayment(orderId, amount, response);
             },
             prefill: {
@@ -1961,37 +1993,56 @@ async function payBalance(orderId, amount) {
                 email: Auth.getUser()?.email || '',
                 contact: Auth.getUser()?.phone || ''
             },
-            theme: { color: '#ff6b35' },
+            theme: {
+                color: "#ff6b35"
+            },
             modal: {
                 ondismiss: function() {
+                    console.log('Payment modal closed');
                     if (btn) {
                         btn.disabled = false;
-                        btn.innerHTML = `<i class="fas fa-credit-card"></i> Pay Balance ₹${amount.toLocaleString()}`;
+                        btn.innerHTML = originalText;
                     }
                     showToast('Payment cancelled', 'warning');
                 }
             }
         };
         
+        console.log('Opening Razorpay checkout...');
         const rzp = new Razorpay(options);
         
         rzp.on('payment.failed', function(response) {
-            console.error('Payment failed:', response.error);
+            console.error('❌ Razorpay payment failed:', response.error);
             showToast(`Payment failed: ${response.error.description || 'Please try again'}`, 'error');
             if (btn) {
                 btn.disabled = false;
-                btn.innerHTML = `<i class="fas fa-credit-card"></i> Pay Balance ₹${amount.toLocaleString()}`;
+                btn.innerHTML = originalText;
             }
+            
+            // Log failure to backend
+            fetch(`${CONFIG.API}/payment-failed`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({
+                    order_id: orderId,
+                    razorpay_order_id: paymentData.razorpay_order_id,
+                    error: response.error.code,
+                    error_description: response.error.description
+                })
+            }).catch(e => console.error('Failed to log error:', e));
         });
         
         rzp.open();
         
     } catch (error) {
-        console.error('Pay balance error:', error);
+        console.error('❌ Pay balance error:', error);
         showToast(error.message, 'error');
         if (btn) {
             btn.disabled = false;
-            btn.innerHTML = `<i class="fas fa-credit-card"></i> Pay Balance ₹${amount.toLocaleString()}`;
+            btn.innerHTML = originalText;
         }
     }
 }
@@ -1999,7 +2050,14 @@ async function payBalance(orderId, amount) {
 async function verifyBalancePayment(orderId, amount, response) {
     const token = Auth.getToken();
     
+    if (!token) {
+        showToast('Session expired. Please login again.', 'error');
+        return;
+    }
+    
     try {
+        console.log(`🔍 Verifying balance payment for order ${orderId}...`);
+        
         const res = await fetch(`${CONFIG.API}/verify-balance-payment`, {
             method: 'POST',
             headers: {
@@ -2016,14 +2074,24 @@ async function verifyBalancePayment(orderId, amount, response) {
         });
         
         const data = await res.json();
-        if (!res.ok) throw new Error(data.error || 'Verification failed');
+        console.log('Verification response:', data);
         
-        showToast('✅ Balance payment successful! Order completed.');
-        loadOrders();
+        if (!res.ok) {
+            throw new Error(data.error || 'Verification failed');
+        }
+        
+        showToast('✅ Balance payment successful! Order completed.', 'success');
+        
+        // Reload orders to show updated status
+        setTimeout(() => {
+            loadOrders();
+        }, 1500);
         
     } catch (error) {
-        console.error('Verification failed:', error);
-        showToast('⚠️ Payment may be processing. Check back in a few minutes.', 'warning');
+        console.error('❌ Balance verification failed:', error);
+        showToast(`⚠️ Payment verification failed: ${error.message}. Please contact support.`, 'warning');
+        
+        // Don't re-enable button as payment might be processing
     }
 }
 
