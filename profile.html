@@ -17,344 +17,980 @@
   <style>
     /* ===== 🎨 CSS Variables ===== */
     :root {
-      --bg-primary: #0f0c1a; --bg-secondary: #1a162a; --bg-card: rgba(26, 22, 42, 0.85);
-      --surface: rgba(255, 255, 255, 0.08); --surface-hover: rgba(255, 255, 255, 0.15);
-      --border: rgba(255, 255, 255, 0.12); --border-hover: rgba(232, 93, 38, 0.6);
-      --text-primary: #ffffff; --text-secondary: rgba(255, 255, 255, 0.75);
-      --text-muted: rgba(255, 255, 255, 0.45); --accent: #ff6b35;
-      --accent-glow: rgba(255, 107, 53, 0.4); --accent-secondary: #7c3aed;
-      --green: #10b981; --green-glow: rgba(16, 185, 129, 0.35);
-      --blue: #3b82f6; --gradient-accent: linear-gradient(135deg, #ff6b35 0%, #f7c531 100%);
-      --shadow-sm: 0 2px 8px rgba(0,0,0,0.25); --shadow-md: 0 8px 30px rgba(0,0,0,0.4);
-      --shadow-lg: 0 20px 60px rgba(0,0,0,0.55); --shadow-glow: 0 0 40px var(--accent-glow);
+      --bg-primary: #0f0c1a;
+      --bg-secondary: #1a162a;
+      --bg-card: rgba(26, 22, 42, 0.85);
+      --surface: rgba(255, 255, 255, 0.08);
+      --surface-hover: rgba(255, 255, 255, 0.15);
+      --border: rgba(255, 255, 255, 0.12);
+      --text-primary: #ffffff;
+      --text-secondary: rgba(255, 255, 255, 0.75);
+      --text-muted: rgba(255, 255, 255, 0.45);
+      --accent: #ff6b35;
+      --accent-glow: rgba(255, 107, 53, 0.4);
+      --gradient-accent: linear-gradient(135deg, #ff6b35 0%, #f7c531 100%);
+      --shadow-md: 0 8px 30px rgba(0,0,0,0.4);
+      --shadow-lg: 0 20px 60px rgba(0,0,0,0.55);
+      --shadow-glow: 0 0 40px var(--accent-glow);
       --transition-normal: 300ms cubic-bezier(0.4,0,0.2,1);
-      --radius-sm: 8px; --radius-md: 14px; --radius-lg: 20px; --radius-xl: 28px; --radius-full: 9999px;
+      --radius-sm: 8px;
+      --radius-md: 14px;
+      --radius-lg: 20px;
+      --radius-xl: 28px;
+      --radius-full: 9999px;
     }
 
-    * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+    
     body {
-      font-family: 'DM Sans', sans-serif; background: var(--bg-primary); color: var(--text-primary);
-      line-height: 1.7; overflow-x: hidden; min-height: 100vh;
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.7;
+      overflow-x: hidden;
+      min-height: 100vh;
     }
 
-    /* Navigation (Same as before) */
+    /* Navigation */
     nav {
-      position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
-      background: rgba(15,12,26,0.85); backdrop-filter: blur(20px);
-      border-bottom: 1px solid var(--border); padding: 0 5%;
-      display: flex; align-items: center; justify-content: space-between;
-      height: 72px; transition: all var(--transition-normal);
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      background: rgba(15,12,26,0.85);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 5%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 72px;
+      transition: all var(--transition-normal);
     }
-    nav.scrolled { height: 64px; background: rgba(15,12,26,0.95); box-shadow: var(--shadow-md); }
+    
+    nav.scrolled {
+      height: 64px;
+      background: rgba(15,12,26,0.95);
+      box-shadow: var(--shadow-md);
+    }
     
     .logo {
-      font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.6rem;
-      color: var(--text-primary); text-decoration: none;
-      display: flex; align-items: center; gap: 0.3rem;
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 1.6rem;
+      color: var(--text-primary);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
     }
-    .logo span { background: var(--gradient-accent); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
     
-    .nav-links { display: flex; gap: 2rem; align-items: center; }
-    .nav-links a {
-      text-decoration: none; color: var(--text-secondary); font-size: 0.95rem; font-weight: 500;
-      position: relative; padding: 0.5rem 0; transition: color var(--transition-normal);
+    .logo span {
+      background: var(--gradient-accent);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
     }
-    .nav-links a:hover, .nav-links a.active { color: var(--text-primary); }
+    
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+      align-items: center;
+    }
+    
+    .nav-links a {
+      text-decoration: none;
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+      font-weight: 500;
+      transition: color var(--transition-normal);
+    }
+    
+    .nav-links a:hover {
+      color: var(--text-primary);
+    }
     
     /* User Toggle */
-    .user-toggle-wrapper { position: relative; display: flex; align-items: center; }
+    .user-toggle-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+    
     .user-toggle {
-      display: flex; align-items: center; gap: 0.6rem; padding: 0.4rem 0.8rem;
-      background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-full);
-      cursor: pointer; transition: all var(--transition-normal);
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      padding: 0.4rem 0.8rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-full);
+      cursor: pointer;
+      transition: all var(--transition-normal);
     }
-    .user-toggle:hover, .user-toggle.active { background: var(--surface-hover); border-color: var(--accent); }
+    
+    .user-toggle:hover {
+      background: var(--surface-hover);
+      border-color: var(--accent);
+    }
+    
     .user-avatar {
-      width: 32px; height: 32px; border-radius: 50%; background: var(--gradient-accent);
-      display: flex; align-items: center; justify-content: center; font-weight: 600;
-      font-size: 0.85rem; color: white; text-transform: uppercase; overflow: hidden;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: var(--gradient-accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      font-size: 0.85rem;
+      color: white;
+      text-transform: uppercase;
+      overflow: hidden;
     }
-    .user-avatar img { width: 100%; height: 100%; object-fit: cover; }
-    .user-name { font-size: 0.9rem; font-weight: 500; color: var(--text-primary); max-width: 120px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .user-toggle i.chevron { font-size: 0.75rem; color: var(--text-muted); transition: transform 0.2s; }
-    .user-toggle.active i.chevron { transform: rotate(180deg); }
+    
+    .user-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    
+    .user-name {
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--text-primary);
+      max-width: 120px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    
+    .user-toggle i.chevron {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      transition: transform 0.2s;
+    }
+    
+    .user-toggle.active i.chevron {
+      transform: rotate(180deg);
+    }
     
     .user-dropdown {
-      position: absolute; top: calc(100% + 12px); left: 0; background: var(--bg-card);
-      border: 1px solid var(--border); border-radius: var(--radius-md); min-width: 240px;
-      padding: 0.5rem 0; box-shadow: var(--shadow-lg); backdrop-filter: blur(20px);
-      opacity: 0; visibility: hidden; transform: translateY(-10px); transition: all var(--transition-normal);
+      position: absolute;
+      top: calc(100% + 12px);
+      left: 0;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      min-width: 240px;
+      padding: 0.5rem 0;
+      box-shadow: var(--shadow-lg);
+      backdrop-filter: blur(20px);
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(-10px);
+      transition: all var(--transition-normal);
       z-index: 1001;
     }
-    .user-dropdown.active { opacity: 1; visibility: visible; transform: translateY(0); }
-    .dropdown-header { padding: 0.8rem 1.2rem; border-bottom: 1px solid var(--border); margin-bottom: 0.3rem; }
-    .dropdown-header .user-avatar { width: 40px; height: 40px; font-size: 1rem; margin-bottom: 0.4rem; }
-    .dropdown-header .user-name { font-size: 1rem; font-weight: 600; max-width: none; }
-    .dropdown-header .user-email { font-size: 0.8rem; color: var(--text-muted); }
-    .dropdown-item {
-      display: flex; align-items: center; gap: 0.8rem; padding: 0.7rem 1.2rem;
-      color: var(--text-secondary); text-decoration: none; font-size: 0.9rem;
-      transition: all 0.2s; border-left: 3px solid transparent;
+    
+    .user-dropdown.active {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
     }
-    .dropdown-item:hover { background: var(--surface-hover); color: var(--text-primary); border-left-color: var(--accent); padding-left: 1.5rem; }
-    .dropdown-item i { width: 20px; text-align: center; color: var(--accent); }
-    .dropdown-logout { color: #ef4444 !important; border-top: 1px solid var(--border); margin-top: 0.3rem; padding-top: 0.7rem; }
-    .dropdown-logout i { color: #ef4444 !important; }
+    
+    .dropdown-header {
+      padding: 0.8rem 1.2rem;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 0.3rem;
+    }
+    
+    .dropdown-header .user-avatar {
+      width: 40px;
+      height: 40px;
+      font-size: 1rem;
+      margin-bottom: 0.4rem;
+    }
+    
+    .dropdown-header .user-name {
+      font-size: 1rem;
+      font-weight: 600;
+      max-width: none;
+    }
+    
+    .dropdown-header .user-email {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+    
+    .dropdown-item {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      padding: 0.7rem 1.2rem;
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 0.9rem;
+      transition: all 0.2s;
+      border-left: 3px solid transparent;
+    }
+    
+    .dropdown-item:hover {
+      background: var(--surface-hover);
+      color: var(--text-primary);
+      border-left-color: var(--accent);
+      padding-left: 1.5rem;
+    }
+    
+    .dropdown-item i {
+      width: 20px;
+      text-align: center;
+      color: var(--accent);
+    }
+    
+    .dropdown-logout {
+      color: #ef4444 !important;
+      border-top: 1px solid var(--border);
+      margin-top: 0.3rem;
+      padding-top: 0.7rem;
+    }
+    
+    .dropdown-logout i {
+      color: #ef4444 !important;
+    }
     
     /* Auth Buttons */
-    .nav-right { display: flex; align-items: center; gap: 0.8rem; }
-    .auth-buttons.hidden, #userToggleWrapper.hidden { display: none; }
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+    }
+    
+    .auth-buttons.hidden {
+      display: none;
+    }
+    
+    #userToggleWrapper.hidden {
+      display: none;
+    }
     
     .btn {
-      padding: 0.6rem 1.4rem; border-radius: var(--radius-full); font-family: 'DM Sans', sans-serif;
-      font-size: 0.9rem; font-weight: 600; cursor: pointer; text-decoration: none;
-      display: inline-flex; align-items: center; gap: 0.5rem; transition: all var(--transition-normal);
-      border: none; min-height: 44px;
+      padding: 0.6rem 1.4rem;
+      border-radius: var(--radius-full);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: all var(--transition-normal);
+      border: none;
+      min-height: 44px;
     }
-    .btn-outline { background: transparent; color: var(--text-primary); border: 1.5px solid var(--border); }
-    .btn-outline:hover { border-color: var(--accent); transform: translateY(-2px); }
-    .btn-primary { background: var(--gradient-accent); color: white; box-shadow: 0 4px 20px var(--accent-glow); }
-    .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 8px 35px var(--accent-glow); }
+    
+    .btn-outline {
+      background: transparent;
+      color: var(--text-primary);
+      border: 1.5px solid var(--border);
+    }
+    
+    .btn-outline:hover {
+      border-color: var(--accent);
+      transform: translateY(-2px);
+    }
+    
+    .btn-primary {
+      background: var(--gradient-accent);
+      color: white;
+      box-shadow: 0 4px 20px var(--accent-glow);
+    }
+    
+    .btn-primary:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 35px var(--accent-glow);
+    }
     
     /* Mobile Menu */
     .menu-toggle {
-      display: none; font-size: 1.4rem; color: var(--accent); cursor: pointer;
-      padding: 0.6rem; border-radius: var(--radius-sm); min-width: 44px; min-height: 44px;
+      display: none;
+      font-size: 1.4rem;
+      color: var(--accent);
+      cursor: pointer;
+      padding: 0.6rem;
+      border-radius: var(--radius-sm);
+      min-width: 44px;
+      min-height: 44px;
     }
-    .menu-toggle:hover, .menu-toggle.active { background: var(--surface); }
+    
+    .menu-toggle:hover {
+      background: var(--surface);
+    }
     
     .mobile-menu {
-      position: fixed; top: 72px; left: 0; right: 0; background: var(--bg-secondary);
-      border-bottom: 1px solid var(--border); padding: 1rem 5%; max-height: 0;
-      overflow: hidden; transition: max-height 0.4s ease, opacity 0.3s ease;
-      opacity: 0; z-index: 999; backdrop-filter: blur(20px);
+      position: fixed;
+      top: 72px;
+      left: 0;
+      right: 0;
+      background: var(--bg-secondary);
+      border-bottom: 1px solid var(--border);
+      padding: 1rem 5%;
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.4s ease, opacity 0.3s ease;
+      opacity: 0;
+      z-index: 999;
+      backdrop-filter: blur(20px);
     }
-    .mobile-menu.active { max-height: 80vh; opacity: 1; overflow-y: auto; }
-    .mobile-menu-inner { display: flex; flex-direction: column; gap: 0.5rem; padding-bottom: 1rem; }
+    
+    .mobile-menu.active {
+      max-height: 80vh;
+      opacity: 1;
+      overflow-y: auto;
+    }
+    
+    .mobile-menu-inner {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      padding-bottom: 1rem;
+    }
+    
     .mobile-nav-link {
-      display: flex; align-items: center; gap: 0.8rem; padding: 1rem 1.2rem;
-      color: var(--text-secondary); text-decoration: none; font-size: 1rem; font-weight: 500;
-      border-radius: var(--radius-md); transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      padding: 1rem 1.2rem;
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 1rem;
+      font-weight: 500;
+      border-radius: var(--radius-md);
+      transition: all 0.2s;
     }
-    .mobile-nav-link:hover { background: var(--surface-hover); color: var(--text-primary); }
-    .mobile-nav-link i { width: 24px; text-align: center; color: var(--accent); }
-    .mobile-divider { height: 1px; background: var(--border); margin: 0.5rem 0; }
-    .mobile-profile-section { padding: 0.5rem 0; }
+    
+    .mobile-nav-link:hover {
+      background: var(--surface-hover);
+      color: var(--text-primary);
+    }
+    
+    .mobile-nav-link i {
+      width: 24px;
+      text-align: center;
+      color: var(--accent);
+    }
+    
+    .mobile-divider {
+      height: 1px;
+      background: var(--border);
+      margin: 0.5rem 0;
+    }
+    
+    .mobile-profile-section {
+      padding: 0.5rem 0;
+    }
+    
     .mobile-profile-header {
-      display: flex; align-items: center; gap: 0.8rem; padding: 0.8rem 1.2rem;
-      background: var(--surface); border-radius: var(--radius-md); margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      padding: 0.8rem 1.2rem;
+      background: var(--surface);
+      border-radius: var(--radius-md);
+      margin-bottom: 0.5rem;
+      cursor: pointer;
     }
+    
     .mobile-profile-avatar {
-      width: 40px; height: 40px; border-radius: 50%; background: var(--gradient-accent);
-      display: flex; align-items: center; justify-content: center; font-weight: 600;
-      color: white; text-transform: uppercase; overflow: hidden;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--gradient-accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      color: white;
+      text-transform: uppercase;
+      overflow: hidden;
     }
-    .mobile-profile-avatar img { width: 100%; height: 100%; object-fit: cover; }
-    .mobile-profile-info { flex: 1; }
-    .mobile-profile-name { font-weight: 600; color: var(--text-primary); font-size: 0.95rem; }
-    .mobile-profile-email { font-size: 0.8rem; color: var(--text-muted); }
-    .mobile-logout-btn { width: 100%; justify-content: center; color: #ef4444 !important; }
+    
+    .mobile-profile-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    
+    .mobile-profile-info {
+      flex: 1;
+    }
+    
+    .mobile-profile-name {
+      font-weight: 600;
+      color: var(--text-primary);
+      font-size: 0.95rem;
+    }
+    
+    .mobile-profile-email {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+    
+    .mobile-logout-btn {
+      width: 100%;
+      justify-content: center;
+      color: #ef4444 !important;
+    }
     
     /* Container & Profile Card */
-    .container { max-width: 1200px; margin: 0 auto; padding: 100px 5% 60px; }
-    .page-header { margin-bottom: 2rem; }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 100px 5% 60px;
+    }
+    
+    .page-header {
+      margin-bottom: 2rem;
+    }
+    
     .page-header h1 {
-      font-family: 'Syne', sans-serif; font-weight: 800;
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
       font-size: clamp(1.8rem, 4vw, 2.5rem);
-      display: flex; align-items: center; gap: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
     }
     
     .profile-card {
-      background: var(--bg-card); border: 1px solid var(--border);
-      border-radius: var(--radius-xl); overflow: hidden;
-      backdrop-filter: blur(10px); animation: fadeInUp 0.5s ease-out;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      overflow: hidden;
+      backdrop-filter: blur(10px);
+      animation: fadeInUp 0.5s ease-out;
     }
-    @keyframes fadeInUp { from{opacity:0;transform:translateY(30px)} to{opacity:1;transform:translateY(0)} }
     
-    /* Avatar Section with Upload */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    /* Avatar Section */
     .avatar-section {
       background: linear-gradient(135deg, rgba(255,107,53,0.2), rgba(247,197,49,0.1));
-      padding: 2.5rem 2rem; text-align: center;
+      padding: 2.5rem 2rem;
+      text-align: center;
       border-bottom: 1px solid var(--border);
     }
-    .avatar-container { position: relative; display: inline-block; }
+    
+    .avatar-container {
+      position: relative;
+      display: inline-block;
+    }
+    
     .profile-avatar-large {
-      width: 120px; height: 120px; border-radius: 50%;
-      background: var(--gradient-accent); display: flex;
-      align-items: center; justify-content: center;
-      font-size: 3rem; font-weight: 600; color: white;
-      border: 4px solid rgba(255,255,255,0.2); transition: all 0.3s ease;
-      cursor: pointer; overflow: hidden;
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      background: var(--gradient-accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 3rem;
+      font-weight: 600;
+      color: white;
+      border: 4px solid rgba(255,255,255,0.2);
+      transition: all 0.3s ease;
+      cursor: pointer;
+      overflow: hidden;
     }
-    .profile-avatar-large img { width: 100%; height: 100%; object-fit: cover; }
+    
+    .profile-avatar-large img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    
     .change-photo-btn {
-      position: absolute; bottom: 5px; right: 5px;
-      background: var(--gradient-accent); border: none;
-      width: 36px; height: 36px; border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
-      cursor: pointer; transition: all 0.3s; color: white; font-size: 0.9rem;
+      position: absolute;
+      bottom: 5px;
+      right: 5px;
+      background: var(--gradient-accent);
+      border: none;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.3s;
+      color: white;
+      font-size: 0.9rem;
     }
-    .change-photo-btn:hover { transform: scale(1.1); box-shadow: 0 0 15px var(--accent-glow); }
+    
+    .change-photo-btn:hover {
+      transform: scale(1.1);
+      box-shadow: 0 0 15px var(--accent-glow);
+    }
+    
     .remove-photo-btn {
-      position: absolute; bottom: 5px; right: 50px;
-      background: rgba(239,68,68,0.9); border: none;
-      width: 32px; height: 32px; border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
-      cursor: pointer; transition: all 0.3s; color: white; font-size: 0.8rem;
+      position: absolute;
+      bottom: 5px;
+      right: 50px;
+      background: rgba(239,68,68,0.9);
+      border: none;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.3s;
+      color: white;
+      font-size: 0.8rem;
     }
-    .remove-photo-btn:hover { transform: scale(1.1); background: #ef4444; }
+    
+    .remove-photo-btn:hover {
+      transform: scale(1.1);
+      background: #ef4444;
+    }
     
     /* Form Section */
-    .form-section { padding: 2rem; }
-    .form-group { margin-bottom: 1.5rem; }
-    .form-group label {
-      display: block; margin-bottom: 0.5rem; color: var(--text-secondary);
-      font-weight: 500; font-size: 0.85rem; display: flex; align-items: center; gap: 0.5rem;
+    .form-section {
+      padding: 2rem;
     }
-    .form-group label i { color: var(--accent); width: 20px; }
+    
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+    
+    .form-group label {
+      display: block;
+      margin-bottom: 0.5rem;
+      color: var(--text-secondary);
+      font-weight: 500;
+      font-size: 0.85rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .form-group label i {
+      color: var(--accent);
+      width: 20px;
+    }
+    
     .form-group input {
-      width: 100%; padding: 0.9rem 1rem; background: var(--surface);
-      border: 1.5px solid var(--border); border-radius: var(--radius-md);
-      color: var(--text-primary); font-family: inherit; font-size: 0.95rem;
+      width: 100%;
+      padding: 0.9rem 1rem;
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-md);
+      color: var(--text-primary);
+      font-family: inherit;
+      font-size: 0.95rem;
       transition: all var(--transition-normal);
     }
+    
     .form-group input:focus {
-      outline: none; border-color: var(--accent);
+      outline: none;
+      border-color: var(--accent);
       box-shadow: 0 0 0 3px var(--accent-glow);
     }
-    .form-group input:disabled { opacity: 0.7; cursor: not-allowed; }
-    .form-row { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+    
+    .form-group input:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+    }
+    
+    .form-row {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+    }
     
     /* Stats Grid */
     .stats-grid {
-      display: grid; grid-template-columns: repeat(3, 1fr);
-      gap: 1rem; margin-top: 1.5rem; padding-top: 1.5rem;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+      margin-top: 1.5rem;
+      padding-top: 1.5rem;
       border-top: 1px solid var(--border);
     }
+    
     .stat-item {
-      text-align: center; padding: 1rem; background: var(--surface);
-      border-radius: var(--radius-lg); transition: all var(--transition-normal);
+      text-align: center;
+      padding: 1rem;
+      background: var(--surface);
+      border-radius: var(--radius-lg);
+      transition: all var(--transition-normal);
       border: 1px solid var(--border);
     }
-    .stat-item:hover { background: var(--surface-hover); transform: translateY(-2px); border-color: var(--accent); }
-    .stat-value {
-      font-family: 'Syne', sans-serif; font-size: 1.8rem;
-      font-weight: 800; background: var(--gradient-accent);
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    
+    .stat-item:hover {
+      background: var(--surface-hover);
+      transform: translateY(-2px);
+      border-color: var(--accent);
     }
-    .stat-label { font-size: 0.75rem; color: var(--text-muted); margin-top: 0.3rem; text-transform: uppercase; letter-spacing: 0.5px; }
+    
+    .stat-value {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.8rem;
+      font-weight: 800;
+      background: var(--gradient-accent);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    
+    .stat-label {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-top: 0.3rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
     
     /* Action Buttons */
     .action-buttons {
-      display: flex; gap: 1rem; margin-top: 1.5rem;
-      padding-top: 1.5rem; border-top: 1px solid var(--border); flex-wrap: wrap;
+      display: flex;
+      gap: 1rem;
+      margin-top: 1.5rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border);
+      flex-wrap: wrap;
     }
+    
     .btn-save {
-      flex: 1; min-width: 140px; padding: 0.9rem; background: var(--gradient-accent);
-      border: none; border-radius: var(--radius-full); color: white;
-      font-weight: 600; font-size: 0.95rem; cursor: pointer;
-      transition: all var(--transition-normal); display: flex;
-      align-items: center; justify-content: center; gap: 0.5rem;
+      flex: 1;
+      min-width: 140px;
+      padding: 0.9rem;
+      background: var(--gradient-accent);
+      border: none;
+      border-radius: var(--radius-full);
+      color: white;
+      font-weight: 600;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: all var(--transition-normal);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
     }
-    .btn-save:hover { transform: translateY(-2px); box-shadow: var(--shadow-glow); }
-    .btn-save:disabled { opacity: 0.6; cursor: not-allowed; }
+    
+    .btn-save:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-glow);
+    }
+    
+    .btn-save:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
     
     .btn-secondary {
-      flex: 1; min-width: 140px; padding: 0.9rem; background: var(--surface);
-      border: 1.5px solid var(--border); border-radius: var(--radius-full);
-      color: var(--text-primary); font-weight: 600; font-size: 0.95rem;
-      cursor: pointer; transition: all var(--transition-normal);
-      display: flex; align-items: center; justify-content: center; gap: 0.5rem;
+      flex: 1;
+      min-width: 140px;
+      padding: 0.9rem;
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-full);
+      color: var(--text-primary);
+      font-weight: 600;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: all var(--transition-normal);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
     }
-    .btn-secondary:hover { background: var(--surface-hover); border-color: var(--accent); transform: translateY(-2px); }
+    
+    .btn-secondary:hover {
+      background: var(--surface-hover);
+      border-color: var(--accent);
+      transform: translateY(-2px);
+    }
     
     .btn-danger {
-      flex: 1; min-width: 140px; padding: 0.9rem; background: rgba(239,68,68,0.15);
-      border: 1.5px solid rgba(239,68,68,0.4); border-radius: var(--radius-full);
-      color: #ef4444; font-weight: 600; font-size: 0.95rem;
-      cursor: pointer; transition: all var(--transition-normal);
-      display: flex; align-items: center; justify-content: center; gap: 0.5rem;
+      flex: 1;
+      min-width: 140px;
+      padding: 0.9rem;
+      background: rgba(239,68,68,0.15);
+      border: 1.5px solid rgba(239,68,68,0.4);
+      border-radius: var(--radius-full);
+      color: #ef4444;
+      font-weight: 600;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: all var(--transition-normal);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
     }
-    .btn-danger:hover { background: rgba(239,68,68,0.3); transform: translateY(-2px); }
     
-    /* Loading & Modal */
-    .spinner {
-      width: 48px; height: 48px; border: 3px solid var(--border);
-      border-top-color: var(--accent); border-radius: 50%;
-      animation: spin 1s linear infinite; margin: 3rem auto;
+    .btn-danger:hover {
+      background: rgba(239,68,68,0.3);
+      transform: translateY(-2px);
     }
-    @keyframes spin { to { transform: rotate(360deg); } }
+    
+    /* Loading */
+    .spinner {
+      width: 48px;
+      height: 48px;
+      border: 3px solid var(--border);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 3rem auto;
+    }
+    
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
     
     .empty-state {
-      text-align: center; padding: 4rem 2rem; background: var(--bg-card);
-      border-radius: var(--radius-xl); border: 1px dashed var(--border);
+      text-align: center;
+      padding: 4rem 2rem;
+      background: var(--bg-card);
+      border-radius: var(--radius-xl);
+      border: 1px dashed var(--border);
     }
     
+    /* Modal */
     .modal {
-      display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(0,0,0,0.85); align-items: center; justify-content: center;
-      z-index: 2000; padding: 1rem; backdrop-filter: blur(5px);
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,0.85);
+      align-items: center;
+      justify-content: center;
+      z-index: 2000;
+      padding: 1rem;
+      backdrop-filter: blur(5px);
     }
-    .modal.active { display: flex; }
+    
+    .modal.active {
+      display: flex;
+    }
+    
     .modal-content {
-      background: var(--bg-secondary); border: 1px solid var(--border);
-      border-radius: var(--radius-lg); width: 100%; max-width: 450px;
-      padding: 1.8rem; animation: modalSlideUp 0.3s ease;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      width: 100%;
+      max-width: 450px;
+      padding: 1.8rem;
+      animation: modalSlideUp 0.3s ease;
     }
-    @keyframes modalSlideUp { from{transform:translateY(30px);opacity:0} to{transform:translateY(0);opacity:1} }
+    
+    @keyframes modalSlideUp {
+      from {
+        transform: translateY(30px);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+    
     .modal-header {
-      display: flex; justify-content: space-between; align-items: center;
-      margin-bottom: 1.2rem; padding-bottom: 1rem; border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.2rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid var(--border);
     }
-    .modal-header h3 { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1.2rem; display: flex; align-items: center; gap: 0.5rem; }
+    
+    .modal-header h3 {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 1.2rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
     .modal-close {
-      background: var(--surface); border: none; color: var(--text-secondary);
-      width: 36px; height: 36px; border-radius: var(--radius-full);
-      cursor: pointer; display: flex; align-items: center; justify-content: center;
+      background: var(--surface);
+      border: none;
+      color: var(--text-secondary);
+      width: 36px;
+      height: 36px;
+      border-radius: var(--radius-full);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
-    .modal-close:hover { background: var(--surface-hover); color: var(--text-primary); }
-    .modal-body { display: flex; flex-direction: column; gap: 1rem; }
+    
+    .modal-close:hover {
+      background: var(--surface-hover);
+      color: var(--text-primary);
+    }
+    
+    .modal-body {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    
     .modal-body input {
-      width: 100%; padding: 0.8rem 1rem; background: var(--surface);
-      border: 1px solid var(--border); border-radius: var(--radius-md);
-      color: var(--text-primary); font-family: inherit; font-size: 0.95rem;
+      width: 100%;
+      padding: 0.8rem 1rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      color: var(--text-primary);
+      font-family: inherit;
+      font-size: 0.95rem;
     }
-    .modal-body input:focus { outline: none; border-color: var(--accent); }
-    .modal-buttons { display: flex; gap: 0.8rem; margin-top: 1rem; justify-content: flex-end; }
+    
+    .modal-body input:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+    
+    .modal-buttons {
+      display: flex;
+      gap: 0.8rem;
+      margin-top: 1rem;
+      justify-content: flex-end;
+    }
     
     /* Toast */
     .toast {
-      position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%) translateY(100px);
-      padding: 0.85rem 1.8rem; border-radius: var(--radius-full); font-size: 0.9rem;
-      font-weight: 500; z-index: 9999; transition: transform var(--transition-normal);
-      white-space: nowrap; color: #fff; display: flex; align-items: center; gap: 0.6rem;
+      position: fixed;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      padding: 0.85rem 1.8rem;
+      border-radius: var(--radius-full);
+      font-size: 0.9rem;
+      font-weight: 500;
+      z-index: 9999;
+      transition: transform var(--transition-normal);
+      white-space: nowrap;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
       box-shadow: var(--shadow-lg);
     }
-    .toast.success { background: linear-gradient(135deg, var(--green), #059669); }
-    .toast.error { background: linear-gradient(135deg, #ef4444, #b91c1c); }
-    .toast.warning { background: linear-gradient(135deg, #f59e0b, #d97706); }
-    .toast.show { transform: translateX(-50%) translateY(0); }
+    
+    .toast.success {
+      background: linear-gradient(135deg, #10b981, #059669);
+    }
+    
+    .toast.error {
+      background: linear-gradient(135deg, #ef4444, #b91c1c);
+    }
+    
+    .toast.warning {
+      background: linear-gradient(135deg, #f59e0b, #d97706);
+    }
+    
+    .toast.show {
+      transform: translateX(-50%) translateY(0);
+    }
     
     /* Responsive */
     @media (max-width: 768px) {
-      nav { padding: 0 4%; height: 68px; }
-      .nav-links { display: none; }
-      .nav-right { display: none; }
-      .menu-toggle { display: flex; }
-      .user-toggle-wrapper { display: none !important; }
-      .container { padding: 85px 4% 40px; }
-      .form-row { grid-template-columns: 1fr; }
-      .stats-grid { grid-template-columns: 1fr; }
-      .action-buttons { flex-direction: column; }
-      .profile-avatar-large { width: 100px; height: 100px; font-size: 2.5rem; }
-      .remove-photo-btn { right: 40px; width: 28px; height: 28px; font-size: 0.7rem; }
+      nav {
+        padding: 0 4%;
+        height: 68px;
+      }
+      
+      .nav-links {
+        display: none;
+      }
+      
+      .nav-right {
+        display: none;
+      }
+      
+      .menu-toggle {
+        display: flex;
+      }
+      
+      .user-toggle-wrapper {
+        display: none !important;
+      }
+      
+      .container {
+        padding: 85px 4% 40px;
+      }
+      
+      .form-row {
+        grid-template-columns: 1fr;
+      }
+      
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .action-buttons {
+        flex-direction: column;
+      }
+      
+      .profile-avatar-large {
+        width: 100px;
+        height: 100px;
+        font-size: 2.5rem;
+      }
+      
+      .remove-photo-btn {
+        right: 40px;
+        width: 28px;
+        height: 28px;
+        font-size: 0.7rem;
+      }
     }
     
-    @media (min-width: 769px) { .menu-toggle { display: none; } }
+    @media (min-width: 769px) {
+      .menu-toggle {
+        display: none;
+      }
+    }
     
-    ::-webkit-scrollbar { width: 6px; }
-    ::-webkit-scrollbar-track { background: var(--bg-secondary); }
-    ::-webkit-scrollbar-thumb { background: var(--gradient-accent); border-radius: var(--radius-full); }
+    ::-webkit-scrollbar {
+      width: 6px;
+    }
+    
+    ::-webkit-scrollbar-track {
+      background: var(--bg-secondary);
+    }
+    
+    ::-webkit-scrollbar-thumb {
+      background: var(--gradient-accent);
+      border-radius: var(--radius-full);
+    }
   </style>
 </head>
 <body>
@@ -549,508 +1185,635 @@
 
 <script>
 // ===== CONFIG =====
-const CONFIG = { API: 'https://novastack-backend.onrender.com' };
+const CONFIG = {
+    API: 'https://novastack-backend.onrender.com'
+};
+
+// ===== Global Variables =====
+let currentUserData = null;
 
 // ===== Auth Helpers =====
 const Auth = {
-  getToken() { return localStorage.getItem('dc_token') || sessionStorage.getItem('dc_token') || ''; },
-  getUser() {
-    try {
-      const userStr = localStorage.getItem('dc_user') || sessionStorage.getItem('dc_user');
-      return userStr ? JSON.parse(userStr) : null;
-    } catch { return null; }
-  },
-  isLoggedIn() { return !!this.getToken() && !!this.getUser(); },
-  async fetchUser() {
-    const token = this.getToken();
-    if (!token) return null;
-    try {
-      const res = await fetch(CONFIG.API + '/user', {
-        headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' }
-      });
-      if (!res.ok) throw new Error('Auth failed');
-      const data = await res.json();
-      return data.user || data;
-    } catch (e) { console.warn('Failed to fetch user:', e.message); return null; }
-  }
+    getToken: function() {
+        return localStorage.getItem('dc_token') || sessionStorage.getItem('dc_token') || '';
+    },
+    getUser: function() {
+        try {
+            const userStr = localStorage.getItem('dc_user') || sessionStorage.getItem('dc_user');
+            return userStr ? JSON.parse(userStr) : null;
+        } catch(e) {
+            return null;
+        }
+    },
+    isLoggedIn: function() {
+        return !!this.getToken() && !!this.getUser();
+    },
+    fetchUser: async function() {
+        const token = this.getToken();
+        if (!token) return null;
+        try {
+            const res = await fetch(CONFIG.API + '/user', {
+                headers: {
+                    'Authorization': 'Bearer ' + token,
+                    'Content-Type': 'application/json'
+                }
+            });
+            if (!res.ok) throw new Error('Auth failed');
+            const data = await res.json();
+            return data.user || data;
+        } catch(e) {
+            console.warn('Failed to fetch user:', e.message);
+            return null;
+        }
+    }
 };
 
 // ===== API Helper =====
 async function apiFetch(path, options = {}) {
-  const token = Auth.getToken();
-  const headers = { 'Content-Type': 'application/json', ...(options.headers || {}) };
-  if (token) headers['Authorization'] = `Bearer ${token}`;
-  const res = await fetch(CONFIG.API + path, { ...options, headers });
-  const json = await res.json().catch(() => ({}));
-  if (!res.ok) throw new Error(json.error || json.message || `Error ${res.status}`);
-  return json;
+    const token = Auth.getToken();
+    const headers = {
+        'Content-Type': 'application/json',
+        ...(options.headers || {})
+    };
+    if (token) {
+        headers['Authorization'] = 'Bearer ' + token;
+    }
+    const res = await fetch(CONFIG.API + path, {
+        ...options,
+        headers: headers
+    });
+    const json = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(json.error || json.message || 'Error ' + res.status);
+    return json;
 }
 
 // ===== Toast =====
-function showToast(msg, type = 'success') {
-  const container = document.getElementById('toastContainer');
-  const toast = document.createElement('div');
-  toast.className = `toast ${type}`;
-  toast.innerHTML = `<i class="fas fa-${type === 'error' ? 'exclamation-triangle' : 'check-circle'}"></i> ${msg}`;
-  container.appendChild(toast);
-  setTimeout(() => toast.classList.add('show'), 10);
-  setTimeout(() => { toast.classList.remove('show'); setTimeout(() => toast.remove(), 300); }, 4000);
+function showToast(msg, type) {
+    type = type || 'success';
+    const container = document.getElementById('toastContainer');
+    const toast = document.createElement('div');
+    toast.className = 'toast ' + type;
+    toast.innerHTML = '<i class="fas fa-' + (type === 'error' ? 'exclamation-triangle' : 'check-circle') + '"></i> ' + msg;
+    container.appendChild(toast);
+    setTimeout(function() {
+        toast.classList.add('show');
+    }, 10);
+    setTimeout(function() {
+        toast.classList.remove('show');
+        setTimeout(function() {
+            toast.remove();
+        }, 300);
+    }, 4000);
 }
 
 // ===== Update Auth UI =====
 async function updateAuthUI() {
-  const isLoggedIn = Auth.isLoggedIn();
-  const user = Auth.getUser();
-  
-  if (isLoggedIn && user) {
-    document.getElementById('authButtons')?.classList.add('hidden');
-    document.getElementById('userToggleWrapper')?.style.setProperty('display', 'flex');
-    document.getElementById('mobileAuthButtons')?.style.display = 'none';
-    document.getElementById('mobileProfileSection')?.style.setProperty('display', 'block');
+    const isLoggedIn = Auth.isLoggedIn();
+    const user = Auth.getUser();
     
-    const name = user.name || user.email?.split('@')[0] || 'User';
-    const initial = name.charAt(0).toUpperCase();
-    const avatar = user.avatar;
-    
-    // Update avatars
-    const avatarElements = ['userAvatar', 'dropdownAvatar', 'mobileProfileAvatar'];
-    avatarElements.forEach(id => {
-      const el = document.getElementById(id);
-      if (el) {
-        if (avatar) {
-          el.innerHTML = `<img src="${avatar}" alt="${name}">`;
-        } else {
-          el.textContent = initial;
-          el.innerHTML = initial;
+    if (isLoggedIn && user) {
+        const authButtons = document.getElementById('authButtons');
+        const userToggleWrapper = document.getElementById('userToggleWrapper');
+        const mobileAuthButtons = document.getElementById('mobileAuthButtons');
+        const mobileProfileSection = document.getElementById('mobileProfileSection');
+        
+        if (authButtons) authButtons.classList.add('hidden');
+        if (userToggleWrapper) userToggleWrapper.style.display = 'flex';
+        if (mobileAuthButtons) mobileAuthButtons.style.display = 'none';
+        if (mobileProfileSection) mobileProfileSection.style.display = 'block';
+        
+        const name = user.name || (user.email ? user.email.split('@')[0] : 'User');
+        const initial = name.charAt(0).toUpperCase();
+        const avatar = user.avatar;
+        
+        // Update avatars
+        const avatarElements = ['userAvatar', 'dropdownAvatar', 'mobileProfileAvatar'];
+        for (var i = 0; i < avatarElements.length; i++) {
+            var el = document.getElementById(avatarElements[i]);
+            if (el) {
+                if (avatar) {
+                    el.innerHTML = '<img src="' + avatar + '" alt="' + name + '">';
+                } else {
+                    el.textContent = initial;
+                    el.innerHTML = initial;
+                }
+            }
         }
-      }
-    });
-    
-    // Update names
-    ['userName', 'dropdownName', 'mobileProfileName'].forEach(id => {
-      const el = document.getElementById(id);
-      if (el) el.textContent = name.length > 15 ? name.substring(0, 12) + '...' : name;
-    });
-    
-    ['dropdownEmail', 'mobileProfileEmail'].forEach(id => {
-      const el = document.getElementById(id);
-      if (el) el.textContent = user.email || '';
-    });
-  } else {
-    document.getElementById('authButtons')?.classList.remove('hidden');
-    document.getElementById('userToggleWrapper')?.style.setProperty('display', 'none');
-    document.getElementById('mobileAuthButtons')?.style.display = 'flex';
-    document.getElementById('mobileProfileSection')?.style.setProperty('display', 'none');
-  }
+        
+        // Update names
+        var nameElements = ['userName', 'dropdownName', 'mobileProfileName'];
+        for (var j = 0; j < nameElements.length; j++) {
+            var el = document.getElementById(nameElements[j]);
+            if (el) {
+                var displayName = name.length > 15 ? name.substring(0, 12) + '...' : name;
+                el.textContent = displayName;
+            }
+        }
+        
+        // Update emails
+        var emailElements = ['dropdownEmail', 'mobileProfileEmail'];
+        for (var k = 0; k < emailElements.length; k++) {
+            var el = document.getElementById(emailElements[k]);
+            if (el) el.textContent = user.email || '';
+        }
+    } else {
+        var authButtons = document.getElementById('authButtons');
+        var userToggleWrapper = document.getElementById('userToggleWrapper');
+        var mobileAuthButtons = document.getElementById('mobileAuthButtons');
+        var mobileProfileSection = document.getElementById('mobileProfileSection');
+        
+        if (authButtons) authButtons.classList.remove('hidden');
+        if (userToggleWrapper) userToggleWrapper.style.display = 'none';
+        if (mobileAuthButtons) mobileAuthButtons.style.display = 'flex';
+        if (mobileProfileSection) mobileProfileSection.style.display = 'none';
+    }
 }
 
 // ===== Load Profile =====
 async function loadProfile() {
-  if (!Auth.isLoggedIn()) {
-    window.location.href = 'login.html?redirect=profile.html';
-    return;
-  }
-  
-  document.getElementById('loading').style.display = 'block';
-  document.getElementById('profileCard').style.display = 'none';
-  
-  try {
-    const freshUser = await Auth.fetchUser();
-    if (freshUser) {
-      localStorage.setItem('dc_user', JSON.stringify(freshUser));
-      window.currentUser = freshUser;
-    } else {
-      window.currentUser = Auth.getUser();
+    if (!Auth.isLoggedIn()) {
+        window.location.href = 'login.html?redirect=profile.html';
+        return;
     }
     
-    if (!window.currentUser) throw new Error('User not found');
+    var loading = document.getElementById('loading');
+    var profileCard = document.getElementById('profileCard');
     
-    // Update form fields
-    document.getElementById('fullName').value = window.currentUser.name || '';
-    document.getElementById('email').value = window.currentUser.email || '';
-    document.getElementById('phone').value = window.currentUser.phone || '';
+    loading.style.display = 'block';
+    profileCard.style.display = 'none';
     
-    // Update avatar
-    const avatarLarge = document.getElementById('profileAvatarLarge');
-    if (window.currentUser.avatar) {
-      avatarLarge.innerHTML = `<img src="${window.currentUser.avatar}" alt="${window.currentUser.name}">`;
-      document.getElementById('removePhotoBtn').style.display = 'flex';
-    } else {
-      const initial = (window.currentUser.name || window.currentUser.email || 'U').charAt(0).toUpperCase();
-      avatarLarge.innerHTML = initial;
-      avatarLarge.style.fontSize = '3rem';
-      document.getElementById('removePhotoBtn').style.display = 'none';
+    try {
+        var freshUser = await Auth.fetchUser();
+        if (freshUser) {
+            localStorage.setItem('dc_user', JSON.stringify(freshUser));
+            currentUserData = freshUser;
+        } else {
+            currentUserData = Auth.getUser();
+        }
+        
+        if (!currentUserData) throw new Error('User not found');
+        
+        // Update form fields
+        var fullNameInput = document.getElementById('fullName');
+        var emailInput = document.getElementById('email');
+        var phoneInput = document.getElementById('phone');
+        
+        if (fullNameInput) fullNameInput.value = currentUserData.name || '';
+        if (emailInput) emailInput.value = currentUserData.email || '';
+        if (phoneInput) phoneInput.value = currentUserData.phone || '';
+        
+        // Update avatar
+        var avatarLarge = document.getElementById('profileAvatarLarge');
+        var removePhotoBtn = document.getElementById('removePhotoBtn');
+        
+        if (currentUserData.avatar) {
+            avatarLarge.innerHTML = '<img src="' + currentUserData.avatar + '" alt="' + (currentUserData.name || 'User') + '">';
+            if (removePhotoBtn) removePhotoBtn.style.display = 'flex';
+        } else {
+            var initial = ((currentUserData.name || currentUserData.email || 'U').charAt(0)).toUpperCase();
+            avatarLarge.innerHTML = initial;
+            avatarLarge.style.fontSize = '3rem';
+            if (removePhotoBtn) removePhotoBtn.style.display = 'none';
+        }
+        
+        // Member Since
+        var memberSinceInput = document.getElementById('memberSince');
+        if (currentUserData.created_at) {
+            var date = new Date(currentUserData.created_at);
+            var options = { year: 'numeric', month: 'long' };
+            var memberDate = date.toLocaleDateString('en-US', options);
+            memberSinceInput.value = memberDate;
+        } else {
+            memberSinceInput.value = 'Member';
+        }
+        
+        // Load stats
+        await loadUserStats();
+        
+        loading.style.display = 'none';
+        profileCard.style.display = 'block';
+        
+    } catch (error) {
+        console.error('Failed to load profile:', error);
+        loading.style.display = 'none';
+        profileCard.innerHTML = '<div class="empty-state"><i class="fas fa-exclamation-triangle"></i><h3>Unable to load profile</h3><p>' + error.message + '</p><button class="btn-save" onclick="loadProfile()" style="margin-top:1rem;"><i class="fas fa-redo"></i> Retry</button></div>';
+        profileCard.style.display = 'block';
     }
-    
-    // Member Since - Format date properly
-    if (window.currentUser.created_at) {
-      const date = new Date(window.currentUser.created_at);
-      const options = { year: 'numeric', month: 'long' };
-      const memberDate = date.toLocaleDateString('en-US', options);
-      document.getElementById('memberSince').value = memberDate;
-    } else {
-      document.getElementById('memberSince').value = 'Member';
-    }
-    
-    // Load stats
-    await loadUserStats();
-    
-    document.getElementById('loading').style.display = 'none';
-    document.getElementById('profileCard').style.display = 'block';
-    
-  } catch (error) {
-    console.error('Failed to load profile:', error);
-    document.getElementById('loading').style.display = 'none';
-    document.getElementById('profileCard').innerHTML = `
-      <div class="empty-state">
-        <i class="fas fa-exclamation-triangle"></i>
-        <h3>Unable to load profile</h3>
-        <p>${error.message}</p>
-        <button class="btn-save" onclick="loadProfile()" style="margin-top:1rem;"><i class="fas fa-redo"></i> Retry</button>
-      </div>
-    `;
-    document.getElementById('profileCard').style.display = 'block';
-  }
 }
 
 // ===== Load User Stats =====
 async function loadUserStats() {
-  try {
-    const data = await apiFetch('/my-orders');
-    const orders = data.orders || [];
-    
-    const totalOrders = orders.length;
-    const totalSpent = orders.reduce((sum, o) => sum + (parseFloat(o.total_paid) || parseFloat(o.advance_paid) || 0), 0);
-    const completedProjects = orders.filter(o => o.status === 'completed' || o.status === 'delivered').length;
-    
-    document.getElementById('statOrders').textContent = totalOrders;
-    document.getElementById('statSpent').textContent = '₹' + totalSpent.toLocaleString('en-IN');
-    document.getElementById('statCompleted').textContent = completedProjects;
-    
-  } catch (error) {
-    console.warn('Failed to load stats:', error.message);
-  }
+    try {
+        var data = await apiFetch('/my-orders');
+        var orders = data.orders || [];
+        
+        var totalOrders = orders.length;
+        var totalSpent = 0;
+        var completedProjects = 0;
+        
+        for (var i = 0; i < orders.length; i++) {
+            var order = orders[i];
+            totalSpent += parseFloat(order.total_paid) || parseFloat(order.advance_paid) || 0;
+            if (order.status === 'completed' || order.status === 'delivered') {
+                completedProjects++;
+            }
+        }
+        
+        var statOrders = document.getElementById('statOrders');
+        var statSpent = document.getElementById('statSpent');
+        var statCompleted = document.getElementById('statCompleted');
+        
+        if (statOrders) statOrders.textContent = totalOrders;
+        if (statSpent) statSpent.textContent = '₹' + totalSpent.toLocaleString('en-IN');
+        if (statCompleted) statCompleted.textContent = completedProjects;
+        
+    } catch (error) {
+        console.warn('Failed to load stats:', error.message);
+    }
 }
 
 // ===== Save Profile =====
 async function saveProfile() {
-  const token = Auth.getToken();
-  if (!token) { showToast('Please login to continue', 'error'); return; }
-  
-  const name = document.getElementById('fullName').value.trim();
-  const phone = document.getElementById('phone').value.trim();
-  
-  if (!name) { showToast('Please enter your name', 'error'); return; }
-  
-  const saveBtn = document.getElementById('saveBtn');
-  const originalHtml = saveBtn.innerHTML;
-  saveBtn.disabled = true;
-  saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
-  
-  try {
-    await apiFetch('/user/update', {
-      method: 'PUT',
-      body: JSON.stringify({ name, phone })
-    });
+    var token = Auth.getToken();
+    if (!token) {
+        showToast('Please login to continue', 'error');
+        return;
+    }
     
-    // Update local storage
-    window.currentUser.name = name;
-    window.currentUser.phone = phone;
-    localStorage.setItem('dc_user', JSON.stringify(window.currentUser));
+    var name = document.getElementById('fullName').value.trim();
+    var phone = document.getElementById('phone').value.trim();
     
-    updateAuthUI();
-    showToast('Profile updated successfully!', 'success');
+    if (!name) {
+        showToast('Please enter your name', 'error');
+        return;
+    }
     
-  } catch (error) {
-    showToast(error.message, 'error');
-  } finally {
-    saveBtn.disabled = false;
-    saveBtn.innerHTML = originalHtml;
-  }
+    var saveBtn = document.getElementById('saveBtn');
+    var originalHtml = saveBtn.innerHTML;
+    saveBtn.disabled = true;
+    saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+    
+    try {
+        await apiFetch('/user/update', {
+            method: 'PUT',
+            body: JSON.stringify({ name: name, phone: phone })
+        });
+        
+        // Update local storage
+        if (currentUserData) {
+            currentUserData.name = name;
+            currentUserData.phone = phone;
+            localStorage.setItem('dc_user', JSON.stringify(currentUserData));
+        }
+        
+        updateAuthUI();
+        showToast('Profile updated successfully!', 'success');
+        
+    } catch (error) {
+        showToast(error.message, 'error');
+    } finally {
+        saveBtn.disabled = false;
+        saveBtn.innerHTML = originalHtml;
+    }
 }
 
 // ===== Photo Upload =====
 function triggerFileUpload() {
-  document.getElementById('photoUpload').click();
+    document.getElementById('photoUpload').click();
 }
 
 async function uploadPhoto(file) {
-  if (!file) return;
-  
-  const validTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/jpg'];
-  if (!validTypes.includes(file.type)) {
-    showToast('Please select a JPG, PNG, or WEBP image', 'error');
-    return;
-  }
-  
-  const maxSize = 5 * 1024 * 1024;
-  if (file.size > maxSize) {
-    showToast('Image must be less than 5MB', 'error');
-    return;
-  }
-  
-  const saveBtn = document.getElementById('saveBtn');
-  const originalHtml = saveBtn.innerHTML;
-  saveBtn.disabled = true;
-  saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Uploading...';
-  
-  try {
-    const reader = new FileReader();
-    reader.onload = async (e) => {
-      const base64Data = e.target.result;
-      
-      const token = Auth.getToken();
-      const res = await fetch(CONFIG.API + '/user/upload-photo', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify({
-          image_data: base64Data,
-          filename: file.name
-        })
-      });
-      
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'Upload failed');
-      
-      if (data.success && data.data.avatar_url) {
-        // Update local storage
-        window.currentUser.avatar = data.data.avatar_url;
-        localStorage.setItem('dc_user', JSON.stringify(window.currentUser));
-        
-        // Update UI
-        const avatarLarge = document.getElementById('profileAvatarLarge');
-        avatarLarge.innerHTML = `<img src="${data.data.avatar_url}" alt="${window.currentUser.name}">`;
-        document.getElementById('removePhotoBtn').style.display = 'flex';
-        
-        updateAuthUI();
-        showToast('Profile photo updated!', 'success');
-      }
-    };
+    if (!file) return;
     
-    reader.readAsDataURL(file);
+    var validTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/jpg'];
+    if (validTypes.indexOf(file.type) === -1) {
+        showToast('Please select a JPG, PNG, or WEBP image', 'error');
+        return;
+    }
     
-  } catch (error) {
-    showToast(error.message, 'error');
-  } finally {
-    saveBtn.disabled = false;
-    saveBtn.innerHTML = originalHtml;
-  }
+    var maxSize = 5 * 1024 * 1024;
+    if (file.size > maxSize) {
+        showToast('Image must be less than 5MB', 'error');
+        return;
+    }
+    
+    var saveBtn = document.getElementById('saveBtn');
+    var originalHtml = saveBtn.innerHTML;
+    saveBtn.disabled = true;
+    saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Uploading...';
+    
+    try {
+        var reader = new FileReader();
+        reader.onload = async function(e) {
+            var base64Data = e.target.result;
+            var token = Auth.getToken();
+            
+            var res = await fetch(CONFIG.API + '/user/upload-photo', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + token
+                },
+                body: JSON.stringify({
+                    image_data: base64Data,
+                    filename: file.name
+                })
+            });
+            
+            var data = await res.json();
+            if (!res.ok) throw new Error(data.error || 'Upload failed');
+            
+            if (data.success && data.data.avatar_url) {
+                // Update local storage
+                if (currentUserData) {
+                    currentUserData.avatar = data.data.avatar_url;
+                    localStorage.setItem('dc_user', JSON.stringify(currentUserData));
+                }
+                
+                // Update UI
+                var avatarLarge = document.getElementById('profileAvatarLarge');
+                avatarLarge.innerHTML = '<img src="' + data.data.avatar_url + '" alt="' + (currentUserData ? currentUserData.name : 'User') + '">';
+                document.getElementById('removePhotoBtn').style.display = 'flex';
+                
+                updateAuthUI();
+                showToast('Profile photo updated!', 'success');
+            }
+        };
+        
+        reader.readAsDataURL(file);
+        
+    } catch (error) {
+        showToast(error.message, 'error');
+    } finally {
+        saveBtn.disabled = false;
+        saveBtn.innerHTML = originalHtml;
+    }
 }
 
 async function removePhoto() {
-  if (!confirm('Are you sure you want to remove your profile photo?')) return;
-  
-  const saveBtn = document.getElementById('saveBtn');
-  const originalHtml = saveBtn.innerHTML;
-  saveBtn.disabled = true;
-  saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Removing...';
-  
-  try {
-    const token = Auth.getToken();
-    const res = await fetch(CONFIG.API + '/user/delete-photo', {
-      method: 'DELETE',
-      headers: {
-        'Authorization': `Bearer ${token}`
-      }
-    });
+    if (!confirm('Are you sure you want to remove your profile photo?')) return;
     
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.error || 'Remove failed');
+    var saveBtn = document.getElementById('saveBtn');
+    var originalHtml = saveBtn.innerHTML;
+    saveBtn.disabled = true;
+    saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Removing...';
     
-    // Update local storage
-    window.currentUser.avatar = null;
-    localStorage.setItem('dc_user', JSON.stringify(window.currentUser));
-    
-    // Update UI
-    const avatarLarge = document.getElementById('profileAvatarLarge');
-    const initial = (window.currentUser.name || window.currentUser.email || 'U').charAt(0).toUpperCase();
-    avatarLarge.innerHTML = initial;
-    avatarLarge.style.fontSize = '3rem';
-    document.getElementById('removePhotoBtn').style.display = 'none';
-    
-    updateAuthUI();
-    showToast('Profile photo removed', 'success');
-    
-  } catch (error) {
-    showToast(error.message, 'error');
-  } finally {
-    saveBtn.disabled = false;
-    saveBtn.innerHTML = originalHtml;
-  }
+    try {
+        var token = Auth.getToken();
+        var res = await fetch(CONFIG.API + '/user/delete-photo', {
+            method: 'DELETE',
+            headers: {
+                'Authorization': 'Bearer ' + token
+            }
+        });
+        
+        var data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Remove failed');
+        
+        // Update local storage
+        if (currentUserData) {
+            currentUserData.avatar = null;
+            localStorage.setItem('dc_user', JSON.stringify(currentUserData));
+        }
+        
+        // Update UI
+        var avatarLarge = document.getElementById('profileAvatarLarge');
+        var initial = ((currentUserData ? currentUserData.name : 'U') || 'U').charAt(0).toUpperCase();
+        avatarLarge.innerHTML = initial;
+        avatarLarge.style.fontSize = '3rem';
+        document.getElementById('removePhotoBtn').style.display = 'none';
+        
+        updateAuthUI();
+        showToast('Profile photo removed', 'success');
+        
+    } catch (error) {
+        showToast(error.message, 'error');
+    } finally {
+        saveBtn.disabled = false;
+        saveBtn.innerHTML = originalHtml;
+    }
 }
 
 // ===== Password Change =====
 function openPasswordModal() {
-  document.getElementById('passwordModal').classList.add('active');
-  document.body.style.overflow = 'hidden';
+    document.getElementById('passwordModal').classList.add('active');
+    document.body.style.overflow = 'hidden';
 }
 
 async function submitPasswordChange() {
-  const current = document.getElementById('currentPassword').value;
-  const newPassword = document.getElementById('newPassword').value;
-  const confirm = document.getElementById('confirmPassword').value;
-  
-  if (!current || !newPassword || !confirm) {
-    showToast('Please fill all fields', 'error');
-    return;
-  }
-  if (newPassword !== confirm) {
-    showToast('New passwords do not match', 'error');
-    return;
-  }
-  if (newPassword.length < 8) {
-    showToast('Password must be at least 8 characters', 'error');
-    return;
-  }
-  
-  try {
-    await apiFetch('/user/change-password', {
-      method: 'POST',
-      body: JSON.stringify({ current_password: current, new_password: newPassword })
-    });
+    var current = document.getElementById('currentPassword').value;
+    var newPassword = document.getElementById('newPassword').value;
+    var confirm = document.getElementById('confirmPassword').value;
     
-    showToast('Password changed successfully!', 'success');
-    closeModal('passwordModal');
-    document.getElementById('currentPassword').value = '';
-    document.getElementById('newPassword').value = '';
-    document.getElementById('confirmPassword').value = '';
+    if (!current || !newPassword || !confirm) {
+        showToast('Please fill all fields', 'error');
+        return;
+    }
+    if (newPassword !== confirm) {
+        showToast('New passwords do not match', 'error');
+        return;
+    }
+    if (newPassword.length < 8) {
+        showToast('Password must be at least 8 characters', 'error');
+        return;
+    }
     
-  } catch (error) {
-    showToast(error.message, 'error');
-  }
+    try {
+        await apiFetch('/user/change-password', {
+            method: 'POST',
+            body: JSON.stringify({ current_password: current, new_password: newPassword })
+        });
+        
+        showToast('Password changed successfully!', 'success');
+        closeModal('passwordModal');
+        document.getElementById('currentPassword').value = '';
+        document.getElementById('newPassword').value = '';
+        document.getElementById('confirmPassword').value = '';
+        
+    } catch (error) {
+        showToast(error.message, 'error');
+    }
 }
 
 // ===== Delete Account =====
 function openDeleteModal() {
-  document.getElementById('deleteModal').classList.add('active');
-  document.body.style.overflow = 'hidden';
+    document.getElementById('deleteModal').classList.add('active');
+    document.body.style.overflow = 'hidden';
 }
 
 async function confirmDelete() {
-  try {
-    await apiFetch('/user/delete', { method: 'DELETE' });
-    showToast('Account deleted successfully', 'success');
-    localStorage.clear();
-    sessionStorage.clear();
-    setTimeout(() => { window.location.href = 'index.html'; }, 1500);
-  } catch (error) {
-    showToast(error.message, 'error');
-  }
+    try {
+        await apiFetch('/user/delete', { method: 'DELETE' });
+        showToast('Account deleted successfully', 'success');
+        localStorage.clear();
+        sessionStorage.clear();
+        setTimeout(function() {
+            window.location.href = 'index.html';
+        }, 1500);
+    } catch (error) {
+        showToast(error.message, 'error');
+    }
 }
 
 // ===== Modal Helpers =====
 function closeModal(modalId) {
-  document.getElementById(modalId).classList.remove('active');
-  document.body.style.overflow = '';
+    var modal = document.getElementById(modalId);
+    if (modal) {
+        modal.classList.remove('active');
+        document.body.style.overflow = '';
+    }
 }
 
-document.querySelectorAll('.modal').forEach(modal => {
-  modal.addEventListener('click', (e) => {
-    if (e.target === modal) closeModal(modal.id);
-  });
-});
-
-document.addEventListener('keydown', (e) => {
-  if (e.key === 'Escape') {
-    document.querySelectorAll('.modal.active').forEach(m => closeModal(m.id));
-  }
-});
-
 // ===== Navigation & Mobile Menu =====
-window.addEventListener('scroll', () => {
-  const nav = document.getElementById('navbar');
-  if (window.scrollY > 50) nav.classList.add('scrolled');
-  else nav.classList.remove('scrolled');
+window.addEventListener('scroll', function() {
+    var nav = document.getElementById('navbar');
+    if (window.scrollY > 50) {
+        nav.classList.add('scrolled');
+    } else {
+        nav.classList.remove('scrolled');
+    }
 });
 
-const menuToggle = document.getElementById('menuToggle');
-const mobileMenu = document.getElementById('mobileMenu');
-const body = document.body;
+var menuToggle = document.getElementById('menuToggle');
+var mobileMenu = document.getElementById('mobileMenu');
+var bodyEl = document.body;
 
-menuToggle?.addEventListener('click', () => {
-  const isActive = mobileMenu.classList.toggle('active');
-  menuToggle.classList.toggle('active', isActive);
-  if (isActive) body.classList.add('menu-open');
-  else body.classList.remove('menu-open');
-});
+if (menuToggle) {
+    menuToggle.addEventListener('click', function() {
+        var isActive = mobileMenu.classList.toggle('active');
+        menuToggle.classList.toggle('active', isActive);
+        if (isActive) {
+            bodyEl.classList.add('menu-open');
+        } else {
+            bodyEl.classList.remove('menu-open');
+        }
+    });
+}
 
-document.addEventListener('click', (e) => {
-  if (mobileMenu?.classList.contains('active') && 
-      !mobileMenu.contains(e.target) && 
-      !menuToggle?.contains(e.target)) {
-    mobileMenu.classList.remove('active');
-    menuToggle?.classList.remove('active');
-    body.classList.remove('menu-open');
-  }
+document.addEventListener('click', function(e) {
+    if (mobileMenu && mobileMenu.classList.contains('active') && 
+        !mobileMenu.contains(e.target) && 
+        menuToggle && !menuToggle.contains(e.target)) {
+        mobileMenu.classList.remove('active');
+        menuToggle.classList.remove('active');
+        bodyEl.classList.remove('menu-open');
+    }
 });
 
 // User Dropdown
-const userToggle = document.getElementById('userToggle');
-const userDropdown = document.getElementById('userDropdown');
+var userToggleBtn = document.getElementById('userToggle');
+var userDropdown = document.getElementById('userDropdown');
 
-userToggle?.addEventListener('click', (e) => {
-  e.stopPropagation();
-  userDropdown.classList.toggle('active');
-  userToggle.classList.toggle('active');
-});
+if (userToggleBtn) {
+    userToggleBtn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        userDropdown.classList.toggle('active');
+        userToggleBtn.classList.toggle('active');
+    });
+}
 
-document.addEventListener('click', (e) => {
-  if (userDropdown && userToggle && 
-      !userToggle.contains(e.target) && 
-      !userDropdown.contains(e.target)) {
-    userDropdown.classList.remove('active');
-    userToggle.classList.remove('active');
-  }
+document.addEventListener('click', function(e) {
+    if (userDropdown && userToggleBtn && 
+        !userToggleBtn.contains(e.target) && 
+        !userDropdown.contains(e.target)) {
+        userDropdown.classList.remove('active');
+        userToggleBtn.classList.remove('active');
+    }
 });
 
 // Mobile Profile Toggle
-const mobileProfileToggle = document.getElementById('mobileProfileToggle');
-const mobileProfileMenu = document.getElementById('mobileProfileMenu');
+var mobileProfileToggle = document.getElementById('mobileProfileToggle');
+var mobileProfileMenu = document.getElementById('mobileProfileMenu');
 
-mobileProfileToggle?.addEventListener('click', () => {
-  const isExpanded = mobileProfileMenu.style.display === 'flex';
-  mobileProfileMenu.style.display = isExpanded ? 'none' : 'flex';
-  const icon = mobileProfileToggle.querySelector('i:last-child');
-  if (icon) icon.style.transform = isExpanded ? 'rotate(0deg)' : 'rotate(180deg)';
-});
+if (mobileProfileToggle) {
+    mobileProfileToggle.addEventListener('click', function() {
+        var isExpanded = mobileProfileMenu.style.display === 'flex';
+        mobileProfileMenu.style.display = isExpanded ? 'none' : 'flex';
+        var icon = mobileProfileToggle.querySelector('i:last-child');
+        if (icon) {
+            icon.style.transform = isExpanded ? 'rotate(0deg)' : 'rotate(180deg)';
+        }
+    });
+}
 
 // Logout
 async function logout() {
-  const token = Auth.getToken();
-  if (token) {
-    try {
-      await fetch(CONFIG.API + '/auth/logout', {
-        method: 'POST',
-        headers: { 'Authorization': `Bearer ${token}` }
-      });
-    } catch (e) {}
-  }
-  localStorage.clear();
-  sessionStorage.clear();
-  window.location.href = 'index.html';
+    var token = Auth.getToken();
+    if (token) {
+        try {
+            await fetch(CONFIG.API + '/auth/logout', {
+                method: 'POST',
+                headers: { 'Authorization': 'Bearer ' + token }
+            });
+        } catch(e) {}
+    }
+    localStorage.clear();
+    sessionStorage.clear();
+    window.location.href = 'index.html';
 }
 
-document.getElementById('dropdownLogout')?.addEventListener('click', (e) => { e.preventDefault(); logout(); });
-document.getElementById('mobileLogoutBtn')?.addEventListener('click', logout);
+var dropdownLogout = document.getElementById('dropdownLogout');
+if (dropdownLogout) {
+    dropdownLogout.addEventListener('click', function(e) {
+        e.preventDefault();
+        logout();
+    });
+}
+
+var mobileLogoutBtn = document.getElementById('mobileLogoutBtn');
+if (mobileLogoutBtn) {
+    mobileLogoutBtn.addEventListener('click', function() {
+        logout();
+    });
+}
 
 // Photo Upload Event Listeners
-document.getElementById('photoUpload')?.addEventListener('change', (e) => {
-  if (e.target.files && e.target.files[0]) uploadPhoto(e.target.files[0]);
+var photoUpload = document.getElementById('photoUpload');
+if (photoUpload) {
+    photoUpload.addEventListener('change', function(e) {
+        if (e.target.files && e.target.files[0]) {
+            uploadPhoto(e.target.files[0]);
+        }
+    });
+}
+
+var changePhotoBtn = document.getElementById('changePhotoBtn');
+if (changePhotoBtn) {
+    changePhotoBtn.addEventListener('click', triggerFileUpload);
+}
+
+var removePhotoBtn = document.getElementById('removePhotoBtn');
+if (removePhotoBtn) {
+    removePhotoBtn.addEventListener('click', removePhoto);
+}
+
+// Close modals on outside click
+document.querySelectorAll('.modal').forEach(function(modal) {
+    modal.addEventListener('click', function(e) {
+        if (e.target === modal) {
+            closeModal(modal.id);
+        }
+    });
 });
-document.getElementById('changePhotoBtn')?.addEventListener('click', triggerFileUpload);
-document.getElementById('removePhotoBtn')?.addEventListener('click', removePhoto);
+
+// Close modal on Escape key
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        var activeModals = document.querySelectorAll('.modal.active');
+        for (var i = 0; i < activeModals.length; i++) {
+            closeModal(activeModals[i].id);
+        }
+    }
+});
 
 // Initialize
-document.addEventListener('DOMContentLoaded', async () => {
-  if (Auth.isLoggedIn()) {
-    await updateAuthUI();
-    await loadProfile();
-  } else {
-    window.location.href = 'login.html?redirect=profile.html';
-  }
+document.addEventListener('DOMContentLoaded', async function() {
+    if (Auth.isLoggedIn()) {
+        await updateAuthUI();
+        await loadProfile();
+    } else {
+        window.location.href = 'login.html?redirect=profile.html';
+    }
 });
 </script>
 </body>
