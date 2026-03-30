@@ -18,7 +18,7 @@
     <link rel="icon" type="image/png" href="logo.png">
     
     <style>
-        /* ===== 🎨 CSS Variables (Same as Index) ===== */
+        /* ===== 🎨 CSS Variables ===== */
         :root {
             --bg-primary: #0f0c1a;
             --bg-secondary: #1a162a;
@@ -56,7 +56,7 @@
         }
         body.menu-open { overflow: hidden; position: fixed; width: 100%; }
 
-        /* ===== 🔗 Navigation (Same as Index Page) ===== */
+        /* ===== 🔗 Navigation ===== */
         nav {
             position: fixed;
             top: 0; left: 0; right: 0;
@@ -106,16 +106,8 @@
             gap: 0.4rem;
         }
         .nav-links a:hover, .nav-links a.active { color: var(--text-primary); }
-        .nav-links a.active::after {
-            content: '';
-            position: absolute;
-            bottom: -2px; left: 0; right: 0;
-            height: 2px;
-            background: var(--gradient-accent);
-            border-radius: var(--radius-full);
-        }
         
-        /* ===== 👤 User Toggle (Left Side - Like Index) ===== */
+        /* ===== 👤 User Toggle ===== */
         .user-toggle-wrapper {
             position: relative;
             display: flex;
@@ -356,7 +348,7 @@
             box-shadow: 0 8px 25px var(--accent-glow);
         }
         
-        /* ===== 🗂️ Compact Order Card ===== */
+        /* ===== 🗂️ Order Card ===== */
         .orders-grid { display: grid; gap: 1rem; }
         
         .order-card {
@@ -375,24 +367,12 @@
         
         .order-header-compact {
             display: grid;
-            grid-template-columns: auto auto 1fr auto;
+            grid-template-columns: auto 1fr auto;
             gap: 0.8rem;
             align-items: center;
             padding-bottom: 0.8rem;
             border-bottom: 1px solid var(--border);
             flex-wrap: wrap;
-        }
-        
-        .order-id-badge {
-            background: var(--surface);
-            padding: 0.3rem 0.8rem;
-            border-radius: var(--radius-full);
-            font-size: 0.8rem;
-            font-weight: 700;
-            font-family: 'Syne', sans-serif;
-            display: flex;
-            align-items: center;
-            gap: 0.3rem;
         }
         
         .order-status {
@@ -603,7 +583,7 @@
             justify-content: flex-end;
         }
         
-        /* ===== 🕐 Timeline Modal Styles ===== */
+        /* ===== 🕐 Timeline Modal ===== */
         .timeline-vertical { display: flex; flex-direction: column; gap: 1rem; }
         .timeline-item {
             display: flex;
@@ -649,7 +629,7 @@
             color: var(--text-muted);
         }
         
-        /* ===== 📁 Deliverables Modal Styles ===== */
+        /* ===== 📁 Deliverables Modal ===== */
         .deliverable-link {
             display: flex;
             align-items: center;
@@ -735,7 +715,7 @@
             flex-direction: column;
             gap: 0.8rem;
         }
-        .message { max-width: 85%; padding: 0.6rem 1rem; border-radius: var(--radius-md); font-size: 0.9rem; }
+        .message { max-width: 85%; padding: 0.6rem 1rem; border-radius: var(--radius-md); font-size: 0.9rem; word-wrap: break-word; }
         .message.user {
             align-self: flex-end;
             background: var(--gradient-accent);
@@ -791,7 +771,7 @@
         }
         .chat-input-area button:hover { transform: scale(1.05); }
         
-        /* ===== 🍞 Toast Notifications ===== */
+        /* ===== 🍞 Toast ===== */
         .toast {
             position: fixed;
             bottom: 2rem;
@@ -813,7 +793,7 @@
         .toast.error { background: #ef4444; }
         .toast.warning { background: #f59e0b; color: #1a162a; }
         
-        /* ===== 🌀 Loading Spinner ===== */
+        /* ===== 🌀 Spinner ===== */
         .spinner {
             width: 32px; height: 32px;
             border: 3px solid var(--border);
@@ -835,18 +815,102 @@
         .empty-state h3 { margin-bottom: 0.5rem; }
         .empty-state p { color: var(--text-muted); margin-bottom: 1.5rem; }
         
-        /* ===== 📱 Responsive Design ===== */
+        /* ===== 💳 Payment History Styles ===== */
+        .payment-summary-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        .payment-stat-card {
+            text-align: center;
+            padding: 1rem;
+            background: var(--surface);
+            border-radius: var(--radius-md);
+        }
+        .payment-stat-card.highlight {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+        .payment-stat-card.warning {
+            background: rgba(255, 107, 53, 0.1);
+            border: 1px solid rgba(255, 107, 53, 0.3);
+        }
+        .payment-stat-label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-bottom: 0.3rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .payment-stat-value {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+        .payment-stat-value.green { color: #10b981; }
+        .payment-stat-value.orange { color: #ff6b35; }
+        
+        .payment-timeline {
+            margin-top: 1.5rem;
+        }
+        .payment-timeline-item {
+            display: flex;
+            gap: 0.8rem;
+            align-items: flex-start;
+            padding: 0.8rem;
+            background: var(--surface);
+            border-radius: var(--radius-md);
+            margin-bottom: 0.5rem;
+            border-left: 3px solid var(--border);
+        }
+        .payment-timeline-item.advance {
+            border-left-color: #ff6b35;
+            background: rgba(255, 107, 53, 0.1);
+        }
+        .payment-timeline-item.balance {
+            border-left-color: #10b981;
+            background: rgba(16, 185, 129, 0.1);
+        }
+        .payment-timeline-item.pending {
+            opacity: 0.6;
+        }
+        .payment-timeline-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        .payment-timeline-icon.advance { background: #ff6b35; }
+        .payment-timeline-icon.balance { background: #10b981; }
+        .payment-timeline-icon.pending { background: var(--border); }
+        .payment-timeline-icon i { color: white; font-size: 0.8rem; }
+        .payment-timeline-icon.pending i { color: var(--text-muted); }
+        .payment-timeline-content { flex: 1; }
+        .payment-timeline-title {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.2rem;
+        }
+        .payment-timeline-detail {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+        .payment-timeline-id {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            font-family: monospace;
+            margin-top: 0.3rem;
+        }
+        
+        /* ===== 📱 Responsive ===== */
         @media (max-width: 1024px) {
             .order-header-compact {
                 grid-template-columns: auto 1fr auto;
-                grid-template-areas:
-                    "id status price"
-                    "service service service";
             }
-            .order-id-badge { grid-area: id; }
-            .order-status { grid-area: status; justify-self: start; }
-            .price-mini { grid-area: price; }
-            .service-mini { grid-area: service; }
         }
         
         @media (max-width: 768px) {
@@ -860,10 +924,6 @@
             
             .order-header-compact {
                 grid-template-columns: 1fr auto;
-                grid-template-areas:
-                    "id price"
-                    "status status"
-                    "service service";
                 gap: 0.5rem;
             }
             .order-actions-compact { justify-content: center; }
@@ -871,19 +931,15 @@
             .modal-container { max-width: 95vw; margin: 1rem; }
             .chat-widget { width: 100%; max-width: 100vw; bottom: 0; right: 0; border-radius: var(--radius-lg) var(--radius-lg) 0 0; }
             .chat-body { height: 350px; }
+            
+            .payment-summary-grid { grid-template-columns: 1fr; }
         }
         
         @media (max-width: 480px) {
             .order-header-compact {
                 grid-template-columns: 1fr;
-                grid-template-areas:
-                    "id"
-                    "status"
-                    "service"
-                    "price";
                 text-align: center;
             }
-            .order-status { justify-self: center; }
             .order-actions-compact { flex-wrap: wrap; }
             .btn-action { flex: 1; min-width: 100px; justify-content: center; }
         }
@@ -900,7 +956,7 @@
             outline-offset: 2px;
         }
         
-        /* ===== 🎨 Custom Scrollbar ===== */
+        /* ===== 🎨 Scrollbar ===== */
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: var(--bg-secondary); }
         ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 10px; }
@@ -910,7 +966,7 @@
 </head>
 <body>
 
-<!-- ===== 🔗 Navigation (Same as Index Page) ===== -->
+<!-- ===== 🔗 Navigation ===== -->
 <nav id="navbar">
     <a href="index.html" class="logo"><i class="fas fa-code"></i> Nova<span>Stack</span></a>
     
@@ -965,16 +1021,13 @@
         <a href="services.html" class="btn-new-order"><i class="fas fa-plus"></i> New Order</a>
     </div>
     
-    <!-- Loading State -->
     <div id="loading" style="display:none; text-align:center; padding:3rem;">
         <div class="spinner"></div>
         <p style="color:var(--text-muted); margin-top:1rem;">Loading your orders...</p>
     </div>
     
-    <!-- Orders Grid -->
     <div id="orders-container" class="orders-grid"></div>
     
-    <!-- Empty State -->
     <div id="empty-state" class="empty-state" style="display:none;">
         <i class="fas fa-shopping-bag"></i>
         <h3>No orders yet</h3>
@@ -983,7 +1036,7 @@
     </div>
 </div>
 
-<!-- ===== 🪟 Universal Modal ===== -->
+<!-- ===== 🪟 Modal ===== -->
 <div class="modal-overlay" id="modalOverlay" role="dialog" aria-modal="true">
     <div class="modal-container">
         <div class="modal-header">
@@ -1002,7 +1055,7 @@
     <div class="chat-header" id="chatHeader">
         <i class="fas fa-comments"></i>
         <span>Support Chat</span>
-        <span class="chat-order-id" id="chatOrderIdDisplay">Order #</span>
+        <span class="chat-order-id" id="chatOrderIdDisplay">Order</span>
         <div class="chat-close" id="chatClose"><i class="fas fa-times"></i></div>
     </div>
     <div class="chat-body">
@@ -1016,7 +1069,7 @@
     </div>
 </div>
 
-<!-- ===== 🍞 Toast Container ===== -->
+<!-- ===== 🍞 Toast ===== -->
 <div id="toastContainer"></div>
 
 <script>
@@ -1026,7 +1079,7 @@ const CONFIG = {
     WA_NUMBER: '9015277062'
 };
 
-// ===== 🔐 Auth Helper =====
+// ===== 🔐 Auth =====
 const Auth = {
     getToken() {
         return localStorage.getItem('dc_token') || sessionStorage.getItem('dc_token') || '';
@@ -1057,7 +1110,7 @@ const Auth = {
     }
 };
 
-// ===== 🛒 Cart Helper =====
+// ===== 🛒 Cart =====
 const Cart = {
     async fetch() {
         const token = Auth.getToken();
@@ -1079,7 +1132,7 @@ const Cart = {
     }
 };
 
-// ===== 🍞 Toast Notifications =====
+// ===== 🍞 Toast =====
 function showToast(message, type = 'success', duration = 4000) {
     const container = document.getElementById('toastContainer');
     const toast = document.createElement('div');
@@ -1087,24 +1140,21 @@ function showToast(message, type = 'success', duration = 4000) {
     toast.textContent = message;
     container.appendChild(toast);
     
-    // Trigger animation
     setTimeout(() => toast.classList.add('show'), 10);
     
-    // Auto remove
     setTimeout(() => {
         toast.classList.remove('show');
         setTimeout(() => toast.remove(), 300);
     }, duration);
 }
 
-// ===== 👤 Profile UI Update =====
+// ===== 👤 Profile UI =====
 function updateProfileUI(user) {
     if (!user) return;
     
     const name = user.name || user.email?.split('@')[0] || 'User';
     const initial = name.charAt(0).toUpperCase();
     
-    // Desktop toggle
     const avatar = document.getElementById('userAvatar');
     const userName = document.getElementById('userName');
     const dropdownAvatar = document.getElementById('dropdownAvatar');
@@ -1122,15 +1172,9 @@ function updateProfileUI(user) {
     if (dropdownAvatar) dropdownAvatar.innerHTML = avatar?.innerHTML || initial;
     if (dropdownName) dropdownName.textContent = name;
     if (dropdownEmail) dropdownEmail.textContent = user.email || '';
-    
-    // Mobile menu (if exists)
-    const mobileName = document.getElementById('mobileProfileName');
-    const mobileEmail = document.getElementById('mobileProfileEmail');
-    if (mobileName) mobileName.textContent = name;
-    if (mobileEmail) mobileEmail.textContent = user.email || '';
 }
 
-// ===== 🔄 Navbar Scroll Effect =====
+// ===== 🔄 Navbar Scroll =====
 window.addEventListener('scroll', () => {
     const nav = document.getElementById('navbar');
     const mobileMenu = document.getElementById('mobileMenu');
@@ -1145,7 +1189,7 @@ window.addEventListener('scroll', () => {
     }
 });
 
-// ===== 📱 Mobile Menu Toggle =====
+// ===== 📱 Mobile Menu =====
 const menuToggle = document.getElementById('menuToggle');
 const mobileMenu = document.getElementById('mobileMenu');
 const body = document.body;
@@ -1170,7 +1214,6 @@ function toggleMobileMenu() {
 
 if (menuToggle) menuToggle.addEventListener('click', toggleMobileMenu);
 
-// Close mobile menu on link click
 document.querySelectorAll('.mobile-nav-link').forEach(link => {
     link.addEventListener('click', () => {
         if (mobileMenu?.classList.contains('active')) {
@@ -1181,7 +1224,6 @@ document.querySelectorAll('.mobile-nav-link').forEach(link => {
     });
 });
 
-// Close on outside click
 document.addEventListener('click', (e) => {
     if (mobileMenu?.classList.contains('active') && 
         !mobileMenu.contains(e.target) && 
@@ -1192,7 +1234,7 @@ document.addEventListener('click', (e) => {
     }
 });
 
-// ===== 👤 User Dropdown Toggle =====
+// ===== 👤 User Dropdown =====
 const userToggle = document.getElementById('userToggle');
 const userDropdown = document.getElementById('userDropdown');
 
@@ -1244,7 +1286,6 @@ async function logout() {
     sessionStorage.removeItem('dc_token');
     sessionStorage.removeItem('dc_user');
     
-    // Close any open modals/chat
     closeModal();
     closeChat();
     
@@ -1315,7 +1356,7 @@ async function loadOrders() {
     }
 }
 
-// ===== 🗂️ Render Compact Order Cards =====
+// ===== 🗂️ Render Orders =====
 function renderOrders(orders) {
     const container = document.getElementById('orders-container');
     
@@ -1326,7 +1367,6 @@ function renderOrders(orders) {
         const balanceDue = Math.max(0, total - totalPaid);
         const paidPercent = total > 0 ? Math.min(100, Math.round((totalPaid / total) * 100)) : 0;
         
-        // Action logic
         const canPayBalance = (order.status === 'ready_for_balance' || (order.status === 'delivered' && balanceDue > 0)) && balanceDue > 0;
         const canCancel = (order.status === 'pending' || order.status === 'payment_received') && totalPaid < total;
         const canRequestRevision = (order.status === 'delivered' || order.status === 'completed') && !order.revision_requested;
@@ -1336,7 +1376,6 @@ function renderOrders(orders) {
         return `
         <div class="order-card" id="order-${order.id}">
             <div class="order-header-compact">
-                <div class="order-id-badge"><i class="fas fa-hashtag"></i> #${String(order.id).slice(-6)}</div>
                 <span class="order-status status-${order.status}">${order.status.replace(/_/g, ' ').toUpperCase()}</span>
                 <div class="service-mini">
                     <span class="service-emoji">${order.services?.emoji || '💻'}</span>
@@ -1370,7 +1409,7 @@ function renderOrders(orders) {
             <div class="order-actions-compact">
                 ${canPayBalance ? `
                 <button class="btn-action btn-pay" onclick="payBalance(${order.id}, ${balanceDue})">
-                    <i class="fas fa-credit-card"></i> Pay ₹${balanceDue.toLocaleString()}
+                    <i class="fas fa-credit-card"></i> Pay Balance ₹${balanceDue.toLocaleString()}
                 </button>` : ''}
                 
                 <button class="btn-action" onclick="openModal('timeline', ${order.id})">
@@ -1378,6 +1417,9 @@ function renderOrders(orders) {
                 </button>
                 <button class="btn-action" onclick="openModal('deliverables', ${order.id})">
                     <i class="fas fa-download"></i> Files
+                </button>
+                <button class="btn-action" onclick="openModal('payment', ${order.id})">
+                    <i class="fas fa-receipt"></i> Payment
                 </button>
                 <button class="btn-action btn-chat" onclick="openChat(${order.id})">
                     <i class="fas fa-comment"></i> Chat
@@ -1424,7 +1466,7 @@ function togglePreview(orderId) {
     trigger.classList.toggle('expanded', !isExpanded);
 }
 
-// ===== 🔧 Format Helpers =====
+// ===== 🔧 Helpers =====
 function formatCustomization(obj) {
     if (!obj || typeof obj !== 'object') return 'None';
     return Object.entries(obj).slice(0, 3).map(([k, v]) => 
@@ -1469,7 +1511,6 @@ function openModal(type, orderId) {
     modal.classList.add('active');
     document.body.style.overflow = 'hidden';
     
-    // Load content
     loadModalContent(type, orderId, body, footer);
 }
 
@@ -1522,7 +1563,7 @@ async function loadModalContent(type, orderId, body, footer) {
     }
 }
 
-// ===== 🕐 Render Timeline Modal =====
+// ===== 🕐 Timeline Modal =====
 function renderTimelineModal(container, timeline) {
     if (!timeline?.length) {
         container.innerHTML = '<p style="text-align:center;color:var(--text-muted);padding:1rem;">No timeline updates yet.</p>';
@@ -1545,7 +1586,7 @@ function renderTimelineModal(container, timeline) {
     `;
 }
 
-// ===== 📁 Render Deliverables Modal =====
+// ===== 📁 Deliverables Modal =====
 function renderDeliverablesModal(container, result, status) {
     if (!result?.success) {
         container.innerHTML = `
@@ -1588,7 +1629,7 @@ function renderDeliverablesModal(container, result, status) {
     container.innerHTML = html || '<p style="text-align:center;color:var(--text-muted);padding:1rem;">📭 No deliverables available yet.</p>';
 }
 
-// ===== ✏️ Render Revision Modal =====
+// ===== ✏️ Revision Modal =====
 function renderRevisionModal(container, orderId, footer) {
     container.innerHTML = `
         <p style="margin-bottom:1rem;color:var(--text-secondary);">Describe the changes you'd like:</p>
@@ -1601,7 +1642,6 @@ function renderRevisionModal(container, orderId, footer) {
         <button class="btn-action btn-pay" onclick="submitRevision(${orderId})">Send Request</button>
     `;
     
-    // Focus textarea
     setTimeout(() => document.getElementById('revisionInput')?.focus(), 100);
 }
 
@@ -1637,7 +1677,7 @@ async function submitRevision(orderId) {
         
         showToast('✅ Revision request sent! Admin will review shortly.');
         closeModal();
-        openChat(orderId); // Open chat to continue conversation
+        openChat(orderId);
         
     } catch (error) {
         showToast(error.message, 'error');
@@ -1648,7 +1688,7 @@ async function submitRevision(orderId) {
     }
 }
 
-// ===== ❌ Render Cancel Modal =====
+// ===== ❌ Cancel Modal =====
 function renderCancelModal(container, orderId, footer) {
     container.innerHTML = `
         <p style="margin-bottom:1rem;color:var(--text-secondary);">Please tell us why you want to cancel:</p>
@@ -1695,7 +1735,7 @@ async function submitCancel(orderId) {
         
         showToast('✅ Cancellation requested! Admin will review within 24h.');
         closeModal();
-        loadOrders(); // Refresh list
+        loadOrders();
         
     } catch (error) {
         showToast(error.message, 'error');
@@ -1706,12 +1746,11 @@ async function submitCancel(orderId) {
     }
 }
 
-// ===== 💳 Payment Modal =====
+// ===== 💳 Payment History Modal =====
 async function renderPaymentModal(container, orderId) {
     const token = Auth.getToken();
     
     try {
-        // Fetch order details for payment info
         const res = await fetch(`${CONFIG.API}/my-orders`, {
             headers: { 'Authorization': `Bearer ${token}` }
         });
@@ -1724,47 +1763,140 @@ async function renderPaymentModal(container, orderId) {
         }
         
         const total = order.price || 0;
-        const paid = order.total_paid || order.advance_paid || 0;
-        const due = total - paid;
+        const advancePaid = order.advance_paid || 0;
+        const balancePaid = order.balance_paid || 0;
+        const totalPaid = order.total_paid || advancePaid;
+        const due = Math.max(0, total - totalPaid);
+        const paidPercent = total > 0 ? Math.round((totalPaid / total) * 100) : 0;
         
         container.innerHTML = `
-            <div style="background:var(--surface);padding:1rem;border-radius:var(--radius-md);margin-bottom:1rem;">
-                <div style="display:flex;justify-content:space-between;margin-bottom:0.5rem;">
-                    <span>Total Amount:</span>
-                    <strong>₹${total.toLocaleString()}</strong>
+            <div class="payment-summary-grid">
+                <div class="payment-stat-card">
+                    <div class="payment-stat-label">Total Amount</div>
+                    <div class="payment-stat-value">₹${total.toLocaleString()}</div>
                 </div>
-                <div style="display:flex;justify-content:space-between;margin-bottom:0.5rem;color:#10b981;">
-                    <span>Amount Paid:</span>
-                    <strong>₹${paid.toLocaleString()}</strong>
+                <div class="payment-stat-card highlight">
+                    <div class="payment-stat-label">Total Paid</div>
+                    <div class="payment-stat-value green">₹${totalPaid.toLocaleString()}</div>
                 </div>
-                <div style="display:flex;justify-content:space-between;color:${due > 0 ? '#ff6b35' : '#10b981'};">
-                    <span>Balance Due:</span>
-                    <strong>₹${due.toLocaleString()}</strong>
+                <div class="payment-stat-card">
+                    <div class="payment-stat-label">Advance (15%)</div>
+                    <div class="payment-stat-value orange">₹${advancePaid.toLocaleString()}</div>
+                </div>
+                <div class="payment-stat-card ${due > 0 ? 'warning' : 'highlight'}">
+                    <div class="payment-stat-label">${due > 0 ? 'Balance Due' : 'Balance Paid'}</div>
+                    <div class="payment-stat-value ${due > 0 ? 'orange' : 'green'}">₹${due > 0 ? due.toLocaleString() : '0'}</div>
                 </div>
             </div>
             
-            <div style="margin-bottom:1rem;">
-                <strong style="display:block;margin-bottom:0.5rem;">Payment Timeline:</strong>
-                ${order.advance_paid_at ? `
-                <div style="padding:0.5rem 0;border-bottom:1px solid var(--border);">
-                    <div style="font-weight:600;color:#10b981;">Advance Payment</div>
-                    <div style="font-size:0.85rem;color:var(--text-muted);">
-                        ₹${order.advance_paid?.toLocaleString()} • ${new Date(order.advance_paid_at).toLocaleString()}
-                    </div>
-                </div>` : ''}
-                ${order.balance_paid_at ? `
-                <div style="padding:0.5rem 0;">
-                    <div style="font-weight:600;color:#10b981;">Balance Payment</div>
-                    <div style="font-size:0.85rem;color:var(--text-muted);">
-                        ₹${order.balance_paid?.toLocaleString()} • ${new Date(order.balance_paid_at).toLocaleString()}
-                    </div>
-                </div>` : ''}
-                ${!order.advance_paid_at ? '<div style="color:var(--text-muted);font-size:0.9rem;">No payments recorded yet</div>' : ''}
+            <div style="margin-bottom:1.5rem;">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.8rem;">
+                    <strong style="color:var(--text-primary);">Payment Progress</strong>
+                    <span style="color:var(--accent);font-weight:600;">${paidPercent}%</span>
+                </div>
+                <div style="height:8px;background:var(--surface);border-radius:var(--radius-full);overflow:hidden;">
+                    <div style="height:100%;width:${paidPercent}%;background:var(--gradient-accent);border-radius:var(--radius-full);transition:width 0.5s;"></div>
+                </div>
             </div>
+            
+            <div class="payment-timeline">
+                <strong style="display:block;margin-bottom:0.8rem;color:var(--text-primary);">
+                    <i class="fas fa-clock"></i> Payment Timeline
+                </strong>
+                
+                ${order.advance_paid_at ? `
+                <div class="payment-timeline-item advance">
+                    <div class="payment-timeline-icon advance">
+                        <i class="fas fa-arrow-down"></i>
+                    </div>
+                    <div class="payment-timeline-content">
+                        <div class="payment-timeline-title">Advance Payment</div>
+                        <div class="payment-timeline-detail">
+                            ₹${advancePaid.toLocaleString()} • ${new Date(order.advance_paid_at).toLocaleString()}
+                        </div>
+                        ${order.advance_payment_id ? `
+                        <div class="payment-timeline-id">TXN: ${order.advance_payment_id}</div>` : ''}
+                    </div>
+                </div>` : `
+                <div class="payment-timeline-item pending">
+                    <div class="payment-timeline-icon pending">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="payment-timeline-content">
+                        <div class="payment-timeline-title">Advance Payment</div>
+                        <div class="payment-timeline-detail">Pending</div>
+                    </div>
+                </div>`}
+                
+                ${order.balance_paid_at ? `
+                <div class="payment-timeline-item balance">
+                    <div class="payment-timeline-icon balance">
+                        <i class="fas fa-check"></i>
+                    </div>
+                    <div class="payment-timeline-content">
+                        <div class="payment-timeline-title">Balance Payment</div>
+                        <div class="payment-timeline-detail">
+                            ₹${balancePaid.toLocaleString()} • ${new Date(order.balance_paid_at).toLocaleString()}
+                        </div>
+                        ${order.balance_payment_id ? `
+                        <div class="payment-timeline-id">TXN: ${order.balance_payment_id}</div>` : ''}
+                    </div>
+                </div>` : due > 0 ? `
+                <div class="payment-timeline-item pending">
+                    <div class="payment-timeline-icon pending">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="payment-timeline-content">
+                        <div class="payment-timeline-title">Balance Payment</div>
+                        <div class="payment-timeline-detail">₹${due.toLocaleString()} Due</div>
+                    </div>
+                </div>` : `
+                <div class="payment-timeline-item balance">
+                    <div class="payment-timeline-icon balance">
+                        <i class="fas fa-check"></i>
+                    </div>
+                    <div class="payment-timeline-content">
+                        <div class="payment-timeline-title">Balance Payment</div>
+                        <div class="payment-timeline-detail">Not Required (Fully Paid)</div>
+                    </div>
+                </div>`}
+            </div>
+            
+            ${order.payment_history && order.payment_history.length > 0 ? `
+            <div style="margin-top:1.5rem;">
+                <strong style="display:block;margin-bottom:0.8rem;color:var(--text-primary);">
+                    <i class="fas fa-list"></i> All Transactions
+                </strong>
+                <div style="max-height:200px;overflow-y:auto;">
+                    ${order.payment_history.map(txn => `
+                    <div style="display:flex;justify-content:space-between;align-items:center;padding:0.6rem 0.8rem;background:var(--surface);border-radius:var(--radius-sm);margin-bottom:0.4rem;font-size:0.85rem;">
+                        <div style="display:flex;align-items:center;gap:0.5rem;">
+                            <i class="fas ${txn.type === 'credit' ? 'fa-arrow-down' : 'fa-arrow-up'}" style="color:${txn.type === 'credit' ? '#10b981' : '#ff6b35'};"></i>
+                            <span style="color:var(--text-secondary);">${txn.type === 'credit' ? 'Payment' : 'Refund'}</span>
+                        </div>
+                        <div style="text-align:right;">
+                            <div style="font-weight:600;color:${txn.type === 'credit' ? '#10b981' : '#ff6b35'};">
+                                ${txn.type === 'credit' ? '+' : '-'}₹${txn.amount?.toLocaleString()}
+                            </div>
+                            <div style="font-size:0.7rem;color:var(--text-muted);">
+                                ${new Date(txn.created_at).toLocaleDateString()}
+                            </div>
+                        </div>
+                    </div>
+                    `).join('')}
+                </div>
+            </div>` : ''}
         `;
         
     } catch (error) {
-        container.innerHTML = `<p class="modal-error">Error: ${error.message}</p>`;
+        console.error('Payment modal error:', error);
+        container.innerHTML = `
+            <div class="modal-error">
+                <i class="fas fa-exclamation-triangle"></i>
+                <p>Failed to load payment details</p>
+                <p style="font-size:0.8rem;margin-top:0.5rem;">${error.message}</p>
+            </div>
+        `;
     }
 }
 
@@ -1784,7 +1916,6 @@ async function payBalance(orderId, amount) {
     }
     
     try {
-        // Verify order status first
         const checkRes = await fetch(`${CONFIG.API}/my-orders`, {
             headers: { 'Authorization': `Bearer ${token}` }
         });
@@ -1800,7 +1931,6 @@ async function payBalance(orderId, amount) {
             return;
         }
         
-        // Create Razorpay order
         const res = await fetch(`${CONFIG.API}/order/${orderId}/pay-balance`, {
             method: 'POST',
             headers: {
@@ -1816,7 +1946,6 @@ async function payBalance(orderId, amount) {
             throw new Error('Invalid payment configuration');
         }
         
-        // Open Razorpay
         const options = {
             key: paymentData.key_id,
             amount: Math.round(amount * 100),
@@ -1837,7 +1966,7 @@ async function payBalance(orderId, amount) {
                 ondismiss: function() {
                     if (btn) {
                         btn.disabled = false;
-                        btn.innerHTML = `<i class="fas fa-credit-card"></i> Pay ₹${amount.toLocaleString()}`;
+                        btn.innerHTML = `<i class="fas fa-credit-card"></i> Pay Balance ₹${amount.toLocaleString()}`;
                     }
                     showToast('Payment cancelled', 'warning');
                 }
@@ -1851,7 +1980,7 @@ async function payBalance(orderId, amount) {
             showToast(`Payment failed: ${response.error.description || 'Please try again'}`, 'error');
             if (btn) {
                 btn.disabled = false;
-                btn.innerHTML = `<i class="fas fa-credit-card"></i> Pay ₹${amount.toLocaleString()}`;
+                btn.innerHTML = `<i class="fas fa-credit-card"></i> Pay Balance ₹${amount.toLocaleString()}`;
             }
         });
         
@@ -1862,7 +1991,7 @@ async function payBalance(orderId, amount) {
         showToast(error.message, 'error');
         if (btn) {
             btn.disabled = false;
-            btn.innerHTML = `<i class="fas fa-credit-card"></i> Pay ₹${amount.toLocaleString()}`;
+            btn.innerHTML = `<i class="fas fa-credit-card"></i> Pay Balance ₹${amount.toLocaleString()}`;
         }
     }
 }
@@ -1890,7 +2019,7 @@ async function verifyBalancePayment(orderId, amount, response) {
         if (!res.ok) throw new Error(data.error || 'Verification failed');
         
         showToast('✅ Balance payment successful! Order completed.');
-        loadOrders(); // Refresh order list
+        loadOrders();
         
     } catch (error) {
         console.error('Verification failed:', error);
@@ -1898,7 +2027,7 @@ async function verifyBalancePayment(orderId, amount, response) {
     }
 }
 
-// ===== 💬 Chat System =====
+// ===== 💬 Chat =====
 let currentChatOrderId = null;
 let chatPollInterval = null;
 
@@ -1907,17 +2036,14 @@ function openChat(orderId) {
     const chat = document.getElementById('chatWidget');
     const orderIdDisplay = document.getElementById('chatOrderIdDisplay');
     
-    orderIdDisplay.textContent = `#${String(orderId).slice(-6)}`;
+    orderIdDisplay.textContent = `Order`;
     chat.classList.add('active');
     
-    // Load messages
     loadChatMessages();
     
-    // Start polling for new messages
     if (chatPollInterval) clearInterval(chatPollInterval);
     chatPollInterval = setInterval(loadChatMessages, 5000);
     
-    // Focus input
     setTimeout(() => document.getElementById('chatMessageInput')?.focus(), 100);
 }
 
@@ -1931,11 +2057,6 @@ function closeChat() {
 }
 
 document.getElementById('chatClose')?.addEventListener('click', closeChat);
-document.getElementById('chatHeader')?.addEventListener('click', (e) => {
-    if (e.target.id === 'chatHeader' || e.target.closest('.chat-header')) {
-        // Toggle chat body visibility if needed
-    }
-});
 
 async function loadChatMessages() {
     if (!currentChatOrderId) return;
@@ -1976,7 +2097,6 @@ function renderChatMessages(messages) {
         </div>`;
     }).join('');
     
-    // Auto-scroll to bottom
     container.scrollTop = container.scrollHeight;
 }
 
@@ -1992,7 +2112,6 @@ async function sendChatMessage() {
         return;
     }
     
-    // Clear input immediately for better UX
     input.value = '';
     
     try {
@@ -2007,17 +2126,14 @@ async function sendChatMessage() {
         
         if (!res.ok) throw new Error('Failed to send');
         
-        // Reload messages to show sent message
         await loadChatMessages();
         
     } catch (error) {
         showToast('Failed to send message', 'error');
-        // Restore message if send failed
         if (input) input.value = message;
     }
 }
 
-// Chat input handlers
 document.getElementById('chatSendBtn')?.addEventListener('click', sendChatMessage);
 document.getElementById('chatMessageInput')?.addEventListener('keydown', (e) => {
     if (e.key === 'Enter' && !e.shiftKey) {
@@ -2028,7 +2144,6 @@ document.getElementById('chatMessageInput')?.addEventListener('keydown', (e) => 
 
 // ===== 🔄 Initialize =====
 document.addEventListener('DOMContentLoaded', async () => {
-    // Check auth & update UI
     if (Auth.isLoggedIn()) {
         const freshUser = await Auth.fetchUser();
         if (freshUser) {
@@ -2037,10 +2152,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         updateProfileUI(Auth.getUser());
     }
     
-    // Load orders
     await loadOrders();
     
-    // Auto-refresh cart badge if logged in
     if (Auth.isLoggedIn()) {
         const cartItems = await Cart.fetch();
         const badge = document.getElementById('cartBadge');
@@ -2050,14 +2163,12 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     }
     
-    // Handle resize for mobile menu position
     window.addEventListener('resize', () => {
         const nav = document.getElementById('navbar');
         const mobileMenu = document.getElementById('mobileMenu');
         if (nav && mobileMenu) {
             mobileMenu.style.top = window.scrollY > 50 ? '64px' : (window.innerWidth <= 768 ? '68px' : '72px');
         }
-        // Close mobile menu on desktop resize
         if (window.innerWidth > 768 && mobileMenu?.classList.contains('active')) {
             mobileMenu.classList.remove('active');
             menuToggle?.classList.remove('active');
@@ -2065,7 +2176,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     });
     
-    // Page visibility - refresh auth if tab becomes active
     document.addEventListener('visibilitychange', async () => {
         if (!document.hidden && Auth.isLoggedIn()) {
             const freshUser = await Auth.fetchUser();
@@ -2074,7 +2184,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
 });
 
-// Prevent zoom on double-tap (iOS)
+// Prevent zoom on double-tap
 let lastTouchEnd = 0;
 document.addEventListener('touchend', (e) => {
     const now = Date.now();
