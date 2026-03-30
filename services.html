@@ -6,8 +6,8 @@
 <title>Services — NovaStack</title>
 
 <!-- SEO & Meta -->
-<meta name="description" content="Browse professional software development services: web apps, mobile apps, AI solutions, and custom software.">
-<meta name="keywords" content="software services, web development, mobile apps, AI development, custom software, NovaStack">
+<meta name="description" content="Professional software development services: web apps, mobile apps, AI solutions, e-commerce & custom projects.">
+<meta name="keywords" content="software development, web development, mobile apps, AI, NovaStack">
 
 <!-- Fonts & Icons -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -64,7 +64,13 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
-body.menu-open { overflow: hidden; position: fixed; width: 100%; height: 100%; top: 0; }
+body.menu-open {
+  overflow: hidden;
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  top: 0;
+}
 
 /* Animated Background */
 body::before {
@@ -121,7 +127,11 @@ nav {
   height: 72px;
   transition: all var(--transition-normal);
 }
-nav.scrolled { height: 64px; box-shadow: var(--shadow-md); }
+nav.scrolled {
+  height: 64px;
+  background: rgba(15, 12, 26, 0.95);
+  box-shadow: var(--shadow-md);
+}
 
 .logo {
   font-family: 'Syne', sans-serif;
@@ -133,6 +143,7 @@ nav.scrolled { height: 64px; box-shadow: var(--shadow-md); }
   align-items: center;
   gap: 0.3rem;
   transition: transform var(--transition-fast);
+  white-space: nowrap;
   flex-shrink: 0;
 }
 .logo:hover { transform: scale(1.05); }
@@ -153,14 +164,27 @@ nav.scrolled { height: 64px; box-shadow: var(--shadow-md); }
   color: var(--text-secondary);
   font-size: 0.95rem;
   font-weight: 500;
+  position: relative;
   padding: 0.5rem 0;
-  transition: color var(--transition-normal);
+  transition: color var(--transition-fast);
+  white-space: nowrap;
   display: flex;
   align-items: center;
   gap: 0.4rem;
 }
+.nav-links a::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0;
+  width: 0; height: 2px;
+  background: var(--gradient-accent);
+  border-radius: var(--radius-full);
+  transition: width var(--transition-normal);
+}
 .nav-links a:hover,
 .nav-links a.active { color: var(--text-primary); }
+.nav-links a:hover::after,
+.nav-links a.active::after { width: 100%; }
 
 /* ===== 👤 User Toggle (Left Side - Like Index) ===== */
 .user-toggle-wrapper {
@@ -196,6 +220,7 @@ nav.scrolled { height: 64px; box-shadow: var(--shadow-md); }
   font-size: 0.85rem;
   color: white;
   text-transform: uppercase;
+  flex-shrink: 0;
   overflow: hidden;
 }
 .user-avatar img { width: 100%; height: 100%; object-fit: cover; }
@@ -233,9 +258,7 @@ nav.scrolled { height: 64px; box-shadow: var(--shadow-md); }
   z-index: 1001;
 }
 .user-dropdown.active {
-  opacity: 1;
-  visibility: visible;
-  transform: translateY(0);
+  opacity: 1; visibility: visible; transform: translateY(0);
 }
 .user-dropdown::before {
   content: '';
@@ -312,6 +335,7 @@ nav.scrolled { height: 64px; box-shadow: var(--shadow-md); }
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-shrink: 0;
 }
 .menu-toggle:hover { background: var(--surface); }
 
@@ -331,7 +355,7 @@ nav.scrolled { height: 64px; box-shadow: var(--shadow-md); }
   backdrop-filter: blur(20px);
 }
 .mobile-menu.active {
-  max-height: 80vh;
+  max-height: 85vh;
   opacity: 1;
   overflow-y: auto;
 }
@@ -366,16 +390,18 @@ nav.scrolled { height: 64px; box-shadow: var(--shadow-md); }
 /* ===== 🚀 Page Hero ===== */
 .page-hero {
   background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-primary) 100%);
-  padding: 5rem 5% 3rem;
+  padding: clamp(3rem, 8vw, 5rem) 5% clamp(2rem, 5vw, 3rem);
   position: relative;
   overflow: hidden;
   border-bottom: 1px solid var(--border);
+  text-align: center;
 }
 .page-hero::before {
   content: '';
   position: absolute;
   top: -50%; right: -20%;
-  width: 600px; height: 600px;
+  width: clamp(300px, 50vw, 600px);
+  height: clamp(300px, 50vw, 600px);
   background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%);
   border-radius: 50%;
   animation: floatGlow 10s ease-in-out infinite;
@@ -395,8 +421,8 @@ nav.scrolled { height: 64px; box-shadow: var(--shadow-md); }
 .page-hero h1 {
   font-family: 'Syne', sans-serif;
   font-weight: 800;
-  font-size: clamp(1.8rem, 4vw, 2.5rem);
-  margin-bottom: 0.6rem;
+  font-size: clamp(1.5rem, 5vw, 2.5rem);
+  margin-bottom: 0.8rem;
   line-height: 1.3;
   animation: slideInDown 0.6s ease-out;
   word-wrap: break-word;
@@ -404,16 +430,17 @@ nav.scrolled { height: 64px; box-shadow: var(--shadow-md); }
   white-space: normal;
   width: 100%;
   max-width: 100%;
-  display: block;
 }
 @keyframes slideInDown {
   from { opacity: 0; transform: translateY(-20px); }
   to { opacity: 1; transform: translateY(0); }
 }
+.page-hero h1 i { color: var(--accent); margin-right: 0.5rem; }
 .page-hero p {
   color: var(--text-secondary);
-  font-size: 1rem;
-  max-width: 580px;
+  font-size: clamp(0.9rem, 2.5vw, 1.1rem);
+  max-width: 600px;
+  margin: 0 auto 1.5rem;
   animation: slideInDown 0.6s ease-out 0.1s both;
   line-height: 1.6;
 }
@@ -425,8 +452,8 @@ nav.scrolled { height: 64px; box-shadow: var(--shadow-md); }
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
   overflow: hidden;
-  margin-top: 1.8rem;
-  max-width: 620px;
+  margin: 0 auto;
+  max-width: 600px;
   backdrop-filter: blur(10px);
   box-shadow: var(--shadow-md);
   animation: slideInDown 0.6s ease-out 0.2s both;
@@ -438,24 +465,24 @@ nav.scrolled { height: 64px; box-shadow: var(--shadow-md); }
 }
 .search-bar input {
   flex: 1;
-  padding: 1rem 1.3rem;
+  padding: clamp(0.8rem, 2vw, 1rem) clamp(1rem, 2.5vw, 1.3rem);
   border: none;
   background: transparent;
   font-family: 'DM Sans', sans-serif;
-  font-size: 0.95rem;
+  font-size: clamp(0.9rem, 2.5vw, 0.95rem);
   color: var(--text-primary);
   outline: none;
   min-width: 0;
 }
 .search-bar input::placeholder { color: var(--text-muted); }
 .search-bar button {
-  padding: 1rem 1.4rem;
+  padding: clamp(0.8rem, 2vw, 1rem) clamp(1rem, 2.5vw, 1.4rem);
   background: var(--gradient-accent);
   color: #fff;
   border: none;
   font-family: 'Syne', sans-serif;
   font-weight: 700;
-  font-size: 0.9rem;
+  font-size: clamp(0.85rem, 2.5vw, 0.9rem);
   cursor: pointer;
   transition: all var(--transition-normal);
   display: flex;
@@ -467,12 +494,13 @@ nav.scrolled { height: 64px; box-shadow: var(--shadow-md); }
   background: var(--accent);
   transform: translateX(2px);
 }
+.search-bar button i { font-size: 0.95rem; }
 
 /* ===== 📐 Main Layout ===== */
 .layout {
   max-width: 1400px;
   margin: 0 auto;
-  padding: 2rem 5% 4rem;
+  padding: clamp(1.5rem, 4vw, 2rem) 5% clamp(3rem, 6vw, 4rem);
   display: grid;
   grid-template-columns: 260px 1fr;
   gap: 2rem;
@@ -518,6 +546,7 @@ nav.scrolled { height: 64px; box-shadow: var(--shadow-md); }
   gap: 0.5rem;
   padding-bottom: 0.7rem;
   border-bottom: 1px solid var(--border);
+  white-space: nowrap;
 }
 .sidebar-card h4 i { color: var(--accent); font-size: 0.85rem; }
 .filter-list {
@@ -625,6 +654,7 @@ nav.scrolled { height: 64px; box-shadow: var(--shadow-md); }
   background: rgba(239, 68, 68, 0.1);
   transform: translateY(-2px);
 }
+.clear-btn i { font-size: 0.75rem; flex-shrink: 0; }
 
 /* ===== 📊 Main Content Area ===== */
 .main-area {
@@ -690,7 +720,7 @@ nav.scrolled { height: 64px; box-shadow: var(--shadow-md); }
 /* ===== 📦 Services Grid ===== */
 .services-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(clamp(250px, 30vw, 270px), 1fr));
   gap: 1.2rem;
 }
 .service-card {
@@ -718,11 +748,11 @@ nav.scrolled { height: 64px; box-shadow: var(--shadow-md); }
   z-index: 10;
 }
 .card-thumb {
-  height: 150px;
+  height: clamp(130px, 25vw, 150px);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 3rem;
+  font-size: clamp(2rem, 5vw, 3rem);
   position: relative;
   overflow: hidden;
   transition: transform var(--transition-normal);
@@ -742,7 +772,6 @@ nav.scrolled { height: 64px; box-shadow: var(--shadow-md); }
 .thumb-portfolio { background: var(--gradient-3); }
 .thumb-ecom { background: var(--gradient-ecom); }
 .thumb-custom { background: var(--gradient-default); }
-
 .cat-badge {
   position: absolute;
   top: 0.7rem;
@@ -805,7 +834,7 @@ nav.scrolled { height: 64px; box-shadow: var(--shadow-md); }
 .card-body h3 {
   font-family: 'Syne', sans-serif;
   font-weight: 700;
-  font-size: 0.98rem;
+  font-size: clamp(0.9rem, 2.5vw, 0.98rem);
   margin-bottom: 0.35rem;
   line-height: 1.3;
   transition: color var(--transition-fast);
@@ -818,7 +847,7 @@ nav.scrolled { height: 64px; box-shadow: var(--shadow-md); }
 .service-card:hover .card-body h3 { color: var(--accent); }
 .card-body p {
   color: var(--text-muted);
-  font-size: 0.83rem;
+  font-size: clamp(0.78rem, 2vw, 0.83rem);
   line-height: 1.5;
   margin-bottom: 0.8rem;
   flex: 1;
@@ -841,7 +870,7 @@ nav.scrolled { height: 64px; box-shadow: var(--shadow-md); }
 .price {
   font-family: 'Syne', sans-serif;
   font-weight: 800;
-  font-size: 1.15rem;
+  font-size: clamp(1rem, 2.5vw, 1.15rem);
   color: var(--text-primary);
   display: flex;
   align-items: baseline;
@@ -885,6 +914,10 @@ nav.scrolled { height: 64px; box-shadow: var(--shadow-md); }
   transform: translateY(-2px);
   box-shadow: 0 6px 20px var(--accent-glow);
 }
+.btn-cart.in-cart {
+  background: var(--green);
+  border-color: transparent;
+}
 .btn-detail {
   padding: 0.4rem 0.75rem;
   background: var(--surface);
@@ -909,14 +942,15 @@ nav.scrolled { height: 64px; box-shadow: var(--shadow-md); }
   transform: translateY(-2px);
 }
 .btn-detail.customize {
-  background: #10b981;
-  border-color: #10b981;
+  background: var(--green);
+  border-color: var(--green);
   color: white;
 }
 .btn-detail.customize:hover {
   background: #059669;
   border-color: #059669;
 }
+.btn-cart i, .btn-detail i { font-size: 0.7rem; flex-shrink: 0; }
 
 /* ===== 🎨 Custom Project Card ===== */
 .custom-project-card {
@@ -924,7 +958,7 @@ nav.scrolled { height: 64px; box-shadow: var(--shadow-md); }
   background: linear-gradient(135deg, rgba(124, 58, 237, 0.15) 0%, rgba(255, 107, 53, 0.15) 100%);
   border: 1px solid var(--accent);
   border-radius: var(--radius-lg);
-  padding: 2rem;
+  padding: clamp(1.5rem, 4vw, 2rem);
   margin: 2rem 0 0;
   backdrop-filter: blur(10px);
   position: relative;
@@ -937,10 +971,30 @@ nav.scrolled { height: 64px; box-shadow: var(--shadow-md); }
   box-shadow: 0 15px 50px rgba(124, 58, 237, 0.2);
   transform: translateY(-2px);
 }
+.custom-project-card::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    45deg,
+    transparent 30%,
+    rgba(255, 107, 53, 0.05) 50%,
+    transparent 70%
+  );
+  animation: shimmer 3s infinite;
+  pointer-events: none;
+}
+@keyframes shimmer {
+  0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+  100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+}
 .custom-project-content {
   display: flex;
   align-items: center;
-  gap: 2rem;
+  gap: clamp(1rem, 4vw, 2rem);
   flex-wrap: wrap;
   justify-content: space-between;
   text-align: left;
@@ -948,14 +1002,14 @@ nav.scrolled { height: 64px; box-shadow: var(--shadow-md); }
   z-index: 2;
 }
 .custom-icon {
-  width: 80px;
-  height: 80px;
+  width: clamp(60px, 12vw, 80px);
+  height: clamp(60px, 12vw, 80px);
   background: var(--gradient-accent);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 2.2rem;
+  font-size: clamp(1.5rem, 4vw, 2.2rem);
   color: white;
   box-shadow: 0 10px 30px var(--accent-glow);
   animation: float 3s ease-in-out infinite;
@@ -963,18 +1017,18 @@ nav.scrolled { height: 64px; box-shadow: var(--shadow-md); }
 }
 .custom-text {
   flex: 1;
-  min-width: 250px;
+  min-width: clamp(200px, 50vw, 250px);
 }
 .custom-text h3 {
   font-family: 'Syne', sans-serif;
-  font-size: 1.4rem;
+  font-size: clamp(1.1rem, 3vw, 1.4rem);
   margin-bottom: 0.5rem;
   color: var(--text-primary);
   line-height: 1.3;
 }
 .custom-text p {
   color: var(--text-secondary);
-  font-size: 0.95rem;
+  font-size: clamp(0.85rem, 2.5vw, 0.95rem);
   line-height: 1.6;
 }
 .custom-text .login-warning {
@@ -987,12 +1041,12 @@ nav.scrolled { height: 64px; box-shadow: var(--shadow-md); }
   font-weight: 600;
 }
 .btn-custom {
-  padding: 1rem 2rem;
+  padding: clamp(0.8rem, 2vw, 1rem) clamp(1.5rem, 4vw, 2rem);
   background: var(--gradient-accent);
   color: white;
   border: none;
   border-radius: var(--radius-full);
-  font-size: 1rem;
+  font-size: clamp(0.9rem, 2.5vw, 1rem);
   font-weight: 700;
   cursor: pointer;
   transition: all var(--transition-normal);
@@ -1019,6 +1073,7 @@ nav.scrolled { height: 64px; box-shadow: var(--shadow-md); }
   transform: none;
   box-shadow: none;
 }
+.btn-custom i { font-size: 1.1rem; }
 
 /* ===== 🎯 Modal Styles ===== */
 .modal {
@@ -1034,13 +1089,15 @@ nav.scrolled { height: 64px; box-shadow: var(--shadow-md); }
   animation: fadeIn 0.3s ease-out;
 }
 .modal.show { display: flex; }
-@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
 .modal-content {
   background: var(--bg-secondary);
   border: 1px solid var(--border);
   border-radius: var(--radius-xl);
-  padding: 2rem;
+  padding: clamp(1.5rem, 4vw, 2rem);
   max-width: 600px;
   width: 100%;
   max-height: 90vh;
@@ -1063,11 +1120,12 @@ nav.scrolled { height: 64px; box-shadow: var(--shadow-md); }
 }
 .modal-header h2 {
   font-family: 'Syne', sans-serif;
-  font-size: 1.3rem;
+  font-size: clamp(1.1rem, 3vw, 1.3rem);
   color: var(--text-primary);
   line-height: 1.3;
   word-wrap: break-word;
 }
+.modal-header h2 i { color: var(--accent); margin-right: 0.4rem; }
 .modal-close {
   background: none;
   border: none;
@@ -1132,6 +1190,8 @@ nav.scrolled { height: 64px; box-shadow: var(--shadow-md); }
   align-items: center;
   gap: 0.3rem;
 }
+.form-note i { color: var(--accent-secondary); }
+
 .modal-actions {
   display: flex;
   gap: 1rem;
@@ -1184,7 +1244,7 @@ nav.scrolled { height: 64px; box-shadow: var(--shadow-md); }
 /* ===== ⚠️ Empty State ===== */
 .empty-state {
   text-align: center;
-  padding: 4rem 1.5rem;
+  padding: clamp(3rem, 8vw, 4rem) clamp(1rem, 4vw, 1.5rem);
   background: var(--bg-card);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
@@ -1192,7 +1252,7 @@ nav.scrolled { height: 64px; box-shadow: var(--shadow-md); }
   animation: fadeIn 0.5s ease-out;
 }
 .empty-state .icon {
-  font-size: 3rem;
+  font-size: clamp(2.5rem, 8vw, 3rem);
   display: block;
   margin-bottom: 0.9rem;
   color: var(--text-muted);
@@ -1201,13 +1261,13 @@ nav.scrolled { height: 64px; box-shadow: var(--shadow-md); }
 .empty-state h3 {
   font-family: 'Syne', sans-serif;
   font-weight: 700;
-  font-size: 1.15rem;
+  font-size: clamp(1rem, 3vw, 1.15rem);
   margin-bottom: 0.4rem;
 }
 .empty-state p {
   color: var(--text-muted);
   margin-bottom: 1.3rem;
-  font-size: 0.92rem;
+  font-size: clamp(0.85rem, 2.5vw, 0.92rem);
   line-height: 1.5;
 }
 
@@ -1258,18 +1318,18 @@ nav.scrolled { height: 64px; box-shadow: var(--shadow-md); }
     flex-wrap: wrap;
     gap: 0.7rem;
   }
-  .sidebar-card { flex: 1; min-width: 180px; }
+  .sidebar-card { flex: 1; min-width: clamp(150px, 40vw, 180px); }
 }
 
 @media (max-width: 768px) {
   nav { padding: 0 4%; height: 68px; }
   .nav-links { display: none; }
-  .user-toggle-wrapper { display: none !important; }
   .menu-toggle { display: flex; }
+  .user-toggle-wrapper { display: none !important; }
   
-  .page-hero { padding: 3rem 4% 2rem; }
-  .page-hero h1 { font-size: clamp(1.5rem, 5vw, 2rem); line-height: 1.25; }
-  .page-hero p { font-size: 0.95rem; }
+  .page-hero { padding: clamp(2rem, 6vw, 3rem) 4% clamp(1.5rem, 4vw, 2rem); }
+  .page-hero h1 { font-size: clamp(1.4rem, 5vw, 1.8rem); }
+  .page-hero p { font-size: clamp(0.85rem, 2.5vw, 0.95rem); }
   
   .search-bar {
     max-width: 100%;
@@ -1287,7 +1347,7 @@ nav.scrolled { height: 64px; box-shadow: var(--shadow-md); }
     justify-content: center;
   }
   
-  .layout { padding: 1.5rem 4% 3rem; }
+  .layout { padding: clamp(1rem, 3vw, 1.5rem) 4% clamp(2rem, 5vw, 3rem); }
   .sidebar { flex-direction: column; }
   .sidebar-card { min-width: 100%; }
   
@@ -1307,9 +1367,9 @@ nav.scrolled { height: 64px; box-shadow: var(--shadow-md); }
     gap: 1rem;
   }
   .service-card { min-height: auto; }
-  .card-thumb { height: 140px; font-size: 2.6rem; }
-  .card-body h3 { font-size: 0.95rem; }
-  .card-body p { font-size: 0.82rem; }
+  .card-thumb { height: clamp(120px, 30vw, 140px); font-size: clamp(2rem, 6vw, 2.6rem); }
+  .card-body h3 { font-size: clamp(0.88rem, 2.5vw, 0.95rem); }
+  .card-body p { font-size: clamp(0.78rem, 2vw, 0.82rem); }
   
   .card-footer {
     flex-direction: column;
@@ -1337,45 +1397,50 @@ nav.scrolled { height: 64px; box-shadow: var(--shadow-md); }
   }
   
   .modal-content {
-    padding: 1.5rem;
+    padding: clamp(1.2rem, 3vw, 1.5rem);
     margin: 0.5rem;
   }
-  .modal-actions { flex-direction: column; }
-  .modal-actions button { width: 100%; }
+  .modal-actions {
+    flex-direction: column;
+  }
+  .modal-actions button {
+    width: 100%;
+  }
   
   .mobile-menu { top: 68px; }
 }
 
 @media (max-width: 480px) {
-  .page-hero h1 { font-size: 1.45rem; }
-  .card-thumb { height: 130px; font-size: 2.4rem; }
+  .page-hero h1 { font-size: clamp(1.3rem, 6vw, 1.6rem); }
+  .card-thumb { height: clamp(110px, 35vw, 130px); font-size: clamp(1.8rem, 7vw, 2.4rem); }
   .card-body { padding: 0.9rem; }
-  .card-body h3 { font-size: 0.92rem; }
-  .card-body p { font-size: 0.8rem; }
-  .price { font-size: 1.1rem; }
-  .custom-icon { width: 60px; height: 60px; font-size: 1.8rem; }
-  .custom-text h3 { font-size: 1.15rem; }
-  .custom-text p { font-size: 0.88rem; }
-  .modal-header h2 { font-size: 1.2rem; }
+  .card-body h3 { font-size: clamp(0.85rem, 2.5vw, 0.92rem); }
+  .card-body p { font-size: clamp(0.75rem, 2vw, 0.8rem); }
+  .price { font-size: clamp(0.95rem, 2.5vw, 1.1rem); }
+  
+  .custom-icon { width: clamp(50px, 15vw, 60px); height: clamp(50px, 15vw, 60px); font-size: clamp(1.3rem, 4vw, 1.8rem); }
+  .custom-text h3 { font-size: clamp(1rem, 3.5vw, 1.15rem); }
+  .custom-text p { font-size: clamp(0.8rem, 2.5vw, 0.88rem); }
+  
+  .modal-header h2 { font-size: clamp(1rem, 3vw, 1.2rem); }
   #toast {
-    font-size: 0.85rem;
+    font-size: clamp(0.8rem, 2.5vw, 0.85rem);
     padding: 0.75rem 1.4rem;
   }
 }
 
-/* ===== ♿ Accessibility ===== */
-@media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
-    animation-duration: 0.01ms !important;
-    transition-duration: 0.01ms !important;
-  }
+/* ===== 🎭 Scroll Animations ===== */
+.animate-on-scroll {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.5s ease-out, transform 0.5s ease-out;
 }
-a:focus, button:focus, input:focus, select:focus, textarea:focus, .mobile-nav-link:focus, .user-toggle:focus {
-  outline: 2px solid var(--accent);
-  outline-offset: 2px;
+.animate-on-scroll.visible {
+  opacity: 1;
+  transform: translateY(0);
 }
 
-/* ===== 🎨 Scrollbar ===== */
+/* Custom Scrollbar */
 ::-webkit-scrollbar { width: 7px; }
 ::-webkit-scrollbar-track { background: var(--bg-secondary); }
 ::-webkit-scrollbar-thumb {
@@ -1387,6 +1452,21 @@ a:focus, button:focus, input:focus, select:focus, textarea:focus, .mobile-nav-li
 .mobile-menu::-webkit-scrollbar-thumb {
   background: var(--accent);
   border-radius: 2px;
+}
+
+/* Focus States */
+a:focus, button:focus, input:focus, select:focus, textarea:focus, .mobile-nav-link:focus, .user-toggle:focus {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
 
 /* Safe area for notched devices */
@@ -1404,22 +1484,21 @@ a:focus, button:focus, input:focus, select:focus, textarea:focus, .mobile-nav-li
 </head>
 <body>
 
-<!-- Animated Particles Background -->
+<!-- Animated Particles -->
 <div class="particles" id="particles"></div>
 
 <!-- ===== 🔗 Navigation (Same as Index Page) ===== -->
 <nav id="navbar">
-  <a href="index.html" class="logo"><i class="fas fa-code"></i> Nova<span>Stack</span></a>
+  <a class="logo" href="index.html"><i class="fas fa-code"></i> Nova<span>Stack</span></a>
   
-  <!-- Desktop Navigation Links -->
+  <!-- Desktop Navigation -->
   <div class="nav-links" id="navLinks">
     <a href="index.html"><i class="fas fa-home"></i> Home</a>
-    <a href="services.html" class="active"><i class="fas fa-cube"></i> Services</a>
-    <a href="my-orders.html"><i class="fas fa-shopping-bag"></i> My Orders</a>
-    <a href="cart.html"><i class="fas fa-shopping-cart"></i> Cart</a>
+    <a href="services.html" class="active"><i class="fas fa-layer-group"></i> Services</a>
+    <a href="my-orders.html" class="auth-only"><i class="fas fa-shopping-bag"></i> My Orders</a>
   </div>
   
-  <!-- User Toggle Wrapper (Left Side - Like Index) -->
+  <!-- Desktop Right: User Toggle (Like Index) -->
   <div class="user-toggle-wrapper" id="userToggleWrapper">
     <div class="user-toggle" id="userToggle" tabindex="0" role="button" aria-expanded="false">
       <div class="user-avatar" id="userAvatar"><i class="fas fa-user"></i></div>
@@ -1440,21 +1519,20 @@ a:focus, button:focus, input:focus, select:focus, textarea:focus, .mobile-nav-li
     </div>
   </div>
   
-  <!-- Mobile Menu Toggle Button -->
+  <!-- Mobile Menu Toggle -->
   <button class="menu-toggle" id="menuToggle" aria-label="Toggle menu" aria-expanded="false">
     <i class="fas fa-bars"></i>
   </button>
 </nav>
 
-<!-- ===== 📱 Mobile Menu Panel ===== -->
+<!-- ===== 📱 Mobile Menu ===== -->
 <div class="mobile-menu" id="mobileMenu">
   <div class="mobile-menu-inner">
-    <a href="index.html" class="mobile-nav-link"><i class="fas fa-home"></i> Home</a>
-    <a href="services.html" class="mobile-nav-link active"><i class="fas fa-cube"></i> Services</a>
-    <a href="my-orders.html" class="mobile-nav-link"><i class="fas fa-shopping-bag"></i> My Orders</a>
-    <a href="cart.html" class="mobile-nav-link"><i class="fas fa-shopping-cart"></i> Cart</a>
+    <a href="index.html" class="mobile-nav-link" data-close-menu><i class="fas fa-home"></i> Home</a>
+    <a href="services.html" class="mobile-nav-link active" data-close-menu><i class="fas fa-layer-group"></i> Services</a>
+    <a href="my-orders.html" class="mobile-nav-link auth-only" data-close-menu><i class="fas fa-shopping-bag"></i> My Orders</a>
     <div class="mobile-divider"></div>
-    <button class="btn-secondary mobile-logout-btn" id="mobileLogoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</button>
+    <button class="btn-action mobile-logout-btn" id="mobileLogoutBtn" data-close-menu><i class="fas fa-sign-out-alt"></i> Logout</button>
   </div>
 </div>
 
@@ -1477,30 +1555,12 @@ a:focus, button:focus, input:focus, select:focus, textarea:focus, .mobile-nav-li
     <div class="sidebar-card">
       <h4><i class="fas fa-folder-open"></i> Category</h4>
       <div class="filter-list">
-        <div class="filter-item">
-          <input type="checkbox" id="cat-web" value="web" onchange="filterServices()">
-          <label for="cat-web"><i class="fas fa-globe"></i> Web Apps</label>
-        </div>
-        <div class="filter-item">
-          <input type="checkbox" id="cat-mobile" value="mobile" onchange="filterServices()">
-          <label for="cat-mobile"><i class="fas fa-mobile-alt"></i> Mobile Apps</label>
-        </div>
-        <div class="filter-item">
-          <input type="checkbox" id="cat-ai" value="ai" onchange="filterServices()">
-          <label for="cat-ai"><i class="fas fa-brain"></i> AI / ML</label>
-        </div>
-        <div class="filter-item">
-          <input type="checkbox" id="cat-ecom" value="ecom" onchange="filterServices()">
-          <label for="cat-ecom"><i class="fas fa-shopping-cart"></i> E-Commerce</label>
-        </div>
-        <div class="filter-item">
-          <input type="checkbox" id="cat-portfolio" value="portfolio" onchange="filterServices()">
-          <label for="cat-portfolio"><i class="fas fa-palette"></i> Portfolio</label>
-        </div>
-        <div class="filter-item">
-          <input type="checkbox" id="cat-custom" value="custom" onchange="filterServices()">
-          <label for="cat-custom"><i class="fas fa-cogs"></i> Custom</label>
-        </div>
+        <div class="filter-item"><input type="checkbox" id="cat-web" value="web" onchange="filterServices()"><label for="cat-web"><i class="fas fa-globe"></i> Web Apps</label></div>
+        <div class="filter-item"><input type="checkbox" id="cat-mobile" value="mobile" onchange="filterServices()"><label for="cat-mobile"><i class="fas fa-mobile-alt"></i> Mobile Apps</label></div>
+        <div class="filter-item"><input type="checkbox" id="cat-ai" value="ai" onchange="filterServices()"><label for="cat-ai"><i class="fas fa-brain"></i> AI / ML</label></div>
+        <div class="filter-item"><input type="checkbox" id="cat-ecom" value="ecom" onchange="filterServices()"><label for="cat-ecom"><i class="fas fa-shopping-cart"></i> E-Commerce</label></div>
+        <div class="filter-item"><input type="checkbox" id="cat-portfolio" value="portfolio" onchange="filterServices()"><label for="cat-portfolio"><i class="fas fa-palette"></i> Portfolio</label></div>
+        <div class="filter-item"><input type="checkbox" id="cat-custom" value="custom" onchange="filterServices()"><label for="cat-custom"><i class="fas fa-cogs"></i> Custom</label></div>
       </div>
     </div>
     <div class="sidebar-card">
@@ -1511,17 +1571,13 @@ a:focus, button:focus, input:focus, select:focus, textarea:focus, .mobile-nav-li
         <input type="number" class="price-input" id="price-max" placeholder="Max ₹" oninput="filterServices()" min="0">
       </div>
     </div>
-    <button class="clear-btn" onclick="clearFilters()">
-      <i class="fas fa-undo"></i> Clear All Filters
-    </button>
+    <button class="clear-btn" onclick="clearFilters()"><i class="fas fa-undo"></i> Clear All Filters</button>
   </aside>
   
   <!-- 📊 Main Content -->
   <main class="main-area">
     <div class="results-header">
-      <div class="results-count">
-        <i class="fas fa-list"></i> Showing <strong id="result-count">0</strong> services
-      </div>
+      <div class="results-count"><i class="fas fa-list"></i> Showing <strong id="result-count">0</strong> services</div>
       <select class="sort-select" id="sort-select" onchange="filterServices()">
         <option value="default"><i class="fas fa-sort"></i> Sort: Default</option>
         <option value="price-asc"><i class="fas fa-arrow-up"></i> Price: Low → High</option>
@@ -1530,10 +1586,7 @@ a:focus, button:focus, input:focus, select:focus, textarea:focus, .mobile-nav-li
       </select>
     </div>
     <div id="services-container">
-      <div style="text-align:center;padding:4rem">
-        <div class="spinner"></div>
-        <p style="color:var(--text-muted);margin-top:1rem">Loading services...</p>
-      </div>
+      <div style="text-align:center;padding:4rem"><div class="spinner"></div><p style="color:var(--text-muted);margin-top:1rem">Loading services...</p></div>
     </div>
   </main>
 </div>
@@ -1609,51 +1662,37 @@ a:focus, button:focus, input:focus, select:focus, textarea:focus, .mobile-nav-li
         <textarea id="custom-notes" rows="3" placeholder="Any additional information..."></textarea>
       </div>
       <div class="modal-actions">
-        <button type="submit" class="btn-primary" id="submitBtn">
-          <span class="btn-text"><i class="fas fa-paper-plane"></i> Submit Request</span>
-          <span class="btn-spinner" style="display: none;"></span>
-        </button>
-        <button type="button" class="btn-secondary" onclick="closeCustomProjectModal()">
-          <i class="fas fa-times"></i> Cancel
-        </button>
+        <button type="submit" class="btn-primary" id="submitBtn"><span class="btn-text"><i class="fas fa-paper-plane"></i> Submit Request</span><span class="btn-spinner" style="display: none;"></span></button>
+        <button type="button" class="btn-secondary" onclick="closeCustomProjectModal()"><i class="fas fa-times"></i> Cancel</button>
       </div>
     </form>
   </div>
 </div>
 
-<!-- ===== 🍞 Toast Notification ===== -->
+<!-- ===== 🍞 Toast ===== -->
 <div id="toast" style="display:none"></div>
 
 <script>
 // ===== 🔧 CONFIG =====
-const CONFIG = {
-  API: 'https://novastack-backend.onrender.com',
-  WA_NUMBER: '9015277062',
-  ENDPOINTS: {
-    SERVICES: '/services',
-    USER: '/user',
-    CART: '/cart',
-    CUSTOM_PROJECT: '/custom-project-request'
-  }
-};
+const CONFIG = { API: 'https://novastack-backend.onrender.com', WA_NUMBER: '9015277062', ENDPOINTS: { SERVICES: '/services', USER: '/user', CART: '/cart', CUSTOM_PROJECT: '/custom-project-request', LOGOUT: '/auth/logout' }};
 
-// ===== 🎨 Create Floating Particles =====
+// ===== 🎨 Particles =====
 function createParticles() {
   const container = document.getElementById('particles');
   if (!container) return;
   for (let i = 0; i < 30; i++) {
-    const particle = document.createElement('div');
-    particle.className = 'particle';
-    particle.style.left = Math.random() * 100 + '%';
-    particle.style.animationDelay = Math.random() * 18 + 's';
-    particle.style.animationDuration = (18 + Math.random() * 12) + 's';
-    particle.style.opacity = 0.15 + Math.random() * 0.3;
-    container.appendChild(particle);
+    const p = document.createElement('div');
+    p.className = 'particle';
+    p.style.left = Math.random() * 100 + '%';
+    p.style.animationDelay = Math.random() * 18 + 's';
+    p.style.animationDuration = (18 + Math.random() * 12) + 's';
+    p.style.opacity = 0.15 + Math.random() * 0.3;
+    container.appendChild(p);
   }
 }
 createParticles();
 
-// ===== 🔗 Navbar Scroll Effect =====
+// ===== 🔄 Navbar Scroll =====
 window.addEventListener('scroll', () => {
   const nav = document.getElementById('navbar');
   const mobileMenu = document.getElementById('mobileMenu');
@@ -1667,7 +1706,7 @@ window.addEventListener('scroll', () => {
   }
 });
 
-// ===== 📱 Mobile Menu Toggle =====
+// ===== 📱 Mobile Menu =====
 const menuToggle = document.getElementById('menuToggle');
 const mobileMenu = document.getElementById('mobileMenu');
 const body = document.body;
@@ -1677,47 +1716,28 @@ function toggleMobileMenu() {
   const isActive = mobileMenu.classList.toggle('active');
   menuToggle.classList.toggle('active', isActive);
   menuToggle.setAttribute('aria-expanded', isActive);
-  if (isActive) {
-    body.classList.add('menu-open');
-    body.dataset.scrollY = window.scrollY;
-  } else {
-    body.classList.remove('menu-open');
-    if (body.dataset.scrollY) {
-      window.scrollTo(0, parseInt(body.dataset.scrollY));
-      delete body.dataset.scrollY;
-    }
-  }
+  if (isActive) { body.classList.add('menu-open'); body.dataset.scrollY = window.scrollY; }
+  else { body.classList.remove('menu-open'); if (body.dataset.scrollY) { window.scrollTo(0, parseInt(body.dataset.scrollY)); delete body.dataset.scrollY; }}
 }
-
 if (menuToggle) menuToggle.addEventListener('click', toggleMobileMenu);
-
-document.querySelectorAll('.mobile-nav-link').forEach(link => {
+document.querySelectorAll('[data-close-menu]').forEach(link => {
   link.addEventListener('click', () => {
     if (mobileMenu?.classList.contains('active')) {
       mobileMenu.classList.remove('active');
       menuToggle?.classList.remove('active');
       body.classList.remove('menu-open');
+      if (body.dataset.scrollY) { setTimeout(() => { window.scrollTo(0, parseInt(body.dataset.scrollY)); delete body.dataset.scrollY; }, 300); }
     }
   });
 });
-
 document.addEventListener('click', (e) => {
-  if (mobileMenu?.classList.contains('active') && 
-      !mobileMenu.contains(e.target) && 
-      !menuToggle?.contains(e.target)) {
+  if (mobileMenu?.classList.contains('active') && !mobileMenu.contains(e.target) && !menuToggle?.contains(e.target)) {
     mobileMenu.classList.remove('active');
     menuToggle?.classList.remove('active');
     body.classList.remove('menu-open');
   }
 });
-
-document.addEventListener('keydown', (e) => {
-  if (e.key === 'Escape' && mobileMenu?.classList.contains('active')) {
-    toggleMobileMenu();
-    if (menuToggle) menuToggle.focus();
-  }
-});
-
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && mobileMenu?.classList.contains('active')) { toggleMobileMenu(); if (menuToggle) menuToggle.focus(); }});
 window.addEventListener('resize', () => {
   if (mobileMenu && window.innerWidth > 768 && mobileMenu.classList.contains('active')) {
     mobileMenu.classList.remove('active');
@@ -1730,156 +1750,86 @@ window.addEventListener('resize', () => {
   }
 });
 
-// ===== 🔐 Auth Helper =====
+// ===== 🔐 Auth =====
 const Auth = {
-  getToken() {
-    return localStorage.getItem('dc_token') || sessionStorage.getItem('dc_token') || '';
-  },
-  getUser() {
-    try {
-      const user = localStorage.getItem('dc_user') || sessionStorage.getItem('dc_user');
-      return user ? JSON.parse(user) : null;
-    } catch { return null; }
-  },
-  isLoggedIn() {
-    return !!this.getToken() && !!this.getUser();
-  },
+  getToken() { return localStorage.getItem('dc_token') || sessionStorage.getItem('dc_token') || ''; },
+  getUser() { try { const u = localStorage.getItem('dc_user') || sessionStorage.getItem('dc_user'); return u ? JSON.parse(u) : null; } catch { return null; }},
+  isLoggedIn() { return !!this.getToken() && !!this.getUser(); },
   async fetchUser() {
     const token = this.getToken();
     if (!token) return null;
     try {
-      const res = await fetch(`${CONFIG.API}${CONFIG.ENDPOINTS.USER}`, {
-        headers: { 'Authorization': `Bearer ${token}` }
-      });
+      const res = await fetch(`${CONFIG.API}${CONFIG.ENDPOINTS.USER}`, { headers: { 'Authorization': `Bearer ${token}` }});
       if (!res.ok) throw new Error('Auth failed');
       const data = await res.json();
       return data.user || data;
-    } catch (e) {
-      console.warn('Failed to fetch user:', e.message);
-      return null;
-    }
+    } catch (e) { console.warn('Failed to fetch user:', e.message); return null; }
   }
 };
 
-// ===== 🛒 Cart Helper =====
+// ===== 🛒 Cart =====
 const Cart = {
   async fetch() {
     const token = Auth.getToken();
     if (!token) return [];
     try {
-      const res = await fetch(`${CONFIG.API}${CONFIG.ENDPOINTS.CART}`, {
-        headers: { 'Authorization': `Bearer ${token}` }
-      });
+      const res = await fetch(`${CONFIG.API}${CONFIG.ENDPOINTS.CART}`, { headers: { 'Authorization': `Bearer ${token}` }});
       if (!res.ok) throw new Error('Cart fetch failed');
       const data = await res.json();
       return data.items || data.cart || [];
     } catch { return []; }
   },
-  getLocalCount() {
-    try {
-      const local = JSON.parse(localStorage.getItem('dc_cart_local') || '[]');
-      return local.length;
-    } catch { return 0; }
-  }
+  getLocalCount() { try { return JSON.parse(localStorage.getItem('dc_cart_local') || '[]').length; } catch { return 0; }}
 };
 
 // ===== 🚪 Logout =====
 async function logout() {
   const token = Auth.getToken();
-  if (token) {
-    try {
-      await fetch(`${CONFIG.API}/auth/logout`, {
-        method: 'POST',
-        headers: { 'Authorization': `Bearer ${token}` }
-      });
-    } catch (e) { console.warn('Logout API failed:', e.message); }
-  }
-  localStorage.removeItem('dc_token');
-  localStorage.removeItem('dc_user');
-  localStorage.removeItem('dc_cart_local');
-  sessionStorage.removeItem('dc_token');
-  sessionStorage.removeItem('dc_user');
+  if (token) { try { await fetch(`${CONFIG.API}${CONFIG.ENDPOINTS.LOGOUT}`, { method: 'POST', headers: { 'Authorization': `Bearer ${token}` }}); } catch (e) { console.warn('Logout API failed:', e.message); }}
+  localStorage.removeItem('dc_token'); localStorage.removeItem('dc_user'); localStorage.removeItem('dc_cart_local');
+  sessionStorage.removeItem('dc_token'); sessionStorage.removeItem('dc_user');
   updateAuthUI();
-  closeModal();
+  if (mobileMenu?.classList.contains('active')) { mobileMenu.classList.remove('active'); menuToggle?.classList.remove('active'); body.classList.remove('menu-open'); }
   showToast('Logged out successfully');
   setTimeout(() => window.location.href = 'index.html', 1000);
 }
+document.getElementById('dropdownLogout')?.addEventListener('click', (e) => { e.preventDefault(); logout(); });
+document.getElementById('mobileLogoutBtn')?.addEventListener('click', (e) => { e.preventDefault(); logout(); });
 
-document.getElementById('dropdownLogout')?.addEventListener('click', (e) => {
-  e.preventDefault();
-  logout();
-});
-document.getElementById('mobileLogoutBtn')?.addEventListener('click', logout);
-
-// ===== 👤 Profile UI Update =====
+// ===== 👤 Profile UI =====
 function updateProfileUI(user) {
   if (!user) return;
   const name = user.name || user.email?.split('@')[0] || 'User';
   const initial = name.charAt(0).toUpperCase();
-  
   const avatar = document.getElementById('userAvatar');
   const userName = document.getElementById('userName');
   const dropdownAvatar = document.getElementById('dropdownAvatar');
   const dropdownName = document.getElementById('dropdownName');
   const dropdownEmail = document.getElementById('dropdownEmail');
-  
-  if (avatar) {
-    if (user.avatar) {
-      avatar.innerHTML = `<img src="${user.avatar}" alt="${name}">`;
-    } else {
-      avatar.textContent = initial;
-    }
-  }
+  if (avatar) { if (user.avatar) avatar.innerHTML = `<img src="${user.avatar}" alt="${name}">`; else avatar.textContent = initial; }
   if (userName) userName.textContent = name.length > 12 ? name.slice(0, 12) + '...' : name;
   if (dropdownAvatar) dropdownAvatar.innerHTML = avatar?.innerHTML || initial;
   if (dropdownName) dropdownName.textContent = name;
   if (dropdownEmail) dropdownEmail.textContent = user.email || '';
 }
 
-// ===== 👤 User Dropdown Toggle =====
+// ===== 👤 User Dropdown =====
 const userToggle = document.getElementById('userToggle');
 const userDropdown = document.getElementById('userDropdown');
-
 function toggleUserDropdown() {
   if (!userToggle || !userDropdown) return;
   const isActive = userDropdown.classList.toggle('active');
   userToggle.classList.toggle('active', isActive);
   userToggle.setAttribute('aria-expanded', isActive);
 }
-
 if (userToggle) {
-  userToggle.addEventListener('click', (e) => {
-    e.stopPropagation();
-    toggleUserDropdown();
-  });
-  userToggle.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter' || e.key === ' ') {
-      e.preventDefault();
-      toggleUserDropdown();
-    }
-  });
+  userToggle.addEventListener('click', (e) => { e.stopPropagation(); toggleUserDropdown(); });
+  userToggle.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleUserDropdown(); }});
 }
+document.addEventListener('click', (e) => { if (userDropdown && userToggle && !userToggle.contains(e.target) && !userDropdown.contains(e.target)) { userDropdown.classList.remove('active'); userToggle.classList.remove('active'); userToggle.setAttribute('aria-expanded', 'false'); }});
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && userDropdown?.classList.contains('active')) { userDropdown.classList.remove('active'); if (userToggle) { userToggle.classList.remove('active'); userToggle.setAttribute('aria-expanded', 'false'); userToggle.focus(); }}});
 
-document.addEventListener('click', (e) => {
-  if (userDropdown && userToggle && 
-      !userToggle.contains(e.target) && 
-      !userDropdown.contains(e.target)) {
-    userDropdown.classList.remove('active');
-    userToggle.classList.remove('active');
-    userToggle.setAttribute('aria-expanded', 'false');
-  }
-});
-
-document.addEventListener('keydown', (e) => {
-  if (e.key === 'Escape' && userDropdown?.classList.contains('active')) {
-    userDropdown.classList.remove('active');
-    userToggle?.classList.remove('active');
-    userToggle?.setAttribute('aria-expanded', 'false');
-    userToggle?.focus();
-  }
-});
-
-// ===== 🍞 Toast Notification =====
+// ===== 🍞 Toast =====
 function showToast(msg, type = 'success') {
   const toast = document.getElementById('toast');
   if (!toast) return;
@@ -1888,235 +1838,110 @@ function showToast(msg, type = 'success') {
   toast.style.display = 'flex';
   requestAnimationFrame(() => toast.classList.add('show'));
   clearTimeout(toast._t);
-  toast._t = setTimeout(() => {
-    toast.classList.remove('show');
-    setTimeout(() => { toast.style.display = 'none'; }, 300);
-  }, 3000);
+  toast._t = setTimeout(() => { toast.classList.remove('show'); setTimeout(() => { toast.style.display = 'none'; }, 300); }, 3000);
 }
 
-// ===== 🪟 Custom Project Modal =====
-function openCustomProjectModal() {
-  if (!Auth.isLoggedIn()) {
-    showToast('🔒 Please login to request a custom project', 'error');
-    setTimeout(() => window.location.href = 'login.html', 2000);
-    return;
-  }
-  const modal = document.getElementById('customProjectModal');
-  if (modal) {
-    modal.classList.add('show');
-    body.style.overflow = 'hidden';
-  }
-}
-
-function closeCustomProjectModal() {
-  const modal = document.getElementById('customProjectModal');
-  if (modal) {
-    modal.classList.remove('show');
-    body.style.overflow = '';
-  }
-}
-
-async function submitCustomProject(event) {
-  event.preventDefault();
-  const submitBtn = document.getElementById('submitBtn');
-  if (!submitBtn) return;
-  
-  const btnText = submitBtn.querySelector('.btn-text');
-  const btnSpinner = submitBtn.querySelector('.btn-spinner');
-  if (btnText) btnText.style.display = 'none';
-  if (btnSpinner) btnSpinner.style.display = 'inline-block';
-  submitBtn.disabled = true;
-
-  const formData = {
-    name: document.getElementById('custom-name')?.value,
-    email: document.getElementById('custom-email')?.value,
-    whatsapp: document.getElementById('custom-whatsapp')?.value,
-    type: document.getElementById('custom-type')?.value,
-    title: document.getElementById('custom-title')?.value,
-    description: document.getElementById('custom-description')?.value,
-    budget: document.getElementById('custom-budget')?.value,
-    timeline: document.getElementById('custom-timeline')?.value,
-    notes: document.getElementById('custom-notes')?.value
-  };
-
-  try {
-    const res = await fetch(`${CONFIG.API}${CONFIG.ENDPOINTS.CUSTOM_PROJECT}`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(formData)
-    });
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.error || 'Failed to submit');
-    
-    showToast('✨ Custom project request sent! We\'ll contact you within 24 hours.', 'success');
-    document.getElementById('customProjectForm')?.reset();
-    closeCustomProjectModal();
-  } catch (error) {
-    console.error('❌ Error:', error);
-    showToast('❌ Failed to send request. Please try again.', 'error');
-  } finally {
-    if (btnText) btnText.style.display = 'inline-flex';
-    if (btnSpinner) btnSpinner.style.display = 'none';
-    submitBtn.disabled = false;
-  }
-}
-
-// ===== 📦 Load Services from API =====
+// ===== 📦 Load Services =====
 let allServices = [];
 async function loadServices() {
+  const token = Auth.getToken();
+  const headers = { 'Content-Type': 'application/json' };
+  if (token) headers['Authorization'] = `Bearer ${token}`;
   try {
-    const res = await fetch(`${CONFIG.API}${CONFIG.ENDPOINTS.SERVICES}`);
+    const res = await fetch(`${CONFIG.API}${CONFIG.ENDPOINTS.SERVICES}`, { headers });
     if (!res.ok) throw new Error(`Error ${res.status}`);
     const data = await res.json();
     allServices = data.services || data.data || [];
-    if (!Array.isArray(allServices) || allServices.length === 0) {
-      throw new Error('No services found');
-    }
+    if (!Array.isArray(allServices) || allServices.length === 0) throw new Error('No services found');
     filterServices();
   } catch (error) {
-    console.error('Failed to load services:', error.message);
-    const container = document.getElementById('services-container');
-    if (container) {
-      container.innerHTML = `
-        <div class="empty-state">
-          <span class="icon"><i class="fas fa-exclamation-triangle"></i></span>
-          <h3>Unable to Connect</h3>
-          <p>${error.message || 'Please check your connection and try again.'}</p>
-          <button onclick="loadServices()" class="btn-primary">
-            <i class="fas fa-redo"></i> Retry
-          </button>
-        </div>
-      `;
-    }
+    console.error('Failed to load services:', error);
+    document.getElementById('services-container').innerHTML = `
+      <div class="empty-state animate-on-scroll visible">
+        <span class="icon"><i class="fas fa-exclamation-triangle"></i></span>
+        <h3>Unable to Connect</h3>
+        <p>${error.message || 'Please check your connection and try again.'}</p>
+        <button onclick="loadServices()" class="btn btn-accent"><i class="fas fa-redo"></i> Retry</button>
+      </div>`;
   }
 }
 
-// ===== 🔍 Filter & Sort Services =====
+// ===== 🔍 Filter Services =====
 function filterServices() {
-  const searchInput = document.getElementById('search-input');
-  const search = searchInput ? searchInput.value.toLowerCase().trim() : '';
-  
+  const search = (document.getElementById('search-input')?.value || '').toLowerCase().trim();
   const checkedCats = Array.from(document.querySelectorAll('.filter-list input:checked')).map(i => i.value);
   const minP = parseFloat(document.getElementById('price-min')?.value) || 0;
   const maxP = parseFloat(document.getElementById('price-max')?.value) || Infinity;
   const sort = document.getElementById('sort-select')?.value || 'default';
-
+  
   let filtered = allServices.filter(s => {
-    const matchSearch = !search ||
-      (s.title || '').toLowerCase().includes(search) ||
-      ((s.technologies || '') + ' ' + (s.description || '')).toLowerCase().includes(search);
+    const matchSearch = !search || (s.title || '').toLowerCase().includes(search) || ((s.technologies || '') + ' ' + (s.description || '')).toLowerCase().includes(search);
     const matchCat = !checkedCats.length || checkedCats.includes(s.category);
     const matchPrice = (s.price || 0) >= minP && (s.price || 0) <= maxP;
     return matchSearch && matchCat && matchPrice;
   });
-
-  if (sort === 'price-asc') {
-    filtered.sort((a, b) => (a.price || 0) - (b.price || 0));
-  } else if (sort === 'price-desc') {
-    filtered.sort((a, b) => (b.price || 0) - (a.price || 0));
-  } else if (sort === 'name') {
-    filtered.sort((a, b) => (a.title || '').localeCompare(b.title || ''));
-  }
+  
+  if (sort === 'price-asc') filtered.sort((a, b) => (a.price || 0) - (b.price || 0));
+  else if (sort === 'price-desc') filtered.sort((a, b) => (b.price || 0) - (a.price || 0));
+  else if (sort === 'name') filtered.sort((a, b) => (a.title || '').localeCompare(b.title || ''));
   
   const resultCount = document.getElementById('result-count');
   if (resultCount) resultCount.textContent = filtered.length;
   renderServices(filtered);
 }
 
-// ===== 🗂️ Render Services Grid =====
+// ===== 🗂️ Render Services =====
+const THUMB = { web: 'thumb-web', mobile: 'thumb-mobile', ai: 'thumb-ai', portfolio: 'thumb-portfolio', ecom: 'thumb-ecom', custom: 'thumb-custom' };
+const CAT_ICONS = { web: 'fa-globe', mobile: 'fa-mobile-alt', ai: 'fa-brain', portfolio: 'fa-palette', ecom: 'fa-shopping-cart', custom: 'fa-cogs' };
+
 function renderServices(services) {
   const container = document.getElementById('services-container');
   if (!container) return;
-  
-  if (!services || services.length === 0) {
-    container.innerHTML = `
-      <div class="empty-state">
-        <span class="icon"><i class="fas fa-search"></i></span>
-        <h3>No Services Found</h3>
-        <p>Try adjusting your filters or search terms</p>
-        <button onclick="clearFilters()" class="btn-primary">
-          <i class="fas fa-undo"></i> Clear Filters
-        </button>
-      </div>
-    `;
+  if (!services?.length) {
+    container.innerHTML = `<div class="empty-state animate-on-scroll visible"><span class="icon"><i class="fas fa-search"></i></span><h3>No Services Found</h3><p>Try adjusting your filters or search terms</p><button onclick="clearFilters()" class="btn btn-accent"><i class="fas fa-undo"></i> Clear Filters</button></div>`;
     return;
   }
-
-  const THUMB = {
-    web: 'thumb-web', mobile: 'thumb-mobile', ai: 'thumb-ai',
-    portfolio: 'thumb-portfolio', ecom: 'thumb-ecom', custom: 'thumb-custom'
-  };
-  const CAT_ICONS = {
-    web: 'fa-globe', mobile: 'fa-mobile-alt', ai: 'fa-brain',
-    portfolio: 'fa-palette', ecom: 'fa-shopping-cart', custom: 'fa-cogs'
-  };
-  const TECH_ICONS = {
-    'react': 'fab fa-react', 'node': 'fab fa-node-js', 'python': 'fab fa-python',
-    'django': 'fas fa-django', 'flask': 'fas fa-flask', 'mongodb': 'fab fa-mongodb',
-    'postgresql': 'fas fa-database', 'mysql': 'fas fa-database', 'firebase': 'fas fa-fire',
-    'aws': 'fab fa-aws', 'docker': 'fab fa-docker', 'tensorflow': 'fas fa-brain',
-    'vue': 'fab fa-vuejs', 'angular': 'fab fa-angular', 'typescript': 'fab fa-js'
-  };
-
-  let servicesHtml = `
-    <div class="services-grid">
-      ${services.map((s, index) => {
-        const category = s.category || 'custom';
-        const techList = ((s.technologies || '') + '').split(',').slice(0, 3).map(t => t.trim()).filter(Boolean);
-        const title = s.title || s.name || 'Untitled Service';
-        const price = s.price || s.cost || 0;
-        const desc = s.description || s.desc || s.summary || '';
-        const emoji = s.emoji || s.icon || '<i class="fas fa-laptop-code"></i>';
-        const id = s.id || s._id || s.serviceId || '';
-        
-        return `
-          <div class="service-card" style="animation-delay: ${Math.min(index * 0.05, 0.3)}s">
-            <div class="card-thumb ${THUMB[category] || 'thumb-custom'}">
-              <span>${emoji}</span>
-              <div class="cat-badge">
-                <i class="fas ${CAT_ICONS[category] || 'fa-cube'}"></i> ${category}
-              </div>
-            </div>
-            <div class="card-body">
-              <div class="card-tags">
-                ${techList.map(t => {
-                  const icon = TECH_ICONS[t.toLowerCase()] || 'fas fa-code';
-                  return `<span class="tag" title="${t}"><i class="${icon}"></i> ${t}</span>`;
-                }).join('')}
-              </div>
-              <h3 title="${title}">${title}</h3>
-              <p title="${desc}">${desc.substring(0, 90)}${desc.length > 90 ? '...' : ''}</p>
-              <div class="card-footer">
-                <div class="price">
-                  ₹${parseFloat(price).toLocaleString()}
-                  <span>starting</span>
-                </div>
-                <div class="card-actions">
-                  <button class="btn-cart" onclick="addToCart('${id}', '${title.replace(/'/g, "\\'")}', ${price})" title="Add to cart">
-                    <i class="fas fa-cart-plus"></i> Cart
-                  </button>
-                  <a href="order-customize.html?id=${id}" class="btn-detail customize" title="Customize this service">
-                    <i class="fas fa-sliders-h"></i> Customize
-                  </a>
-                  <a href="project.html?id=${id}" class="btn-detail" title="View details">
-                    <i class="fas fa-arrow-right"></i> View
-                  </a>
-                </div>
-              </div>
+  
+  let html = `<div class="services-grid">`;
+  services.forEach((s, index) => {
+    const category = s.category || 'custom';
+    const techList = ((s.technologies || '') + '').split(',').slice(0, 3).map(t => t.trim()).filter(Boolean);
+    const title = s.title || s.name || 'Untitled Service';
+    const price = s.price || s.cost || 0;
+    const desc = s.description || s.desc || s.summary || '';
+    const emoji = s.emoji || s.icon || '<i class="fas fa-laptop-code"></i>';
+    const id = s.id || s._id || s.serviceId || '';
+    
+    html += `
+      <div class="service-card" style="animation-delay: ${Math.min(index * 0.05, 0.3)}s">
+        <div class="card-thumb ${THUMB[category] || 'thumb-custom'}">
+          <span>${emoji}</span>
+          <div class="cat-badge"><i class="fas ${CAT_ICONS[category] || 'fa-cube'}"></i> ${category}</div>
+        </div>
+        <div class="card-body">
+          <div class="card-tags">${techList.map(t => `<span class="tag" title="${t}"><i class="fas fa-code"></i> ${t}</span>`).join('')}</div>
+          <h3 title="${title}">${title}</h3>
+          <p title="${desc}">${desc.substring(0, 90)}${desc.length > 90 ? '...' : ''}</p>
+          <div class="card-footer">
+            <div class="price">₹${parseFloat(price).toLocaleString()}<span>starting</span></div>
+            <div class="card-actions">
+              <button class="btn-cart" onclick="toggleCart('${id}', '${title.replace(/'/g, "\\'")}', ${price}, '${emoji}', '${category}')" title="Add to cart"><i class="fas fa-cart-plus"></i> Cart</button>
+              <a href="order-customize.html?id=${id}" class="btn-detail customize" title="Customize"><i class="fas fa-sliders-h"></i> Customize</a>
+              <a href="project.html?id=${id}" class="btn-detail" title="View details"><i class="fas fa-arrow-right"></i> View</a>
             </div>
           </div>
-        `;
-      }).join('')}
-    </div>
-  `;
-
+        </div>
+      </div>`;
+  });
+  html += `</div>`;
+  
   // Custom Project Card
   const isLoggedIn = Auth.isLoggedIn();
   const btnText = isLoggedIn ? 'Request Custom Project' : 'Login to Request';
   const btnAction = isLoggedIn ? 'openCustomProjectModal()' : "window.location.href='login.html'";
   const warningMsg = isLoggedIn ? '' : '<div class="login-warning"><i class="fas fa-lock"></i> Login required to submit requests</div>';
-
-  servicesHtml += `
+  
+  html += `
     <div class="custom-project-card">
       <div class="custom-project-content">
         <div class="custom-icon"><i class="fas fa-magic"></i></div>
@@ -2125,57 +1950,39 @@ function renderServices(services) {
           <p>Tell us about your custom project and we'll build it for you</p>
           ${warningMsg}
         </div>
-        <button class="btn-custom ${isLoggedIn ? '' : 'locked'}" onclick="${btnAction}">
-          <i class="fas ${isLoggedIn ? 'fa-plus-circle' : 'fa-sign-in-alt'}"></i> ${btnText}
-        </button>
+        <button class="btn-custom ${isLoggedIn ? '' : 'locked'}" onclick="${btnAction}"><i class="fas ${isLoggedIn ? 'fa-plus-circle' : 'fa-sign-in-alt'}"></i> ${btnText}</button>
       </div>
-    </div>
-  `;
+    </div>`;
   
-  container.innerHTML = servicesHtml;
-  
-  setTimeout(() => {
-    document.querySelectorAll('.service-card').forEach(card => card?.classList.add('visible'));
-  }, 100);
+  container.innerHTML = html;
+  setTimeout(() => { document.querySelectorAll('.service-card').forEach(card => card?.classList.add('visible')); }, 100);
 }
 
-// ===== 🛒 Add to Cart =====
-async function addToCart(id, title, price) {
+// ===== 🛒 Toggle Cart =====
+async function toggleCart(id, title, price, emoji, category) {
   const shortTitle = title.length > 25 ? title.substring(0, 25) + '...' : title;
   showToast(`✓ "${shortTitle}" added to cart`, 'success');
-  
-  // Update local cart
   try {
     const local = JSON.parse(localStorage.getItem('dc_cart_local') || '[]');
-    localStorage.setItem('dc_cart_local', JSON.stringify([...local, { id, title, price }]));
+    localStorage.setItem('dc_cart_local', JSON.stringify([...local, { id, title, price, emoji, category }]));
   } catch(e) {}
-  
-  // Update cart badge
-  ['cartBadge'].forEach(cid => {
+  ['cartCountRight', 'cartBadge', 'mobileCartCount', 'mobileCartCountGuest'].forEach(cid => {
     const el = document.getElementById(cid);
-    if (el) {
-      const count = JSON.parse(localStorage.getItem('dc_cart_local') || '[]').length;
-      el.textContent = count;
-      el.style.display = count > 0 ? 'flex' : 'none';
-    }
+    if (el) { el.textContent = Cart.getLocalCount(); el.style.display = Cart.getLocalCount() > 0 ? 'flex' : 'none'; }
   });
-  
-  // Sync with API if logged in
   if (Auth.isLoggedIn()) {
     try {
-      await fetch(`${CONFIG.API}${CONFIG.ENDPOINTS.CART}/add`, {
+      const token = Auth.getToken();
+      await fetch(`${CONFIG.API}/cart/add`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${Auth.getToken()}`
-        },
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
         body: JSON.stringify({ service_id: id })
       });
     } catch (e) { console.warn('Cart sync warning:', e.message); }
   }
 }
 
-// ===== 🧹 Clear Filters =====
+// ===== 🔽 Clear Filters =====
 function clearFilters() {
   const searchInput = document.getElementById('search-input');
   if (searchInput) searchInput.value = '';
@@ -2190,72 +1997,88 @@ function clearFilters() {
   showToast('Filters cleared', 'success');
 }
 
+// ===== 🎯 Custom Project Modal =====
+function openCustomProjectModal() {
+  if (!Auth.isLoggedIn()) { showToast('🔒 Please login to request a custom project', 'error'); setTimeout(() => window.location.href = 'login.html', 2000); return; }
+  const modal = document.getElementById('customProjectModal');
+  if (modal) { modal.classList.add('show'); body.style.overflow = 'hidden'; }
+}
+function closeCustomProjectModal() {
+  const modal = document.getElementById('customProjectModal');
+  if (modal) { modal.classList.remove('show'); body.style.overflow = ''; }
+}
+async function submitCustomProject(event) {
+  event.preventDefault();
+  const submitBtn = document.querySelector('#submitBtn');
+  if (!submitBtn) return;
+  const btnText = submitBtn.querySelector('.btn-text');
+  const btnSpinner = submitBtn.querySelector('.btn-spinner');
+  if (btnText) btnText.style.display = 'none';
+  if (btnSpinner) btnSpinner.style.display = 'inline-block';
+  submitBtn.disabled = true;
+  
+  const formData = {
+    name: document.getElementById('custom-name')?.value,
+    email: document.getElementById('custom-email')?.value,
+    whatsapp: document.getElementById('custom-whatsapp')?.value,
+    type: document.getElementById('custom-type')?.value,
+    title: document.getElementById('custom-title')?.value,
+    description: document.getElementById('custom-description')?.value,
+    budget: document.getElementById('custom-budget')?.value,
+    timeline: document.getElementById('custom-timeline')?.value,
+    notes: document.getElementById('custom-notes')?.value
+  };
+  
+  try {
+    const res = await fetch(`${CONFIG.API}${CONFIG.ENDPOINTS.CUSTOM_PROJECT}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(formData)
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Failed to submit');
+    showToast('✨ Custom project request sent! We\'ll contact you within 24 hours.', 'success');
+    const form = document.getElementById('customProjectForm');
+    if (form) form.reset();
+    closeCustomProjectModal();
+  } catch (error) {
+    console.error('❌ Error:', error);
+    showToast('❌ Failed to send request. Please try again.', 'error');
+  } finally {
+    if (btnText) btnText.style.display = 'inline-flex';
+    if (btnSpinner) btnSpinner.style.display = 'none';
+    submitBtn.disabled = false;
+  }
+}
+
 // ===== 🔄 Initialize =====
 document.addEventListener('DOMContentLoaded', async () => {
-  // Update auth UI
   if (Auth.isLoggedIn()) {
     const freshUser = await Auth.fetchUser();
-    if (freshUser) {
-      localStorage.setItem('dc_user', JSON.stringify(freshUser));
-    }
+    if (freshUser) { localStorage.setItem('dc_user', JSON.stringify(freshUser)); }
     updateProfileUI(Auth.getUser());
   }
-  
-  // Load services
   await loadServices();
-  
-  // Auto-refresh cart badge if logged in
   if (Auth.isLoggedIn()) {
-    setInterval(async () => {
-      const cartItems = await Cart.fetch();
-      const badge = document.getElementById('cartBadge');
-      if (badge) {
-        badge.textContent = cartItems.length;
-        badge.style.display = cartItems.length > 0 ? 'flex' : 'none';
-      }
-    }, 30000);
+    const cartItems = await Cart.fetch();
+    const badge = document.getElementById('cartBadge');
+    if (badge) { badge.textContent = cartItems.length; badge.style.display = cartItems.length > 0 ? 'flex' : 'none'; }
   }
-  
-  // Handle page visibility
-  document.addEventListener('visibilitychange', async () => {
-    if (!document.hidden && Auth.isLoggedIn()) {
-      const freshUser = await Auth.fetchUser();
-      if (freshUser) updateProfileUI(freshUser);
-    }
-  });
+  document.addEventListener('visibilitychange', async () => { if (!document.hidden && Auth.isLoggedIn()) { const freshUser = await Auth.fetchUser(); if (freshUser) updateProfileUI(freshUser); }});
 });
 
-// Prevent zoom on double-tap (iOS)
+// Prevent zoom on double-tap
 let lastTouchEnd = 0;
-document.addEventListener('touchend', (e) => {
-  const now = Date.now();
-  if (now - lastTouchEnd <= 300) e.preventDefault();
-  lastTouchEnd = now;
-}, { passive: false });
+document.addEventListener('touchend', (e) => { const now = Date.now(); if (now - lastTouchEnd <= 300) e.preventDefault(); lastTouchEnd = now; }, { passive: false });
 
 // Keyboard shortcuts
 document.addEventListener('keydown', (e) => {
-  if (e.key === '/' && !e.target.matches('input, textarea, select')) {
-    e.preventDefault();
-    document.getElementById('search-input')?.focus();
-  }
-  if (e.key === 'Escape') {
-    closeCustomProjectModal();
-    const searchInput = document.getElementById('search-input');
-    if (searchInput && searchInput.value) {
-      searchInput.value = '';
-      filterServices();
-    }
-  }
+  if (e.key === '/' && !e.target.matches('input, textarea, select')) { e.preventDefault(); const searchInput = document.getElementById('search-input'); if (searchInput) searchInput.focus(); }
+  if (e.key === 'Escape') { closeCustomProjectModal(); const searchInput = document.getElementById('search-input'); if (searchInput && searchInput.value) { searchInput.value = ''; filterServices(); }}
 });
 
 // Close modal on outside click
-window.addEventListener('click', (e) => {
-  const modal = document.getElementById('customProjectModal');
-  if (modal && e.target === modal) {
-    closeCustomProjectModal();
-  }
-});
+window.addEventListener('click', (e) => { const modal = document.getElementById('customProjectModal'); if (modal && e.target === modal) closeCustomProjectModal(); });
 </script>
 </body>
 </html>
