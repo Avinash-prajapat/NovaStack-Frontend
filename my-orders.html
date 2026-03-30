@@ -2,18 +2,27 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <!-- 🔧 Fixed viewport for Samsung/Android devices -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover">
+    <meta name="theme-color" content="#0f0c1a">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <title>My Orders - NovaStack</title>
+    
+    <!-- Preconnect for performance -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Syne:wght@700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
     <link rel="icon" type="image/png" href="logo.png">
+    
     <style>
         /* ===== 🎨 CSS Variables ===== */
         :root {
             --bg-primary: #0f0c1a;
             --bg-secondary: #1a162a;
-            --bg-card: rgba(26, 22, 42, 0.9);
+            --bg-card: rgba(26, 22, 42, 0.95);
             --surface: rgba(255, 255, 255, 0.08);
             --surface-hover: rgba(255, 255, 255, 0.15);
             --border: rgba(255, 255, 255, 0.12);
@@ -34,23 +43,59 @@
             --radius-lg: 24px;
             --radius-full: 9999px;
             --transition: 300ms cubic-bezier(0.4, 0, 0.2, 1);
+            --safe-area-top: env(safe-area-inset-top);
+            --safe-area-bottom: env(safe-area-inset-bottom);
+            --safe-area-left: env(safe-area-inset-left);
+            --safe-area-right: env(safe-area-inset-right);
         }
 
         /* ===== 🌟 Base Reset ===== */
-        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        *, *::before, *::after { 
+            margin: 0; 
+            padding: 0; 
+            box-sizing: border-box; 
+            -webkit-tap-highlight-color: transparent;
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            -khtml-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+        
+        /* Allow text selection in inputs */
+        input, textarea, [contenteditable] {
+            -webkit-user-select: text;
+            user-select: text;
+        }
+        
+        html {
+            scroll-behavior: smooth;
+            -webkit-text-size-adjust: 100%;
+        }
         
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
             background: linear-gradient(135deg, #0f0c1a 0%, #1a162a 100%);
             color: var(--text-primary);
             min-height: 100vh;
+            min-height: -webkit-fill-available; /* iOS fix */
             line-height: 1.6;
+            overflow-x: hidden;
+            padding-top: var(--safe-area-top);
+            padding-bottom: var(--safe-area-bottom);
         }
 
-        /* ===== 🔗 Navigation (Same as Index Page) ===== */
+        /* Prevent pull-to-refresh bounce on mobile */
+        body.pull-disabled {
+            overscroll-behavior-y: contain;
+        }
+
+        /* ===== 🔗 Navigation ===== */
         nav {
             background: rgba(26, 22, 42, 0.95);
             backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
             padding: 0 5%;
             display: flex;
             justify-content: space-between;
@@ -59,12 +104,13 @@
             position: sticky;
             top: 0;
             z-index: 1000;
-            height: 72px;
+            height: calc(72px + var(--safe-area-top));
+            padding-top: var(--safe-area-top);
             transition: all var(--transition);
         }
 
         nav.scrolled {
-            height: 64px;
+            height: calc(64px + var(--safe-area-top));
             background: rgba(15, 12, 26, 0.98);
             box-shadow: var(--shadow-md);
         }
@@ -72,7 +118,7 @@
         .logo {
             font-family: 'Syne', sans-serif;
             font-weight: 800;
-            font-size: 1.5rem;
+            font-size: clamp(1.3rem, 4vw, 1.5rem);
             background: var(--gradient-accent);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -80,6 +126,7 @@
             display: flex;
             align-items: center;
             gap: 0.3rem;
+            flex-shrink: 0;
         }
 
         .logo i { 
@@ -90,14 +137,14 @@
 
         .nav-links {
             display: flex;
-            gap: 2rem;
+            gap: clamp(1rem, 3vw, 2rem);
             align-items: center;
         }
 
         .nav-links a {
             color: var(--text-secondary);
             text-decoration: none;
-            font-size: 0.95rem;
+            font-size: clamp(0.85rem, 2.5vw, 0.95rem);
             font-weight: 500;
             display: flex;
             align-items: center;
@@ -105,6 +152,7 @@
             padding: 0.5rem 0;
             position: relative;
             transition: color var(--transition);
+            white-space: nowrap;
         }
 
         .nav-links a::after {
@@ -131,15 +179,12 @@
             color: var(--accent);
         }
 
-        .nav-links a.active::after {
-            width: 100%;
-        }
-
         /* Profile Section */
         .profile-section {
             position: relative;
             display: flex;
             align-items: center;
+            flex-shrink: 0;
         }
 
         .profile-trigger {
@@ -153,6 +198,7 @@
             cursor: pointer;
             transition: all var(--transition);
             min-height: 40px;
+            min-width: 40px;
         }
 
         .profile-trigger:hover, .profile-trigger.active {
@@ -198,6 +244,7 @@
             font-size: 0.7rem;
             color: var(--text-muted);
             transition: transform var(--transition);
+            flex-shrink: 0;
         }
 
         .profile-trigger.active i.chevron {
@@ -212,9 +259,11 @@
             border: 1px solid var(--border);
             border-radius: var(--radius-md);
             min-width: 240px;
+            max-width: 90vw;
             padding: 0.5rem 0;
             box-shadow: var(--shadow-lg);
             backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
             opacity: 0;
             visibility: hidden;
             transform: translateY(-10px);
@@ -263,6 +312,7 @@
         .dropdown-header .user-email {
             font-size: 0.8rem;
             color: var(--text-muted);
+            word-break: break-all;
         }
 
         .dropdown-item {
@@ -275,6 +325,7 @@
             font-size: 0.9rem;
             transition: all var(--transition);
             border-left: 3px solid transparent;
+            min-height: 44px; /* Touch target */
         }
 
         .dropdown-item:hover {
@@ -289,6 +340,7 @@
             text-align: center;
             color: var(--accent);
             font-size: 0.9rem;
+            flex-shrink: 0;
         }
 
         .dropdown-divider {
@@ -322,6 +374,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            flex-shrink: 0;
         }
 
         .menu-toggle:hover, .menu-toggle.active {
@@ -339,7 +392,7 @@
         /* Mobile Menu Panel */
         .mobile-menu {
             position: fixed;
-            top: 72px;
+            top: calc(72px + var(--safe-area-top));
             left: 0;
             right: 0;
             background: var(--bg-secondary);
@@ -351,12 +404,14 @@
             opacity: 0;
             z-index: 999;
             backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
         }
 
         .mobile-menu.active {
             max-height: 80vh;
             opacity: 1;
             overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
         }
 
         .mobile-menu-inner {
@@ -378,6 +433,7 @@
             border-radius: var(--radius-md);
             transition: all var(--transition);
             min-height: 48px;
+            min-width: 100%;
         }
 
         .mobile-nav-link:hover, .mobile-nav-link.active {
@@ -390,6 +446,7 @@
             width: 24px;
             text-align: center;
             color: var(--accent);
+            flex-shrink: 0;
         }
 
         .mobile-nav-link.active {
@@ -417,6 +474,7 @@
             border-radius: var(--radius-md);
             margin-bottom: 0.5rem;
             cursor: pointer;
+            min-height: 56px;
         }
 
         .mobile-profile-avatar {
@@ -463,11 +521,12 @@
         }
 
         .mobile-logout-btn {
-            width: 100%;
+            width: calc(100% - 2.4rem);
             justify-content: center;
             color: var(--danger) !important;
             border-color: rgba(239, 68, 68, 0.3) !important;
             margin: 0.5rem 1.2rem;
+            min-height: 44px;
         }
 
         .mobile-logout-btn:hover {
@@ -479,6 +538,7 @@
             max-width: 1200px;
             margin: 2rem auto;
             padding: 0 5%;
+            padding-bottom: calc(2rem + var(--safe-area-bottom));
         }
 
         .page-header {
@@ -492,10 +552,11 @@
 
         .page-header h1 {
             font-family: 'Syne', sans-serif;
-            font-size: 1.8rem;
+            font-size: clamp(1.5rem, 5vw, 1.8rem);
             display: flex;
             align-items: center;
             gap: 0.5rem;
+            word-break: break-word;
         }
 
         .btn-new-order {
@@ -512,11 +573,17 @@
             font-size: 0.9rem;
             border: none;
             cursor: pointer;
+            min-height: 44px;
+            white-space: nowrap;
         }
 
         .btn-new-order:hover {
             transform: translateY(-2px);
             box-shadow: 0 8px 25px var(--accent-glow);
+        }
+
+        .btn-new-order:active {
+            transform: translateY(0);
         }
 
         /* ===== 📋 Compact Order Card ===== */
@@ -534,12 +601,18 @@
             cursor: pointer;
             position: relative;
             backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            contain: content;
         }
 
         .order-card:hover {
             border-color: var(--accent);
             transform: translateY(-2px);
             box-shadow: var(--shadow-lg);
+        }
+
+        .order-card:active {
+            transform: translateY(0);
         }
 
         .order-card.expanded {
@@ -551,6 +624,7 @@
             justify-content: space-between;
             align-items: center;
             gap: 0.8rem;
+            flex-wrap: wrap;
         }
 
         .order-id {
@@ -562,10 +636,13 @@
             gap: 0.3rem;
             cursor: pointer;
             transition: color var(--transition);
+            padding: 4px 8px;
+            border-radius: var(--radius-md);
         }
 
         .order-id:hover {
             color: var(--accent);
+            background: var(--surface);
         }
 
         .order-id.copied {
@@ -582,6 +659,7 @@
             display: flex;
             align-items: center;
             gap: 0.3rem;
+            flex-shrink: 0;
         }
 
         .status-dot {
@@ -589,6 +667,7 @@
             height: 6px;
             border-radius: 50%;
             display: inline-block;
+            flex-shrink: 0;
         }
 
         .status-pending { background: rgba(245, 158, 11, 0.2); color: #f59e0b; }
@@ -645,6 +724,7 @@
             gap: 1rem;
             font-size: 0.8rem;
             color: var(--text-muted);
+            flex-wrap: wrap;
         }
 
         .service-price {
@@ -658,12 +738,16 @@
             align-items: center;
             padding: 0.8rem 0;
             font-size: 0.85rem;
+            flex-wrap: wrap;
+            gap: 0.5rem;
         }
 
         .payment-progress {
             display: flex;
             align-items: center;
             gap: 0.5rem;
+            flex: 1;
+            min-width: 200px;
         }
 
         .progress-bar {
@@ -672,6 +756,7 @@
             background: var(--surface);
             border-radius: 10px;
             overflow: hidden;
+            flex-shrink: 0;
         }
 
         .progress-fill {
@@ -689,6 +774,7 @@
             padding: 0.2rem 0.6rem;
             border-radius: var(--radius-full);
             background: var(--surface);
+            flex-shrink: 0;
         }
 
         .access-badge.full {
@@ -725,6 +811,9 @@
             transition: all var(--transition);
             font-weight: 500;
             background: transparent;
+            min-height: 40px;
+            min-width: 44px;
+            justify-content: center;
         }
 
         .btn-action i {
@@ -757,6 +846,10 @@
         .btn-balance:hover {
             transform: translateY(-1px);
             box-shadow: 0 4px 15px var(--accent-glow);
+        }
+
+        .btn-balance:active {
+            transform: translateY(0);
         }
 
         .btn-cancel {
@@ -814,8 +907,8 @@
 
         .details-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1rem;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 0.8rem;
             margin-bottom: 1rem;
         }
 
@@ -835,6 +928,7 @@
         .detail-item span {
             font-size: 0.9rem;
             font-weight: 500;
+            word-break: break-word;
         }
 
         .detail-actions {
@@ -862,6 +956,8 @@
             justify-content: center;
             z-index: 2000;
             padding: 1rem;
+            padding-top: calc(1rem + var(--safe-area-top));
+            padding-bottom: calc(1rem + var(--safe-area-bottom));
         }
 
         .modal.show {
@@ -877,6 +973,7 @@
             width: 100%;
             max-height: 85vh;
             overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
             animation: modalSlide 0.3s ease;
             position: relative;
         }
@@ -901,6 +998,9 @@
             align-items: center;
             justify-content: center;
             transition: all var(--transition);
+            flex-shrink: 0;
+            min-width: 32px;
+            min-height: 32px;
         }
 
         .modal-close:hover {
@@ -915,6 +1015,7 @@
             display: flex;
             align-items: center;
             gap: 0.5rem;
+            word-break: break-word;
         }
 
         .modal-section {
@@ -957,10 +1058,12 @@
             font-size: 0.75rem;
             color: var(--text-muted);
             min-width: 140px;
+            flex-shrink: 0;
         }
 
         .timeline-item .content {
             flex: 1;
+            min-width: 0;
         }
 
         .timeline-item .status {
@@ -973,6 +1076,7 @@
         .timeline-item .message {
             font-size: 0.85rem;
             color: var(--text-secondary);
+            word-break: break-word;
         }
 
         .deliverables-list {
@@ -989,6 +1093,7 @@
             background: var(--surface);
             border-radius: var(--radius-md);
             gap: 0.8rem;
+            flex-wrap: wrap;
         }
 
         .deliverable-item .info {
@@ -996,16 +1101,19 @@
             align-items: center;
             gap: 0.6rem;
             flex: 1;
+            min-width: 0;
         }
 
         .deliverable-item .info i {
             color: var(--accent);
             font-size: 1.1rem;
+            flex-shrink: 0;
         }
 
         .deliverable-item .name {
             font-size: 0.9rem;
             font-weight: 500;
+            word-break: break-word;
         }
 
         .deliverable-item .type {
@@ -1026,6 +1134,8 @@
             gap: 0.3rem;
             transition: all var(--transition);
             text-decoration: none;
+            min-height: 36px;
+            flex-shrink: 0;
         }
 
         .btn-download:hover {
@@ -1052,6 +1162,8 @@
             padding: 0.8rem;
             background: var(--surface);
             border-radius: var(--radius-md);
+            flex-wrap: wrap;
+            gap: 0.4rem;
         }
 
         .payment-item .label {
@@ -1081,6 +1193,8 @@
             justify-content: space-between;
             padding: 0.5rem 0;
             font-size: 0.9rem;
+            flex-wrap: wrap;
+            gap: 0.4rem;
         }
 
         .customization-item .key {
@@ -1090,6 +1204,7 @@
 
         .customization-item .value {
             font-weight: 500;
+            word-break: break-word;
         }
 
         .requirements-text {
@@ -1099,6 +1214,7 @@
             font-size: 0.9rem;
             line-height: 1.5;
             white-space: pre-wrap;
+            word-break: break-word;
         }
 
         /* ===== 💬 Chat Widget ===== */
@@ -1107,7 +1223,7 @@
             bottom: 20px;
             right: 20px;
             width: 380px;
-            max-width: 95vw;
+            max-width: calc(100vw - 40px);
             background: var(--bg-secondary);
             border: 1px solid var(--border);
             border-radius: var(--radius-lg);
@@ -1116,6 +1232,7 @@
             display: none;
             flex-direction: column;
             overflow: hidden;
+            margin-bottom: var(--safe-area-bottom);
         }
 
         .chat-widget.show {
@@ -1130,6 +1247,7 @@
             gap: 0.6rem;
             color: white;
             cursor: pointer;
+            min-height: 56px;
         }
 
         .chat-header .order-ref {
@@ -1137,6 +1255,7 @@
             background: rgba(0,0,0,0.2);
             padding: 2px 8px;
             border-radius: var(--radius-full);
+            flex-shrink: 0;
         }
 
         .chat-header .close {
@@ -1145,6 +1264,11 @@
             padding: 0.3rem;
             border-radius: 50%;
             transition: background var(--transition);
+            min-width: 32px;
+            min-height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .chat-header .close:hover {
@@ -1160,6 +1284,7 @@
         .chat-messages {
             flex: 1;
             overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
             padding: 1rem;
             background: var(--bg-primary);
             display: flex;
@@ -1173,6 +1298,7 @@
             border-radius: var(--radius-md);
             font-size: 0.9rem;
             line-height: 1.4;
+            word-break: break-word;
         }
 
         .message.user {
@@ -1206,6 +1332,7 @@
             display: flex;
             gap: 0.6rem;
             background: var(--bg-card);
+            align-items: flex-end;
         }
 
         .chat-input textarea {
@@ -1219,7 +1346,8 @@
             font-size: 0.9rem;
             resize: none;
             min-height: 40px;
-            max-height: 100px;
+            max-height: 120px;
+            line-height: 1.4;
         }
 
         .chat-input textarea:focus {
@@ -1237,7 +1365,11 @@
             transition: all var(--transition);
             display: flex;
             align-items: center;
+            justify-content: center;
             gap: 0.3rem;
+            min-width: 44px;
+            min-height: 44px;
+            flex-shrink: 0;
         }
 
         .chat-input button:hover {
@@ -1254,7 +1386,7 @@
         /* ===== 🍞 Toast Notifications ===== */
         .toast {
             position: fixed;
-            bottom: 2rem;
+            bottom: calc(2rem + var(--safe-area-bottom));
             left: 50%;
             transform: translateX(-50%) translateY(100px);
             padding: 0.8rem 1.5rem;
@@ -1293,6 +1425,7 @@
             border-radius: 50%;
             animation: spin 1s linear infinite;
             margin: 2rem auto;
+            flex-shrink: 0;
         }
 
         @keyframes spin {
@@ -1328,13 +1461,17 @@
             text-align: center;
             color: var(--text-muted);
             padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
         }
 
-        /* ===== 📱 Responsive Design ===== */
+        /* ===== 📱 Responsive Design - Mobile First ===== */
         @media (max-width: 768px) {
             nav {
                 padding: 0 4%;
-                height: 68px;
+                height: calc(68px + var(--safe-area-top));
             }
 
             .nav-links {
@@ -1375,6 +1512,12 @@
             .page-header {
                 flex-direction: column;
                 text-align: center;
+                align-items: stretch;
+            }
+
+            .btn-new-order {
+                width: 100%;
+                justify-content: center;
             }
 
             .order-card {
@@ -1399,8 +1542,18 @@
                 gap: 0.5rem;
             }
 
+            .payment-progress {
+                min-width: 100%;
+                order: 2;
+            }
+
+            .access-badge {
+                order: 1;
+            }
+
             .order-actions {
                 flex-wrap: wrap;
+                width: 100%;
             }
 
             .btn-action {
@@ -1411,6 +1564,12 @@
                 padding: 0.4rem 0.8rem;
             }
 
+            .btn-toggle {
+                margin-left: 0;
+                width: 100%;
+                order: 99;
+            }
+
             .details-grid {
                 grid-template-columns: 1fr;
             }
@@ -1418,12 +1577,14 @@
             .modal-content {
                 padding: 1.2rem;
                 margin: 0.5rem;
+                max-height: calc(90vh - 2rem);
             }
 
             .chat-widget {
-                width: 320px;
+                width: calc(100vw - 20px);
                 bottom: 10px;
                 right: 10px;
+                left: 10px;
             }
 
             .chat-messages {
@@ -1481,12 +1642,43 @@
                 width: 100%;
                 justify-content: center;
             }
+
+            .detail-actions .btn-action {
+                min-width: 100%;
+            }
+        }
+
+        /* ===== 🔄 Samsung/Android Specific Fixes ===== */
+        @supports (-webkit-touch-callout: none) {
+            /* iOS specific */
+            .modal-content, .chat-messages {
+                -webkit-overflow-scrolling: touch;
+            }
+        }
+
+        @media screen and (-webkit-min-device-pixel-ratio: 2), 
+               screen and (min-resolution: 192dpi) {
+            /* High-DPI screens */
+            .order-card, .modal-content, .dropdown-item {
+                will-change: transform;
+                backface-visibility: hidden;
+            }
         }
 
         /* ===== ♿ Accessibility ===== */
-        a:focus, button:focus, .profile-trigger:focus, .order-id:focus {
+        a:focus, button:focus, .profile-trigger:focus, .order-id:focus, 
+        .btn-action:focus, .modal-close:focus {
             outline: 2px solid var(--accent);
             outline-offset: 2px;
+        }
+
+        /* Reduce motion for users who prefer it */
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
         }
 
         /* ===== 🎨 Scrollbar ===== */
@@ -1514,9 +1706,9 @@
         }
     </style>
 </head>
-<body>
+<body class="pull-disabled">
 
-<!-- Navigation (Same as Index Page) -->
+<!-- Navigation -->
 <nav id="navbar">
     <a href="index.html" class="logo">
         <i class="fas fa-code"></i> Nova<span>Stack</span>
@@ -1532,72 +1724,72 @@
     
     <!-- Profile Section -->
     <div class="profile-section">
-        <div class="profile-trigger" id="profileTrigger" role="button" tabindex="0" aria-expanded="false">
-            <div class="profile-avatar" id="profileAvatar">
+        <div class="profile-trigger" id="profileTrigger" role="button" tabindex="0" aria-expanded="false" aria-label="Profile menu">
+            <div class="profile-avatar" id="profileAvatar" aria-hidden="true">
                 <i class="fas fa-user"></i>
             </div>
             <span class="profile-name" id="profileName">User</span>
-            <i class="fas fa-chevron-down chevron"></i>
+            <i class="fas fa-chevron-down chevron" aria-hidden="true"></i>
         </div>
         
-        <div class="profile-dropdown" id="profileDropdown">
+        <div class="profile-dropdown" id="profileDropdown" role="menu">
             <div class="dropdown-header">
-                <div class="profile-avatar" id="dropdownAvatar">
+                <div class="profile-avatar" id="dropdownAvatar" aria-hidden="true">
                     <i class="fas fa-user"></i>
                 </div>
                 <div class="profile-name" id="dropdownName">User Name</div>
                 <div class="user-email" id="dropdownEmail">user@example.com</div>
             </div>
-            <a href="services.html" class="dropdown-item">
-                <i class="fas fa-cube"></i> Browse Services
+            <a href="services.html" class="dropdown-item" role="menuitem">
+                <i class="fas fa-cube" aria-hidden="true"></i> Browse Services
             </a>
-            <a href="my-orders.html" class="dropdown-item">
-                <i class="fas fa-shopping-bag"></i> My Orders
+            <a href="my-orders.html" class="dropdown-item" role="menuitem">
+                <i class="fas fa-shopping-bag" aria-hidden="true"></i> My Orders
             </a>
-            <a href="cart.html" class="dropdown-item">
-                <i class="fas fa-shopping-cart"></i> Cart
+            <a href="cart.html" class="dropdown-item" role="menuitem">
+                <i class="fas fa-shopping-cart" aria-hidden="true"></i> Cart
             </a>
-            <div class="dropdown-divider"></div>
-            <a href="#" class="dropdown-item logout-btn" id="dropdownLogout">
-                <i class="fas fa-sign-out-alt"></i> Logout
+            <div class="dropdown-divider" role="separator"></div>
+            <a href="#" class="dropdown-item logout-btn" id="dropdownLogout" role="menuitem">
+                <i class="fas fa-sign-out-alt" aria-hidden="true"></i> Logout
             </a>
         </div>
     </div>
     
     <!-- Mobile Menu Toggle -->
-    <button class="menu-toggle" id="menuToggle" aria-label="Toggle menu">
-        <i class="fas fa-bars"></i>
+    <button class="menu-toggle" id="menuToggle" aria-label="Toggle navigation menu" aria-expanded="false">
+        <i class="fas fa-bars" aria-hidden="true"></i>
     </button>
 </nav>
 
 <!-- Mobile Menu Panel -->
-<div class="mobile-menu" id="mobileMenu">
+<div class="mobile-menu" id="mobileMenu" role="dialog" aria-modal="true" aria-label="Mobile navigation">
     <div class="mobile-menu-inner">
-        <a href="index.html" class="mobile-nav-link"><i class="fas fa-home"></i> Home</a>
-        <a href="services.html" class="mobile-nav-link"><i class="fas fa-layer-group"></i> Services</a>
-        <a href="my-orders.html" class="mobile-nav-link active"><i class="fas fa-shopping-bag"></i> My Orders</a>
-        <a href="cart.html" class="mobile-nav-link"><i class="fas fa-shopping-cart"></i> Cart</a>
-        <div class="mobile-divider"></div>
+        <a href="index.html" class="mobile-nav-link"><i class="fas fa-home" aria-hidden="true"></i> Home</a>
+        <a href="services.html" class="mobile-nav-link"><i class="fas fa-layer-group" aria-hidden="true"></i> Services</a>
+        <a href="my-orders.html" class="mobile-nav-link active"><i class="fas fa-shopping-bag" aria-hidden="true"></i> My Orders</a>
+        <a href="cart.html" class="mobile-nav-link"><i class="fas fa-shopping-cart" aria-hidden="true"></i> Cart</a>
+        <div class="mobile-divider" role="separator"></div>
         <div class="mobile-profile-section">
-            <div class="mobile-profile-header" id="mobileProfileToggle">
-                <div class="mobile-profile-avatar" id="mobileProfileAvatar">
+            <div class="mobile-profile-header" id="mobileProfileToggle" role="button" tabindex="0">
+                <div class="mobile-profile-avatar" id="mobileProfileAvatar" aria-hidden="true">
                     <i class="fas fa-user"></i>
                 </div>
                 <div class="mobile-profile-info">
                     <div class="mobile-profile-name" id="mobileProfileName">User</div>
                     <div class="mobile-profile-email" id="mobileProfileEmail">user@example.com</div>
                 </div>
-                <i class="fas fa-chevron-down" style="color: var(--text-muted);"></i>
+                <i class="fas fa-chevron-down" style="color: var(--text-muted);" aria-hidden="true"></i>
             </div>
             <div id="mobileProfileMenu" style="display: none; flex-direction: column; gap: 0.3rem; padding: 0.3rem 0;">
                 <a href="services.html" class="mobile-nav-link" style="padding-left: 2.8rem;">
-                    <i class="fas fa-cube"></i> Browse Services
+                    <i class="fas fa-cube" aria-hidden="true"></i> Browse Services
                 </a>
                 <a href="cart.html" class="mobile-nav-link" style="padding-left: 2.8rem;">
-                    <i class="fas fa-shopping-cart"></i> Cart
+                    <i class="fas fa-shopping-cart" aria-hidden="true"></i> Cart
                 </a>
                 <button class="btn-action mobile-logout-btn" id="mobileLogoutBtn">
-                    <i class="fas fa-sign-out-alt"></i> Logout
+                    <i class="fas fa-sign-out-alt" aria-hidden="true"></i> Logout
                 </button>
             </div>
         </div>
@@ -1607,47 +1799,47 @@
 <!-- Main Content -->
 <div class="container">
     <div class="page-header">
-        <h1><i class="fas fa-shopping-bag"></i> My Orders</h1>
+        <h1><i class="fas fa-shopping-bag" aria-hidden="true"></i> My Orders</h1>
         <a href="services.html" class="btn-new-order">
-            <i class="fas fa-plus"></i> New Order
+            <i class="fas fa-plus" aria-hidden="true"></i> New Order
         </a>
     </div>
     
     <!-- Loading State -->
-    <div id="loading" class="loading-text" style="display: none;">
-        <div class="spinner"></div>
+    <div id="loading" class="loading-text" style="display: none;" aria-live="polite">
+        <div class="spinner" role="status" aria-label="Loading"></div>
         <p>Loading your orders...</p>
     </div>
     
     <!-- Orders Grid -->
-    <div id="orders-container" class="orders-grid"></div>
+    <div id="orders-container" class="orders-grid" role="list" aria-label="Your orders"></div>
     
     <!-- Empty State -->
-    <div id="empty-state" class="empty-state" style="display: none;">
-        <i class="fas fa-shopping-bag"></i>
+    <div id="empty-state" class="empty-state" style="display: none;" role="status">
+        <i class="fas fa-shopping-bag" aria-hidden="true"></i>
         <h3>No orders yet</h3>
         <p>Ready to start your first project?</p>
         <a href="services.html" class="btn-new-order">Browse Services</a>
     </div>
     
     <!-- Error State -->
-    <div id="error-state" class="empty-state" style="display: none; border-color: var(--danger);">
-        <i class="fas fa-exclamation-triangle" style="color: var(--danger);"></i>
+    <div id="error-state" class="empty-state" style="display: none; border-color: var(--danger);" role="alert">
+        <i class="fas fa-exclamation-triangle" style="color: var(--danger);" aria-hidden="true"></i>
         <h3 style="color: var(--danger);">Something went wrong</h3>
         <p id="error-message">Unable to load orders</p>
-        <button class="btn-new-order" onclick="loadOrders()">
-            <i class="fas fa-redo"></i> Try Again
+        <button class="btn-new-order" onclick="loadOrders()" aria-label="Retry loading orders">
+            <i class="fas fa-redo" aria-hidden="true"></i> Try Again
         </button>
     </div>
 </div>
 
 <!-- Modals -->
 <!-- Timeline Modal -->
-<div class="modal" id="timelineModal">
+<div class="modal" id="timelineModal" role="dialog" aria-modal="true" aria-labelledby="timelineModalTitle">
     <div class="modal-content">
-        <button class="modal-close" onclick="closeModal('timelineModal')"><i class="fas fa-times"></i></button>
-        <h3><i class="fas fa-history"></i> Order Timeline</h3>
-        <div id="timelineContent">
+        <button class="modal-close" onclick="closeModal('timelineModal')" aria-label="Close modal"><i class="fas fa-times" aria-hidden="true"></i></button>
+        <h3 id="timelineModalTitle"><i class="fas fa-history" aria-hidden="true"></i> Order Timeline</h3>
+        <div id="timelineContent" aria-live="polite">
             <div class="spinner"></div>
             <p style="text-align: center; color: var(--text-muted);">Loading timeline...</p>
         </div>
@@ -1655,11 +1847,11 @@
 </div>
 
 <!-- Deliverables Modal -->
-<div class="modal" id="deliverablesModal">
+<div class="modal" id="deliverablesModal" role="dialog" aria-modal="true" aria-labelledby="deliverablesModalTitle">
     <div class="modal-content">
-        <button class="modal-close" onclick="closeModal('deliverablesModal')"><i class="fas fa-times"></i></button>
-        <h3><i class="fas fa-download"></i> Project Deliverables</h3>
-        <div id="deliverablesContent">
+        <button class="modal-close" onclick="closeModal('deliverablesModal')" aria-label="Close modal"><i class="fas fa-times" aria-hidden="true"></i></button>
+        <h3 id="deliverablesModalTitle"><i class="fas fa-download" aria-hidden="true"></i> Project Deliverables</h3>
+        <div id="deliverablesContent" aria-live="polite">
             <div class="spinner"></div>
             <p style="text-align: center; color: var(--text-muted);">Loading deliverables...</p>
         </div>
@@ -1667,11 +1859,11 @@
 </div>
 
 <!-- Payment History Modal -->
-<div class="modal" id="paymentModal">
+<div class="modal" id="paymentModal" role="dialog" aria-modal="true" aria-labelledby="paymentModalTitle">
     <div class="modal-content">
-        <button class="modal-close" onclick="closeModal('paymentModal')"><i class="fas fa-times"></i></button>
-        <h3><i class="fas fa-credit-card"></i> Payment History</h3>
-        <div id="paymentContent">
+        <button class="modal-close" onclick="closeModal('paymentModal')" aria-label="Close modal"><i class="fas fa-times" aria-hidden="true"></i></button>
+        <h3 id="paymentModalTitle"><i class="fas fa-credit-card" aria-hidden="true"></i> Payment History</h3>
+        <div id="paymentContent" aria-live="polite">
             <div class="spinner"></div>
             <p style="text-align: center; color: var(--text-muted);">Loading payment details...</p>
         </div>
@@ -1679,79 +1871,115 @@
 </div>
 
 <!-- Customization Modal -->
-<div class="modal" id="customizationModal">
+<div class="modal" id="customizationModal" role="dialog" aria-modal="true" aria-labelledby="customizationModalTitle">
     <div class="modal-content">
-        <button class="modal-close" onclick="closeModal('customizationModal')"><i class="fas fa-times"></i></button>
-        <h3><i class="fas fa-sliders-h"></i> Order Details</h3>
-        <div id="customizationContent"></div>
+        <button class="modal-close" onclick="closeModal('customizationModal')" aria-label="Close modal"><i class="fas fa-times" aria-hidden="true"></i></button>
+        <h3 id="customizationModalTitle"><i class="fas fa-sliders-h" aria-hidden="true"></i> Order Details</h3>
+        <div id="customizationContent" aria-live="polite"></div>
     </div>
 </div>
 
 <!-- Cancel Modal -->
-<div class="modal" id="cancelModal">
+<div class="modal" id="cancelModal" role="dialog" aria-modal="true" aria-labelledby="cancelModalTitle">
     <div class="modal-content">
-        <button class="modal-close" onclick="closeModal('cancelModal')"><i class="fas fa-times"></i></button>
-        <h3><i class="fas fa-ban"></i> Cancel Order</h3>
+        <button class="modal-close" onclick="closeModal('cancelModal')" aria-label="Close modal"><i class="fas fa-times" aria-hidden="true"></i></button>
+        <h3 id="cancelModalTitle"><i class="fas fa-ban" aria-hidden="true"></i> Cancel Order</h3>
         <p style="color: var(--text-secondary); margin-bottom: 1rem;">Please tell us why you want to cancel:</p>
-        <textarea id="cancelReason" rows="3" placeholder="Reason for cancellation..." style="width: 100%; padding: 0.8rem; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md); color: var(--text-primary); font-family: inherit; margin-bottom: 1rem;"></textarea>
+        <textarea id="cancelReason" rows="3" placeholder="Reason for cancellation..." aria-label="Cancellation reason" style="width: 100%; padding: 0.8rem; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md); color: var(--text-primary); font-family: inherit; margin-bottom: 1rem;"></textarea>
         <div style="display: flex; gap: 0.8rem;">
-            <button class="btn-action btn-cancel" onclick="submitCancel()" style="flex: 1;">Submit</button>
+            <button class="btn-action btn-cancel" onclick="submitCancel()" style="flex: 1;" aria-label="Submit cancellation">Submit</button>
             <button class="btn-action" onclick="closeModal('cancelModal')" style="flex: 1; border-color: var(--border);">Close</button>
         </div>
     </div>
 </div>
 
 <!-- Revision Modal -->
-<div class="modal" id="revisionModal">
+<div class="modal" id="revisionModal" role="dialog" aria-modal="true" aria-labelledby="revisionModalTitle">
     <div class="modal-content">
-        <button class="modal-close" onclick="closeModal('revisionModal')"><i class="fas fa-times"></i></button>
-        <h3><i class="fas fa-pencil-alt"></i> Request Revision</h3>
+        <button class="modal-close" onclick="closeModal('revisionModal')" aria-label="Close modal"><i class="fas fa-times" aria-hidden="true"></i></button>
+        <h3 id="revisionModalTitle"><i class="fas fa-pencil-alt" aria-hidden="true"></i> Request Revision</h3>
         <p style="color: var(--text-secondary); margin-bottom: 1rem;">Please describe what changes you'd like:</p>
-        <textarea id="revisionDetails" rows="5" placeholder="Describe the changes you want..." style="width: 100%; padding: 0.8rem; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md); color: var(--text-primary); font-family: inherit; margin-bottom: 1rem;"></textarea>
+        <textarea id="revisionDetails" rows="5" placeholder="Describe the changes you want..." aria-label="Revision details" style="width: 100%; padding: 0.8rem; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md); color: var(--text-primary); font-family: inherit; margin-bottom: 1rem;"></textarea>
         <div style="display: flex; gap: 0.8rem;">
-            <button class="btn-action btn-balance" onclick="submitRevision()" style="flex: 1;">Send Request</button>
+            <button class="btn-action btn-balance" onclick="submitRevision()" style="flex: 1;" aria-label="Send revision request">Send Request</button>
             <button class="btn-action" onclick="closeModal('revisionModal')" style="flex: 1; border-color: var(--border);">Cancel</button>
         </div>
     </div>
 </div>
 
 <!-- Chat Widget -->
-<div class="chat-widget" id="chatWidget">
-    <div class="chat-header" onclick="toggleChatBody()">
-        <i class="fas fa-comments"></i>
+<div class="chat-widget" id="chatWidget" role="dialog" aria-modal="false" aria-label="Support chat">
+    <div class="chat-header" onclick="toggleChatBody()" role="button" tabindex="0">
+        <i class="fas fa-comments" aria-hidden="true"></i>
         <span>Support Chat</span>
         <span class="order-ref" id="chatOrderRef">#NOVA-000000</span>
-        <div class="close" onclick="closeChat(event)"><i class="fas fa-times"></i></div>
+        <div class="close" onclick="closeChat(event)" role="button" aria-label="Close chat"><i class="fas fa-times" aria-hidden="true"></i></div>
     </div>
     <div class="chat-body" id="chatBody" style="display: none;">
-        <div class="chat-messages" id="chatMessages">
+        <div class="chat-messages" id="chatMessages" role="log" aria-live="polite" aria-label="Chat messages">
             <div style="text-align: center; padding: 1rem; color: var(--text-muted);">
                 💬 Select an order to start chatting
             </div>
         </div>
         <div class="chat-input">
-            <textarea id="chatMessageInput" placeholder="Type your message..." rows="1" onkeypress="if(event.key==='Enter' && !event.shiftKey){event.preventDefault();sendChatMessage();}"></textarea>
-            <button onclick="sendChatMessage()" id="chatSendBtn"><i class="fas fa-paper-plane"></i></button>
+            <textarea id="chatMessageInput" placeholder="Type your message..." rows="1" aria-label="Chat message" onkeypress="if(event.key==='Enter' && !event.shiftKey){event.preventDefault();sendChatMessage();}"></textarea>
+            <button onclick="sendChatMessage()" id="chatSendBtn" aria-label="Send message"><i class="fas fa-paper-plane" aria-hidden="true"></i></button>
         </div>
     </div>
 </div>
 
 <!-- Toast Container -->
-<div id="toast" class="toast"></div>
+<div id="toast" class="toast" role="alert" aria-live="assertive"></div>
 
 <script>
-// ===== 🔧 CONFIG =====
+// ===== 🔧 CONFIG - API Setup =====
 const CONFIG = {
+    // 🔁 Use mock mode for testing without backend
+    USE_MOCK: false, // Set to true to use mock data
+    
     API: 'https://novastack-backend.onrender.com',
     ENDPOINTS: {
-        ORDERS: '/my-orders',
-        ORDER: '/order',
+        ORDERS: '/api/my-orders',
+        ORDER: '/api/order',
         TIMELINE: '/timeline',
         DELIVERABLES: '/deliverables',
         PAYMENT: '/payment',
         CANCEL: '/cancel',
-        CONVERSATION: '/conversation'
-    }
+        CONVERSATION: '/conversation',
+        USER: '/api/user'
+    },
+    
+    // Mock data for testing
+    MOCK_ORDERS: [
+        {
+            id: 1001,
+            services: { title: 'React Web App', emoji: '⚛️' },
+            status: 'in_progress',
+            price: 15000,
+            advance_paid: 2250,
+            total_paid: 2250,
+            preview_ready: false,
+            created_at: '2024-03-15T10:30:00Z',
+            requirements: 'Build a responsive e-commerce dashboard with React, Tailwind CSS, and API integration.',
+            customization: { pages: 5, api_integration: true, dark_mode: true }
+        },
+        {
+            id: 1002,
+            services: { title: 'Mobile App UI', emoji: '📱' },
+            status: 'delivered',
+            price: 8000,
+            advance_paid: 1200,
+            total_paid: 8000,
+            preview_ready: true,
+            created_at: '2024-03-10T14:20:00Z',
+            delivered_at: '2024-03-25T16:45:00Z',
+            requirements: 'Figma designs for iOS and Android fitness tracking app.',
+            deliverables: {
+                live_url: 'https://figma.com/file/xyz',
+                source_code_url: 'https://drive.google.com/file.zip'
+            }
+        }
+    ]
 };
 
 // ===== 🔐 Auth Helper =====
@@ -1770,8 +1998,36 @@ const Auth = {
     }
 };
 
-// ===== 🌐 API Helper =====
+// ===== 🌐 API Helper with Mock Support =====
 async function apiFetch(endpoint, options = {}) {
+    // Mock mode for testing
+    if (CONFIG.USE_MOCK) {
+        await new Promise(resolve => setTimeout(resolve, 800)); // Simulate network delay
+        
+        if (endpoint.includes(CONFIG.ENDPOINTS.ORDERS)) {
+            return { orders: CONFIG.MOCK_ORDERS };
+        }
+        if (endpoint.includes(CONFIG.ENDPOINTS.ORDER)) {
+            const orderId = endpoint.split('/').pop();
+            const order = CONFIG.MOCK_ORDERS.find(o => o.id == orderId);
+            return { order: order || CONFIG.MOCK_ORDERS[0] };
+        }
+        if (endpoint.includes(CONFIG.ENDPOINTS.TIMELINE)) {
+            return { data: [
+                { created_at: '2024-03-15T10:30:00Z', status: 'payment_received', message: 'Advance payment received' },
+                { created_at: '2024-03-16T09:15:00Z', status: 'in_progress', message: 'Development started' }
+            ]};
+        }
+        if (endpoint.includes(CONFIG.ENDPOINTS.DELIVERABLES)) {
+            return { data: { live_url: 'https://demo.novastack.com', source_code_url: '#' } };
+        }
+        if (endpoint.includes(CONFIG.ENDPOINTS.PAYMENT)) {
+            return { data: { total: 15000, advance_paid: 2250, total_paid: 2250 } };
+        }
+        return { data: {} };
+    }
+    
+    // Real API call
     const headers = {
         'Content-Type': 'application/json',
         ...(options.headers || {})
@@ -1782,19 +2038,39 @@ async function apiFetch(endpoint, options = {}) {
         headers['Authorization'] = `Bearer ${token}`;
     }
     
-    const response = await fetch(`${CONFIG.API}${endpoint}`, {
-        ...options,
-        headers,
-        credentials: 'include'
-    });
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 15000); // 15s timeout
     
-    const data = await response.json();
-    
-    if (!response.ok) {
-        throw new Error(data.error || data.message || `Error ${response.status}`);
+    try {
+        const response = await fetch(`${CONFIG.API}${endpoint}`, {
+            ...options,
+            headers,
+            credentials: 'include',
+            signal: controller.signal
+        });
+        
+        clearTimeout(timeoutId);
+        
+        const contentType = response.headers.get('content-type');
+        const data = contentType?.includes('application/json') 
+            ? await response.json() 
+            : { error: 'Invalid response format' };
+        
+        if (!response.ok) {
+            throw new Error(data.error || data.message || `Error ${response.status}`);
+        }
+        
+        return data;
+    } catch (error) {
+        clearTimeout(timeoutId);
+        if (error.name === 'AbortError') {
+            throw new Error('Request timeout. Please check your connection.');
+        }
+        if (error.message.includes('Failed to fetch')) {
+            throw new Error('Cannot connect to server. Please check your internet connection.');
+        }
+        throw error;
     }
-    
-    return data;
 }
 
 // ===== 🎨 UI Helpers =====
@@ -1803,7 +2079,10 @@ function showToast(message, type = 'success') {
     toast.textContent = message;
     toast.className = `toast ${type} show`;
     
-    setTimeout(() => {
+    // Clear existing timeout
+    if (toast._timeout) clearTimeout(toast._timeout);
+    
+    toast._timeout = setTimeout(() => {
         toast.classList.remove('show');
     }, 4000);
 }
@@ -1831,6 +2110,19 @@ function escapeHtml(text) {
     return div.innerHTML;
 }
 
+// Debounce helper for scroll events
+function debounce(func, wait) {
+    let timeout;
+    return function executedFunction(...args) {
+        const later = () => {
+            clearTimeout(timeout);
+            func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+    };
+}
+
 // ===== 🧭 Navigation =====
 function toggleMobileMenu() {
     const menu = document.getElementById('mobileMenu');
@@ -1841,8 +2133,10 @@ function toggleMobileMenu() {
     
     if (isActive) {
         document.body.style.overflow = 'hidden';
+        document.body.classList.add('pull-disabled');
     } else {
         document.body.style.overflow = '';
+        document.body.classList.remove('pull-disabled');
     }
 }
 
@@ -1866,7 +2160,7 @@ function updateProfileUI() {
     const nameEl = document.getElementById('profileName');
     if (avatar && nameEl) {
         if (user.avatar) {
-            avatar.innerHTML = `<img src="${user.avatar}" alt="${name}">`;
+            avatar.innerHTML = `<img src="${user.avatar}" alt="${name}" loading="lazy">`;
         } else {
             avatar.textContent = initial;
         }
@@ -1879,7 +2173,7 @@ function updateProfileUI() {
     const dropdownEmail = document.getElementById('dropdownEmail');
     if (dropdownAvatar && dropdownName && dropdownEmail) {
         if (user.avatar) {
-            dropdownAvatar.innerHTML = `<img src="${user.avatar}" alt="${name}">`;
+            dropdownAvatar.innerHTML = `<img src="${user.avatar}" alt="${name}" loading="lazy">`;
         } else {
             dropdownAvatar.textContent = initial;
         }
@@ -1893,7 +2187,7 @@ function updateProfileUI() {
     const mobileEmail = document.getElementById('mobileProfileEmail');
     if (mobileAvatar && mobileName && mobileEmail) {
         if (user.avatar) {
-            mobileAvatar.innerHTML = `<img src="${user.avatar}" alt="${name}">`;
+            mobileAvatar.innerHTML = `<img src="${user.avatar}" alt="${name}" loading="lazy">`;
         } else {
             mobileAvatar.textContent = initial;
         }
@@ -1904,11 +2198,11 @@ function updateProfileUI() {
 
 // ===== 📋 Order Card Rendering =====
 function getOrderStatusClass(status) {
-    return `status-${status.replace(/_/g, '')}`;
+    return `status-${String(status).replace(/_/g, '')}`;
 }
 
 function getStatusText(status) {
-    return status.replace(/_/g, ' ').toUpperCase();
+    return String(status).replace(/_/g, ' ').toUpperCase();
 }
 
 function getAccessBadge(order) {
@@ -1917,11 +2211,11 @@ function getAccessBadge(order) {
     const isFullPaid = paid >= total;
     
     if (isFullPaid || order.status === 'completed') {
-        return `<span class="access-badge full"><i class="fas fa-unlock"></i> Full Access</span>`;
+        return `<span class="access-badge full"><i class="fas fa-unlock" aria-hidden="true"></i> Full Access</span>`;
     } else if (order.preview_ready && order.advance_paid > 0) {
-        return `<span class="access-badge preview"><i class="fas fa-eye"></i> Preview</span>`;
+        return `<span class="access-badge preview"><i class="fas fa-eye" aria-hidden="true"></i> Preview</span>`;
     } else {
-        return `<span class="access-badge locked"><i class="fas fa-lock"></i> Locked</span>`;
+        return `<span class="access-badge locked"><i class="fas fa-lock" aria-hidden="true"></i> Locked</span>`;
     }
 }
 
@@ -1929,7 +2223,7 @@ function getPaymentProgress(order) {
     const total = order.price || 0;
     const paid = order.total_paid || order.advance_paid || 0;
     const percent = total > 0 ? Math.round((paid / total) * 100) : 0;
-    return { percent, paid, total, due: total - paid };
+    return { percent, paid, total, due: Math.max(0, total - paid) };
 }
 
 function renderOrderCard(order, index) {
@@ -1940,24 +2234,24 @@ function renderOrderCard(order, index) {
     const canRequestRevision = (order.status === 'delivered' || order.status === 'completed') && !order.revision_requested;
     
     return `
-        <div class="order-card" id="order-${order.id}" data-order-id="${order.id}">
+        <article class="order-card" id="order-${order.id}" data-order-id="${order.id}" role="listitem">
             <div class="order-header">
-                <span class="order-id" onclick="copyOrderId('${order.id}', event)" title="Click to copy">
-                    <i class="fas fa-hashtag"></i> ${formatOrderNumber(order.id)}
+                <span class="order-id" onclick="copyOrderId('${order.id}', event)" title="Click to copy Order ID" role="button" tabindex="0">
+                    <i class="fas fa-hashtag" aria-hidden="true"></i> ${formatOrderNumber(order.id)}
                 </span>
-                <span class="order-status ${statusClass}">
-                    <span class="status-dot"></span>
+                <span class="order-status ${statusClass}" role="status">
+                    <span class="status-dot" aria-hidden="true"></span>
                     ${getStatusText(order.status)}
                 </span>
             </div>
             
             <div class="order-main">
-                <div class="service-icon">${order.services?.emoji || '💻'}</div>
+                <div class="service-icon" aria-hidden="true">${order.services?.emoji || '💻'}</div>
                 <div class="service-info">
                     <h3>${escapeHtml(order.services?.title || 'Custom Project')}</h3>
                     <div class="service-meta">
                         <span class="service-price">₹${total.toLocaleString('en-IN')}</span>
-                        <span>•</span>
+                        <span aria-hidden="true">•</span>
                         <span>📅 ${formatDate(order.created_at)}</span>
                     </div>
                 </div>
@@ -1966,7 +2260,7 @@ function renderOrderCard(order, index) {
             <div class="order-summary">
                 <div class="payment-progress">
                     <span style="font-size: 0.8rem; color: var(--text-muted);">${percent}% Paid</span>
-                    <div class="progress-bar">
+                    <div class="progress-bar" role="progressbar" aria-valuenow="${percent}" aria-valuemin="0" aria-valuemax="100">
                         <div class="progress-fill" style="width: ${percent}%"></div>
                     </div>
                 </div>
@@ -1974,33 +2268,33 @@ function renderOrderCard(order, index) {
             </div>
             
             <div class="order-actions">
-                <button class="btn-action btn-chat" onclick="openChat(${order.id}, event)">
-                    <i class="fas fa-comment"></i> Chat
+                <button class="btn-action btn-chat" onclick="openChat(${order.id}, event)" aria-label="Chat about this order">
+                    <i class="fas fa-comment" aria-hidden="true"></i> Chat
                 </button>
-                <button class="btn-action btn-view" onclick="openModal('deliverables', ${order.id}, event)">
-                    <i class="fas fa-download"></i> Files
+                <button class="btn-action btn-view" onclick="openModal('deliverables', ${order.id}, event)" aria-label="View deliverables">
+                    <i class="fas fa-download" aria-hidden="true"></i> Files
                 </button>
                 ${canPayBalance ? `
-                    <button class="btn-action btn-balance" onclick="payBalance(${order.id}, ${due}, event)">
-                        <i class="fas fa-credit-card"></i> Pay ₹${due.toLocaleString('en-IN')}
+                    <button class="btn-action btn-balance" onclick="payBalance(${order.id}, ${due}, event)" aria-label="Pay remaining balance">
+                        <i class="fas fa-credit-card" aria-hidden="true"></i> Pay ₹${due.toLocaleString('en-IN')}
                     </button>
                 ` : ''}
                 ${canRequestRevision ? `
-                    <button class="btn-action btn-revision" onclick="openModal('revision', ${order.id}, event)">
-                        <i class="fas fa-pencil-alt"></i> Revision
+                    <button class="btn-action btn-revision" onclick="openModal('revision', ${order.id}, event)" aria-label="Request revision">
+                        <i class="fas fa-pencil-alt" aria-hidden="true"></i> Revision
                     </button>
                 ` : ''}
                 ${canCancel ? `
-                    <button class="btn-action btn-cancel" onclick="openModal('cancel', ${order.id}, event)">
-                        <i class="fas fa-ban"></i> Cancel
+                    <button class="btn-action btn-cancel" onclick="openModal('cancel', ${order.id}, event)" aria-label="Cancel order">
+                        <i class="fas fa-ban" aria-hidden="true"></i> Cancel
                     </button>
                 ` : ''}
-                <button class="btn-action btn-toggle" onclick="toggleOrderDetails(${order.id}, event)">
-                    <i class="fas fa-chevron-down"></i> Details
+                <button class="btn-action btn-toggle" onclick="toggleOrderDetails(${order.id}, event)" aria-expanded="false" aria-controls="details-${order.id}">
+                    <i class="fas fa-chevron-down" aria-hidden="true"></i> Details
                 </button>
             </div>
             
-            <div class="order-details-expanded">
+            <div class="order-details-expanded" id="details-${order.id}">
                 <div class="details-grid">
                     <div class="detail-item">
                         <label>Requirements</label>
@@ -2021,22 +2315,27 @@ function renderOrderCard(order, index) {
                 </div>
                 <div class="detail-actions">
                     <button class="btn-action btn-view" onclick="openModal('timeline', ${order.id}, event)">
-                        <i class="fas fa-history"></i> Timeline
+                        <i class="fas fa-history" aria-hidden="true"></i> Timeline
                     </button>
                     <button class="btn-action btn-view" onclick="openModal('payment', ${order.id}, event)">
-                        <i class="fas fa-credit-card"></i> Payment History
+                        <i class="fas fa-credit-card" aria-hidden="true"></i> Payment History
                     </button>
                     <button class="btn-action btn-view" onclick="openModal('customization', ${order.id}, event)">
-                        <i class="fas fa-sliders-h"></i> Full Details
+                        <i class="fas fa-sliders-h" aria-hidden="true"></i> Full Details
                     </button>
                 </div>
             </div>
-        </div>
+        </article>
     `;
 }
 
 // ===== 🔄 Load Orders =====
+let ordersLoadPromise = null;
+
 async function loadOrders() {
+    // Prevent duplicate requests
+    if (ordersLoadPromise) return ordersLoadPromise;
+    
     const token = Auth.getToken();
     if (!token) {
         window.location.href = 'login.html?redirect=my-orders.html';
@@ -2048,36 +2347,66 @@ async function loadOrders() {
     const empty = document.getElementById('empty-state');
     const error = document.getElementById('error-state');
     
-    loading.style.display = 'block';
+    loading.style.display = 'flex';
     container.innerHTML = '';
     empty.style.display = 'none';
     error.style.display = 'none';
     
-    try {
-        const data = await apiFetch(CONFIG.ENDPOINTS.ORDERS);
-        const orders = data.orders || data.data || [];
-        
-        if (!orders || orders.length === 0) {
+    ordersLoadPromise = (async () => {
+        try {
+            const data = await apiFetch(CONFIG.ENDPOINTS.ORDERS);
+            const orders = data.orders || data.data || [];
+            
+            if (!orders || orders.length === 0) {
+                loading.style.display = 'none';
+                empty.style.display = 'block';
+                return;
+            }
+            
+            // Render with document fragment for better performance
+            const fragment = document.createDocumentFragment();
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = orders.map((order, index) => 
+                renderOrderCard(order, index)
+            ).join('');
+            
+            while (tempDiv.firstChild) {
+                fragment.appendChild(tempDiv.firstChild);
+            }
+            container.appendChild(fragment);
+            
+            // Add click handlers for order cards
+            container.querySelectorAll('.order-card').forEach(card => {
+                card.addEventListener('click', (e) => {
+                    // Only toggle if not clicking a button
+                    if (!e.target.closest('.btn-action') && !e.target.closest('.order-id')) {
+                        const orderId = card.dataset.orderId;
+                        toggleOrderDetails(orderId, e);
+                    }
+                });
+            });
+            
+        } catch (err) {
+            console.error('Failed to load orders:', err);
             loading.style.display = 'none';
-            empty.style.display = 'block';
-            return;
+            error.style.display = 'block';
+            document.getElementById('error-message').textContent = err.message || 'Unable to connect to server';
+            showToast('Failed to load orders. Please try again.', 'error');
+        } finally {
+            ordersLoadPromise = null;
         }
-        
-        container.innerHTML = orders.map((order, index) => 
-            renderOrderCard(order, index)
-        ).join('');
-        
-    } catch (err) {
-        console.error('Failed to load orders:', err);
-        loading.style.display = 'none';
-        error.style.display = 'block';
-        document.getElementById('error-message').textContent = err.message || 'Unable to connect to server';
-    }
+    })();
+    
+    return ordersLoadPromise;
 }
 
 // ===== 📋 Order Details Toggle =====
 function toggleOrderDetails(orderId, event) {
-    if (event) event.stopPropagation();
+    if (event) {
+        event.stopPropagation();
+        // Prevent text selection on double-tap
+        if (event.detail > 1) event.preventDefault();
+    }
     
     const card = document.getElementById(`order-${orderId}`);
     if (!card) return;
@@ -2086,6 +2415,7 @@ function toggleOrderDetails(orderId, event) {
     const btn = card.querySelector('.btn-toggle');
     if (btn) {
         btn.classList.toggle('active', isExpanded);
+        btn.setAttribute('aria-expanded', isExpanded);
     }
     
     // Load details if expanding
@@ -2099,11 +2429,12 @@ async function loadOrderFullDetails(orderId) {
         const data = await apiFetch(`${CONFIG.ENDPOINTS.ORDER}/${orderId}`);
         const order = data.order || data.data;
         if (order) {
-            // Update the card with fresh data if needed
+            // Could update UI with fresh data if needed
             console.log('Updated order details:', order);
         }
     } catch (err) {
         console.warn('Could not load full details:', err);
+        // Don't show error to user - just use cached data
     }
 }
 
@@ -2111,7 +2442,10 @@ async function loadOrderFullDetails(orderId) {
 let currentModalOrderId = null;
 
 function openModal(type, orderId, event) {
-    if (event) event.stopPropagation();
+    if (event) {
+        event.stopPropagation();
+        event.preventDefault();
+    }
     currentModalOrderId = orderId;
     
     const modals = {
@@ -2131,16 +2465,18 @@ function openModal(type, orderId, event) {
     
     modal.classList.add('show');
     document.body.style.overflow = 'hidden';
+    document.body.classList.add('pull-disabled');
     
     // Load content based on type
-    if (type === 'timeline') {
-        loadTimelineContent(orderId);
-    } else if (type === 'deliverables') {
-        loadDeliverablesContent(orderId);
-    } else if (type === 'payment') {
-        loadPaymentContent(orderId);
-    } else if (type === 'customization') {
-        loadCustomizationContent(orderId);
+    const loaders = {
+        timeline: () => loadTimelineContent(orderId),
+        deliverables: () => loadDeliverablesContent(orderId),
+        payment: () => loadPaymentContent(orderId),
+        customization: () => loadCustomizationContent(orderId)
+    };
+    
+    if (loaders[type]) {
+        loaders[type]();
     }
 }
 
@@ -2149,6 +2485,7 @@ function closeModal(modalId) {
     if (modal) {
         modal.classList.remove('show');
         document.body.style.overflow = '';
+        document.body.classList.remove('pull-disabled');
     }
     currentModalOrderId = null;
 }
@@ -2168,7 +2505,8 @@ document.addEventListener('keydown', (e) => {
         document.querySelectorAll('.modal.show').forEach(modal => {
             closeModal(modal.id);
         });
-        if (document.getElementById('chatWidget')?.classList.contains('show')) {
+        const chatWidget = document.getElementById('chatWidget');
+        if (chatWidget?.classList.contains('show')) {
             closeChat();
         }
     }
@@ -2203,6 +2541,7 @@ async function loadTimelineContent(orderId) {
         `;
     } catch (err) {
         container.innerHTML = `<p style="text-align:center;color:var(--danger)">Failed to load timeline</p>`;
+        console.error('Timeline error:', err);
     }
 }
 
@@ -2221,14 +2560,14 @@ async function loadDeliverablesContent(orderId) {
             html += `
                 <div class="deliverable-item">
                     <div class="info">
-                        <i class="fas fa-globe"></i>
+                        <i class="fas fa-globe" aria-hidden="true"></i>
                         <div>
                             <div class="name">Live Demo</div>
                             <div class="type">View in browser</div>
                         </div>
                     </div>
-                    <a href="${deliverables.live_url}" target="_blank" class="btn-download">
-                        <i class="fas fa-external-link-alt"></i> View
+                    <a href="${deliverables.live_url}" target="_blank" rel="noopener" class="btn-download">
+                        <i class="fas fa-external-link-alt" aria-hidden="true"></i> View
                     </a>
                 </div>
             `;
@@ -2238,14 +2577,14 @@ async function loadDeliverablesContent(orderId) {
             html += `
                 <div class="deliverable-item">
                     <div class="info">
-                        <i class="fab fa-github"></i>
+                        <i class="fab fa-github" aria-hidden="true"></i>
                         <div>
                             <div class="name">GitHub Repository</div>
                             <div class="type">Source code</div>
                         </div>
                     </div>
-                    <a href="${deliverables.github_repo}" target="_blank" class="btn-download">
-                        <i class="fas fa-external-link-alt"></i> View
+                    <a href="${deliverables.github_repo}" target="_blank" rel="noopener" class="btn-download">
+                        <i class="fas fa-external-link-alt" aria-hidden="true"></i> View
                     </a>
                 </div>
             `;
@@ -2255,14 +2594,14 @@ async function loadDeliverablesContent(orderId) {
             html += `
                 <div class="deliverable-item">
                     <div class="info">
-                        <i class="fas fa-code"></i>
+                        <i class="fas fa-code" aria-hidden="true"></i>
                         <div>
                             <div class="name">Source Code</div>
                             <div class="type">Download ZIP</div>
                         </div>
                     </div>
                     <a href="${deliverables.source_code_url}" download class="btn-download">
-                        <i class="fas fa-download"></i> Download
+                        <i class="fas fa-download" aria-hidden="true"></i> Download
                     </a>
                 </div>
             `;
@@ -2272,14 +2611,14 @@ async function loadDeliverablesContent(orderId) {
             html += `
                 <div class="deliverable-item">
                     <div class="info">
-                        <i class="fas fa-book"></i>
+                        <i class="fas fa-book" aria-hidden="true"></i>
                         <div>
                             <div class="name">Documentation</div>
                             <div class="type">Read guide</div>
                         </div>
                     </div>
-                    <a href="${deliverables.documentation_url}" target="_blank" class="btn-download">
-                        <i class="fas fa-external-link-alt"></i> View
+                    <a href="${deliverables.documentation_url}" target="_blank" rel="noopener" class="btn-download">
+                        <i class="fas fa-external-link-alt" aria-hidden="true"></i> View
                     </a>
                 </div>
             `;
@@ -2290,14 +2629,14 @@ async function loadDeliverablesContent(orderId) {
                 html += `
                     <div class="deliverable-item">
                         <div class="info">
-                            <i class="fas fa-file"></i>
+                            <i class="fas fa-file" aria-hidden="true"></i>
                             <div>
                                 <div class="name">${escapeHtml(doc.title || 'File')}</div>
                                 <div class="type">${doc.type || 'Document'}</div>
                             </div>
                         </div>
                         <a href="${doc.file_url}" download class="btn-download">
-                            <i class="fas fa-download"></i> Download
+                            <i class="fas fa-download" aria-hidden="true"></i> Download
                         </a>
                     </div>
                 `;
@@ -2307,7 +2646,7 @@ async function loadDeliverablesContent(orderId) {
         if (deliverables.delivery_notes) {
             html += `
                 <div class="modal-section">
-                    <h4><i class="fas fa-sticky-note"></i> Delivery Notes</h4>
+                    <h4><i class="fas fa-sticky-note" aria-hidden="true"></i> Delivery Notes</h4>
                     <p style="color:var(--text-secondary);font-size:0.9rem;line-height:1.5">${escapeHtml(deliverables.delivery_notes)}</p>
                 </div>
             `;
@@ -2317,6 +2656,7 @@ async function loadDeliverablesContent(orderId) {
         
     } catch (err) {
         container.innerHTML = `<p style="text-align:center;color:var(--danger)">Failed to load deliverables</p>`;
+        console.error('Deliverables error:', err);
     }
 }
 
@@ -2370,7 +2710,7 @@ async function loadPaymentContent(orderId) {
             </div>
             ${payment.advance_paid_at ? `
             <div class="modal-section" style="margin-top:1rem">
-                <h4><i class="fas fa-clock"></i> Payment Timeline</h4>
+                <h4><i class="fas fa-clock" aria-hidden="true"></i> Payment Timeline</h4>
                 <div style="font-size:0.85rem;color:var(--text-secondary)">
                     <div>• Advance: ${formatDateTime(payment.advance_paid_at)}</div>
                     ${payment.balance_paid_at ? `<div>• Balance: ${formatDateTime(payment.balance_paid_at)}</div>` : ''}
@@ -2379,6 +2719,7 @@ async function loadPaymentContent(orderId) {
         `;
     } catch (err) {
         container.innerHTML = `<p style="text-align:center;color:var(--danger)">Failed to load payment details</p>`;
+        console.error('Payment error:', err);
     }
 }
 
@@ -2396,7 +2737,7 @@ async function loadCustomizationContent(orderId) {
         if (order.requirements) {
             html += `
                 <div class="modal-section">
-                    <h4><i class="fas fa-file-alt"></i> Requirements</h4>
+                    <h4><i class="fas fa-file-alt" aria-hidden="true"></i> Requirements</h4>
                     <div class="requirements-text">${escapeHtml(order.requirements)}</div>
                 </div>
             `;
@@ -2405,7 +2746,7 @@ async function loadCustomizationContent(orderId) {
         if (order.customization && Object.keys(order.customization).length > 0) {
             html += `
                 <div class="modal-section">
-                    <h4><i class="fas fa-sliders-h"></i> Customizations</h4>
+                    <h4><i class="fas fa-sliders-h" aria-hidden="true"></i> Customizations</h4>
                     <div class="customization-list">
                         ${Object.entries(order.customization).map(([key, value]) => `
                             <div class="customization-item">
@@ -2420,7 +2761,7 @@ async function loadCustomizationContent(orderId) {
         
         html += `
             <div class="modal-section">
-                <h4><i class="fas fa-info-circle"></i> Order Info</h4>
+                <h4><i class="fas fa-info-circle" aria-hidden="true"></i> Order Info</h4>
                 <div class="customization-list">
                     <div class="customization-item">
                         <span class="key">Order ID</span>
@@ -2451,6 +2792,7 @@ async function loadCustomizationContent(orderId) {
         
     } catch (err) {
         container.innerHTML = `<p style="text-align:center;color:var(--danger)">Failed to load details</p>`;
+        console.error('Customization error:', err);
     }
 }
 
@@ -2459,7 +2801,10 @@ let chatOrderId = null;
 let chatPollInterval = null;
 
 function openChat(orderId, event) {
-    if (event) event.stopPropagation();
+    if (event) {
+        event.stopPropagation();
+        event.preventDefault();
+    }
     chatOrderId = orderId;
     
     const widget = document.getElementById('chatWidget');
@@ -2474,7 +2819,10 @@ function openChat(orderId, event) {
 }
 
 function closeChat(event) {
-    if (event) event.stopPropagation();
+    if (event) {
+        event.stopPropagation();
+        event.preventDefault();
+    }
     document.getElementById('chatWidget').classList.remove('show');
     if (chatPollInterval) {
         clearInterval(chatPollInterval);
@@ -2515,7 +2863,8 @@ async function loadChatMessages() {
             `;
         }).join('');
         
-        container.scrollTop = container.scrollHeight;
+        // Smooth scroll to bottom
+        container.scrollTo({ top: container.scrollHeight, behavior: 'smooth' });
         
     } catch (err) {
         console.warn('Failed to load chat:', err);
@@ -2528,7 +2877,9 @@ async function sendChatMessage() {
     if (!message || !chatOrderId) return;
     
     const btn = document.getElementById('chatSendBtn');
+    const originalContent = btn.innerHTML;
     btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
     
     try {
         const token = Auth.getToken();
@@ -2540,12 +2891,15 @@ async function sendChatMessage() {
         });
         
         input.value = '';
+        input.style.height = 'auto'; // Reset textarea height
         await loadChatMessages();
         
     } catch (err) {
         showToast('Failed to send message', 'error');
+        console.error('Chat send error:', err);
     } finally {
         btn.disabled = false;
+        btn.innerHTML = originalContent;
     }
 }
 
@@ -2560,57 +2914,64 @@ function startChatPolling() {
 
 // ===== 💰 Payment Functions =====
 async function payBalance(orderId, amount, event) {
-    if (event) event.stopPropagation();
+    if (event) {
+        event.stopPropagation();
+        event.preventDefault();
+    }
     
     const btn = event?.currentTarget;
     if (btn) {
         btn.disabled = true;
+        const originalHTML = btn.innerHTML;
         btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
-    }
-    
-    try {
-        const token = Auth.getToken();
         
-        // Create Razorpay order
-        const paymentData = await apiFetch(`${CONFIG.ENDPOINTS.ORDER}/${orderId}/pay-balance`, {
-            method: 'POST',
-            body: JSON.stringify({})
-        });
-        
-        const options = {
-            key: paymentData.data?.key_id,
-            amount: Math.round(amount * 100),
-            currency: "INR",
-            name: "NovaStack",
-            description: `Balance Payment for Order ${formatOrderNumber(orderId)}`,
-            order_id: paymentData.data?.razorpay_order_id,
-            handler: async function(response) {
-                await verifyPayment(orderId, amount, response);
-            },
-            prefill: {
-                name: Auth.getUser()?.name || '',
-                email: Auth.getUser()?.email || '',
-                contact: Auth.getUser()?.phone || ''
-            },
-            theme: { color: "#ff6b35" },
-            modal: {
-                ondismiss: function() {
-                    showToast('Payment cancelled', 'warning');
-                    if (btn) {
+        try {
+            const token = Auth.getToken();
+            
+            // Create Razorpay order
+            const paymentData = await apiFetch(`${CONFIG.ENDPOINTS.ORDER}/${orderId}/pay-balance`, {
+                method: 'POST',
+                body: JSON.stringify({})
+            });
+            
+            const options = {
+                key: paymentData.data?.key_id,
+                amount: Math.round(amount * 100),
+                currency: "INR",
+                name: "NovaStack",
+                description: `Balance Payment for Order ${formatOrderNumber(orderId)}`,
+                order_id: paymentData.data?.razorpay_order_id,
+                handler: async function(response) {
+                    await verifyPayment(orderId, amount, response);
+                },
+                prefill: {
+                    name: Auth.getUser()?.name || '',
+                    email: Auth.getUser()?.email || '',
+                    contact: Auth.getUser()?.phone || ''
+                },
+                theme: { color: "#ff6b35" },
+                modal: {
+                    ondismiss: function() {
+                        showToast('Payment cancelled', 'warning');
                         btn.disabled = false;
-                        btn.innerHTML = `<i class="fas fa-credit-card"></i> Pay ₹${amount.toLocaleString('en-IN')}`;
+                        btn.innerHTML = originalHTML;
                     }
                 }
+            };
+            
+            if (typeof Razorpay !== 'undefined') {
+                new Razorpay(options).open();
+            } else {
+                throw new Error('Payment gateway not loaded');
             }
-        };
-        
-        new Razorpay(options).open();
-        
-    } catch (err) {
-        showToast(err.message, 'error');
-        if (btn) {
-            btn.disabled = false;
-            btn.innerHTML = `<i class="fas fa-credit-card"></i> Pay ₹${amount.toLocaleString('en-IN')}`;
+            
+        } catch (err) {
+            showToast(err.message, 'error');
+            console.error('Payment error:', err);
+            if (btn) {
+                btn.disabled = false;
+                btn.innerHTML = `<i class="fas fa-credit-card"></i> Pay ₹${amount.toLocaleString('en-IN')}`;
+            }
         }
     }
 }
@@ -2636,6 +2997,7 @@ async function verifyPayment(orderId, amount, response) {
         
     } catch (err) {
         showToast('Payment verification failed: ' + err.message, 'error');
+        console.error('Verify payment error:', err);
     }
 }
 
@@ -2645,6 +3007,12 @@ async function submitCancel() {
     if (!reason) {
         showToast('Please provide a reason', 'warning');
         return;
+    }
+    
+    const submitBtn = event?.currentTarget;
+    if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Submitting...';
     }
     
     try {
@@ -2659,6 +3027,12 @@ async function submitCancel() {
         
     } catch (err) {
         showToast(err.message, 'error');
+        console.error('Cancel error:', err);
+    } finally {
+        if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = 'Submit';
+        }
     }
 }
 
@@ -2667,6 +3041,12 @@ async function submitRevision() {
     if (!details) {
         showToast('Please describe the changes', 'warning');
         return;
+    }
+    
+    const submitBtn = event?.currentTarget;
+    if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
     }
     
     try {
@@ -2684,12 +3064,21 @@ async function submitRevision() {
         
     } catch (err) {
         showToast(err.message, 'error');
+        console.error('Revision error:', err);
+    } finally {
+        if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = 'Send Request';
+        }
     }
 }
 
 // ===== 📋 Copy Order ID =====
 function copyOrderId(orderId, event) {
-    if (event) event.stopPropagation();
+    if (event) {
+        event.stopPropagation();
+        event.preventDefault();
+    }
     
     const formatted = formatOrderNumber(orderId);
     navigator.clipboard.writeText(formatted).then(() => {
@@ -2699,6 +3088,9 @@ function copyOrderId(orderId, event) {
             showToast('Order ID copied!', 'success');
             setTimeout(() => el.classList.remove('copied'), 2000);
         }
+    }).catch(err => {
+        console.warn('Copy failed:', err);
+        showToast('Failed to copy', 'error');
     });
 }
 
@@ -2715,19 +3107,21 @@ function logout() {
 // ===== 🔄 Initialize =====
 document.addEventListener('DOMContentLoaded', async () => {
     // Auth check
-    if (!Auth.isLoggedIn()) {
+    if (!Auth.isLoggedIn() && !CONFIG.USE_MOCK) {
         window.location.href = 'login.html?redirect=my-orders.html';
         return;
     }
     
-    // Refresh user data
-    try {
-        const freshUser = await apiFetch('/user');
-        if (freshUser.user) {
-            localStorage.setItem('dc_user', JSON.stringify(freshUser.user));
+    // Refresh user data (only if not using mock)
+    if (!CONFIG.USE_MOCK) {
+        try {
+            const freshUser = await apiFetch(CONFIG.ENDPOINTS.USER);
+            if (freshUser.user) {
+                localStorage.setItem('dc_user', JSON.stringify(freshUser.user));
+            }
+        } catch (err) {
+            console.warn('Could not refresh user:', err);
         }
-    } catch (err) {
-        console.warn('Could not refresh user:', err);
     }
     
     // Update UI
@@ -2737,76 +3131,139 @@ document.addEventListener('DOMContentLoaded', async () => {
     await loadOrders();
     
     // Event listeners
-    document.getElementById('profileTrigger')?.addEventListener('click', (e) => {
-        e.stopPropagation();
-        toggleProfileDropdown();
-    });
+    const profileTrigger = document.getElementById('profileTrigger');
+    if (profileTrigger) {
+        profileTrigger.addEventListener('click', (e) => {
+            e.stopPropagation();
+            toggleProfileDropdown();
+        });
+        profileTrigger.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                toggleProfileDropdown();
+            }
+        });
+    }
     
-    document.getElementById('menuToggle')?.addEventListener('click', toggleMobileMenu);
+    const menuToggle = document.getElementById('menuToggle');
+    if (menuToggle) {
+        menuToggle.addEventListener('click', toggleMobileMenu);
+        menuToggle.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                toggleMobileMenu();
+            }
+        });
+    }
     
-    document.getElementById('mobileProfileToggle')?.addEventListener('click', () => {
-        const menu = document.getElementById('mobileProfileMenu');
-        menu.style.display = menu.style.display === 'flex' ? 'none' : 'flex';
-    });
+    const mobileProfileToggle = document.getElementById('mobileProfileToggle');
+    if (mobileProfileToggle) {
+        mobileProfileToggle.addEventListener('click', () => {
+            const menu = document.getElementById('mobileProfileMenu');
+            menu.style.display = menu.style.display === 'flex' ? 'none' : 'flex';
+        });
+        mobileProfileToggle.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                const menu = document.getElementById('mobileProfileMenu');
+                menu.style.display = menu.style.display === 'flex' ? 'none' : 'flex';
+            }
+        });
+    }
     
-    document.getElementById('dropdownLogout')?.addEventListener('click', (e) => {
-        e.preventDefault();
-        logout();
-    });
+    const dropdownLogout = document.getElementById('dropdownLogout');
+    if (dropdownLogout) {
+        dropdownLogout.addEventListener('click', (e) => {
+            e.preventDefault();
+            logout();
+        });
+    }
     
-    document.getElementById('mobileLogoutBtn')?.addEventListener('click', logout);
+    const mobileLogoutBtn = document.getElementById('mobileLogoutBtn');
+    if (mobileLogoutBtn) {
+        mobileLogoutBtn.addEventListener('click', logout);
+    }
     
     // Close dropdowns on outside click
     document.addEventListener('click', (e) => {
         const dropdown = document.getElementById('profileDropdown');
         const trigger = document.getElementById('profileTrigger');
-        if (dropdown && !trigger.contains(e.target) && !dropdown.contains(e.target)) {
+        if (dropdown && trigger && !trigger.contains(e.target) && !dropdown.contains(e.target)) {
             dropdown.classList.remove('show');
             trigger.classList.remove('active');
+            trigger.setAttribute('aria-expanded', 'false');
         }
         
         // Close mobile menu on outside click
         const mobileMenu = document.getElementById('mobileMenu');
         const menuToggle = document.getElementById('menuToggle');
-        if (mobileMenu.classList.contains('active') && 
+        if (mobileMenu?.classList.contains('active') && 
             !mobileMenu.contains(e.target) && 
-            !menuToggle.contains(e.target)) {
+            !menuToggle?.contains(e.target)) {
             toggleMobileMenu();
         }
     });
     
-    // Navbar scroll effect
-    window.addEventListener('scroll', () => {
+    // Navbar scroll effect - debounced for performance
+    const handleScroll = debounce(() => {
         const nav = document.getElementById('navbar');
-        if (window.scrollY > 50) {
-            nav.classList.add('scrolled');
-        } else {
-            nav.classList.remove('scrolled');
+        if (nav) {
+            if (window.scrollY > 50) {
+                nav.classList.add('scrolled');
+            } else {
+                nav.classList.remove('scrolled');
+            }
         }
-    });
+    }, 100);
     
-    // Auto-refresh orders every 30 seconds
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    
+    // Auto-refresh orders every 30 seconds (only when visible)
     setInterval(() => {
-        if (Auth.isLoggedIn() && document.visibilityState === 'visible') {
+        if (Auth.isLoggedIn() && document.visibilityState === 'visible' && !CONFIG.USE_MOCK) {
             loadOrders();
         }
     }, 30000);
     
     // Handle page visibility
     document.addEventListener('visibilitychange', () => {
-        if (!document.hidden && Auth.isLoggedIn()) {
+        if (!document.hidden && Auth.isLoggedIn() && !CONFIG.USE_MOCK) {
             loadOrders();
         }
     });
+    
+    // Auto-resize chat textarea
+    const chatInput = document.getElementById('chatMessageInput');
+    if (chatInput) {
+        chatInput.addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = Math.min(this.scrollHeight, 120) + 'px';
+        });
+    }
+    
+    // Prevent zoom on double-tap (iOS fix)
+    let lastTouchEnd = 0;
+    document.addEventListener('touchend', (e) => {
+        const now = Date.now();
+        if (now - lastTouchEnd <= 300) {
+            e.preventDefault();
+        }
+        lastTouchEnd = now;
+    }, { passive: false });
+    
+    // Handle keyboard navigation for order IDs
+    document.querySelectorAll('.order-id').forEach(el => {
+        el.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                copyOrderId(el.closest('.order-card').dataset.orderId, { currentTarget: el });
+            }
+        });
+    });
 });
 
-// Prevent zoom on double-tap (iOS)
-let lastTouchEnd = 0;
-document.addEventListener('touchend', (e) => {
-    const now = Date.now();
-    if (now - lastTouchEnd <= 300) e.preventDefault();
-    lastTouchEnd = now;
-}, { passive: false });
+// Prevent accidental zoom on mobile
+document.addEventListener('gesturestart', (e) => e.preventDefault());
 </script>
 </body>
 </html>
