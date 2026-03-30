@@ -877,38 +877,7 @@
     
     @keyframes spin { to { transform: rotate(360deg); } }
 
-    /* ===== 💬 WhatsApp Float ===== */
-    .whatsapp-float {
-      position: fixed;
-      bottom: 2rem;
-      right: 2rem;
-      z-index: 999;
-      background: linear-gradient(135deg, #25D366, #128C7E);
-      color: white;
-      padding: 0.85rem 1.5rem;
-      border-radius: var(--radius-full);
-      display: flex;
-      align-items: center;
-      gap: 0.6rem;
-      text-decoration: none;
-      font-weight: 600;
-      font-size: 0.9rem;
-      box-shadow: 0 6px 30px rgba(37, 211, 102, 0.5);
-      transition: all var(--transition-normal);
-      animation: floatUp 0.6s ease 0.3s both;
-    }
     
-    .whatsapp-float:hover {
-      transform: translateY(-4px) scale(1.03);
-      box-shadow: 0 12px 45px rgba(37, 211, 102, 0.7);
-    }
-    
-    .whatsapp-float i { font-size: 1.2rem; }
-    
-    @keyframes floatUp {
-      from { opacity: 0; transform: translateY(30px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
 
     /* ===== 🍞 Toast Notification ===== */
     #toast {
@@ -960,12 +929,6 @@
       
       .related-grid { grid-template-columns: repeat(2, 1fr); }
       
-      .whatsapp-float {
-        bottom: 1.2rem;
-        right: 1.2rem;
-        padding: 0.7rem 1.2rem;
-        font-size: 0.85rem;
-      }
     }
     
     @media (max-width: 480px) {
@@ -1053,10 +1016,6 @@
   </div>
 </div>
 
-<!-- 💬 WhatsApp Float -->
-<a href="#" class="whatsapp-float" id="wa-btn" target="_blank" rel="noopener">
-  <i class="fab fa-whatsapp"></i> Chat on WhatsApp
-</a>
 
 <!-- 🍞 Toast Notification -->
 <div id="toast" style="display:none"></div>
