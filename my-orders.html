@@ -5,10 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>My Orders - NovaStack</title>
     
-    <!-- SEO -->
-    <meta name="description" content="Track your NovaStack orders, manage payments, and access deliverables.">
+    <!-- SEO & Meta -->
+    <meta name="description" content="Track your NovaStack orders, manage payments, download deliverables, and chat with support.">
     
     <!-- Fonts & Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
@@ -33,6 +34,9 @@
             --accent-glow: rgba(255, 107, 53, 0.4);
             --accent-secondary: #7c3aed;
             --gradient-accent: linear-gradient(135deg, #ff6b35 0%, #f7c531 100%);
+            --gradient-1: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            --gradient-2: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            --gradient-3: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
             --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.2);
             --shadow-md: 0 8px 30px rgba(0, 0, 0, 0.35);
             --shadow-lg: 0 20px 60px rgba(0, 0, 0, 0.5);
@@ -48,7 +52,7 @@
         /* ===== 🌟 Base Reset ===== */
         *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         
-        html { scroll-behavior: smooth; }
+        html { scroll-behavior: smooth; scroll-padding-top: 80px; }
         
         body {
             font-family: 'DM Sans', sans-serif;
@@ -57,500 +61,278 @@
             line-height: 1.6;
             overflow-x: hidden;
             min-height: 100vh;
-            -webkit-font-smoothing: antialiased;
+            position: relative;
         }
         
         body.menu-open { overflow: hidden; position: fixed; width: 100%; height: 100%; }
-
-        /* ===== 🔗 Unified Navigation (Same as Index) ===== */
-        nav {
+        
+        /* Animated Background */
+        body::before {
+            content: '';
             position: fixed;
-            top: 0; left: 0; right: 0;
-            z-index: 1000;
-            background: rgba(15, 12, 26, 0.85);
-            backdrop-filter: blur(20px);
-            border-bottom: 1px solid var(--border);
-            padding: 0 5%;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            height: 72px;
-            transition: all var(--transition-normal);
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: radial-gradient(ellipse at 20% 80%, rgba(124, 58, 237, 0.15) 0%, transparent 50%),
+                        radial-gradient(ellipse at 80% 20%, rgba(255, 107, 53, 0.12) 0%, transparent 50%);
+            z-index: -2;
+            animation: bgPulse 20s ease-in-out infinite;
+            pointer-events: none;
         }
         
-        nav.scrolled {
-            height: 64px;
-            background: rgba(15, 12, 26, 0.95);
-            box-shadow: var(--shadow-md);
+        @keyframes bgPulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.8; transform: scale(1.05); } }
+        
+        /* Floating Particles */
+        .particles { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; overflow: hidden; }
+        .particle {
+            position: absolute; width: 4px; height: 4px;
+            background: var(--accent); border-radius: 50%;
+            opacity: 0.3; animation: float 15s infinite linear;
         }
+        @keyframes float {
+            0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+            10%, 90% { opacity: 0.3; }
+            100% { transform: translateY(-20vh) rotate(720deg); opacity: 0; }
+        }
+
+        /* ===== 🔗 Navigation (Same as Index) ===== */
+        nav {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+            background: rgba(15, 12, 26, 0.85); backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            padding: 0 5%; display: flex; align-items: center; justify-content: space-between;
+            height: 72px; transition: all var(--transition-normal);
+        }
+        
+        nav.scrolled { height: 64px; background: rgba(15, 12, 26, 0.95); box-shadow: var(--shadow-md); }
         
         .logo {
-            font-family: 'Syne', sans-serif;
-            font-weight: 800;
-            font-size: 1.6rem;
-            color: var(--text-primary);
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            gap: 0.3rem;
-            transition: transform var(--transition-fast);
-            flex-shrink: 0;
+            font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.6rem;
+            color: var(--text-primary); text-decoration: none;
+            display: flex; align-items: center; gap: 0.3rem;
+            transition: transform var(--transition-fast); flex-shrink: 0;
         }
-        
         .logo:hover { transform: scale(1.05); }
         .logo span {
-            background: var(--gradient-accent);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            background: var(--gradient-accent); -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent; background-clip: text;
         }
         
-        .nav-links {
-            display: flex;
-            gap: 2.5rem;
-            align-items: center;
-        }
-        
+        .nav-links { display: flex; gap: 2.5rem; align-items: center; }
         .nav-links a {
-            text-decoration: none;
-            color: var(--text-secondary);
-            font-size: 0.95rem;
-            font-weight: 500;
-            position: relative;
-            padding: 0.5rem 0;
-            transition: color var(--transition-fast);
-            display: flex;
-            align-items: center;
-            gap: 0.4rem;
+            text-decoration: none; color: var(--text-secondary);
+            font-size: 0.95rem; font-weight: 500; position: relative;
+            padding: 0.5rem 0; transition: color var(--transition-fast);
         }
-        
         .nav-links a::after {
-            content: '';
-            position: absolute;
-            bottom: 0; left: 0;
-            width: 0; height: 2px;
-            background: var(--gradient-accent);
-            border-radius: var(--radius-full);
-            transition: width var(--transition-normal);
+            content: ''; position: absolute; bottom: 0; left: 0;
+            width: 0; height: 2px; background: var(--gradient-accent);
+            border-radius: var(--radius-full); transition: width var(--transition-normal);
         }
-        
         .nav-links a:hover, .nav-links a.active { color: var(--text-primary); }
         .nav-links a:hover::after, .nav-links a.active::after { width: 100%; }
         
-        /* ===== 👤 User Toggle (Desktop) ===== */
-        .user-toggle-wrapper {
-            position: relative;
-            display: flex;
-            align-items: center;
-            flex-shrink: 0;
-        }
-        
+        /* User Toggle & Dropdown */
+        .user-toggle-wrapper { position: relative; display: flex; align-items: center; flex-shrink: 0; }
         .user-toggle {
-            display: flex;
-            align-items: center;
-            gap: 0.6rem;
-            padding: 0.4rem 0.8rem;
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: var(--radius-full);
-            cursor: pointer;
-            transition: all var(--transition-normal);
-            min-height: 40px;
+            display: flex; align-items: center; gap: 0.6rem;
+            padding: 0.4rem 0.8rem; background: var(--surface);
+            border: 1px solid var(--border); border-radius: var(--radius-full);
+            cursor: pointer; transition: all var(--transition-normal); min-height: 40px;
         }
-        
         .user-toggle:hover, .user-toggle.active {
-            background: var(--surface-hover);
-            border-color: var(--accent);
+            background: var(--surface-hover); border-color: var(--accent);
             transform: translateY(-1px);
         }
-        
         .user-avatar {
-            width: 32px; height: 32px;
-            border-radius: 50%;
-            background: var(--gradient-accent);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 600;
-            font-size: 0.85rem;
-            color: white;
-            text-transform: uppercase;
-            flex-shrink: 0;
-            overflow: hidden;
+            width: 32px; height: 32px; border-radius: 50%;
+            background: var(--gradient-accent); display: flex;
+            align-items: center; justify-content: center;
+            font-weight: 600; font-size: 0.85rem; color: white;
+            text-transform: uppercase; flex-shrink: 0; overflow: hidden;
         }
-        
         .user-avatar img { width: 100%; height: 100%; object-fit: cover; }
-        .user-name { font-size: 0.9rem; font-weight: 500; color: var(--text-primary); max-width: 120px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .user-toggle i.chevron { font-size: 0.75rem; color: var(--text-muted); transition: transform var(--transition-fast); }
+        .user-name {
+            font-size: 0.9rem; font-weight: 500; color: var(--text-primary);
+            max-width: 120px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        }
+        .user-toggle i.chevron {
+            font-size: 0.75rem; color: var(--text-muted);
+            transition: transform var(--transition-fast);
+        }
         .user-toggle.active i.chevron { transform: rotate(180deg); }
         
         .user-dropdown {
-            position: absolute;
-            top: calc(100% + 12px);
-            left: 0;
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: var(--radius-md);
-            min-width: 240px;
-            padding: 0.5rem 0;
-            box-shadow: var(--shadow-lg);
-            backdrop-filter: blur(20px);
-            opacity: 0;
-            visibility: hidden;
-            transform: translateY(-10px);
-            transition: all var(--transition-normal);
+            position: absolute; top: calc(100% + 12px); left: 0;
+            background: var(--bg-card); border: 1px solid var(--border);
+            border-radius: var(--radius-md); min-width: 240px;
+            padding: 0.5rem 0; box-shadow: var(--shadow-lg);
+            backdrop-filter: blur(20px); opacity: 0; visibility: hidden;
+            transform: translateY(-10px); transition: all var(--transition-normal);
             z-index: 1001;
         }
-        
         .user-dropdown.active { opacity: 1; visibility: visible; transform: translateY(0); }
-        
         .user-dropdown::before {
-            content: '';
-            position: absolute;
-            top: -6px; left: 24px;
-            width: 12px; height: 12px;
-            background: var(--bg-card);
-            border-left: 1px solid var(--border);
-            border-top: 1px solid var(--border);
+            content: ''; position: absolute; top: -6px; left: 24px;
+            width: 12px; height: 12px; background: var(--bg-card);
+            border-left: 1px solid var(--border); border-top: 1px solid var(--border);
             transform: rotate(45deg);
         }
-        
         .dropdown-header { padding: 0.8rem 1.2rem; border-bottom: 1px solid var(--border); margin-bottom: 0.3rem; }
         .dropdown-header .user-avatar { width: 40px; height: 40px; font-size: 1rem; margin-bottom: 0.4rem; }
         .dropdown-header .user-name { font-size: 1rem; font-weight: 600; max-width: none; }
         .dropdown-header .user-email { font-size: 0.8rem; color: var(--text-muted); }
-        
         .dropdown-item {
-            display: flex;
-            align-items: center;
-            gap: 0.8rem;
-            padding: 0.7rem 1.2rem;
-            color: var(--text-secondary);
-            text-decoration: none;
-            font-size: 0.9rem;
-            transition: all var(--transition-fast);
-            border-left: 3px solid transparent;
+            display: flex; align-items: center; gap: 0.8rem;
+            padding: 0.7rem 1.2rem; color: var(--text-secondary);
+            text-decoration: none; font-size: 0.9rem;
+            transition: all var(--transition-fast); border-left: 3px solid transparent;
         }
-        
         .dropdown-item:hover {
-            background: var(--surface-hover);
-            color: var(--text-primary);
-            border-left-color: var(--accent);
-            padding-left: 1.5rem;
+            background: var(--surface-hover); color: var(--text-primary);
+            border-left-color: var(--accent); padding-left: 1.5rem;
         }
-        
-        .dropdown-item i { width: 20px; text-align: center; color: var(--accent); }
+        .dropdown-item i { width: 20px; text-align: center; color: var(--accent); font-size: 0.9rem; }
         .dropdown-item .badge {
-            margin-left: auto;
-            background: var(--accent);
-            color: white;
-            font-size: 0.7rem;
-            font-weight: 700;
-            padding: 0.15rem 0.5rem;
-            border-radius: var(--radius-full);
-            min-width: 20px;
-            text-align: center;
+            margin-left: auto; background: var(--accent); color: white;
+            font-size: 0.7rem; font-weight: 700; padding: 0.15rem 0.5rem;
+            border-radius: var(--radius-full); min-width: 20px; text-align: center;
         }
-        
         .dropdown-divider { height: 1px; background: var(--border); margin: 0.4rem 0; }
         .dropdown-logout { color: #ef4444 !important; border-top: 1px solid var(--border); margin-top: 0.3rem; padding-top: 0.7rem; }
         .dropdown-logout i { color: #ef4444 !important; }
         
-        /* ===== 🔘 Auth Buttons (Guest) ===== */
+        /* Auth Buttons */
         .nav-right { display: flex; align-items: center; gap: 0.8rem; position: relative; flex-shrink: 0; }
         .auth-buttons { display: flex; align-items: center; gap: 0.6rem; }
         .auth-buttons.hidden { display: none; }
         
+        /* Buttons */
         .btn {
-            padding: 0.6rem 1.4rem;
-            border-radius: var(--radius-full);
-            font-family: 'DM Sans', sans-serif;
-            font-size: 0.9rem;
-            font-weight: 600;
-            cursor: pointer;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            transition: all var(--transition-normal);
-            position: relative;
-            overflow: hidden;
-            border: none;
-            min-height: 44px;
+            padding: 0.6rem 1.4rem; border-radius: var(--radius-full);
+            font-family: 'DM Sans', sans-serif; font-size: 0.9rem; font-weight: 600;
+            cursor: pointer; text-decoration: none; display: inline-flex;
+            align-items: center; gap: 0.5rem; transition: all var(--transition-normal);
+            position: relative; overflow: hidden; border: none; min-height: 44px;
         }
-        
-        .btn-outline {
-            background: transparent;
-            color: var(--text-primary);
-            border: 1.5px solid var(--border);
+        .btn::before {
+            content: ''; position: absolute; top: 0; left: -100%;
+            width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
         }
+        .btn:hover::before { left: 100%; }
+        .btn-outline { background: transparent; color: var(--text-primary); border: 1.5px solid var(--border); }
+        .btn-outline:hover { border-color: var(--accent); box-shadow: 0 0 20px var(--accent-glow); transform: translateY(-2px); }
+        .btn-primary { background: var(--gradient-accent); color: white; box-shadow: 0 4px 20px var(--accent-glow); }
+        .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 8px 35px var(--accent-glow); }
         
-        .btn-outline:hover {
-            border-color: var(--accent);
-            box-shadow: 0 0 20px var(--accent-glow);
-            transform: translateY(-2px);
-        }
-        
-        .btn-primary {
-            background: var(--gradient-accent);
-            color: white;
-            box-shadow: 0 4px 20px var(--accent-glow);
-        }
-        
-        .btn-primary:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 35px var(--accent-glow);
-        }
-        
-        .cart-btn { position: relative; }
-        .cart-count {
-            position: absolute;
-            top: -6px; right: -8px;
-            background: var(--gradient-accent);
-            color: white;
-            border-radius: var(--radius-full);
-            width: 20px; height: 20px;
-            font-size: 0.7rem;
-            font-weight: 700;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            animation: pulse 2s infinite;
-        }
-        @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); } }
-        
-        /* ===== 📱 Mobile Menu ===== */
+        /* Mobile Menu */
         .menu-toggle {
-            display: none;
-            font-size: 1.4rem;
-            color: var(--accent);
-            cursor: pointer;
-            padding: 0.6rem;
-            border-radius: var(--radius-sm);
-            min-width: 44px;
-            min-height: 44px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            display: none; font-size: 1.4rem; color: var(--accent);
+            cursor: pointer; padding: 0.6rem; border-radius: var(--radius-sm);
+            transition: background var(--transition-fast);
+            min-width: 44px; min-height: 44px;
+            display: flex; align-items: center; justify-content: center;
         }
-        
         .menu-toggle:hover, .menu-toggle.active { background: var(--surface); }
-        .menu-toggle.active i { transform: rotate(90deg); }
         
         .mobile-menu {
-            position: fixed;
-            top: 72px;
-            left: 0; right: 0;
-            background: var(--bg-secondary);
-            border-bottom: 1px solid var(--border);
-            padding: 1rem 5%;
-            max-height: 0;
-            overflow: hidden;
+            position: fixed; top: 72px; left: 0; right: 0;
+            background: var(--bg-secondary); border-bottom: 1px solid var(--border);
+            padding: 1rem 5%; max-height: 0; overflow: hidden;
             transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
-            opacity: 0;
-            z-index: 999;
-            backdrop-filter: blur(20px);
+            opacity: 0; z-index: 999; backdrop-filter: blur(20px);
         }
-        
-        .mobile-menu.active {
-            max-height: 80vh;
-            opacity: 1;
-            overflow-y: auto;
-            -webkit-overflow-scrolling: touch;
-        }
-        
+        .mobile-menu.active { max-height: 80vh; opacity: 1; overflow-y: auto; }
         .mobile-menu-inner { display: flex; flex-direction: column; gap: 0.5rem; padding-bottom: 1rem; }
-        
         .mobile-nav-link {
-            display: flex;
-            align-items: center;
-            gap: 0.8rem;
-            padding: 1rem 1.2rem;
-            color: var(--text-secondary);
-            text-decoration: none;
-            font-size: 1rem;
-            font-weight: 500;
-            border-radius: var(--radius-md);
-            transition: all var(--transition-fast);
+            display: flex; align-items: center; gap: 0.8rem;
+            padding: 1rem 1.2rem; color: var(--text-secondary);
+            text-decoration: none; font-size: 1rem; font-weight: 500;
+            border-radius: var(--radius-md); transition: all var(--transition-fast);
             min-height: 48px;
         }
-        
-        .mobile-nav-link:hover, .mobile-nav-link:active {
-            background: var(--surface-hover);
-            color: var(--text-primary);
-            transform: translateX(4px);
-        }
-        
+        .mobile-nav-link:hover { background: var(--surface-hover); color: var(--text-primary); transform: translateX(4px); }
         .mobile-nav-link i { width: 24px; text-align: center; color: var(--accent); }
         .mobile-nav-link.auth-only { display: none; }
         .mobile-nav-link.auth-only.visible { display: flex; }
-        
         .mobile-divider { height: 1px; background: var(--border); margin: 0.5rem 0; }
-        
         .mobile-auth-section { display: flex; flex-direction: column; gap: 0.8rem; padding: 0.5rem 0; }
         .mobile-auth-section.hidden { display: none; }
         .mobile-auth-section .btn { width: 100%; justify-content: center; }
         
+        /* Mobile Profile */
         .mobile-profile-section { display: none; padding: 0.5rem 0; }
         .mobile-profile-section.visible { display: block; }
-        
         .mobile-profile-header {
-            display: flex;
-            align-items: center;
-            gap: 0.8rem;
-            padding: 0.8rem 1.2rem;
-            background: var(--surface);
-            border-radius: var(--radius-md);
-            margin-bottom: 0.5rem;
-            cursor: pointer;
+            display: flex; align-items: center; gap: 0.8rem;
+            padding: 0.8rem 1.2rem; background: var(--surface);
+            border-radius: var(--radius-md); margin-bottom: 0.5rem; cursor: pointer;
         }
-        
         .mobile-profile-avatar {
-            width: 40px; height: 40px;
-            border-radius: 50%;
-            background: var(--gradient-accent);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 600;
-            color: white;
-            text-transform: uppercase;
-            flex-shrink: 0;
+            width: 40px; height: 40px; border-radius: 50%;
+            background: var(--gradient-accent); display: flex;
+            align-items: center; justify-content: center;
+            font-weight: 600; color: white; text-transform: uppercase; flex-shrink: 0;
         }
-        
         .mobile-profile-avatar img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
         .mobile-profile-info { flex: 1; min-width: 0; }
-        .mobile-profile-name { font-weight: 600; color: var(--text-primary); font-size: 0.95rem; }
-        .mobile-profile-email { font-size: 0.8rem; color: var(--text-muted); }
-        
-        .mobile-logout-btn {
-            width: 100%;
-            justify-content: center;
-            color: #ef4444 !important;
-            border-color: rgba(239, 68, 68, 0.3) !important;
-        }
-        
+        .mobile-profile-name { font-weight: 600; color: var(--text-primary); font-size: 0.95rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .mobile-profile-email { font-size: 0.8rem; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .mobile-logout-btn { width: 100%; justify-content: center; color: #ef4444 !important; border-color: rgba(239, 68, 68, 0.3) !important; }
         .mobile-logout-btn:hover { background: rgba(239, 68, 68, 0.1) !important; }
-        
-        .mobile-cart-btn { display: none; }
-        .mobile-cart-btn.visible { display: flex; }
-        
-        /* ===== 📦 Main Container ===== */
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 100px 5% 60px;
-        }
+
+        /* ===== 📦 Page Content ===== */
+        .container { max-width: 1400px; margin: 0 auto; padding: 100px 5% 60px; }
         
         .page-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 2.5rem;
-            flex-wrap: wrap;
-            gap: 1rem;
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 2.5rem; flex-wrap: wrap; gap: 1rem;
+        }
+        .page-header h1 {
+            font-family: 'Syne', sans-serif; font-weight: 800;
+            font-size: clamp(1.8rem, 4vw, 2.5rem);
+            display: flex; align-items: center; gap: 0.5rem;
+        }
+        .btn-new-order {
+            background: var(--gradient-accent); color: white;
+            text-decoration: none; padding: 0.7rem 1.5rem;
+            border-radius: var(--radius-full); display: inline-flex;
+            align-items: center; gap: 0.5rem; transition: all var(--transition-normal);
+            font-weight: 600; font-size: 0.9rem;
+        }
+        .btn-new-order:hover { transform: translateY(-2px); box-shadow: var(--shadow-glow); }
+        
+        /* Orders Grid */
+        .orders-grid { display: grid; gap: 1.2rem; }
+        
+        /* Compact Order Card */
+        .order-card {
+            background: var(--bg-card); border: 1px solid var(--border);
+            border-radius: var(--radius-lg); padding: 1rem 1.2rem;
+            transition: all var(--transition-normal); cursor: pointer;
+            position: relative; backdrop-filter: blur(10px);
             animation: fadeInUp 0.4s ease-out;
         }
-        
-        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-        
-        .page-header h1 {
-            font-family: 'Syne', sans-serif;
-            font-weight: 800;
-            font-size: clamp(1.8rem, 4vw, 2.2rem);
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        
-        .btn-new-order {
-            background: var(--gradient-accent);
-            color: white;
-            text-decoration: none;
-            padding: 0.7rem 1.5rem;
-            border-radius: var(--radius-full);
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            transition: all var(--transition-normal);
-            font-weight: 600;
-            font-size: 0.9rem;
-            min-height: 44px;
-        }
-        
-        .btn-new-order:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px var(--accent-glow);
-        }
-        
-        /* ===== 🗂️ Orders Grid ===== */
-        .orders-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-            gap: 1.5rem;
-        }
-        
-        .order-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: var(--radius-lg);
-            padding: 1.2rem;
-            transition: all var(--transition-normal);
-            animation: fadeInUp 0.4s ease-out both;
-            backdrop-filter: blur(10px);
-            position: relative;
-            overflow: hidden;
-        }
-        
         .order-card:hover {
-            border-color: var(--accent);
-            transform: translateY(-4px);
+            transform: translateY(-4px); border-color: var(--accent);
             box-shadow: var(--shadow-lg), 0 0 30px var(--accent-glow);
         }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
         
-        .order-card::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; right: 0;
-            height: 3px;
-            background: var(--gradient-accent);
-            opacity: 0;
-            transition: opacity var(--transition-fast);
-        }
-        
-        .order-card:hover::before { opacity: 1; }
-        
-        /* Order Header */
-        .order-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1rem;
-            padding-bottom: 0.8rem;
-            border-bottom: 1px solid var(--border);
-            flex-wrap: wrap;
-            gap: 0.5rem;
-        }
-        
+        .order-card-header { display: flex; justify-content: space-between; align-items: center; gap: 0.5rem; margin-bottom: 0.8rem; flex-wrap: wrap; }
         .order-id {
-            font-family: monospace;
-            font-weight: 600;
-            color: var(--text-muted);
-            font-size: 0.85rem;
-            display: flex;
-            align-items: center;
-            gap: 0.3rem;
+            font-family: monospace; font-weight: 600; color: var(--accent);
+            font-size: 0.9rem; cursor: pointer; display: flex; align-items: center; gap: 0.3rem;
+            transition: color var(--transition-fast);
         }
+        .order-id:hover { color: var(--text-primary); }
+        .order-id.copied::after { content: '✓ Copied!'; font-size: 0.7rem; color: #10b981; margin-left: 0.3rem; }
         
         .order-status {
-            padding: 0.25rem 0.9rem;
-            border-radius: var(--radius-full);
-            font-size: 0.7rem;
-            font-weight: 700;
-            text-transform: uppercase;
+            padding: 0.25rem 0.8rem; border-radius: var(--radius-full);
+            font-size: 0.7rem; font-weight: 600; text-transform: uppercase;
             letter-spacing: 0.5px;
         }
-        
         .status-pending { background: rgba(245, 158, 11, 0.2); color: #f59e0b; }
         .status-payment_received { background: rgba(16, 185, 129, 0.2); color: #10b981; }
         .status-in_progress { background: rgba(59, 130, 246, 0.2); color: #3b82f6; }
@@ -558,604 +340,259 @@
         .status-completed, .status-delivered { background: rgba(16, 185, 129, 0.2); color: #10b981; }
         .status-cancelled { background: rgba(239, 68, 68, 0.2); color: #ef4444; }
         
-        /* Service Info */
-        .service-row {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            margin-bottom: 1rem;
-        }
-        
+        .order-card-body { display: flex; gap: 1rem; align-items: flex-start; flex-wrap: wrap; }
         .service-icon {
-            width: 50px; height: 50px;
-            background: var(--surface);
-            border-radius: var(--radius-md);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-            flex-shrink: 0;
-            border: 1px solid var(--border);
+            width: 48px; height: 48px; background: var(--surface);
+            border-radius: var(--radius-md); display: flex;
+            align-items: center; justify-content: center;
+            font-size: 1.5rem; flex-shrink: 0; border: 1px solid var(--border);
         }
+        .service-info { flex: 1; min-width: 200px; }
+        .service-info h3 { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1rem; margin-bottom: 0.2rem; }
+        .service-price { color: var(--accent); font-weight: 700; font-size: 1rem; }
+        .order-date { font-size: 0.75rem; color: var(--text-muted); margin-top: 0.2rem; }
         
-        .service-info { flex: 1; min-width: 0; }
-        .service-info h3 {
-            font-family: 'Syne', sans-serif;
-            font-weight: 700;
-            font-size: 1rem;
-            margin-bottom: 0.2rem;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
+        .order-card-footer {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-top: 0.8rem; padding-top: 0.8rem;
+            border-top: 1px solid var(--border); flex-wrap: wrap; gap: 0.5rem;
         }
+        .payment-summary { display: flex; gap: 1rem; font-size: 0.8rem; flex-wrap: wrap; }
+        .payment-summary span { display: flex; align-items: center; gap: 0.3rem; }
+        .payment-summary i { color: var(--accent); }
+        .paid-full { color: #10b981; }
+        .paid-partial { color: #f59e0b; }
         
-        .service-price {
-            color: var(--accent);
-            font-weight: 700;
-            font-size: 1.1rem;
-            font-family: 'Syne', sans-serif;
+        .order-card-actions { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+        .btn-sm {
+            padding: 0.4rem 0.9rem; border-radius: var(--radius-sm);
+            font-size: 0.75rem; font-weight: 500; min-height: 36px;
         }
+        .btn-chat-sm { background: rgba(16, 185, 129, 0.1); border: 1px solid #10b981; color: #10b981; }
+        .btn-chat-sm:hover { background: #10b981; color: white; }
+        .btn-details-sm { background: var(--surface); border: 1px solid var(--border); color: var(--text-secondary); }
+        .btn-details-sm:hover { background: var(--surface-hover); color: var(--text-primary); border-color: var(--accent); }
+        .btn-pay-sm { background: var(--gradient-accent); color: white; }
+        .btn-pay-sm:hover { transform: translateY(-1px); box-shadow: 0 4px 15px var(--accent-glow); }
         
-        .order-date {
-            font-size: 0.75rem;
-            color: var(--text-muted);
-            display: flex;
-            align-items: center;
-            gap: 0.3rem;
+        /* Quick Access Badges */
+        .quick-badges { display: flex; gap: 0.4rem; flex-wrap: wrap; margin-top: 0.5rem; }
+        .quick-badge {
+            padding: 0.2rem 0.6rem; border-radius: var(--radius-sm);
+            font-size: 0.7rem; display: flex; align-items: center; gap: 0.3rem;
+            background: var(--surface); border: 1px solid var(--border);
         }
-        
-        /* Payment Progress */
-        .payment-mini {
-            background: var(--surface);
-            border-radius: var(--radius-md);
-            padding: 0.8rem;
-            margin: 0.8rem 0;
-        }
-        
-        .payment-row {
-            display: flex;
-            justify-content: space-between;
-            font-size: 0.8rem;
-            padding: 0.2rem 0;
-        }
-        
-        .payment-row span:last-child {
-            font-weight: 600;
-            color: var(--text-primary);
-        }
-        
-        .progress-bar {
-            height: 4px;
-            background: var(--border);
-            border-radius: var(--radius-full);
-            overflow: hidden;
-            margin: 0.5rem 0;
-        }
-        
-        .progress-fill {
-            height: 100%;
-            background: var(--gradient-accent);
-            border-radius: var(--radius-full);
-            transition: width 0.5s ease;
-        }
-        
-        .progress-text {
-            font-size: 0.7rem;
-            color: var(--text-muted);
-            text-align: right;
-        }
-        
-        /* Status Badges */
-        .status-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.4rem;
-            padding: 0.4rem 0.8rem;
-            border-radius: var(--radius-sm);
-            font-size: 0.75rem;
-            margin: 0.5rem 0;
-        }
-        
-        .badge-preview { background: rgba(255, 107, 53, 0.15); color: #ff8f5e; border: 1px solid rgba(255, 107, 53, 0.3); }
-        .badge-full { background: rgba(16, 185, 129, 0.15); color: #4ade80; border: 1px solid rgba(16, 185, 129, 0.3); }
-        .badge-delivered { background: rgba(139, 92, 246, 0.15); color: #a78bfa; border: 1px solid rgba(139, 92, 246, 0.3); }
-        .badge-locked { background: rgba(255, 255, 255, 0.1); color: var(--text-muted); border: 1px solid var(--border); }
-        
-        /* Quick Actions */
-        .order-actions {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 0.5rem;
-            margin-top: 1rem;
-        }
-        
-        .btn-action {
-            padding: 0.5rem 0.8rem;
-            border-radius: var(--radius-sm);
-            font-size: 0.8rem;
-            font-weight: 500;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.4rem;
-            cursor: pointer;
-            transition: all var(--transition-fast);
-            border: 1px solid var(--border);
-            background: var(--surface);
-            color: var(--text-secondary);
-            min-height: 40px;
-            text-decoration: none;
-        }
-        
-        .btn-action:hover {
-            background: var(--surface-hover);
-            color: var(--text-primary);
-            border-color: var(--accent);
-            transform: translateY(-1px);
-        }
-        
-        .btn-action.primary {
-            background: var(--gradient-accent);
-            color: white;
-            border: none;
-            grid-column: span 2;
-        }
-        
-        .btn-action.primary:hover {
-            box-shadow: 0 4px 15px var(--accent-glow);
-            transform: translateY(-2px);
-        }
-        
-        .btn-action.chat { border-color: #10b981; color: #10b981; }
-        .btn-action.chat:hover { background: rgba(16, 185, 129, 0.15); }
-        
-        .btn-action.revision { border-color: #f59e0b; color: #f59e0b; }
-        .btn-action.revision:hover { background: rgba(245, 158, 11, 0.15); }
-        
-        .btn-action.cancel { border-color: #ef4444; color: #ef4444; }
-        .btn-action.cancel:hover { background: rgba(239, 68, 68, 0.15); }
-        
+        .quick-badge.preview { background: rgba(255, 107, 53, 0.15); border-color: #ff6b35; color: #ff8f5e; }
+        .quick-badge.full { background: rgba(16, 185, 129, 0.15); border-color: #10b981; color: #4ade80; }
+        .quick-badge.locked { background: rgba(255, 255, 255, 0.05); color: var(--text-muted); }
+
         /* ===== 🪟 Modal System ===== */
-        .modal-overlay {
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0, 0, 0, 0.75);
-            backdrop-filter: blur(8px);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 2000;
-            opacity: 0;
-            visibility: hidden;
-            transition: all var(--transition-normal);
-            padding: 1rem;
+        .modal {
+            display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0, 0, 0, 0.85); align-items: center;
+            justify-content: center; z-index: 2000; padding: 1rem;
+            backdrop-filter: blur(5px);
         }
+        .modal.active { display: flex; animation: modalFadeIn 0.2s ease; }
+        @keyframes modalFadeIn { from { opacity: 0; } to { opacity: 1; } }
         
-        .modal-overlay.active {
-            opacity: 1;
-            visibility: visible;
+        .modal-content {
+            background: var(--bg-secondary); border: 1px solid var(--border);
+            border-radius: var(--radius-lg); width: 100%; max-width: 600px;
+            max-height: 85vh; overflow-y: auto; position: relative;
+            animation: modalSlideUp 0.3s ease;
         }
-        
-        .modal-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: var(--radius-lg);
-            width: 100%;
-            max-width: 600px;
-            max-height: 85vh;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            transform: scale(0.95) translateY(20px);
-            transition: transform var(--transition-normal);
-            box-shadow: var(--shadow-lg);
-        }
-        
-        .modal-overlay.active .modal-card {
-            transform: scale(1) translateY(0);
-        }
+        @keyframes modalSlideUp { from { transform: translateY(30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
         
         .modal-header {
-            padding: 1.2rem 1.5rem;
-            border-bottom: 1px solid var(--border);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            background: var(--bg-secondary);
+            padding: 1.2rem 1.5rem; border-bottom: 1px solid var(--border);
+            display: flex; justify-content: space-between; align-items: center;
+            position: sticky; top: 0; background: var(--bg-secondary);
+            z-index: 1;
         }
-        
-        .modal-header h3 {
-            font-family: 'Syne', sans-serif;
-            font-weight: 700;
-            font-size: 1.1rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        
+        .modal-header h3 { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1.2rem; display: flex; align-items: center; gap: 0.5rem; }
         .modal-close {
-            width: 36px; height: 36px;
-            border-radius: var(--radius-full);
-            background: var(--surface);
-            border: none;
-            color: var(--text-secondary);
-            font-size: 1.2rem;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            background: var(--surface); border: none; color: var(--text-secondary);
+            width: 36px; height: 36px; border-radius: var(--radius-full);
+            cursor: pointer; display: flex; align-items: center; justify-content: center;
             transition: all var(--transition-fast);
         }
+        .modal-close:hover { background: var(--surface-hover); color: var(--text-primary); }
         
-        .modal-close:hover {
-            background: var(--surface-hover);
-            color: var(--text-primary);
-        }
+        .modal-body { padding: 1.2rem 1.5rem; }
         
-        .modal-body {
-            padding: 1.2rem 1.5rem;
-            overflow-y: auto;
-            flex: 1;
-        }
-        
-        .modal-footer {
-            padding: 1rem 1.5rem;
-            border-top: 1px solid var(--border);
-            background: var(--bg-secondary);
-            display: flex;
-            justify-content: flex-end;
-            gap: 0.8rem;
-        }
-        
-        /* Modal Content Styles */
+        /* Timeline Modal */
+        .timeline-list { display: flex; flex-direction: column; gap: 1rem; }
         .timeline-item {
-            display: flex;
-            gap: 1rem;
-            padding: 0.8rem 0;
-            border-left: 2px solid var(--border);
-            margin-left: 0.5rem;
-            position: relative;
-        }
-        
-        .timeline-item::before {
-            content: '';
-            width: 10px; height: 10px;
-            background: var(--accent);
-            border-radius: 50%;
-            position: absolute;
-            left: -6px;
-            top: 1rem;
-        }
-        
-        .timeline-item.completed::before { background: #10b981; }
-        
-        .timeline-status {
-            font-weight: 600;
-            font-size: 0.8rem;
-            color: var(--accent);
-            min-width: 130px;
-            text-transform: uppercase;
-        }
-        
-        .timeline-item.completed .timeline-status { color: #10b981; }
-        
-        .timeline-message {
-            flex: 1;
-            font-size: 0.85rem;
-            color: var(--text-secondary);
-        }
-        
-        .timeline-time {
-            font-size: 0.7rem;
-            color: var(--text-muted);
-            white-space: nowrap;
-        }
-        
-        /* Deliverables List */
-        .deliverable-item {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0.8rem 1rem;
-            background: var(--surface);
-            border-radius: var(--radius-md);
-            margin-bottom: 0.6rem;
-            border: 1px solid var(--border);
-            transition: all var(--transition-fast);
-        }
-        
-        .deliverable-item:hover {
-            border-color: var(--accent);
-            background: var(--surface-hover);
-        }
-        
-        .deliverable-info {
-            display: flex;
-            align-items: center;
-            gap: 0.8rem;
-            flex: 1;
-            min-width: 0;
-        }
-        
-        .deliverable-icon {
-            width: 36px; height: 36px;
-            border-radius: var(--radius-sm);
-            background: var(--bg-secondary);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1rem;
-            flex-shrink: 0;
-        }
-        
-        .deliverable-title {
-            font-size: 0.9rem;
-            font-weight: 500;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-        
-        .deliverable-desc {
-            font-size: 0.75rem;
-            color: var(--text-muted);
-        }
-        
-        .btn-download {
-            padding: 0.4rem 1rem;
-            background: var(--gradient-accent);
-            color: white;
-            border: none;
-            border-radius: var(--radius-sm);
-            font-size: 0.8rem;
-            font-weight: 600;
-            cursor: pointer;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.4rem;
-            transition: all var(--transition-fast);
-            white-space: nowrap;
-        }
-        
-        .btn-download:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px var(--accent-glow);
-        }
-        
-        .btn-download.secondary {
-            background: var(--surface);
-            color: var(--text-primary);
-            border: 1px solid var(--border);
-        }
-        
-        .btn-download.secondary:hover {
-            border-color: var(--accent);
-            background: var(--surface-hover);
-        }
-        
-        /* Payment History */
-        .payment-history-item {
-            padding: 0.8rem;
-            background: var(--surface);
-            border-radius: var(--radius-md);
-            margin-bottom: 0.6rem;
+            display: flex; gap: 1rem; padding: 0.8rem;
+            background: var(--surface); border-radius: var(--radius-md);
             border-left: 3px solid var(--accent);
         }
+        .timeline-item::before {
+            content: ''; width: 10px; height: 10px; background: var(--accent);
+            border-radius: 50%; margin-top: 0.4rem; flex-shrink: 0;
+        }
+        .timeline-content { flex: 1; }
+        .timeline-status { font-weight: 600; color: var(--accent); font-size: 0.85rem; margin-bottom: 0.2rem; }
+        .timeline-message { color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 0.3rem; }
+        .timeline-time { font-size: 0.75rem; color: var(--text-muted); }
         
-        .payment-history-item.success { border-left-color: #10b981; }
-        .payment-history-item.pending { border-left-color: #f59e0b; }
+        /* Deliverables Modal */
+        .deliverables-list { display: flex; flex-direction: column; gap: 0.8rem; }
+        .deliverable-item {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 0.8rem 1rem; background: var(--surface);
+            border-radius: var(--radius-md); border: 1px solid var(--border);
+            transition: all var(--transition-fast);
+        }
+        .deliverable-item:hover { border-color: var(--accent); background: var(--surface-hover); }
+        .deliverable-info { display: flex; align-items: center; gap: 0.8rem; }
+        .deliverable-info i { font-size: 1.2rem; color: var(--accent); }
+        .deliverable-name { font-weight: 500; font-size: 0.95rem; }
+        .deliverable-desc { font-size: 0.8rem; color: var(--text-muted); margin-top: 0.1rem; }
+        .btn-download-sm {
+            padding: 0.4rem 0.9rem; background: var(--gradient-accent);
+            color: white; border: none; border-radius: var(--radius-sm);
+            font-size: 0.8rem; font-weight: 500; cursor: pointer;
+            display: inline-flex; align-items: center; gap: 0.4rem;
+            transition: all var(--transition-fast); text-decoration: none;
+        }
+        .btn-download-sm:hover { transform: translateY(-1px); box-shadow: 0 4px 15px var(--accent-glow); }
         
-        .payment-history-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 0.4rem;
+        .deliverable-note {
+            margin-top: 1rem; padding: 1rem; background: rgba(255, 107, 53, 0.1);
+            border: 1px solid var(--accent); border-radius: var(--radius-md);
+            font-size: 0.9rem; color: var(--text-secondary);
         }
         
-        .payment-amount {
-            font-weight: 700;
-            font-size: 1rem;
-            color: var(--text-primary);
+        /* Payment History Modal */
+        .payment-summary-card {
+            background: var(--surface); border-radius: var(--radius-md);
+            padding: 1rem; margin-bottom: 1rem;
         }
+        .payment-row {
+            display: flex; justify-content: space-between;
+            padding: 0.4rem 0; font-size: 0.9rem;
+        }
+        .payment-row.total { border-top: 1px solid var(--border); padding-top: 0.6rem; margin-top: 0.4rem; font-weight: 600; }
+        .payment-row .amount { font-family: 'Syne', sans-serif; font-weight: 700; }
+        .payment-row .amount.paid { color: #10b981; }
+        .payment-row .amount.due { color: #ff6b35; }
         
-        .payment-status {
-            font-size: 0.75rem;
-            padding: 0.2rem 0.6rem;
-            border-radius: var(--radius-full);
-            background: var(--bg-secondary);
-        }
+        .payment-timeline { margin-top: 1rem; }
+        .payment-timeline h4 { font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 0.8rem; }
         
-        .payment-details {
-            font-size: 0.8rem;
-            color: var(--text-muted);
+        /* Customization Modal */
+        .customization-grid { display: grid; gap: 0.6rem; }
+        .customization-row {
+            display: flex; justify-content: space-between;
+            padding: 0.6rem 0; border-bottom: 1px dashed var(--border);
+            font-size: 0.9rem;
         }
-        
-        .payment-details span {
-            display: block;
-            margin: 0.15rem 0;
-        }
+        .customization-row:last-child { border-bottom: none; }
+        .customization-key { color: var(--text-secondary); }
+        .customization-value { font-weight: 500; color: var(--accent); }
         
         /* Loading & Empty States */
         .spinner {
-            width: 40px; height: 40px;
-            border: 3px solid var(--border);
-            border-top-color: var(--accent);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin: 2rem auto;
+            width: 40px; height: 40px; border: 3px solid var(--border);
+            border-top-color: var(--accent); border-radius: 50%;
+            animation: spin 1s linear infinite; margin: 2rem auto;
         }
-        
         @keyframes spin { to { transform: rotate(360deg); } }
         
         .empty-state {
-            text-align: center;
-            padding: 4rem 2rem;
-            color: var(--text-muted);
+            text-align: center; padding: 4rem 2rem;
+            background: var(--bg-card); border-radius: var(--radius-lg);
+            border: 1px dashed var(--border);
         }
+        .empty-state i { font-size: 3rem; color: var(--text-muted); margin-bottom: 1rem; display: block; }
+        .empty-state h3 { margin-bottom: 0.5rem; }
+        .empty-state p { color: var(--text-muted); margin-bottom: 1.5rem; }
         
-        .empty-state i {
-            font-size: 3rem;
-            margin-bottom: 1rem;
-            opacity: 0.5;
-        }
-        
-        .empty-state h3 {
-            font-family: 'Syne', sans-serif;
-            font-weight: 700;
-            margin-bottom: 0.5rem;
-            color: var(--text-primary);
-        }
-        
-        /* Toast Notifications */
+        /* Toast Notification */
         .toast {
-            position: fixed;
-            bottom: 2rem;
-            left: 50%;
-            transform: translateX(-50%) translateY(100px);
-            padding: 0.8rem 1.5rem;
-            background: #10b981;
-            color: white;
-            border-radius: var(--radius-full);
-            font-size: 0.9rem;
-            font-weight: 500;
-            z-index: 9999;
-            transition: transform 0.3s ease;
-            box-shadow: var(--shadow-md);
-            max-width: 90vw;
-            text-align: center;
+            position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%) translateY(100px);
+            padding: 0.8rem 1.5rem; background: #10b981; color: white;
+            border-radius: var(--radius-full); font-size: 0.9rem;
+            z-index: 9999; transition: transform 0.3s ease;
+            white-space: nowrap; max-width: 90vw; text-align: center;
+            box-shadow: var(--shadow-lg);
         }
-        
         .toast.show { transform: translateX(-50%) translateY(0); }
         .toast.error { background: #ef4444; }
-        .toast.warning { background: #f59e0b; color: #1a162a; }
+        .toast.warning { background: #f59e0b; }
         
-        /* Chat Widget */
+        /* Chat Widget (Same as Index) */
         .chat-widget {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            width: 360px;
-            max-height: 500px;
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: var(--radius-lg);
-            box-shadow: var(--shadow-lg);
-            z-index: 1500;
-            display: none;
-            flex-direction: column;
-            overflow: hidden;
-            backdrop-filter: blur(20px);
+            position: fixed; bottom: 20px; right: 20px;
+            width: 380px; max-width: calc(100vw - 40px);
+            background: var(--bg-secondary); border: 1px solid var(--border);
+            border-radius: var(--radius-lg); box-shadow: var(--shadow-lg);
+            z-index: 1500; overflow: hidden; display: none;
+            flex-direction: column; backdrop-filter: blur(10px);
         }
-        
-        .chat-widget.active { display: flex; }
+        .chat-widget.active { display: flex; animation: slideInRight 0.3s ease; }
+        @keyframes slideInRight { from { transform: translateX(100px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
         
         .chat-header {
-            padding: 1rem 1.2rem;
-            background: var(--bg-secondary);
-            border-bottom: 1px solid var(--border);
-            display: flex;
-            align-items: center;
-            gap: 0.8rem;
+            padding: 1rem 1.2rem; background: var(--gradient-accent);
+            display: flex; align-items: center; gap: 0.8rem; color: white;
             cursor: pointer;
         }
-        
-        .chat-header i { color: var(--accent); }
-        .chat-order-id {
-            font-size: 0.75rem;
-            color: var(--text-muted);
-            background: var(--surface);
-            padding: 0.2rem 0.6rem;
-            border-radius: var(--radius-full);
+        .chat-header h4 { font-weight: 600; font-size: 0.95rem; flex: 1; }
+        .chat-order-badge {
+            background: rgba(0,0,0,0.2); padding: 0.2rem 0.6rem;
+            border-radius: var(--radius-full); font-size: 0.7rem;
         }
-        .chat-close { margin-left: auto; cursor: pointer; color: var(--text-muted); transition: color var(--transition-fast); }
-        .chat-close:hover { color: var(--text-primary); }
+        .chat-close { cursor: pointer; padding: 0.3rem; border-radius: var(--radius-sm); transition: background var(--transition-fast); }
+        .chat-close:hover { background: rgba(255,255,255,0.2); }
         
+        .chat-body { display: flex; flex-direction: column; height: 400px; }
         .chat-messages {
-            flex: 1;
-            overflow-y: auto;
-            padding: 1rem;
-            display: flex;
-            flex-direction: column;
-            gap: 0.8rem;
-            background: var(--bg-primary);
+            flex: 1; overflow-y: auto; padding: 1rem;
+            background: var(--bg-primary); display: flex; flex-direction: column; gap: 0.8rem;
         }
+        .message { max-width: 85%; padding: 0.7rem 1rem; border-radius: var(--radius-md); font-size: 0.9rem; }
+        .message.admin { align-self: flex-start; background: var(--surface); border: 1px solid var(--border); }
+        .message.user { align-self: flex-end; background: var(--gradient-accent); color: white; }
+        .message-time { font-size: 0.7rem; color: var(--text-muted); margin-top: 0.3rem; text-align: right; }
         
-        .message {
-            max-width: 85%;
-            padding: 0.6rem 1rem;
-            border-radius: var(--radius-md);
-            font-size: 0.85rem;
-            line-height: 1.4;
+        .chat-input-area {
+            padding: 0.8rem 1rem; border-top: 1px solid var(--border);
+            display: flex; gap: 0.6rem; background: var(--bg-secondary);
         }
-        
-        .message.user {
-            align-self: flex-end;
-            background: var(--gradient-accent);
-            color: white;
-            border-bottom-right-radius: 4px;
+        .chat-input-area textarea {
+            flex: 1; padding: 0.6rem 0.9rem; border: 1px solid var(--border);
+            border-radius: var(--radius-md); background: var(--surface);
+            color: var(--text-primary); resize: none; font-family: inherit;
+            font-size: 0.9rem; min-height: 40px; max-height: 100px;
         }
-        
-        .message.admin {
-            align-self: flex-start;
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-bottom-left-radius: 4px;
+        .chat-input-area textarea:focus { outline: none; border-color: var(--accent); }
+        .chat-input-area button {
+            padding: 0.6rem 1rem; background: var(--gradient-accent);
+            color: white; border: none; border-radius: var(--radius-md);
+            cursor: pointer; transition: all var(--transition-fast);
+            display: flex; align-items: center; justify-content: center;
         }
+        .chat-input-area button:hover { transform: translateY(-1px); box-shadow: 0 4px 15px var(--accent-glow); }
+        .chat-input-area button:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
         
-        .message-time {
-            font-size: 0.65rem;
-            color: var(--text-muted);
-            margin-top: 0.3rem;
-            text-align: right;
+        /* Modal for Cancel/Revision */
+        .modal-textarea {
+            width: 100%; padding: 0.8rem; margin: 0.8rem 0;
+            background: var(--surface); border: 1px solid var(--border);
+            border-radius: var(--radius-md); color: var(--text-primary);
+            font-family: inherit; font-size: 0.9rem; resize: vertical;
+            min-height: 100px;
         }
+        .modal-textarea:focus { outline: none; border-color: var(--accent); }
+        .modal-buttons { display: flex; gap: 0.8rem; margin-top: 1rem; justify-content: flex-end; }
         
-        .chat-input {
-            padding: 0.8rem;
-            border-top: 1px solid var(--border);
-            background: var(--bg-secondary);
-            display: flex;
-            gap: 0.6rem;
-        }
-        
-        .chat-input textarea {
-            flex: 1;
-            padding: 0.6rem 1rem;
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: var(--radius-full);
-            color: var(--text-primary);
-            font-family: inherit;
-            font-size: 0.85rem;
-            resize: none;
-            min-height: 40px;
-            max-height: 100px;
-        }
-        
-        .chat-input textarea:focus {
-            outline: none;
-            border-color: var(--accent);
-        }
-        
-        .chat-input button {
-            width: 40px; height: 40px;
-            border-radius: var(--radius-full);
-            background: var(--gradient-accent);
-            border: none;
-            color: white;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: transform var(--transition-fast);
-        }
-        
-        .chat-input button:hover { transform: scale(1.05); }
-        .chat-input button:disabled { opacity: 0.5; cursor: not-allowed; }
-        
-        /* ===== 📱 Responsive Breakpoints ===== */
+        /* ===== 📱 Responsive Design ===== */
         @media (max-width: 1024px) {
-            .orders-grid { grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); }
+            .container { padding: 90px 4% 50px; }
+            .orders-grid { grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); }
         }
         
         @media (max-width: 768px) {
@@ -1165,92 +602,79 @@
             .menu-toggle { display: flex; }
             .user-toggle-wrapper { display: none !important; }
             
-            .container { padding: 90px 4% 50px; }
+            .container { padding: 80px 4% 40px; }
             .page-header { flex-direction: column; text-align: center; }
             .page-header h1 { justify-content: center; }
             
             .orders-grid { grid-template-columns: 1fr; }
+            .order-card { padding: 0.9rem 1rem; }
+            .order-card-body { flex-direction: column; align-items: stretch; }
+            .service-icon { width: 44px; height: 44px; font-size: 1.3rem; margin: 0 auto; }
+            .service-info { text-align: center; }
+            .order-card-footer { flex-direction: column; align-items: stretch; }
+            .payment-summary { justify-content: center; }
+            .order-card-actions { justify-content: center; }
             
-            .order-card { padding: 1rem; }
-            .service-row { flex-direction: column; text-align: center; }
-            .service-info h3 { text-align: center; }
-            .service-price { justify-content: center; }
+            .modal-content { max-width: calc(100vw - 2rem); max-height: calc(100vh - 4rem); margin: 1rem; }
+            .modal-header { padding: 1rem 1.2rem; }
+            .modal-body { padding: 1rem 1.2rem; }
             
-            .order-actions { grid-template-columns: 1fr; }
-            .btn-action.primary { grid-column: span 1; }
-            
-            .modal-card {
-                max-width: 100%;
-                max-height: 90vh;
-                margin: 0.5rem;
-            }
-            
-            .chat-widget {
-                width: 100%;
-                max-width: 100%;
-                bottom: 0;
-                right: 0;
-                border-radius: var(--radius-lg) var(--radius-lg) 0 0;
-            }
+            .chat-widget { width: calc(100vw - 2rem); right: 1rem; bottom: 1rem; }
+            .chat-body { height: 350px; }
             
             .mobile-menu { top: 68px; }
         }
         
         @media (max-width: 480px) {
-            .order-header { flex-direction: column; align-items: flex-start; gap: 0.8rem; }
-            .order-actions { grid-template-columns: 1fr 1fr; }
-            .btn-action { font-size: 0.75rem; padding: 0.4rem 0.6rem; }
-            .btn-new-order { width: 100%; justify-content: center; }
+            .order-card-header { flex-direction: column; align-items: flex-start; }
+            .order-status { margin-left: auto; }
+            .quick-badges { justify-content: center; }
+            .order-card-actions { justify-content: center; }
+            .btn-sm { width: 100%; justify-content: center; }
             
-            .timeline-item { flex-direction: column; gap: 0.3rem; }
-            .timeline-status, .timeline-time { min-width: auto; }
+            .timeline-item { flex-direction: column; }
+            .timeline-time { margin-top: 0.3rem; }
             
             .deliverable-item { flex-direction: column; align-items: flex-start; gap: 0.6rem; }
-            .btn-download { width: 100%; justify-content: center; }
+            .btn-download-sm { width: 100%; justify-content: center; }
         }
         
-        /* ===== ♿ Accessibility & Utilities ===== */
+        /* Accessibility */
+        a:focus, button:focus, .user-toggle:focus, .modal-close:focus {
+            outline: 2px solid var(--accent); outline-offset: 2px;
+        }
+        
+        /* Reduced Motion */
         @media (prefers-reduced-motion: reduce) {
-            *, *::before, *::after {
-                animation-duration: 0.01ms !important;
-                transition-duration: 0.01ms !important;
-            }
+            *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+            html { scroll-behavior: auto; }
         }
         
-        a:focus, button:focus, [tabindex]:focus {
-            outline: 2px solid var(--accent);
-            outline-offset: 2px;
-        }
-        
-        .visually-hidden {
-            position: absolute;
-            width: 1px; height: 1px;
-            padding: 0; margin: -1px;
-            overflow: hidden;
-            clip: rect(0, 0, 0, 0);
-            border: 0;
-        }
-        
-        /* Custom Scrollbar */
+        /* Scrollbar */
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: var(--bg-secondary); }
-        ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 3px; }
-        ::-webkit-scrollbar-thumb:hover { background: #ff8f5e; }
+        ::-webkit-scrollbar-thumb { background: var(--gradient-accent); border-radius: var(--radius-full); }
+        ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+        .modal-content::-webkit-scrollbar, .chat-messages::-webkit-scrollbar { width: 4px; }
         
-        .modal-body::-webkit-scrollbar,
-        .chat-messages::-webkit-scrollbar,
-        .mobile-menu::-webkit-scrollbar {
-            width: 4px;
+        /* Safe Area */
+        @supports (padding: max(0px)) {
+            nav { padding-left: max(5%, env(safe-area-inset-left)); padding-right: max(5%, env(safe-area-inset-right)); }
+            .container { padding-left: max(5%, env(safe-area-inset-left)); padding-right: max(5%, env(safe-area-inset-right)); }
+            .chat-widget { right: max(20px, env(safe-area-inset-right)); bottom: max(20px, env(safe-area-inset-bottom)); }
         }
     </style>
 </head>
 <body>
 
-<!-- ========== 🧭 NAVIGATION (Same as Index) ========== -->
+<!-- Animated Particles -->
+<div class="particles" id="particles"></div>
+
+<!-- Navigation (Same as Index Page) -->
 <nav id="navbar">
     <a href="index.html" class="logo"><i class="fas fa-code"></i> Nova<span>Stack</span></a>
     
-    <!-- Desktop Links -->
+    <!-- Desktop Nav Links -->
     <div class="nav-links" id="navLinks">
         <a href="index.html"><i class="fas fa-home"></i> Home</a>
         <a href="services.html"><i class="fas fa-layer-group"></i> Services</a>
@@ -1258,17 +682,17 @@
         <a href="cart.html" class="auth-only"><i class="fas fa-shopping-cart"></i> Cart</a>
     </div>
     
-    <!-- Desktop Right Section -->
+    <!-- Desktop Right: Auth/User -->
     <div class="nav-right">
-        <!-- Guest: Auth Buttons -->
+        <!-- Guest View -->
         <div class="auth-buttons" id="authButtons">
             <a href="login.html" class="btn btn-outline">Login</a>
             <a href="signup.html" class="btn btn-primary">Sign Up</a>
         </div>
         
-        <!-- Logged In: User Toggle -->
-        <div class="user-toggle-wrapper" id="userToggleWrapper" style="display: none;">
-            <div class="user-toggle" id="userToggle" role="button" tabindex="0" aria-expanded="false">
+        <!-- Logged In View: User Toggle -->
+        <div class="user-toggle-wrapper" id="userToggleWrapper" style="display:none;">
+            <div class="user-toggle" id="userToggle" role="button" tabindex="0">
                 <div class="user-avatar" id="userAvatar"><i class="fas fa-user"></i></div>
                 <span class="user-name" id="userName">User</span>
                 <i class="fas fa-chevron-down chevron"></i>
@@ -1286,33 +710,25 @@
                 <a href="#" class="dropdown-item dropdown-logout" id="dropdownLogout"><i class="fas fa-sign-out-alt"></i> Logout</a>
             </div>
         </div>
-        
-        <!-- Cart Button (Logged In) -->
-        <a href="cart.html" class="btn btn-outline cart-btn auth-only" id="cartBtn" style="display: none;">
-            <i class="fas fa-shopping-cart"></i>
-            <span class="cart-count" id="cartCountRight">0</span>
-        </a>
     </div>
     
-    <!-- Mobile Toggle -->
-    <button class="menu-toggle" id="menuToggle" aria-label="Toggle menu">
-        <i class="fas fa-bars"></i>
-    </button>
+    <!-- Mobile Menu Toggle -->
+    <button class="menu-toggle" id="menuToggle" aria-label="Toggle menu"><i class="fas fa-bars"></i></button>
 </nav>
 
 <!-- Mobile Menu Panel -->
 <div class="mobile-menu" id="mobileMenu">
     <div class="mobile-menu-inner">
-        <a href="index.html" class="mobile-nav-link" data-close-menu><i class="fas fa-home"></i> Home</a>
-        <a href="services.html" class="mobile-nav-link" data-close-menu><i class="fas fa-layer-group"></i> Services</a>
-        <a href="my-orders.html" class="mobile-nav-link active" data-close-menu><i class="fas fa-shopping-bag"></i> My Orders</a>
-        <a href="cart.html" class="mobile-nav-link auth-only" data-close-menu><i class="fas fa-shopping-cart"></i> Cart</a>
+        <a href="index.html" class="mobile-nav-link"><i class="fas fa-home"></i> Home</a>
+        <a href="services.html" class="mobile-nav-link"><i class="fas fa-layer-group"></i> Services</a>
+        <a href="my-orders.html" class="mobile-nav-link active"><i class="fas fa-shopping-bag"></i> My Orders</a>
+        <a href="cart.html" class="mobile-nav-link auth-only"><i class="fas fa-shopping-cart"></i> Cart</a>
         <div class="mobile-divider"></div>
         
         <!-- Guest Auth -->
         <div class="mobile-auth-section" id="mobileAuthButtons">
-            <a href="login.html" class="btn btn-outline" data-close-menu>Login</a>
-            <a href="signup.html" class="btn btn-primary" data-close-menu>Sign Up</a>
+            <a href="login.html" class="btn btn-outline">Login</a>
+            <a href="signup.html" class="btn btn-primary">Sign Up</a>
         </div>
         
         <!-- Logged In Profile -->
@@ -1323,19 +739,19 @@
                     <div class="mobile-profile-name" id="mobileProfileName">User</div>
                     <div class="mobile-profile-email" id="mobileProfileEmail">user@example.com</div>
                 </div>
-                <i class="fas fa-chevron-down" style="color: var(--text-muted);"></i>
+                <i class="fas fa-chevron-down" style="color:var(--text-muted);"></i>
             </div>
-            <div id="mobileProfileMenu" style="display: none; flex-direction: column; gap: 0.3rem; padding: 0.3rem 0;">
-                <a href="profile.html" class="mobile-nav-link" data-close-menu style="padding-left: 2.8rem;"><i class="fas fa-user-circle"></i> My Profile</a>
-                <a href="my-orders.html" class="mobile-nav-link" data-close-menu style="padding-left: 2.8rem;"><i class="fas fa-shopping-bag"></i> My Orders</a>
-                <a href="cart.html" class="mobile-nav-link mobile-cart-btn" data-close-menu style="padding-left: 2.8rem;"><i class="fas fa-shopping-cart"></i> Cart <span class="cart-count" id="mobileCartCount" style="margin-left:auto">0</span></a>
-                <button class="btn btn-outline mobile-logout-btn" id="mobileLogoutBtn" data-close-menu style="margin: 0.5rem 1.2rem;"><i class="fas fa-sign-out-alt"></i> Logout</button>
+            <div id="mobileProfileMenu" style="display:none;flex-direction:column;gap:0.3rem;padding:0.3rem 0;">
+                <a href="profile.html" class="mobile-nav-link" style="padding-left:2.8rem;"><i class="fas fa-user-circle"></i> My Profile</a>
+                <a href="my-orders.html" class="mobile-nav-link" style="padding-left:2.8rem;"><i class="fas fa-shopping-bag"></i> My Orders</a>
+                <a href="cart.html" class="mobile-nav-link" style="padding-left:2.8rem;"><i class="fas fa-shopping-cart"></i> Cart</a>
+                <button class="btn btn-outline mobile-logout-btn" id="mobileLogoutBtn" style="margin:0.5rem 1.2rem;"><i class="fas fa-sign-out-alt"></i> Logout</button>
             </div>
         </div>
     </div>
 </div>
 
-<!-- ========== 📦 MAIN CONTENT ========== -->
+<!-- Main Content -->
 <div class="container">
     <div class="page-header">
         <h1><i class="fas fa-shopping-bag"></i> My Orders</h1>
@@ -1343,16 +759,16 @@
     </div>
     
     <!-- Loading State -->
-    <div id="loading" style="display: none; text-align: center; padding: 3rem;">
+    <div id="loading" style="display:none;text-align:center;padding:3rem;">
         <div class="spinner"></div>
-        <p style="color: var(--text-muted); margin-top: 1rem;">Loading your orders...</p>
+        <p style="color:var(--text-muted);margin-top:1rem;">Loading your orders...</p>
     </div>
     
     <!-- Empty State -->
-    <div id="emptyState" class="empty-state" style="display: none;">
+    <div id="emptyState" class="empty-state" style="display:none;">
         <i class="fas fa-shopping-bag"></i>
         <h3>No orders yet</h3>
-        <p style="margin: 0.5rem 0 1.5rem;">Ready to start your first project?</p>
+        <p>Ready to start your first project?</p>
         <a href="services.html" class="btn-new-order">Browse Services</a>
     </div>
     
@@ -1360,194 +776,169 @@
     <div id="ordersContainer" class="orders-grid"></div>
 </div>
 
-<!-- ========== 🪟 MODALS ========== -->
+<!-- ===== Modals ===== -->
+
+<!-- Order Details Modal -->
+<div class="modal" id="detailsModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3><i class="fas fa-info-circle"></i> Order Details</h3>
+            <button class="modal-close" onclick="closeModal('detailsModal')"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="modal-body" id="detailsModalBody"></div>
+    </div>
+</div>
 
 <!-- Timeline Modal -->
-<div class="modal-overlay" id="timelineModal" role="dialog" aria-modal="true" aria-labelledby="timelineModalTitle">
-    <div class="modal-card">
+<div class="modal" id="timelineModal">
+    <div class="modal-content">
         <div class="modal-header">
-            <h3 id="timelineModalTitle"><i class="fas fa-history"></i> Order Timeline</h3>
-            <button class="modal-close" onclick="closeModal('timelineModal')" aria-label="Close">&times;</button>
+            <h3><i class="fas fa-history"></i> Order Timeline</h3>
+            <button class="modal-close" onclick="closeModal('timelineModal')"><i class="fas fa-times"></i></button>
         </div>
-        <div class="modal-body" id="timelineContent">
-            <div style="text-align:center;"><div class="spinner"></div></div>
-        </div>
-        <div class="modal-footer">
-            <button class="btn btn-outline" onclick="closeModal('timelineModal')">Close</button>
+        <div class="modal-body" id="timelineModalBody">
+            <div style="text-align:center;padding:2rem;"><div class="spinner"></div><p style="color:var(--text-muted);margin-top:1rem;">Loading timeline...</p></div>
         </div>
     </div>
 </div>
 
 <!-- Deliverables Modal -->
-<div class="modal-overlay" id="deliverablesModal" role="dialog" aria-modal="true" aria-labelledby="deliverablesModalTitle">
-    <div class="modal-card">
+<div class="modal" id="deliverablesModal">
+    <div class="modal-content">
         <div class="modal-header">
-            <h3 id="deliverablesModalTitle"><i class="fas fa-download"></i> Project Deliverables</h3>
-            <button class="modal-close" onclick="closeModal('deliverablesModal')" aria-label="Close">&times;</button>
+            <h3><i class="fas fa-download"></i> Project Deliverables</h3>
+            <button class="modal-close" onclick="closeModal('deliverablesModal')"><i class="fas fa-times"></i></button>
         </div>
-        <div class="modal-body" id="deliverablesContent">
-            <div style="text-align:center;"><div class="spinner"></div></div>
-        </div>
-        <div class="modal-footer">
-            <button class="btn btn-outline" onclick="closeModal('deliverablesModal')">Close</button>
+        <div class="modal-body" id="deliverablesModalBody">
+            <div style="text-align:center;padding:2rem;"><div class="spinner"></div><p style="color:var(--text-muted);margin-top:1rem;">Loading deliverables...</p></div>
         </div>
     </div>
 </div>
 
 <!-- Payment History Modal -->
-<div class="modal-overlay" id="paymentModal" role="dialog" aria-modal="true" aria-labelledby="paymentModalTitle">
-    <div class="modal-card">
+<div class="modal" id="paymentModal">
+    <div class="modal-content">
         <div class="modal-header">
-            <h3 id="paymentModalTitle"><i class="fas fa-credit-card"></i> Payment History</h3>
-            <button class="modal-close" onclick="closeModal('paymentModal')" aria-label="Close">&times;</button>
+            <h3><i class="fas fa-credit-card"></i> Payment History</h3>
+            <button class="modal-close" onclick="closeModal('paymentModal')"><i class="fas fa-times"></i></button>
         </div>
-        <div class="modal-body" id="paymentContent">
-            <div style="text-align:center;"><div class="spinner"></div></div>
-        </div>
-        <div class="modal-footer">
-            <button class="btn btn-outline" onclick="closeModal('paymentModal')">Close</button>
+        <div class="modal-body" id="paymentModalBody">
+            <div style="text-align:center;padding:2rem;"><div class="spinner"></div><p style="color:var(--text-muted);margin-top:1rem;">Loading payment details...</p></div>
         </div>
     </div>
 </div>
 
 <!-- Cancel Modal -->
-<div class="modal-overlay" id="cancelModal" role="dialog" aria-modal="true">
-    <div class="modal-card">
+<div class="modal" id="cancelModal">
+    <div class="modal-content">
         <div class="modal-header">
             <h3><i class="fas fa-ban"></i> Cancel Order</h3>
-            <button class="modal-close" onclick="closeModal('cancelModal')" aria-label="Close">&times;</button>
+            <button class="modal-close" onclick="closeModal('cancelModal')"><i class="fas fa-times"></i></button>
         </div>
         <div class="modal-body">
-            <p style="margin-bottom: 1rem; color: var(--text-secondary);">Please tell us why you want to cancel:</p>
-            <textarea id="cancelReason" rows="4" placeholder="Reason for cancellation..." style="width:100%;padding:0.8rem;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-md);color:var(--text-primary);font-family:inherit;resize:vertical;"></textarea>
-        </div>
-        <div class="modal-footer">
-            <button class="btn btn-outline" onclick="closeModal('cancelModal')">Keep Order</button>
-            <button class="btn btn-primary" onclick="submitCancel()">Confirm Cancel</button>
+            <p style="color:var(--text-secondary);">Please tell us why you want to cancel:</p>
+            <textarea class="modal-textarea" id="cancelReason" placeholder="Reason for cancellation..."></textarea>
+            <div class="modal-buttons">
+                <button class="btn btn-outline" onclick="closeModal('cancelModal')">Cancel</button>
+                <button class="btn btn-primary" onclick="submitCancel()">Submit Request</button>
+            </div>
         </div>
     </div>
 </div>
 
 <!-- Revision Modal -->
-<div class="modal-overlay" id="revisionModal" role="dialog" aria-modal="true">
-    <div class="modal-card">
+<div class="modal" id="revisionModal">
+    <div class="modal-content">
         <div class="modal-header">
             <h3><i class="fas fa-pencil-alt"></i> Request Revision</h3>
-            <button class="modal-close" onclick="closeModal('revisionModal')" aria-label="Close">&times;</button>
+            <button class="modal-close" onclick="closeModal('revisionModal')"><i class="fas fa-times"></i></button>
         </div>
         <div class="modal-body">
-            <p style="margin-bottom: 1rem; color: var(--text-secondary);">Please describe the changes you'd like:</p>
-            <textarea id="revisionDetails" rows="5" placeholder="Describe the changes you want..." style="width:100%;padding:0.8rem;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-md);color:var(--text-primary);font-family:inherit;resize:vertical;"></textarea>
-        </div>
-        <div class="modal-footer">
-            <button class="btn btn-outline" onclick="closeModal('revisionModal')">Cancel</button>
-            <button class="btn btn-primary" onclick="submitRevision()">Send Request</button>
+            <p style="color:var(--text-secondary);">Please describe what changes you'd like:</p>
+            <textarea class="modal-textarea" id="revisionDetails" placeholder="Describe the changes you want..."></textarea>
+            <div class="modal-buttons">
+                <button class="btn btn-outline" onclick="closeModal('revisionModal')">Cancel</button>
+                <button class="btn btn-primary" onclick="submitRevision()">Send Request</button>
+            </div>
         </div>
     </div>
 </div>
 
-<!-- ========== 💬 CHAT WIDGET ========== -->
+<!-- Chat Widget -->
 <div class="chat-widget" id="chatWidget">
-    <div class="chat-header" onclick="toggleChatMinimize()">
+    <div class="chat-header" onclick="toggleChat()">
         <i class="fas fa-comments"></i>
-        <span>Support Chat</span>
-        <span class="chat-order-id" id="chatOrderIdDisplay">Order #---</span>
-        <i class="fas fa-chevron-down chat-close" id="chatMinimizeBtn"></i>
+        <h4>Support Chat</h4>
+        <span class="chat-order-badge" id="chatOrderId">#NOVA-000000</span>
+        <div class="chat-close" onclick="closeChat(event)"><i class="fas fa-times"></i></div>
     </div>
-    <div class="chat-messages" id="chatMessages">
-        <div style="text-align:center;padding:1rem;color:var(--text-muted);">Select an order to start chatting</div>
-    </div>
-    <div class="chat-input">
-        <textarea id="chatMessageInput" placeholder="Type your message..." rows="1" onkeypress="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendChatMessage();}"></textarea>
-        <button onclick="sendChatMessage()" id="chatSendBtn"><i class="fas fa-paper-plane"></i></button>
+    <div class="chat-body">
+        <div class="chat-messages" id="chatMessages">
+            <div style="text-align:center;padding:2rem;color:var(--text-muted);">Select an order to start chatting</div>
+        </div>
+        <div class="chat-input-area">
+            <textarea id="chatInput" placeholder="Type your message..." onkeypress="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendChatMessage();}"></textarea>
+            <button id="chatSendBtn" onclick="sendChatMessage()"><i class="fas fa-paper-plane"></i></button>
+        </div>
     </div>
 </div>
 
-<!-- ========== 🍞 TOAST CONTAINER ========== -->
+<!-- Toast Container -->
 <div id="toastContainer"></div>
 
-<!-- ========== 🧠 JAVASCRIPT ========== -->
 <script>
-// ===== 🔧 CONFIG =====
+// ===== CONFIG & API =====
 const CONFIG = {
     API: 'https://novastack-backend.onrender.com',
-    ENDPOINTS: {
-        ORDERS: '/my-orders',
-        ORDER: (id) => `/order/${id}`,
-        TIMELINE: (id) => `/order/${id}/timeline`,
-        DELIVERABLES: (id) => `/order/${id}/deliverables`,
-        PAYMENT: (id) => `/order/${id}/payment-status`,
-        PAY_BALANCE: (id) => `/order/${id}/pay-balance`,
-        VERIFY_BALANCE: '/verify-balance-payment',
-        CANCEL: (id) => `/order/${id}/cancel`,
-        CONVERSATION: {
-            MESSAGES: (id) => `/conversation/${id}/messages`,
-            SEND: (id) => `/conversation/${id}/send`
-        },
-        USER: '/user',
-        CART: '/cart',
-        LOGOUT: '/auth/logout'
+    endpoints: {
+        orders: '/my-orders',
+        order: '/order',
+        timeline: '/timeline',
+        deliverables: '/deliverables',
+        payBalance: '/pay-balance',
+        verifyPayment: '/verify-balance-payment',
+        conversation: '/conversation',
+        cancel: '/cancel',
+        user: '/user',
+        logout: '/auth/logout'
     }
 };
 
-// ===== 🔐 AUTH UTILS =====
+// ===== Global State =====
+let currentUser = null;
+let currentOrderId = null;
+let currentConversationId = null;
+let messagePollInterval = null;
+let allOrders = [];
+
+// ===== Auth Helpers =====
 const Auth = {
-    getToken() {
-        return localStorage.getItem('dc_token') || sessionStorage.getItem('dc_token') || '';
-    },
+    getToken() { return localStorage.getItem('dc_token') || sessionStorage.getItem('dc_token') || ''; },
     getUser() {
         try {
             const userStr = localStorage.getItem('dc_user') || sessionStorage.getItem('dc_user');
             return userStr ? JSON.parse(userStr) : null;
         } catch { return null; }
     },
-    isLoggedIn() {
-        return !!this.getToken() && !!this.getUser();
-    },
+    isLoggedIn() { return !!this.getToken() && !!this.getUser(); },
     async fetchUser() {
         const token = this.getToken();
         if (!token) return null;
         try {
-            const res = await fetch(CONFIG.API + CONFIG.ENDPOINTS.USER, {
+            const res = await fetch(CONFIG.API + CONFIG.endpoints.user, {
                 headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' }
             });
             if (!res.ok) throw new Error('Auth failed');
             const data = await res.json();
             return data.user || data;
-        } catch (e) {
-            console.warn('Failed to fetch user:', e.message);
-            return null;
-        }
+        } catch (e) { console.warn('Failed to fetch user:', e.message); return null; }
     }
 };
 
-// ===== 🛒 CART UTILS =====
-const Cart = {
-    async fetch() {
-        const token = Auth.getToken();
-        if (!token) return [];
-        try {
-            const res = await fetch(CONFIG.API + CONFIG.ENDPOINTS.CART, {
-                headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' }
-            });
-            if (!res.ok) return [];
-            const data = await res.json();
-            return data.items || data.cart || [];
-        } catch { return []; }
-    },
-    getLocalCount() {
-        try { return JSON.parse(localStorage.getItem('dc_cart_local') || '[]').length; }
-        catch { return 0; }
-    }
-};
-
-// ===== 🌐 API HELPER =====
+// ===== API Fetch Helper =====
 async function apiFetch(path, options = {}) {
-    const headers = {
-        'Content-Type': 'application/json',
-        ...(options.headers || {})
-    };
     const token = Auth.getToken();
+    const headers = { 'Content-Type': 'application/json', ...(options.headers || {}) };
     if (token) headers['Authorization'] = `Bearer ${token}`;
     
     const res = await fetch(CONFIG.API + path, {
@@ -1557,26 +948,36 @@ async function apiFetch(path, options = {}) {
     });
     
     const json = await res.json().catch(() => ({}));
-    
-    if (!res.ok) {
-        throw { status: res.status, message: json.error || json.message || `Error ${res.status}` };
-    }
+    if (!res.ok) throw new Error(json.error || json.message || `Error ${res.status}`);
     return json;
 }
 
-// ===== 🎨 UI HELPERS =====
+// ===== UI Helpers =====
 function showToast(message, type = 'success') {
-    const container = document.getElementById('toastContainer');
     const toast = document.createElement('div');
     toast.className = `toast ${type}`;
     toast.textContent = message;
-    container.appendChild(toast);
+    document.getElementById('toastContainer').appendChild(toast);
     
-    requestAnimationFrame(() => toast.classList.add('show'));
+    setTimeout(() => toast.classList.add('show'), 10);
     setTimeout(() => {
         toast.classList.remove('show');
         setTimeout(() => toast.remove(), 300);
     }, 4000);
+}
+
+function formatOrderNumber(id) {
+    return `#NOVA-${String(id).padStart(6, '0')}`;
+}
+
+function formatDate(dateStr) {
+    if (!dateStr) return '-';
+    return new Date(dateStr).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
+}
+
+function formatDateTime(dateStr) {
+    if (!dateStr) return '-';
+    return new Date(dateStr).toLocaleString('en-IN');
 }
 
 function escapeHtml(text) {
@@ -1586,134 +987,159 @@ function escapeHtml(text) {
     return div.innerHTML;
 }
 
-function formatCurrency(amount) {
-    return '₹' + (amount || 0).toLocaleString('en-IN');
+// ===== Particles Animation =====
+function createParticles() {
+    const container = document.getElementById('particles');
+    if (!container) return;
+    for (let i = 0; i < 20; i++) {
+        const p = document.createElement('div');
+        p.className = 'particle';
+        p.style.left = Math.random() * 100 + '%';
+        p.style.animationDelay = Math.random() * 15 + 's';
+        p.style.animationDuration = (15 + Math.random() * 10) + 's';
+        p.style.width = p.style.height = (3 + Math.random() * 4) + 'px';
+        p.style.opacity = 0.2 + Math.random() * 0.4;
+        container.appendChild(p);
+    }
 }
+createParticles();
 
-function formatDate(dateStr) {
-    if (!dateStr) return '-';
-    return new Date(dateStr).toLocaleDateString('en-IN', {
-        year: 'numeric', month: 'short', day: 'numeric'
+// ===== Navbar Scroll Effect =====
+window.addEventListener('scroll', () => {
+    const nav = document.getElementById('navbar');
+    const mobileMenu = document.getElementById('mobileMenu');
+    if (!nav) return;
+    if (window.scrollY > 50) {
+        nav.classList.add('scrolled');
+        if (mobileMenu) mobileMenu.style.top = '64px';
+    } else {
+        nav.classList.remove('scrolled');
+        if (mobileMenu) mobileMenu.style.top = window.innerWidth <= 768 ? '68px' : '72px';
+    }
+});
+
+// ===== Mobile Menu Toggle =====
+const menuToggle = document.getElementById('menuToggle');
+const mobileMenu = document.getElementById('mobileMenu');
+const body = document.body;
+
+function toggleMobileMenu() {
+    if (!mobileMenu || !menuToggle) return;
+    const isActive = mobileMenu.classList.toggle('active');
+    menuToggle.classList.toggle('active', isActive);
+    menuToggle.setAttribute('aria-expanded', isActive);
+    if (isActive) {
+        body.classList.add('menu-open');
+        body.dataset.scrollY = window.scrollY;
+    } else {
+        body.classList.remove('menu-open');
+        if (body.dataset.scrollY) {
+            window.scrollTo(0, parseInt(body.dataset.scrollY));
+            delete body.dataset.scrollY;
+        }
+    }
+}
+if (menuToggle) menuToggle.addEventListener('click', toggleMobileMenu);
+
+document.querySelectorAll('[data-close-menu], .mobile-nav-link').forEach(link => {
+    link.addEventListener('click', () => {
+        if (mobileMenu?.classList.contains('active')) {
+            mobileMenu.classList.remove('active');
+            menuToggle?.classList.remove('active');
+            body.classList.remove('menu-open');
+            if (body.dataset.scrollY) {
+                setTimeout(() => {
+                    window.scrollTo(0, parseInt(body.dataset.scrollY));
+                    delete body.dataset.scrollY;
+                }, 300);
+            }
+        }
+    });
+});
+
+// ===== User Dropdown Toggle =====
+const userToggle = document.getElementById('userToggle');
+const userDropdown = document.getElementById('userDropdown');
+
+function toggleUserDropdown() {
+    if (!userToggle || !userDropdown) return;
+    const isActive = userDropdown.classList.toggle('active');
+    userToggle.classList.toggle('active', isActive);
+    userToggle.setAttribute('aria-expanded', isActive);
+}
+if (userToggle) {
+    userToggle.addEventListener('click', (e) => { e.stopPropagation(); toggleUserDropdown(); });
+    userToggle.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleUserDropdown(); } });
+}
+document.addEventListener('click', (e) => {
+    if (userDropdown && userToggle && !userToggle.contains(e.target) && !userDropdown.contains(e.target)) {
+        userDropdown.classList.remove('active');
+        userToggle.classList.remove('active');
+        userToggle.setAttribute('aria-expanded', 'false');
+    }
+});
+
+// ===== Mobile Profile Toggle =====
+const mobileProfileToggle = document.getElementById('mobileProfileToggle');
+const mobileProfileMenu = document.getElementById('mobileProfileMenu');
+if (mobileProfileToggle && mobileProfileMenu) {
+    mobileProfileToggle.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const isExpanded = mobileProfileMenu.style.display === 'flex';
+        mobileProfileMenu.style.display = isExpanded ? 'none' : 'flex';
+        const icon = mobileProfileToggle.querySelector('i');
+        if (icon) icon.style.transform = isExpanded ? 'rotate(0deg)' : 'rotate(180deg)';
     });
 }
 
-function formatDateTime(dateStr) {
-    if (!dateStr) return '-';
-    return new Date(dateStr).toLocaleString('en-IN');
-}
-
-// ===== 🔄 MODAL SYSTEM =====
-let activeModal = null;
-let currentOrderId = null;
-let currentConversationId = null;
-let messagePollInterval = null;
-
-function openModal(modalId) {
-    const modal = document.getElementById(modalId);
-    if (!modal) return;
-    
-    modal.classList.add('active');
-    activeModal = modalId;
-    document.body.style.overflow = 'hidden';
-    
-    // Close on backdrop click
-    modal.onclick = (e) => {
-        if (e.target === modal) closeModal(modalId);
-    };
-    
-    // Close on Escape key
-    const onEscape = (e) => {
-        if (e.key === 'Escape') {
-            closeModal(modalId);
-            document.removeEventListener('keydown', onEscape);
-        }
-    };
-    document.addEventListener('keydown', onEscape);
-}
-
-function closeModal(modalId) {
-    const modal = document.getElementById(modalId);
-    if (!modal) return;
-    
-    modal.classList.remove('active');
-    if (activeModal === modalId) {
-        activeModal = null;
-        document.body.style.overflow = '';
-    }
-    
-    // Clear content if needed
-    if (modalId === 'timelineModal' || modalId === 'deliverablesModal' || modalId === 'paymentModal') {
-        const content = modal.querySelector('.modal-body');
-        if (content) content.innerHTML = '<div style="text-align:center;"><div class="spinner"></div></div>';
-    }
-}
-
-// Close all modals
-function closeAllModals() {
-    ['timelineModal', 'deliverablesModal', 'paymentModal', 'cancelModal', 'revisionModal'].forEach(closeModal);
-}
-
-// ===== 👤 AUTH UI =====
+// ===== Update Auth UI =====
 async function updateAuthUI() {
     const isLoggedIn = Auth.isLoggedIn();
     const user = Auth.getUser();
     
-    // Cart count
-    let cartCount = isLoggedIn ? (await Cart.fetch()).length : Cart.getLocalCount();
-    ['cartCountRight', 'cartBadge', 'mobileCartCount'].forEach(id => {
+    // Update cart badge (simplified)
+    ['cartBadge'].forEach(id => {
         const el = document.getElementById(id);
-        if (el) {
-            el.textContent = cartCount;
-            el.style.display = cartCount > 0 ? 'flex' : 'none';
-        }
+        if (el) { el.textContent = '0'; el.style.display = 'none'; }
     });
     
     if (isLoggedIn && user) {
-        // Show logged-in UI
+        // Show user toggle, hide auth buttons
         document.getElementById('authButtons')?.classList.add('hidden');
-        document.getElementById('userToggleWrapper')?.style.setProperty('display', 'flex', 'important');
-        document.getElementById('cartBtn')?.style.display = 'none';
+        document.getElementById('userToggleWrapper')?.style.setProperty('display', 'flex');
         document.getElementById('mobileAuthButtons')?.classList.add('hidden');
         document.getElementById('mobileProfileSection')?.classList.add('visible');
-        
         document.querySelectorAll('.auth-only').forEach(el => {
             el.style.display = el.tagName === 'LI' ? 'block' : 'inline-flex';
             if (el.classList.contains('mobile-nav-link')) el.classList.add('visible');
         });
         
-        // Update profile info
+        // Update user info
         const name = user.name || user.email?.split('@')[0] || 'User';
         const initial = name.charAt(0).toUpperCase();
-        const avatarElements = ['userAvatar', 'dropdownAvatar', 'mobileProfileAvatar'];
-        avatarElements.forEach(id => {
+        const avatar = user.avatar || null;
+        
+        ['userAvatar', 'dropdownAvatar', 'mobileProfileAvatar'].forEach(id => {
             const el = document.getElementById(id);
             if (el) {
-                if (user.avatar) {
-                    el.innerHTML = `<img src="${user.avatar}" alt="${name}">`;
-                } else {
-                    el.textContent = initial;
-                }
+                if (avatar) el.innerHTML = `<img src="${avatar}" alt="${name}">`;
+                else { el.textContent = initial; el.innerHTML = initial; }
             }
         });
-        
         ['userName', 'dropdownName', 'mobileProfileName'].forEach(id => {
             const el = document.getElementById(id);
             if (el) el.textContent = name.length > 15 ? name.substring(0, 12) + '...' : name;
         });
-        
         ['dropdownEmail', 'mobileProfileEmail'].forEach(id => {
             const el = document.getElementById(id);
             if (el) el.textContent = user.email || '';
         });
-        
     } else {
-        // Show guest UI
+        // Show auth buttons, hide user toggle
         document.getElementById('authButtons')?.classList.remove('hidden');
-        document.getElementById('userToggleWrapper')?.style.setProperty('display', 'none', 'important');
-        document.getElementById('cartBtn')?.style.display = 'none';
+        document.getElementById('userToggleWrapper')?.style.setProperty('display', 'none');
         document.getElementById('mobileAuthButtons')?.classList.remove('hidden');
         document.getElementById('mobileProfileSection')?.classList.remove('visible');
-        
         document.querySelectorAll('.auth-only').forEach(el => {
             el.style.display = 'none';
             if (el.classList.contains('mobile-nav-link')) el.classList.remove('visible');
@@ -1721,468 +1147,565 @@ async function updateAuthUI() {
     }
 }
 
+// ===== Logout =====
 async function logout() {
     const token = Auth.getToken();
     if (token) {
         try {
-            await fetch(CONFIG.API + CONFIG.ENDPOINTS.LOGOUT, {
+            await fetch(CONFIG.API + CONFIG.endpoints.logout, {
                 method: 'POST',
                 headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' }
             });
-        } catch (e) { console.warn('Logout API failed:', e); }
+        } catch (e) { console.warn('Logout API failed:', e.message); }
     }
-    
-    ['dc_token', 'dc_user', 'dc_cart_local'].forEach(k => localStorage.removeItem(k));
-    ['dc_token', 'dc_user'].forEach(k => sessionStorage.removeItem(k));
-    
-    closeAllModals();
-    if (document.getElementById('chatWidget')?.classList.contains('active')) {
-        document.getElementById('chatWidget').classList.remove('active');
-    }
-    
+    localStorage.removeItem('dc_token'); localStorage.removeItem('dc_user');
+    sessionStorage.removeItem('dc_token'); sessionStorage.removeItem('dc_user');
     updateAuthUI();
     window.location.href = 'index.html';
 }
+document.getElementById('dropdownLogout')?.addEventListener('click', (e) => { e.preventDefault(); logout(); });
+document.getElementById('mobileLogoutBtn')?.addEventListener('click', (e) => { e.preventDefault(); logout(); });
 
-// ===== 📦 ORDERS LOGIC =====
-async function loadOrders() {
-    const token = Auth.getToken();
-    if (!token) {
-        window.location.href = 'login.html?redirect=my-orders.html';
-        return;
+// ===== Modal Functions =====
+function openModal(modalId) {
+    document.getElementById(modalId)?.classList.add('active');
+    document.body.style.overflow = 'hidden';
+}
+function closeModal(modalId) {
+    document.getElementById(modalId)?.classList.remove('active');
+    document.body.style.overflow = '';
+}
+// Close modal on outside click
+document.querySelectorAll('.modal').forEach(modal => {
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) closeModal(modal.id);
+    });
+});
+// Close on Escape key
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+        document.querySelectorAll('.modal.active').forEach(m => closeModal(m.id));
+        if (document.getElementById('chatWidget')?.classList.contains('active')) closeChat();
     }
-    
-    const loading = document.getElementById('loading');
-    const empty = document.getElementById('emptyState');
-    const container = document.getElementById('ordersContainer');
-    
-    loading.style.display = 'block';
-    empty.style.display = 'none';
-    container.innerHTML = '';
-    
+});
+
+// ===== Copy Order ID =====
+async function copyOrderId(orderId, element) {
     try {
-        const data = await apiFetch(CONFIG.ENDPOINTS.ORDERS);
-        const orders = data.orders || data.data || [];
-        
-        if (!orders.length) {
-            loading.style.display = 'none';
-            empty.style.display = 'block';
-            return;
-        }
-        
-        loading.style.display = 'none';
-        renderOrders(orders);
-        
-    } catch (error) {
-        console.error('Failed to load orders:', error);
-        loading.style.display = 'none';
-        container.innerHTML = `
-            <div class="empty-state">
-                <i class="fas fa-exclamation-triangle"></i>
-                <h3>Unable to Load Orders</h3>
-                <p style="margin:0.5rem 0 1rem;color:var(--text-muted)">${error.message || 'Please check your connection'}</p>
-                <button class="btn btn-primary" onclick="loadOrders()">
-                    <i class="fas fa-redo"></i> Try Again
-                </button>
-            </div>
-        `;
+        await navigator.clipboard.writeText(formatOrderNumber(orderId));
+        element.classList.add('copied');
+        showToast('Order ID copied!', 'success');
+        setTimeout(() => element.classList.remove('copied'), 2000);
+    } catch {
+        showToast('Failed to copy', 'error');
     }
 }
 
-function getOrderTrackingSteps(status, paidPercent) {
-    return [
-        { name: 'Placed', key: 'placed', completed: true },
-        { name: 'Payment', key: 'payment', completed: ['payment_received', 'in_progress', 'ready_for_balance', 'completed', 'delivered'].includes(status) || paidPercent >= 15 },
-        { name: 'In Progress', key: 'progress', completed: ['in_progress', 'ready_for_balance', 'completed', 'delivered'].includes(status) },
-        { name: 'Balance', key: 'balance', completed: ['ready_for_balance', 'completed', 'delivered'].includes(status) },
-        { name: 'Delivered', key: 'delivered', completed: ['delivered', 'completed'].includes(status) }
-    ];
-}
-
-function renderTrackingSteps(steps) {
+// ===== Render Compact Order Card =====
+function renderOrderCard(order) {
+    const total = order.price || 0;
+    const advancePaid = order.advance_paid || 0;
+    const totalPaid = order.total_paid || advancePaid;
+    const balanceDue = Math.max(0, total - totalPaid);
+    const paidPercent = total > 0 ? Math.round((totalPaid / total) * 100) : 0;
+    const isFullPaid = totalPaid >= total;
+    
+    const canPayBalance = (order.status === 'ready_for_balance' || (order.status === 'delivered' && balanceDue > 0)) && balanceDue > 0;
+    const canCancel = (order.status === 'pending' || order.status === 'payment_received') && !isFullPaid;
+    const hasPreview = order.preview_ready && advancePaid > 0;
+    const hasFullAccess = (order.full_access_ready && isFullPaid) || order.status === 'completed';
+    const isDelivered = order.status === 'delivered';
+    const canRequestRevision = (order.status === 'delivered' || order.status === 'completed') && !order.revision_requested;
+    
+    const statusClass = `status-${order.status}`;
+    const statusText = order.status.replace(/_/g, ' ').toUpperCase();
+    
     return `
-        <div style="display:flex;gap:0.3rem;flex-wrap:wrap;margin:0.5rem 0">
-            ${steps.map(step => `
-                <span style="font-size:0.65rem;padding:0.2rem 0.5rem;border-radius:4px;background:${step.completed ? 'rgba(16,185,129,0.2)' : 'rgba(255,255,255,0.1)'};color:${step.completed ? '#10b981' : 'var(--text-muted)'}">
-                    ${step.completed ? '✓' : '○'} ${step.name}
+        <div class="order-card" onclick="openDetailsModal(${order.id})">
+            <div class="order-card-header">
+                <span class="order-id" onclick="event.stopPropagation();copyOrderId(${order.id},this)">
+                    <i class="fas fa-hashtag"></i> ${formatOrderNumber(order.id)}
                 </span>
-            `).join('')}
+                <span class="order-status ${statusClass}">${statusText}</span>
+            </div>
+            
+            <div class="order-card-body">
+                <div class="service-icon">${order.services?.emoji || '💻'}</div>
+                <div class="service-info">
+                    <h3>${order.services?.title || 'Custom Project'}</h3>
+                    <div class="service-price">₹${total.toLocaleString('en-IN')}</div>
+                    <div class="order-date"><i class="fas fa-calendar"></i> Ordered: ${formatDate(order.created_at)}</div>
+                </div>
+            </div>
+            
+            <div class="quick-badges">
+                ${hasPreview && !hasFullAccess ? `<span class="quick-badge preview"><i class="fas fa-eye"></i> Preview</span>` : ''}
+                ${hasFullAccess ? `<span class="quick-badge full"><i class="fas fa-check-circle"></i> Full Access</span>` : ''}
+                ${!hasPreview && !hasFullAccess ? `<span class="quick-badge locked"><i class="fas fa-lock"></i> Locked</span>` : ''}
+            </div>
+            
+            <div class="order-card-footer">
+                <div class="payment-summary">
+                    <span><i class="fas fa-percentage"></i> ${paidPercent}% Paid</span>
+                    <span class="${isFullPaid ? 'paid-full' : 'paid-partial'}">
+                        <i class="fas fa-rupee-sign"></i> ${totalPaid.toLocaleString('en-IN')} / ${total.toLocaleString('en-IN')}
+                    </span>
+                    ${balanceDue > 0 ? `<span><i class="fas fa-coins"></i> Due: ₹${balanceDue.toLocaleString('en-IN')}</span>` : ''}
+                </div>
+                <div class="order-card-actions">
+                    ${canPayBalance ? `<button class="btn btn-sm btn-pay-sm" onclick="event.stopPropagation();payBalance(${order.id}, ${balanceDue})"><i class="fas fa-credit-card"></i> Pay ₹${balanceDue.toLocaleString('en-IN')}</button>` : ''}
+                    <button class="btn btn-sm btn-chat-sm" onclick="event.stopPropagation();openChat(${order.id})"><i class="fas fa-comment"></i> Chat</button>
+                    <button class="btn btn-sm btn-details-sm" onclick="event.stopPropagation()"><i class="fas fa-ellipsis-h"></i> More</button>
+                </div>
+            </div>
         </div>
     `;
 }
 
-function renderOrders(orders) {
-    const container = document.getElementById('ordersContainer');
+// ===== Load & Render Orders =====
+async function loadOrders() {
+    if (!Auth.isLoggedIn()) {
+        window.location.href = 'login.html?redirect=my-orders.html';
+        return;
+    }
     
-    container.innerHTML = orders.map(order => {
-        const total = order.price || 0;
-        const advancePaid = order.advance_paid || 0;
-        const totalPaid = order.total_paid || advancePaid;
-        const balanceDue = Math.max(0, total - totalPaid);
-        const paidPercent = total > 0 ? Math.min(100, (totalPaid / total) * 100) : 0;
-        const isFullyPaid = totalPaid >= total;
-        
-        // Safe order ID
-        const orderId = order?.id || order?._id || order?.order_id || 'N/A';
-        const displayId = String(orderId).slice(-6).toUpperCase();
-        
-        // Status logic
-        const canPayBalance = (order.status === 'ready_for_balance' || (order.status === 'delivered' && balanceDue > 0)) && balanceDue > 0;
-        const canCancel = (order.status === 'pending' || order.status === 'payment_received') && !isFullyPaid;
-        const hasPreview = order.preview_ready && advancePaid > 0;
-        const hasFullAccess = (order.full_access_ready && isFullyPaid) || order.status === 'completed';
-        const isDelivered = order.status === 'delivered';
-        const canRequestRevision = (order.status === 'delivered' || order.status === 'completed') && !order.revision_requested;
-        const showDeliverables = hasPreview || hasFullAccess || isDelivered;
-        
-        const trackingSteps = getOrderTrackingSteps(order.status, paidPercent);
-        const serviceEmoji = order.services?.emoji || order.emoji || '💻';
-        const serviceTitle = order.services?.title || order.title || order.name || 'Custom Project';
-        
-        return `
-            <div class="order-card" data-order-id="${orderId}">
-                <!-- Header -->
-                <div class="order-header">
-                    <span class="order-id"><i class="fas fa-hashtag"></i> ORDER #${displayId}</span>
-                    <span class="order-status status-${order.status}">${order.status?.replace(/_/g, ' ')?.toUpperCase() || 'UNKNOWN'}</span>
-                </div>
-                
-                <!-- Tracking -->
-                ${renderTrackingSteps(trackingSteps)}
-                
-                <!-- Service Info -->
-                <div class="service-row">
-                    <div class="service-icon">${serviceEmoji}</div>
-                    <div class="service-info">
-                        <h3 title="${escapeHtml(serviceTitle)}">${escapeHtml(serviceTitle)}</h3>
-                        <div class="service-price">${formatCurrency(total)}</div>
-                        <div class="order-date"><i class="fas fa-calendar"></i> ${formatDate(order.created_at)}</div>
-                    </div>
-                </div>
-                
-                <!-- Payment Mini -->
-                <div class="payment-mini">
-                    <div class="payment-row"><span>Paid:</span><span style="color:#10b981">${formatCurrency(totalPaid)}</span></div>
-                    ${balanceDue > 0 ? `<div class="payment-row"><span>Due:</span><span style="color:#ff6b35">${formatCurrency(balanceDue)}</span></div>` : ''}
-                    <div class="progress-bar"><div class="progress-fill" style="width:${paidPercent}%"></div></div>
-                    <div class="progress-text">${Math.round(paidPercent)}% Complete</div>
-                </div>
-                
-                <!-- Status Badges -->
-                ${hasPreview && !hasFullAccess ? `<div class="status-badge badge-preview"><i class="fas fa-eye"></i> Preview Available</div>` : ''}
-                ${hasFullAccess ? `<div class="status-badge badge-full"><i class="fas fa-check-circle"></i> Full Access</div>` : ''}
-                ${isDelivered ? `<div class="status-badge badge-delivered"><i class="fas fa-box-open"></i> Delivered</div>` : ''}
-                ${!hasPreview && !hasFullAccess && !isDelivered ? `<div class="status-badge badge-locked"><i class="fas fa-lock"></i> ${!advancePaid ? 'Payment Required' : 'Balance Due'}</div>` : ''}
-                
-                <!-- Quick Actions -->
-                <div class="order-actions">
-                    ${canPayBalance ? `
-                        <button class="btn-action primary" onclick="payBalance('${orderId}', ${balanceDue})">
-                            <i class="fas fa-credit-card"></i> Pay Balance ${formatCurrency(balanceDue)}
-                        </button>
-                    ` : ''}
-                    
-                    <button class="btn-action chat" onclick="openChat('${orderId}')">
-                        <i class="fas fa-comment"></i> Chat
-                    </button>
-                    
-                    ${showDeliverables ? `
-                        <button class="btn-action" onclick="openModal('deliverablesModal'); loadDeliverables('${orderId}')">
-                            <i class="fas fa-download"></i> Files
-                        </button>
-                    ` : ''}
-                    
-                    <button class="btn-action" onclick="openModal('timelineModal'); loadTimeline('${orderId}')">
-                        <i class="fas fa-history"></i> Timeline
-                    </button>
-                    
-                    ${canRequestRevision ? `
-                        <button class="btn-action revision" onclick="openRevisionModal('${orderId}')">
-                            <i class="fas fa-pencil-alt"></i> Revision
-                        </button>
-                    ` : ''}
-                    
-                    ${canCancel ? `
-                        <button class="btn-action cancel" onclick="openCancelModal('${orderId}')">
-                            <i class="fas fa-ban"></i> Cancel
-                        </button>
-                    ` : ''}
-                    
-                    <button class="btn-action" onclick="openModal('paymentModal'); loadPaymentHistory('${orderId}')">
-                        <i class="fas fa-receipt"></i> Receipt
-                    </button>
-                </div>
-            </div>
-        `;
-    }).join('');
-}
-
-// ===== 🕐 TIMELINE =====
-async function loadTimeline(orderId) {
-    const content = document.getElementById('timelineContent');
-    if (!content) return;
+    document.getElementById('loading').style.display = 'block';
+    document.getElementById('ordersContainer').innerHTML = '';
+    document.getElementById('emptyState').style.display = 'none';
     
     try {
-        const data = await apiFetch(CONFIG.ENDPOINTS.TIMELINE(orderId));
-        const items = data.data || data.timeline || [];
+        const data = await apiFetch(CONFIG.endpoints.orders);
+        allOrders = data.orders || data.data || [];
         
-        if (!items.length) {
-            content.innerHTML = '<p style="text-align:center;color:var(--text-muted)">No timeline updates yet</p>';
+        if (!allOrders.length) {
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('emptyState').style.display = 'block';
             return;
         }
         
-        content.innerHTML = items.map(item => `
-            <div class="timeline-item ${['delivered','completed'].includes(item.status) ? 'completed' : ''}">
-                <div class="timeline-status">${item.status?.replace(/_/g, ' ')?.toUpperCase() || 'UPDATE'}</div>
-                <div class="timeline-message">${escapeHtml(item.message || 'Status updated')}</div>
-                <div class="timeline-time">${formatDateTime(item.created_at)}</div>
-            </div>
-        `).join('');
+        document.getElementById('ordersContainer').innerHTML = allOrders.map(renderOrderCard).join('');
+        
+        // Add click handlers for "More" button to open context menu
+        document.querySelectorAll('.btn-details-sm').forEach((btn, idx) => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const order = allOrders[idx];
+                showOrderActions(order);
+            });
+        });
         
     } catch (error) {
-        content.innerHTML = `<p style="text-align:center;color:#ef4444">Failed to load: ${error.message}</p>`;
+        console.error('Failed to load orders:', error);
+        document.getElementById('loading').style.display = 'none';
+        document.getElementById('ordersContainer').innerHTML = `
+            <div class="empty-state">
+                <i class="fas fa-exclamation-triangle"></i>
+                <h3>Unable to load orders</h3>
+                <p>${error.message}</p>
+                <button class="btn btn-primary" onclick="loadOrders()"><i class="fas fa-redo"></i> Retry</button>
+            </div>
+        `;
     }
 }
 
-// ===== 📁 DELIVERABLES =====
-async function loadDeliverables(orderId) {
-    const content = document.getElementById('deliverablesContent');
-    if (!content) return;
+// ===== Show Order Actions (More Button) =====
+function showOrderActions(order) {
+    const actions = [];
+    
+    if (order.status !== 'cancelled') {
+        actions.push({ icon: 'fas fa-history', text: 'View Timeline', action: () => openTimelineModal(order.id) });
+        actions.push({ icon: 'fas fa-download', text: 'Deliverables', action: () => openDeliverablesModal(order.id) });
+        actions.push({ icon: 'fas fa-credit-card', text: 'Payment History', action: () => openPaymentModal(order.id) });
+    }
+    
+    if (order.customization && Object.keys(order.customization).length > 0) {
+        actions.push({ icon: 'fas fa-sliders-h', text: 'Customizations', action: () => openCustomizationModal(order) });
+    }
+    
+    const total = order.price || 0;
+    const totalPaid = order.total_paid || order.advance_paid || 0;
+    const isFullPaid = totalPaid >= total;
+    const canCancel = (order.status === 'pending' || order.status === 'payment_received') && !isFullPaid;
+    const canRequestRevision = (order.status === 'delivered' || order.status === 'completed') && !order.revision_requested;
+    
+    if (canCancel) actions.push({ icon: 'fas fa-ban', text: 'Cancel Order', action: () => openCancelModal(order.id), danger: true });
+    if (canRequestRevision) actions.push({ icon: 'fas fa-pencil-alt', text: 'Request Revision', action: () => openRevisionModal(order.id), warning: true });
+    
+    // Create simple dropdown
+    const dropdown = document.createElement('div');
+    dropdown.style.cssText = `
+        position:fixed;z-index:3000;background:var(--bg-secondary);
+        border:1px solid var(--border);border-radius:var(--radius-md);
+        padding:0.5rem 0;min-width:200px;box-shadow:var(--shadow-lg);
+        backdrop-filter:blur(10px);
+    `;
+    
+    actions.forEach(({ icon, text, action, danger, warning }) => {
+        const item = document.createElement('div');
+        item.className = 'dropdown-item';
+        item.style.cssText = `
+            display:flex;align-items:center;gap:0.8rem;
+            padding:0.7rem 1.2rem;cursor:pointer;
+            color:${danger ? '#ef4444' : warning ? '#f59e0b' : 'var(--text-secondary)'};
+            transition:all var(--transition-fast);
+        `;
+        item.innerHTML = `<i class="${icon}"></i><span>${text}</span>`;
+        item.onclick = (e) => { e.stopPropagation(); action(); dropdown.remove(); };
+        item.onmouseenter = () => item.style.background = 'var(--surface-hover)';
+        item.onmouseleave = () => item.style.background = '';
+        dropdown.appendChild(item);
+    });
+    
+    // Position dropdown near the button
+    const rect = event.target.getBoundingClientRect();
+    dropdown.style.top = `${rect.bottom + 5}px`;
+    dropdown.style.left = `${Math.min(rect.left, window.innerWidth - 220)}px`;
+    
+    document.body.appendChild(dropdown);
+    
+    // Close on outside click
+    setTimeout(() => {
+        const closeHandler = (e) => {
+            if (!dropdown.contains(e.target) && e.target !== event.target) {
+                dropdown.remove();
+                document.removeEventListener('click', closeHandler);
+            }
+        };
+        document.addEventListener('click', closeHandler);
+    }, 10);
+}
+
+// ===== Open Details Modal =====
+async function openDetailsModal(orderId) {
+    const order = allOrders.find(o => o.id === orderId);
+    if (!order) return;
+    
+    const total = order.price || 0;
+    const advancePaid = order.advance_paid || 0;
+    const totalPaid = order.total_paid || advancePaid;
+    const balanceDue = Math.max(0, total - totalPaid);
+    const paidPercent = total > 0 ? Math.round((totalPaid / total) * 100) : 0;
+    
+    const content = `
+        <div style="display:flex;flex-direction:column;gap:1.2rem;">
+            <div style="display:flex;gap:1rem;align-items:flex-start;flex-wrap:wrap;">
+                <div class="service-icon" style="width:60px;height:60px;font-size:2rem;">${order.services?.emoji || '💻'}</div>
+                <div style="flex:1;min-width:200px;">
+                    <h3 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.2rem;margin-bottom:0.3rem;">${order.services?.title || 'Custom Project'}</h3>
+                    <p style="color:var(--text-muted);font-size:0.9rem;">${order.services?.description?.substring(0, 150) || 'No description available.'}${(order.services?.description?.length > 150) ? '...' : ''}</p>
+                </div>
+            </div>
+            
+            <div style="background:var(--surface);border-radius:var(--radius-md);padding:1rem;">
+                <h4 style="font-weight:600;margin-bottom:0.8rem;display:flex;align-items:center;gap:0.5rem;"><i class="fas fa-info-circle"></i> Order Info</h4>
+                <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:0.8rem;font-size:0.9rem;">
+                    <div><span style="color:var(--text-muted);">Order ID:</span><br><strong style="color:var(--accent);">${formatOrderNumber(order.id)}</strong></div>
+                    <div><span style="color:var(--text-muted);">Status:</span><br><strong class="order-status status-${order.status}">${order.status.replace(/_/g,' ').toUpperCase()}</strong></div>
+                    <div><span style="color:var(--text-muted);">Ordered:</span><br><strong>${formatDateTime(order.created_at)}</strong></div>
+                    <div><span style="color:var(--text-muted);">Last Updated:</span><br><strong>${formatDateTime(order.updated_at)}</strong></div>
+                </div>
+            </div>
+            
+            ${order.requirements ? `
+                <div style="background:var(--surface);border-radius:var(--radius-md);padding:1rem;">
+                    <h4 style="font-weight:600;margin-bottom:0.8rem;display:flex;align-items:center;gap:0.5rem;"><i class="fas fa-file-alt"></i> Requirements</h4>
+                    <p style="color:var(--text-secondary);line-height:1.6;white-space:pre-wrap;font-size:0.9rem;">${escapeHtml(order.requirements)}</p>
+                </div>
+            ` : ''}
+            
+            ${order.customization && Object.keys(order.customization).length > 0 ? `
+                <div style="background:var(--surface);border-radius:var(--radius-md);padding:1rem;">
+                    <h4 style="font-weight:600;margin-bottom:0.8rem;display:flex;align-items:center;gap:0.5rem;"><i class="fas fa-sliders-h"></i> Customizations</h4>
+                    <div class="customization-grid">
+                        ${Object.entries(order.customization).map(([key, value]) => `
+                            <div class="customization-row">
+                                <span class="customization-key">${key.replace(/_/g,' ').replace(/\b\w/g,l=>l.toUpperCase())}</span>
+                                <span class="customization-value">${typeof value === 'boolean' ? (value ? 'Yes' : 'No') : escapeHtml(String(value))}</span>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            ` : ''}
+            
+            <div style="background:var(--surface);border-radius:var(--radius-md);padding:1rem;">
+                <h4 style="font-weight:600;margin-bottom:0.8rem;display:flex;align-items:center;gap:0.5rem;"><i class="fas fa-credit-card"></i> Payment Summary</h4>
+                <div class="payment-summary-card">
+                    <div class="payment-row"><span>Total Amount</span><span class="amount">₹${total.toLocaleString('en-IN')}</span></div>
+                    <div class="payment-row"><span>Advance Paid (15%)</span><span class="amount paid">₹${advancePaid.toLocaleString('en-IN')}</span></div>
+                    ${totalPaid > advancePaid ? `<div class="payment-row"><span>Balance Paid</span><span class="amount paid">₹${(totalPaid - advancePaid).toLocaleString('en-IN')}</span></div>` : ''}
+                    <div class="payment-row total"><span>Total Paid</span><span class="amount paid">₹${totalPaid.toLocaleString('en-IN')}</span></div>
+                    <div class="payment-row"><span>Balance Due</span><span class="amount ${balanceDue > 0 ? 'due' : 'paid'}">₹${balanceDue.toLocaleString('en-IN')}</span></div>
+                    <div style="margin-top:0.8rem;"><div style="height:6px;background:var(--border);border-radius:10px;overflow:hidden;"><div style="height:100%;width:${paidPercent}%;background:var(--gradient-accent);border-radius:10px;transition:width 0.5s;"></div></div><div style="text-align:center;font-size:0.8rem;color:var(--text-muted);margin-top:0.3rem;">${paidPercent}% Complete</div></div>
+                </div>
+            </div>
+            
+            <div style="display:flex;gap:0.8rem;flex-wrap:wrap;justify-content:flex-end;">
+                <button class="btn btn-outline" onclick="openTimelineModal(${order.id})"><i class="fas fa-history"></i> Timeline</button>
+                <button class="btn btn-outline" onclick="openDeliverablesModal(${order.id})"><i class="fas fa-download"></i> Deliverables</button>
+                <button class="btn btn-outline" onclick="openPaymentModal(${order.id})"><i class="fas fa-receipt"></i> Payment History</button>
+            </div>
+        </div>
+    `;
+    
+    document.getElementById('detailsModalBody').innerHTML = content;
+    openModal('detailsModal');
+}
+
+// ===== Open Timeline Modal =====
+async function openTimelineModal(orderId) {
+    closeModal('detailsModal');
+    openModal('timelineModal');
     
     try {
-        const result = await apiFetch(CONFIG.ENDPOINTS.DELIVERABLES(orderId));
-        const data = result.data || result;
+        const data = await apiFetch(`${CONFIG.endpoints.order}/${orderId}${CONFIG.endpoints.timeline}`);
+        const timeline = data.data || data.timeline || [];
+        
+        if (!timeline.length) {
+            document.getElementById('timelineModalBody').innerHTML = `<p style="text-align:center;color:var(--text-muted);padding:2rem;">No timeline updates yet.</p>`;
+            return;
+        }
+        
+        document.getElementById('timelineModalBody').innerHTML = `
+            <div class="timeline-list">
+                ${timeline.map(item => `
+                    <div class="timeline-item">
+                        <div class="timeline-content">
+                            <div class="timeline-status">${item.status?.replace(/_/g,' ').toUpperCase() || 'UPDATE'}</div>
+                            <div class="timeline-message">${escapeHtml(item.message || 'Status updated')}</div>
+                            <div class="timeline-time">${formatDateTime(item.created_at)}</div>
+                        </div>
+                    </div>
+                `).join('')}
+            </div>
+        `;
+    } catch (error) {
+        document.getElementById('timelineModalBody').innerHTML = `<p style="color:#ef4444;text-align:center;padding:2rem;">Failed to load timeline: ${error.message}</p>`;
+    }
+}
+
+// ===== Open Deliverables Modal =====
+async function openDeliverablesModal(orderId) {
+    closeModal('detailsModal');
+    openModal('deliverablesModal');
+    
+    try {
+        const data = await apiFetch(`${CONFIG.endpoints.order}/${orderId}${CONFIG.endpoints.deliverables}`);
+        const deliverables = data.data || {};
         
         let html = '';
         
-        if (data.live_url) {
+        if (deliverables.live_url) {
             html += `
                 <div class="deliverable-item">
                     <div class="deliverable-info">
-                        <div class="deliverable-icon"><i class="fas fa-globe"></i></div>
+                        <i class="fas fa-globe"></i>
                         <div>
-                            <div class="deliverable-title">Live Demo</div>
+                            <div class="deliverable-name">🌐 Live Demo</div>
                             <div class="deliverable-desc">View your project in browser</div>
                         </div>
                     </div>
-                    <a href="${data.live_url}" target="_blank" class="btn-download"><i class="fas fa-external-link-alt"></i> View</a>
+                    <a href="${deliverables.live_url}" target="_blank" class="btn-download-sm"><i class="fas fa-external-link-alt"></i> View</a>
                 </div>
             `;
         }
         
-        if (data.github_repo && data.has_full_access) {
+        if (deliverables.github_repo && deliverables.has_full_access) {
             html += `
                 <div class="deliverable-item">
                     <div class="deliverable-info">
-                        <div class="deliverable-icon"><i class="fab fa-github"></i></div>
+                        <i class="fab fa-github"></i>
                         <div>
-                            <div class="deliverable-title">GitHub Repository</div>
+                            <div class="deliverable-name">📦 GitHub Repository</div>
                             <div class="deliverable-desc">Source code & version history</div>
                         </div>
                     </div>
-                    <a href="${data.github_repo}" target="_blank" class="btn-download secondary"><i class="fas fa-external-link-alt"></i> View</a>
+                    <a href="${deliverables.github_repo}" target="_blank" class="btn-download-sm"><i class="fas fa-external-link-alt"></i> View</a>
                 </div>
             `;
         }
         
-        if (data.source_code_url && data.has_full_access) {
+        if (deliverables.source_code_url && deliverables.has_full_access) {
             html += `
                 <div class="deliverable-item">
                     <div class="deliverable-info">
-                        <div class="deliverable-icon"><i class="fas fa-code"></i></div>
+                        <i class="fas fa-code"></i>
                         <div>
-                            <div class="deliverable-title">Source Code</div>
+                            <div class="deliverable-name">💾 Source Code</div>
                             <div class="deliverable-desc">Download complete project files</div>
                         </div>
                     </div>
-                    <a href="${data.source_code_url}" download class="btn-download"><i class="fas fa-download"></i> Download</a>
+                    <a href="${deliverables.source_code_url}" download class="btn-download-sm"><i class="fas fa-download"></i> Download</a>
                 </div>
             `;
         }
         
-        if (data.documentation_url && data.has_full_access) {
+        if (deliverables.documentation_url && deliverables.has_full_access) {
             html += `
                 <div class="deliverable-item">
                     <div class="deliverable-info">
-                        <div class="deliverable-icon"><i class="fas fa-book"></i></div>
+                        <i class="fas fa-book"></i>
                         <div>
-                            <div class="deliverable-title">Documentation</div>
+                            <div class="deliverable-name">📚 Documentation</div>
                             <div class="deliverable-desc">Setup guide & API reference</div>
                         </div>
                     </div>
-                    <a href="${data.documentation_url}" target="_blank" class="btn-download secondary"><i class="fas fa-external-link-alt"></i> View</a>
+                    <a href="${deliverables.documentation_url}" target="_blank" class="btn-download-sm"><i class="fas fa-external-link-alt"></i> View</a>
                 </div>
             `;
         }
         
-        if (data.deliverables?.length) {
-            data.deliverables.forEach(doc => {
-                const canAccess = (doc.is_preview && !data.has_full_access) || (doc.is_full_access && data.has_full_access);
+        if (deliverables.deliverables?.length > 0) {
+            deliverables.deliverables.forEach(doc => {
+                const canAccess = (doc.is_preview && !deliverables.has_full_access) || (doc.is_full_access && deliverables.has_full_access);
                 if (canAccess) {
                     html += `
                         <div class="deliverable-item">
                             <div class="deliverable-info">
-                                <div class="deliverable-icon"><i class="fas fa-file"></i></div>
+                                <i class="fas fa-file"></i>
                                 <div>
-                                    <div class="deliverable-title">${escapeHtml(doc.title)}</div>
+                                    <div class="deliverable-name">📄 ${escapeHtml(doc.title)}</div>
                                     ${doc.description ? `<div class="deliverable-desc">${escapeHtml(doc.description)}</div>` : ''}
                                 </div>
                             </div>
-                            <a href="${doc.file_url}" download class="btn-download"><i class="fas fa-download"></i> Download</a>
+                            <a href="${doc.file_url}" download class="btn-download-sm"><i class="fas fa-download"></i> Download</a>
                         </div>
                     `;
                 }
             });
         }
         
-        if (data.delivery_notes) {
-            html += `
-                <div style="margin-top:1rem;padding:1rem;background:var(--surface);border-radius:var(--radius-md);border-left:3px solid var(--accent)">
-                    <strong style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.5rem">
-                        <i class="fas fa-sticky-note"></i> Delivery Notes
-                    </strong>
-                    <p style="color:var(--text-secondary);font-size:0.9rem;line-height:1.5">${escapeHtml(data.delivery_notes)}</p>
-                </div>
-            `;
+        if (deliverables.delivery_notes) {
+            html += `<div class="deliverable-note"><strong>📝 Delivery Notes:</strong><br>${escapeHtml(deliverables.delivery_notes)}</div>`;
         }
         
-        content.innerHTML = html || '<p style="text-align:center;color:var(--text-muted)">No deliverables available yet</p>';
+        if (deliverables.message) {
+            html += `<div class="deliverable-note" style="background:rgba(255,107,53,0.1);border-color:var(--accent);"><i class="fas fa-info-circle"></i> ${escapeHtml(deliverables.message)}</div>`;
+        }
+        
+        document.getElementById('deliverablesModalBody').innerHTML = html || `<p style="text-align:center;color:var(--text-muted);padding:2rem;">📭 No deliverables available yet. Check back after payment.</p>`;
         
     } catch (error) {
-        if (error.status === 403) {
-            content.innerHTML = `
-                <div style="text-align:center;padding:2rem">
-                    <i class="fas fa-lock" style="font-size:2rem;color:var(--accent);margin-bottom:1rem"></i>
-                    <p style="color:var(--text-secondary)">Access requires balance payment</p>
-                    <p style="font-size:0.85rem;color:var(--text-muted);margin-top:0.5rem">Complete your order to unlock all deliverables</p>
+        if (error.message.includes('403')) {
+            document.getElementById('deliverablesModalBody').innerHTML = `
+                <div style="text-align:center;padding:2rem;">
+                    <i class="fas fa-lock" style="font-size:3rem;color:var(--accent);margin-bottom:1rem;display:block;"></i>
+                    <p style="color:var(--text-secondary);">🔒 Access Restricted</p>
+                    <p style="color:var(--text-muted);font-size:0.9rem;">Complete the balance payment to unlock full access to deliverables.</p>
                 </div>
             `;
         } else {
-            content.innerHTML = `<p style="text-align:center;color:#ef4444">Failed to load: ${error.message}</p>`;
+            document.getElementById('deliverablesModalBody').innerHTML = `<p style="color:#ef4444;text-align:center;padding:2rem;">Failed to load: ${error.message}</p>`;
         }
     }
 }
 
-// ===== 💳 PAYMENT HISTORY =====
-async function loadPaymentHistory(orderId) {
-    const content = document.getElementById('paymentContent');
-    if (!content) return;
+// ===== Open Payment Modal =====
+async function openPaymentModal(orderId) {
+    closeModal('detailsModal');
+    openModal('paymentModal');
     
     try {
-        // Try payment endpoint, fallback to order data
-        let data;
-        try {
-            const res = await apiFetch(CONFIG.ENDPOINTS.PAYMENT(orderId));
-            data = res.data || res;
-        } catch {
-            // Fallback: fetch from orders list
-            const ordersRes = await apiFetch(CONFIG.ENDPOINTS.ORDERS);
-            const order = (ordersRes.orders || ordersRes.data || []).find(o => (o.id || o._id) == orderId);
-            data = order || {};
-        }
+        // Fetch order details for payment info
+        const order = allOrders.find(o => o.id === orderId) || (await apiFetch(`${CONFIG.endpoints.order}/${orderId}`)).data;
+        const total = order.price || 0;
+        const advancePaid = order.advance_paid || 0;
+        const balancePaid = order.balance_paid || 0;
+        const totalPaid = order.total_paid || advancePaid;
+        const balanceDue = Math.max(0, total - totalPaid);
         
-        const total = data.price || 0;
-        const advance = data.advance_paid || 0;
-        const balance = data.balance_paid || 0;
-        const paid = data.total_paid || advance;
-        
-        let html = `
-            <div style="background:var(--surface);padding:1rem;border-radius:var(--radius-md);margin-bottom:1rem">
-                <div style="display:flex;justify-content:space-between;margin-bottom:0.5rem">
-                    <span style="color:var(--text-muted)">Total Amount</span>
-                    <strong>${formatCurrency(total)}</strong>
-                </div>
-                <div style="display:flex;justify-content:space-between;margin-bottom:0.5rem">
-                    <span style="color:var(--text-muted)">Advance (15%)</span>
-                    <span style="color:#10b981">${formatCurrency(advance)}</span>
-                </div>
-                ${balance > 0 ? `
-                <div style="display:flex;justify-content:space-between;margin-bottom:0.5rem">
-                    <span style="color:var(--text-muted)">Balance Paid</span>
-                    <span style="color:#10b981">${formatCurrency(balance)}</span>
-                </div>` : ''}
-                <div style="display:flex;justify-content:space-between;padding-top:0.5rem;border-top:1px solid var(--border)">
-                    <span style="color:var(--text-muted)">Total Paid</span>
-                    <strong style="color:#10b981">${formatCurrency(paid)}</strong>
-                </div>
+        document.getElementById('paymentModalBody').innerHTML = `
+            <div class="payment-summary-card">
+                <div class="payment-row"><span>Total Amount</span><span class="amount">₹${total.toLocaleString('en-IN')}</span></div>
+                <div class="payment-row"><span>Advance (15%)</span><span class="amount paid">₹${advancePaid.toLocaleString('en-IN')}</span></div>
+                ${balancePaid > 0 ? `<div class="payment-row"><span>Balance Paid</span><span class="amount paid">₹${balancePaid.toLocaleString('en-IN')}</span></div>` : ''}
+                <div class="payment-row total"><span>Total Paid</span><span class="amount paid">₹${totalPaid.toLocaleString('en-IN')}</span></div>
+                <div class="payment-row"><span>Balance Due</span><span class="amount ${balanceDue > 0 ? 'due' : 'paid'}">₹${balanceDue.toLocaleString('en-IN')}</span></div>
+            </div>
+            
+            <div class="payment-timeline">
+                <h4><i class="fas fa-clock"></i> Payment Timeline</h4>
+                ${order.advance_paid_at ? `
+                    <div class="timeline-item">
+                        <div class="timeline-content">
+                            <div class="timeline-status">ADVANCE PAYMENT</div>
+                            <div class="timeline-message">₹${advancePaid.toLocaleString('en-IN')} paid successfully</div>
+                            <div class="timeline-time">${formatDateTime(order.advance_paid_at)}</div>
+                        </div>
+                    </div>
+                ` : '<p style="color:var(--text-muted);font-size:0.9rem;">⏳ Advance payment pending</p>'}
+                ${order.balance_paid_at ? `
+                    <div class="timeline-item">
+                        <div class="timeline-content">
+                            <div class="timeline-status">BALANCE PAYMENT</div>
+                            <div class="timeline-message">₹${balancePaid.toLocaleString('en-IN')} paid successfully</div>
+                            <div class="timeline-time">${formatDateTime(order.balance_paid_at)}</div>
+                        </div>
+                    </div>
+                ` : (balanceDue > 0 ? `<p style="color:var(--text-muted);font-size:0.9rem;">⏳ Balance payment pending</p>` : '')}
             </div>
         `;
-        
-        // Payment transactions
-        const transactions = [];
-        if (data.advance_paid_at) {
-            transactions.push({
-                type: 'Advance Payment',
-                amount: advance,
-                status: 'success',
-                date: data.advance_paid_at,
-                method: 'Razorpay'
-            });
-        }
-        if (data.balance_paid_at) {
-            transactions.push({
-                type: 'Balance Payment',
-                amount: balance,
-                status: 'success',
-                date: data.balance_paid_at,
-                method: 'Razorpay'
-            });
-        }
-        
-        if (transactions.length) {
-            html += '<h4 style="margin:1rem 0 0.5rem;font-family:Syne,sans-serif">Transactions</h4>';
-            html += transactions.map(tx => `
-                <div class="payment-history-item ${tx.status}">
-                    <div class="payment-history-header">
-                        <strong>${tx.type}</strong>
-                        <span class="payment-amount">${formatCurrency(tx.amount)}</span>
-                    </div>
-                    <div class="payment-details">
-                        <span><i class="fas fa-credit-card"></i> ${tx.method}</span>
-                        <span><i class="fas fa-clock"></i> ${formatDateTime(tx.date)}</span>
-                    </div>
-                </div>
-            `).join('');
-        } else {
-            html += '<p style="text-align:center;color:var(--text-muted)">No payment records found</p>';
-        }
-        
-        content.innerHTML = html;
-        
     } catch (error) {
-        content.innerHTML = `<p style="text-align:center;color:#ef4444">Failed to load: ${error.message}</p>`;
+        document.getElementById('paymentModalBody').innerHTML = `<p style="color:#ef4444;text-align:center;padding:2rem;">Failed to load: ${error.message}</p>`;
     }
 }
 
-// ===== 💰 PAY BALANCE =====
+// ===== Open Customization Modal =====
+function openCustomizationModal(order) {
+    closeModal('detailsModal');
+    openModal('detailsModal'); // Reuse details modal for customization
+    
+    document.getElementById('detailsModalBody').innerHTML = `
+        <div style="display:flex;flex-direction:column;gap:1rem;">
+            <h4 style="font-weight:600;display:flex;align-items:center;gap:0.5rem;"><i class="fas fa-sliders-h"></i> Customizations for ${formatOrderNumber(order.id)}</h4>
+            <div class="customization-grid">
+                ${Object.entries(order.customization).map(([key, value]) => `
+                    <div class="customization-row">
+                        <span class="customization-key">${key.replace(/_/g,' ').replace(/\b\w/g,l=>l.toUpperCase())}</span>
+                        <span class="customization-value">${typeof value === 'boolean' ? (value ? 'Yes' : 'No') : escapeHtml(String(value))}</span>
+                    </div>
+                `).join('')}
+            </div>
+        </div>
+    `;
+}
+
+// ===== Pay Balance =====
 async function payBalance(orderId, amount) {
     const token = Auth.getToken();
-    if (!token) {
-        showToast('Please login to continue', 'error');
-        window.location.href = 'login.html';
-        return;
-    }
+    if (!token) { showToast('Please login to continue', 'error'); window.location.href = 'login.html'; return; }
     
-    const btn = event?.currentTarget;
-    if (btn) {
-        btn.disabled = true;
-        const original = btn.innerHTML;
-        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
-    }
+    const btn = event.currentTarget;
+    const originalHtml = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
     
     try {
-        const data = await apiFetch(CONFIG.ENDPOINTS.PAY_BALANCE(orderId), { method: 'POST' });
-        const payment = data.data || data;
+        // Verify order status first
+        const checkRes = await fetch(`${CONFIG.API}${CONFIG.endpoints.orders}`, {
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const checkData = await checkRes.json();
+        const order = checkData.orders?.find(o => o.id === orderId);
         
-        if (!payment.razorpay_order_id) throw new Error('Invalid payment response');
+        if (!order) throw new Error('Order not found');
+        if (order.status !== 'ready_for_balance' && order.status !== 'delivered') {
+            throw new Error(`Cannot pay balance: Order status is "${order.status}"`);
+        }
+        if (amount <= 0) { showToast('Order is already fully paid!', 'success'); return; }
+        
+        // Create Razorpay order
+        const res = await apiFetch(`${CONFIG.endpoints.order}/${orderId}${CONFIG.endpoints.payBalance}`, { method: 'POST' });
+        const paymentData = res.data || res;
+        
+        if (!paymentData.key_id || !paymentData.razorpay_order_id) throw new Error('Invalid payment data');
         
         const options = {
-            key: payment.key_id,
+            key: paymentData.key_id,
             amount: Math.round(amount * 100),
             currency: 'INR',
             name: 'NovaStack',
-            description: `Balance Payment - Order #${orderId.slice(-6)}`,
-            order_id: payment.razorpay_order_id,
+            description: `Balance Payment for Order ${formatOrderNumber(orderId)}`,
+            order_id: paymentData.razorpay_order_id,
             handler: async (response) => {
                 await verifyBalancePayment(orderId, amount, response);
             },
@@ -2194,8 +1717,9 @@ async function payBalance(orderId, amount) {
             theme: { color: '#ff6b35' },
             modal: {
                 ondismiss: () => {
+                    btn.disabled = false;
+                    btn.innerHTML = originalHtml;
                     showToast('Payment cancelled', 'warning');
-                    if (btn) { btn.disabled = false; btn.innerHTML = original; }
                 }
             }
         };
@@ -2205,13 +1729,17 @@ async function payBalance(orderId, amount) {
     } catch (error) {
         console.error('Payment error:', error);
         showToast(error.message || 'Payment failed', 'error');
-        if (btn) { btn.disabled = false; btn.innerHTML = `<i class="fas fa-credit-card"></i> Pay Balance ${formatCurrency(amount)}`; }
+        btn.disabled = false;
+        btn.innerHTML = originalHtml;
     }
 }
 
 async function verifyBalancePayment(orderId, amount, response) {
+    const token = Auth.getToken();
+    showToast('Verifying payment...', 'success');
+    
     try {
-        await apiFetch(CONFIG.ENDPOINTS.VERIFY_BALANCE, {
+        const res = await apiFetch(CONFIG.endpoints.verifyPayment, {
             method: 'POST',
             body: JSON.stringify({
                 order_id: orderId,
@@ -2222,52 +1750,88 @@ async function verifyBalancePayment(orderId, amount, response) {
             })
         });
         
-        showToast('✅ Payment successful! Order updated.', 'success');
-        setTimeout(() => {
-            loadOrders();
-            closeModal('deliverablesModal');
-        }, 1500);
+        showToast('✅ Balance payment successful! Order updated.', 'success');
+        setTimeout(() => { loadOrders(); closeModal('detailsModal'); }, 1500);
         
     } catch (error) {
-        console.error('Verification failed:', error);
-        showToast('Payment verification failed. Contact support.', 'error');
+        showToast('Verification failed: ' + error.message, 'error');
+        // Show manual confirm option if needed
+        showManualConfirm(orderId, amount, response);
     }
 }
 
-// ===== 💬 CHAT =====
+function showManualConfirm(orderId, amount, response) {
+    localStorage.setItem('pending_balance_payment', JSON.stringify({
+        order_id: orderId, amount: amount,
+        razorpay_order_id: response.razorpay_order_id,
+        razorpay_payment_id: response.razorpay_payment_id,
+        razorpay_signature: response.razorpay_signature,
+        timestamp: new Date().toISOString()
+    }));
+    
+    const confirmDiv = document.createElement('div');
+    confirmDiv.id = 'manual-balance-confirm';
+    confirmDiv.style.cssText = `
+        position:fixed;bottom:80px;right:20px;
+        background:linear-gradient(135deg,#10b981,#059669);
+        padding:12px 20px;border-radius:50px;cursor:pointer;
+        z-index:9999;box-shadow:0 4px 15px rgba(16,185,129,0.4);
+        font-weight:600;font-size:0.9rem;display:flex;align-items:center;gap:8px;
+    `;
+    confirmDiv.innerHTML = '<i class="fas fa-check-circle"></i> Payment Done? Click to Confirm';
+    confirmDiv.onclick = () => manualConfirmBalance();
+    document.body.appendChild(confirmDiv);
+    setTimeout(() => confirmDiv?.remove(), 30000);
+}
+
+async function manualConfirmBalance() {
+    const pending = localStorage.getItem('pending_balance_payment');
+    if (!pending) { showToast('No pending payment found', 'error'); return; }
+    
+    const payment = JSON.parse(pending);
+    const token = Auth.getToken();
+    
+    try {
+        const res = await apiFetch(CONFIG.endpoints.verifyPayment, {
+            method: 'POST',
+            body: JSON.stringify({
+                order_id: payment.order_id,
+                amount: payment.amount,
+                razorpay_order_id: payment.razorpay_order_id,
+                razorpay_payment_id: payment.razorpay_payment_id,
+                razorpay_signature: payment.razorpay_signature
+            })
+        });
+        showToast('✅ Order completed!', 'success');
+        localStorage.removeItem('pending_balance_payment');
+        document.getElementById('manual-balance-confirm')?.remove();
+        loadOrders();
+    } catch {
+        showToast('Still processing. Admin will confirm shortly.', 'warning');
+    }
+}
+
+// ===== Chat Functions =====
 function openChat(orderId) {
     currentOrderId = orderId;
     currentConversationId = `order_${orderId}`;
-    
-    const widget = document.getElementById('chatWidget');
-    document.getElementById('chatOrderIdDisplay').textContent = `#${orderId.slice(-6)}`;
-    widget.classList.add('active');
-    
+    const chatWidget = document.getElementById('chatWidget');
+    document.getElementById('chatOrderId').textContent = formatOrderNumber(orderId);
+    chatWidget.classList.add('active');
     loadMessages();
     startMessagePolling();
-    
-    // Scroll to bottom
-    const messages = document.getElementById('chatMessages');
-    setTimeout(() => { messages.scrollTop = messages.scrollHeight; }, 100);
 }
 
-function toggleChatMinimize() {
-    const widget = document.getElementById('chatWidget');
-    const body = document.getElementById('chatMessages');
-    const input = document.querySelector('.chat-input');
-    const minimizeBtn = document.getElementById('chatMinimizeBtn');
-    
-    if (body.style.display === 'none') {
-        body.style.display = '';
-        input.style.display = '';
-        minimizeBtn.classList.remove('fa-chevron-up');
-        minimizeBtn.classList.add('fa-chevron-down');
-    } else {
-        body.style.display = 'none';
-        input.style.display = 'none';
-        minimizeBtn.classList.remove('fa-chevron-down');
-        minimizeBtn.classList.add('fa-chevron-up');
-    }
+function closeChat(event) {
+    if (event) event.stopPropagation();
+    document.getElementById('chatWidget').classList.remove('active');
+    if (messagePollInterval) { clearInterval(messagePollInterval); messagePollInterval = null; }
+    currentConversationId = null; currentOrderId = null;
+}
+
+function toggleChat() {
+    const body = document.getElementById('chatBody');
+    body.style.display = body.style.display === 'none' ? 'flex' : 'none';
 }
 
 async function loadMessages() {
@@ -2276,67 +1840,69 @@ async function loadMessages() {
     if (!token) return;
     
     try {
-        const data = await apiFetch(CONFIG.ENDPOINTS.CONVERSATION.MESSAGES(currentConversationId));
-        const messages = data.messages || [];
-        
-        const container = document.getElementById('chatMessages');
-        if (!messages.length) {
-            container.innerHTML = '<div style="text-align:center;padding:1rem;color:var(--text-muted)">💬 Start the conversation!</div>';
-            return;
+        const res = await fetch(`${CONFIG.API}${CONFIG.endpoints.conversation}/${currentConversationId}/messages`, {
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+        if (res.ok) {
+            const data = await res.json();
+            const messages = data.messages || data.data || [];
+            displayMessages(messages);
         }
-        
-        container.innerHTML = messages.map(msg => {
-            const isUser = msg.sender_role === 'user';
-            return `
-                <div class="message ${isUser ? 'user' : 'admin'}">
-                    ${escapeHtml(msg.message || '')}
-                    <div class="message-time">${formatDateTime(msg.created_at)}</div>
-                </div>
-            `;
-        }).join('');
-        
-        container.scrollTop = container.scrollHeight;
-        
-    } catch (error) {
-        console.warn('Failed to load messages:', error);
+    } catch (error) { console.error('Failed to load messages:', error); }
+}
+
+function displayMessages(messages) {
+    const container = document.getElementById('chatMessages');
+    if (!messages.length) {
+        container.innerHTML = '<div style="text-align:center;padding:2rem;color:var(--text-muted);">💬 No messages yet. Start the conversation!</div>';
+        return;
     }
+    
+    container.innerHTML = messages.map(msg => {
+        const isUser = msg.sender_role === 'user';
+        const time = msg.created_at ? formatDateTime(msg.created_at) : new Date().toLocaleString();
+        return `
+            <div class="message ${isUser ? 'user' : 'admin'}">
+                <div class="message-content">${escapeHtml(msg.message || '')}</div>
+                <div class="message-time">${time}</div>
+            </div>
+        `;
+    }).join('');
+    container.scrollTop = container.scrollHeight;
 }
 
 async function sendChatMessage() {
-    const input = document.getElementById('chatMessageInput');
+    const input = document.getElementById('chatInput');
+    const btn = document.getElementById('chatSendBtn');
     const message = input.value.trim();
-    const sendBtn = document.getElementById('chatSendBtn');
     
     if (!message || !currentConversationId) return;
     
     const token = Auth.getToken();
-    if (!token) { showToast('Please login', 'error'); return; }
+    if (!token) { showToast('Please login to send messages', 'error'); return; }
     
-    // Optimistic UI
-    const container = document.getElementById('chatMessages');
-    container.innerHTML += `
-        <div class="message user">
-            ${escapeHtml(message)}
-            <div class="message-time">Just now</div>
-        </div>
-    `;
-    container.scrollTop = container.scrollHeight;
     input.value = '';
-    sendBtn.disabled = true;
+    input.disabled = true;
+    btn.disabled = true;
     
     try {
-        await apiFetch(CONFIG.ENDPOINTS.CONVERSATION.SEND(currentConversationId), {
+        const res = await fetch(`${CONFIG.API}${CONFIG.endpoints.conversation}/${currentConversationId}/send`, {
             method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
             body: JSON.stringify({ message })
         });
-        await loadMessages();
+        if (res.ok) {
+            await loadMessages();
+        } else {
+            showToast('Failed to send message', 'error');
+            input.value = message;
+        }
     } catch (error) {
-        console.error('Send failed:', error);
         showToast('Failed to send message', 'error');
-        // Remove optimistic message
-        container.lastElementChild?.remove();
+        input.value = message;
     } finally {
-        sendBtn.disabled = false;
+        input.disabled = false;
+        btn.disabled = false;
         input.focus();
     }
 }
@@ -2347,10 +1913,10 @@ function startMessagePolling() {
         if (currentConversationId && document.getElementById('chatWidget')?.classList.contains('active')) {
             loadMessages();
         }
-    }, 8000);
+    }, 5000);
 }
 
-// ===== ❌ CANCEL & 🔄 REVISION =====
+// ===== Cancel & Revision =====
 let pendingCancelOrderId = null;
 let pendingRevisionOrderId = null;
 
@@ -2362,10 +1928,11 @@ function openCancelModal(orderId) {
 
 async function submitCancel() {
     const reason = document.getElementById('cancelReason').value.trim();
-    if (!reason) { showToast('Please provide a reason', 'warning'); return; }
+    if (!reason) { showToast('Please provide a reason', 'error'); return; }
     
+    const token = Auth.getToken();
     try {
-        await apiFetch(CONFIG.ENDPOINTS.CANCEL(pendingCancelOrderId), {
+        await apiFetch(`${CONFIG.endpoints.order}/${pendingCancelOrderId}${CONFIG.endpoints.cancel}`, {
             method: 'POST',
             body: JSON.stringify({ reason })
         });
@@ -2373,7 +1940,7 @@ async function submitCancel() {
         closeModal('cancelModal');
         loadOrders();
     } catch (error) {
-        showToast(error.message || 'Failed to cancel', 'error');
+        showToast(error.message, 'error');
     }
 }
 
@@ -2385,99 +1952,26 @@ function openRevisionModal(orderId) {
 
 async function submitRevision() {
     const details = document.getElementById('revisionDetails').value.trim();
-    if (!details) { showToast('Please describe the changes', 'warning'); return; }
+    if (!details) { showToast('Please describe the changes', 'error'); return; }
     
+    const token = Auth.getToken();
     try {
-        await apiFetch(CONFIG.ENDPOINTS.CONVERSATION.SEND(`order_${pendingRevisionOrderId}`), {
+        await apiFetch(`${CONFIG.endpoints.conversation}/order_${pendingRevisionOrderId}/send`, {
             method: 'POST',
-            body: JSON.stringify({ 
-                message: `🔁 REVISION REQUEST:\n\n${details}\n\nPlease let me know when changes are ready.` 
+            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+            body: JSON.stringify({
+                message: `🔁 REVISION REQUEST:\n\n${details}\n\nPlease let me know when changes are done.`
             })
         });
         showToast('✅ Revision request sent!', 'success');
         closeModal('revisionModal');
         openChat(pendingRevisionOrderId);
     } catch (error) {
-        showToast(error.message || 'Failed to send', 'error');
+        showToast(error.message, 'error');
     }
 }
 
-// ===== 🧭 NAVIGATION =====
-function setupNavbar() {
-    // Scroll effect
-    window.addEventListener('scroll', () => {
-        const nav = document.getElementById('navbar');
-        const mobileMenu = document.getElementById('mobileMenu');
-        if (!nav) return;
-        
-        if (window.scrollY > 50) {
-            nav.classList.add('scrolled');
-            if (mobileMenu) mobileMenu.style.top = '64px';
-        } else {
-            nav.classList.remove('scrolled');
-            if (mobileMenu) mobileMenu.style.top = window.innerWidth <= 768 ? '68px' : '72px';
-        }
-    });
-    
-    // Mobile menu toggle
-    const menuToggle = document.getElementById('menuToggle');
-    const mobileMenu = document.getElementById('mobileMenu');
-    const body = document.body;
-    
-    menuToggle?.addEventListener('click', () => {
-        const isActive = mobileMenu?.classList.toggle('active');
-        menuToggle?.classList.toggle('active', isActive);
-        menuToggle?.setAttribute('aria-expanded', isActive);
-        body.classList.toggle('menu-open', isActive);
-    });
-    
-    // Close mobile menu on link click
-    document.querySelectorAll('[data-close-menu]').forEach(link => {
-        link.addEventListener('click', () => {
-            mobileMenu?.classList.remove('active');
-            menuToggle?.classList.remove('active');
-            body.classList.remove('menu-open');
-        });
-    });
-    
-    // User dropdown toggle
-    const userToggle = document.getElementById('userToggle');
-    const userDropdown = document.getElementById('userDropdown');
-    
-    userToggle?.addEventListener('click', (e) => {
-        e.stopPropagation();
-        userDropdown?.classList.toggle('active');
-        userToggle?.classList.toggle('active');
-        userToggle?.setAttribute('aria-expanded', userDropdown?.classList.contains('active'));
-    });
-    
-    document.addEventListener('click', (e) => {
-        if (userDropdown && !userToggle?.contains(e.target) && !userDropdown.contains(e.target)) {
-            userDropdown.classList.remove('active');
-            userToggle?.classList.remove('active');
-        }
-    });
-    
-    // Mobile profile toggle
-    const mobileProfileToggle = document.getElementById('mobileProfileToggle');
-    const mobileProfileMenu = document.getElementById('mobileProfileMenu');
-    
-    mobileProfileToggle?.addEventListener('click', () => {
-        const isExpanded = mobileProfileMenu?.style.display === 'flex';
-        if (mobileProfileMenu) {
-            mobileProfileMenu.style.display = isExpanded ? 'none' : 'flex';
-        }
-    });
-    
-    // Logout handlers
-    document.getElementById('dropdownLogout')?.addEventListener('click', (e) => {
-        e.preventDefault();
-        logout();
-    });
-    document.getElementById('mobileLogoutBtn')?.addEventListener('click', logout);
-}
-
-// ===== 🚀 INIT =====
+// ===== Initialize =====
 document.addEventListener('DOMContentLoaded', async () => {
     // Refresh user if logged in
     if (Auth.isLoggedIn()) {
@@ -2485,41 +1979,38 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (freshUser) localStorage.setItem('dc_user', JSON.stringify(freshUser));
     }
     
-    // Setup UI
-    setupNavbar();
-    await updateAuthUI();
+    updateAuthUI();
+    loadOrders();
     
-    // Load orders
-    await loadOrders();
-    
-    // Auto-refresh cart when logged in
-    if (Auth.isLoggedIn()) {
-        setInterval(async () => {
-            const count = (await Cart.fetch()).length;
-            ['cartCountRight', 'cartBadge', 'mobileCartCount'].forEach(id => {
-                const el = document.getElementById(id);
-                if (el) {
-                    el.textContent = count;
-                    el.style.display = count > 0 ? 'flex' : 'none';
-                }
-            });
-        }, 30000);
-    }
-    
-    // Cleanup on page hide
-    document.addEventListener('visibilitychange', () => {
-        if (document.hidden && messagePollInterval) {
-            clearInterval(messagePollInterval);
+    // Handle resize for mobile menu
+    window.addEventListener('resize', () => {
+        if (window.innerWidth > 768 && mobileMenu?.classList.contains('active')) {
+            mobileMenu.classList.remove('active');
+            menuToggle?.classList.remove('active');
+            body.classList.remove('menu-open');
+        }
+        const nav = document.getElementById('navbar');
+        if (nav && mobileMenu) {
+            mobileMenu.style.top = window.scrollY > 50 ? '64px' : (window.innerWidth <= 768 ? '68px' : '72px');
         }
     });
+    
+    // Auto-refresh cart/orders when page becomes visible
+    document.addEventListener('visibilitychange', async () => {
+        if (!document.hidden && Auth.isLoggedIn()) {
+            await updateAuthUI();
+            loadOrders();
+        }
+    });
+    
+    // Prevent zoom on double-tap (iOS)
+    let lastTouchEnd = 0;
+    document.addEventListener('touchend', (e) => {
+        const now = Date.now();
+        if (now - lastTouchEnd <= 300) e.preventDefault();
+        lastTouchEnd = now;
+    }, { passive: false });
 });
-
-// Prevent zoom on iOS double-tap
-let lastTouchEnd = 0;
-document.addEventListener('touchend', (e) => {
-    if (Date.now() - lastTouchEnd <= 300) e.preventDefault();
-    lastTouchEnd = Date.now();
-}, { passive: false });
 </script>
 </body>
 </html>
