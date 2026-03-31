@@ -2,13 +2,12 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <title>Admin Dashboard — NovaStack</title>
 
 <!-- SEO & Meta -->
 <meta name="description" content="NovaStack Admin Dashboard - Manage services, orders, users, support & refunds">
 <meta name="robots" content="noindex, nofollow">
-<meta name="theme-color" content="#0f0c1a">
 
 <!-- Fonts & Icons -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -43,7 +42,6 @@
     --shadow-lg: 0 20px 60px rgba(0, 0, 0, 0.55);
     --transition-normal: 300ms cubic-bezier(0.4, 0, 0.2, 1);
     --transition-fast: 150ms ease;
-    --transition-sidebar: 280ms cubic-bezier(0.4, 0, 0.2, 1);
     --radius-sm: 8px;
     --radius-md: 14px;
     --radius-lg: 20px;
@@ -64,14 +62,18 @@
     margin: 0; 
     padding: 0; 
     box-sizing: border-box; 
-    -webkit-tap-highlight-color: transparent;
+    -webkit-tap-highlight-color: transparent; 
     -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
 
 * input, * textarea, * select, * button { 
     user-select: text; 
-    -webkit-user-select: text;
-    font-family: inherit;
+    -webkit-user-select: text; 
 }
 
 html { 
@@ -93,14 +95,6 @@ body {
     overflow-x: hidden;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    position: relative;
-}
-
-body.modal-open { 
-    overflow: hidden; 
-    position: fixed; 
-    width: 100%;
-    height: 100%;
 }
 
 #app-container {
@@ -116,15 +110,13 @@ body::before {
     content: '';
     position: fixed;
     top: 0; left: 0; right: 0; bottom: 0;
-    background: 
-        radial-gradient(ellipse at 20% 80%, rgba(124, 58, 237, 0.12) 0%, transparent 50%),
-        radial-gradient(ellipse at 80% 20%, rgba(255, 107, 53, 0.1) 0%, transparent 50%);
+    background: radial-gradient(ellipse at 20% 80%, rgba(124, 58, 237, 0.12) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 20%, rgba(255, 107, 53, 0.1) 0%, transparent 50%);
     z-index: -2;
     pointer-events: none;
     animation: bgPulse 25s ease-in-out infinite;
     will-change: transform, opacity;
 }
-
 @keyframes bgPulse {
     0%, 100% { opacity: 1; transform: scale(1); }
     50% { opacity: 0.85; transform: scale(1.03); }
@@ -137,9 +129,7 @@ body::before {
     z-index: -1;
     pointer-events: none;
     overflow: hidden;
-    contain: layout style paint;
 }
-
 .particle {
     position: absolute;
     width: 3px; height: 3px;
@@ -149,7 +139,6 @@ body::before {
     animation: float 18s infinite linear;
     will-change: transform, opacity;
 }
-
 @keyframes float {
     0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
     10% { opacity: 0.25; }
@@ -163,124 +152,103 @@ body::before {
     align-items: center;
     justify-content: center;
     min-height: 100vh;
-    padding: clamp(1rem, 4vw, 1.5rem);
+    padding: 1.5rem;
     width: 100%;
     position: fixed;
-    top: 0; left: 0;
+    top: 0;
+    left: 0;
     background: var(--bg-primary);
     z-index: 3000;
-    inset: 0;
 }
 
 .login-box {
     background: var(--bg-card);
     border: 1px solid var(--border);
     border-radius: var(--radius-lg);
-    padding: clamp(1.5rem, 5vw, 2.5rem);
+    padding: 2rem;
     width: 100%;
     max-width: 420px;
     text-align: center;
     backdrop-filter: blur(20px);
     box-shadow: var(--shadow-lg);
     animation: slideUp 0.5s ease;
-    margin: 1rem;
 }
-
 @keyframes slideUp {
     from { opacity: 0; transform: translateY(30px); }
     to { opacity: 1; transform: translateY(0); }
 }
 
 .login-box .icon { 
-    font-size: clamp(2.5rem, 8vw, 3.5rem); 
+    font-size: 3rem; 
     margin-bottom: 1rem; 
     background: var(--gradient-accent); 
     -webkit-background-clip: text; 
     -webkit-text-fill-color: transparent; 
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
 }
-
 .login-box h2 { 
     font-family: 'Syne', sans-serif; 
     font-weight: 800; 
-    font-size: clamp(1.4rem, 5vw, 1.8rem); 
+    font-size: 1.6rem; 
     margin-bottom: 0.5rem; 
 }
-
 .login-box p { 
     color: var(--text-muted); 
-    font-size: clamp(0.85rem, 3vw, 0.95rem); 
+    font-size: 0.9rem; 
     margin-bottom: 1.5rem; 
-    line-height: 1.5;
 }
-
 .login-box input { 
     width: 100%; 
-    padding: clamp(0.8rem, 2.5vw, 0.9rem) clamp(1rem, 3vw, 1.2rem); 
+    padding: 0.85rem 1rem; 
     border: 1.5px solid var(--border); 
     border-radius: var(--radius-md); 
-    font-size: clamp(0.9rem, 3vw, 0.95rem); 
+    font-size: 0.95rem; 
     margin-bottom: 0.8rem; 
     outline: none; 
     background: var(--surface); 
     color: var(--text-primary); 
-    transition: all var(--transition-normal);
-    min-height: 48px;
+    transition: all var(--transition-normal); 
 }
-
 .login-box input:focus { 
     border-color: var(--accent); 
     box-shadow: 0 0 0 4px var(--accent-glow); 
 }
-
 .login-box button { 
     width: 100%; 
-    padding: clamp(0.9rem, 3vw, 1rem); 
+    padding: 0.9rem; 
     background: var(--gradient-accent); 
     color: #fff; 
     border: none; 
     border-radius: var(--radius-md); 
     font-family: 'Syne', sans-serif; 
     font-weight: 700; 
-    font-size: clamp(0.95rem, 3vw, 1rem); 
+    font-size: 0.95rem; 
     cursor: pointer; 
     margin-top: 0.5rem; 
     transition: all var(--transition-normal); 
     position: relative;
     overflow: hidden;
     min-height: 48px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
 }
-
 .login-box button:hover { 
     transform: translateY(-2px); 
     box-shadow: 0 10px 35px var(--accent-glow); 
 }
-
 .login-box button:active { 
     transform: translateY(0) scale(0.98); 
 }
-
 .login-box button:disabled { 
     opacity: 0.7; 
     cursor: not-allowed; 
     transform: none !important; 
 }
-
 .login-err { 
     color: var(--error); 
-    font-size: clamp(0.8rem, 3vw, 0.85rem); 
+    font-size: 0.85rem; 
     margin-top: 0.8rem; 
     display: none; 
-    padding: 0.5rem 0.8rem; 
+    padding: 0.5rem; 
     background: rgba(239, 68, 68, 0.15); 
     border-radius: var(--radius-sm); 
-    text-align: left;
 }
 
 /* ===== 📊 Dashboard Layout ===== */
@@ -288,10 +256,9 @@ body::before {
     display: none; 
     min-height: 100vh; 
     width: 100%;
-    position: relative;
 }
 
-/* ===== 🧭 Sidebar - Responsive Drawer ===== */
+/* ===== 🧭 Sidebar ===== */
 .sidebar {
     width: var(--sidebar-width);
     background: var(--gradient-sidebar);
@@ -304,18 +271,17 @@ body::before {
     z-index: 1100;
     border-right: 1px solid var(--border);
     backdrop-filter: blur(20px);
-    transition: transform var(--transition-sidebar), width var(--transition-sidebar);
+    transition: transform var(--transition-normal), width var(--transition-normal);
     overflow-y: auto;
     overflow-x: hidden;
     will-change: transform, width;
-    contain: layout style;
 }
 
-/* Mobile: Hidden by default, slides in */
+/* Mobile Sidebar - Hidden by default */
 @media (max-width: 992px) {
     .sidebar {
         transform: translateX(-100%);
-        width: min(85vw, var(--sidebar-width));
+        width: var(--sidebar-width);
         box-shadow: var(--shadow-lg);
     }
     .sidebar.mobile-open {
@@ -323,7 +289,7 @@ body::before {
     }
 }
 
-/* Desktop: Collapsed state */
+/* Desktop Sidebar - Collapsed state */
 @media (min-width: 993px) {
     .sidebar.collapsed { 
         width: var(--sidebar-width-collapsed); 
@@ -340,20 +306,18 @@ body::before {
     }
     .sidebar.collapsed .nav-item .icon { 
         margin: 0; 
-        font-size: 1.2rem;
     }
 }
 
 .sidebar-logo { 
-    padding: clamp(1rem, 3vw, 1.5rem); 
+    padding: 1.2rem 1rem; 
     border-bottom: 1px solid var(--border); 
     flex-shrink: 0;
 }
-
 .sidebar-logo a { 
     font-family: 'Syne', sans-serif; 
     font-weight: 800; 
-    font-size: clamp(1.2rem, 4vw, 1.5rem); 
+    font-size: 1.3rem; 
     color: var(--text-primary); 
     text-decoration: none; 
     display: flex; 
@@ -361,18 +325,16 @@ body::before {
     gap: 0.4rem; 
     white-space: nowrap;
 }
-
 .sidebar-logo a span { 
     background: var(--gradient-accent); 
     -webkit-background-clip: text; 
     -webkit-text-fill-color: transparent; 
 }
-
 .sidebar-logo small { 
-    font-size: 0.7rem; 
+    font-size: 0.65rem; 
     color: var(--text-muted); 
     display: block; 
-    margin-top: 0.3rem; 
+    margin-top: 0.2rem; 
     white-space: nowrap;
 }
 
@@ -381,10 +343,9 @@ body::before {
     padding: 0.75rem 0.5rem; 
     display: flex; 
     flex-direction: column; 
-    gap: 0.25rem; 
+    gap: 0.2rem; 
     overflow-y: auto;
 }
-
 .nav-section { 
     font-size: 0.65rem; 
     text-transform: uppercase; 
@@ -394,19 +355,18 @@ body::before {
     font-weight: 600; 
     display: flex; 
     align-items: center; 
-    gap: 0.5rem;
+    gap: 0.5rem; 
     white-space: nowrap;
 }
-
 .nav-item { 
     display: flex; 
     align-items: center; 
-    gap: 0.85rem; 
-    padding: clamp(0.65rem, 2vw, 0.75rem) clamp(0.8rem, 3vw, 1.2rem); 
+    gap: 0.75rem; 
+    padding: 0.7rem 1rem; 
     border-radius: var(--radius-md); 
     cursor: pointer; 
     color: var(--text-secondary); 
-    font-size: clamp(0.85rem, 3vw, 0.92rem); 
+    font-size: 0.9rem; 
     font-weight: 500; 
     transition: all var(--transition-normal); 
     background: none; 
@@ -418,43 +378,38 @@ body::before {
     min-height: 44px;
     white-space: nowrap;
 }
-
 .nav-item:hover { 
     background: var(--surface); 
     color: var(--text-primary); 
-    transform: translateX(4px); 
+    transform: translateX(3px); 
 }
-
 .nav-item:active { transform: scale(0.98); }
 .nav-item.active { 
     background: var(--surface-hover); 
     color: var(--accent); 
     border-left: 3px solid var(--accent); 
 }
-
 .nav-item .icon { 
     width: 20px; 
     text-align: center; 
-    font-size: clamp(1rem, 3vw, 1.1rem); 
+    font-size: 1rem; 
     flex-shrink: 0;
 }
 
 .sidebar-foot { 
-    padding: clamp(0.75rem, 2.5vw, 1rem); 
+    padding: 0.8rem 1rem; 
     border-top: 1px solid var(--border); 
     background: rgba(0, 0, 0, 0.1); 
     flex-shrink: 0;
 }
-
 .admin-info { 
     display: flex; 
     align-items: center; 
-    gap: 0.75rem; 
+    gap: 0.7rem; 
 }
-
 .admin-av { 
-    width: 34px; 
-    height: 34px; 
+    width: 32px; 
+    height: 32px; 
     border-radius: var(--radius-md); 
     background: var(--gradient-accent); 
     display: flex; 
@@ -462,66 +417,72 @@ body::before {
     justify-content: center; 
     flex-shrink: 0;
 }
-
 .admin-name { 
-    font-size: clamp(0.85rem, 3vw, 0.9rem); 
+    font-size: 0.85rem; 
     color: var(--text-primary); 
     font-weight: 600; 
+    white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
 }
-
 .admin-role { 
-    font-size: 0.68rem; 
+    font-size: 0.7rem; 
     color: var(--text-muted); 
+    white-space: nowrap;
 }
-
 .logout-icon { 
     margin-left: auto; 
     background: var(--surface); 
     border: 1px solid var(--border); 
     color: var(--text-secondary); 
     cursor: pointer; 
-    width: 32px; 
-    height: 32px; 
+    width: 30px; 
+    height: 30px; 
     border-radius: var(--radius-sm); 
     display: flex; 
     align-items: center; 
     justify-content: center; 
-    transition: all var(--transition-normal);
+    transition: all var(--transition-normal); 
     flex-shrink: 0;
 }
-
 .logout-icon:hover { 
     background: var(--error); 
     color: white; 
     transform: scale(1.05); 
 }
 
-/* ===== 📐 Main Content ===== */
+/* ===== 📱 Main Content ===== */
 .main { 
     margin-left: var(--sidebar-width); 
     display: flex; 
     flex-direction: column; 
     min-height: 100vh; 
-    transition: margin-left var(--transition-sidebar);
-    width: 100%;
+    transition: margin-left var(--transition-normal); 
+    width: calc(100% - var(--sidebar-width));
     will-change: margin-left;
 }
 
+/* Mobile: Full width */
 @media (max-width: 992px) {
-    .main { margin-left: 0; }
+    .main { 
+        margin-left: 0; 
+        width: 100%;
+    }
 }
 
+/* Desktop collapsed */
 @media (min-width: 993px) {
-    .main.expanded { margin-left: var(--sidebar-width-collapsed); }
+    .main.expanded { 
+        margin-left: var(--sidebar-width-collapsed); 
+        width: calc(100% - var(--sidebar-width-collapsed));
+    }
 }
 
 /* ===== 🔝 Topbar ===== */
 .topbar {
     background: var(--bg-card);
     border-bottom: 1px solid var(--border);
-    padding: 0 clamp(1rem, 4vw, 1.5rem);
+    padding: 0 1rem;
     height: var(--header-height);
     display: flex;
     align-items: center;
@@ -531,52 +492,44 @@ body::before {
     z-index: 500;
     backdrop-filter: blur(20px);
     flex-shrink: 0;
-    padding-top: var(--safe-area-top);
 }
-
 .topbar h1 { 
     font-family: 'Syne', sans-serif; 
     font-weight: 700; 
-    font-size: clamp(1rem, 4vw, 1.3rem); 
+    font-size: 1.1rem; 
     display: flex; 
     align-items: center; 
-    gap: 0.5rem;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    gap: 0.5rem; 
     white-space: nowrap;
 }
-
 .topbar h1 i { color: var(--accent); }
 
 .toggle-sidebar { 
-    display: none; 
     background: var(--surface); 
     border: 1px solid var(--border); 
     color: var(--text-primary); 
-    padding: 0.5rem 0.75rem; 
+    padding: 0.5rem 0.7rem; 
     border-radius: var(--radius-sm); 
     cursor: pointer; 
     margin-right: 0.75rem; 
     transition: all var(--transition-normal);
-    min-width: 40px;
-    min-height: 40px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.1rem;
+    min-width: 40px;
+    min-height: 40px;
 }
-
-@media (max-width: 992px) {
-    .toggle-sidebar { display: flex; }
-}
-
 .toggle-sidebar:active { transform: scale(0.95); }
+.toggle-sidebar:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+}
 
 /* ===== 🎯 Buttons ===== */
 .btn { 
-    padding: clamp(0.5rem, 2vw, 0.55rem) clamp(1rem, 3vw, 1.2rem); 
+    padding: 0.5rem 1rem; 
     border-radius: var(--radius-full); 
-    font-size: clamp(0.8rem, 3vw, 0.85rem); 
+    font-size: 0.85rem; 
     font-weight: 600; 
     cursor: pointer; 
     border: none; 
@@ -591,7 +544,6 @@ body::before {
     min-width: 40px;
     justify-content: center;
 }
-
 .btn-primary { 
     background: var(--gradient-accent); 
     color: white; 
@@ -601,88 +553,59 @@ body::before {
     transform: translateY(-2px); 
     box-shadow: 0 8px 30px var(--accent-glow); 
 }
-
 .btn-edit { 
     background: rgba(59, 130, 246, 0.15); 
     color: var(--blue); 
     border: 1px solid rgba(59, 130, 246, 0.4); 
 }
 .btn-edit:hover { background: var(--blue); color: white; }
-
 .btn-danger { 
     background: rgba(239, 68, 68, 0.15); 
     color: var(--error); 
     border: 1px solid rgba(239, 68, 68, 0.4); 
 }
 .btn-danger:hover { background: var(--error); color: white; }
-
 .btn-success { 
     background: rgba(16, 185, 129, 0.15); 
     color: var(--green); 
     border: 1px solid rgba(16, 185, 129, 0.4); 
 }
 .btn-success:hover { background: var(--green); color: white; }
-
 .btn-chat { 
     background: rgba(139, 92, 246, 0.15); 
     color: var(--purple); 
     border: 1px solid rgba(139, 92, 246, 0.4); 
 }
 .btn-chat:hover { background: var(--purple); color: white; }
-
 .btn-view { 
     background: rgba(59, 130, 246, 0.15); 
     color: var(--blue); 
     border: 1px solid rgba(59, 130, 246, 0.4); 
 }
 .btn-view:hover { background: var(--blue); color: white; }
-
 .btn-warning { 
     background: rgba(245, 158, 11, 0.15); 
     color: var(--warning); 
     border: 1px solid rgba(245, 158, 11, 0.4); 
 }
 .btn-warning:hover { background: var(--warning); color: white; }
-
-.btn-sm { 
-    padding: clamp(0.35rem, 1.5vw, 0.4rem) clamp(0.7rem, 2.5vw, 0.9rem); 
-    font-size: clamp(0.75rem, 2.5vw, 0.8rem); 
-    min-height: 34px;
-    min-width: 34px;
-}
-
-.btn-cancel { 
-    background: var(--surface); 
-    color: var(--text-secondary); 
-    border: 1px solid var(--border); 
-}
+.btn-sm { padding: 0.35rem 0.75rem; font-size: 0.75rem; min-height: 34px; }
+.btn-cancel { background: var(--surface); color: var(--text-secondary); border: 1px solid var(--border); }
 .btn-cancel:hover { background: var(--surface-hover); color: var(--text-primary); }
-
 .btn-save { background: var(--gradient-accent); color: white; }
-
-.btn:disabled { 
-    opacity: 0.6; 
-    cursor: not-allowed; 
-    transform: none !important; 
-}
+.btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none !important; }
 
 /* ===== 📄 Content Area ===== */
 .content { 
     flex: 1; 
-    padding: clamp(1rem, 4vw, 2rem); 
+    padding: 1.5rem; 
     max-width: 100%; 
     overflow-y: auto; 
     overflow-x: hidden;
     min-height: calc(100vh - var(--header-height));
-    padding-bottom: calc(var(--safe-area-bottom) + 2rem);
 }
-
-.panel { 
-    display: none; 
-    animation: fadeIn 0.4s ease-out; 
-}
+.panel { display: none; animation: fadeIn 0.3s ease-out; }
 .panel.active { display: block; }
-
 @keyframes fadeIn { 
     from { opacity: 0; transform: translateY(15px); } 
     to { opacity: 1; transform: translateY(0); } 
@@ -692,23 +615,20 @@ body::before {
 .stats-grid { 
     display: grid; 
     grid-template-columns: repeat(4, 1fr); 
-    gap: clamp(0.75rem, 3vw, 1.2rem); 
+    gap: 1rem; 
     margin-bottom: 1.5rem; 
 }
-
 .stat-card { 
     background: var(--bg-card); 
     border: 1px solid var(--border); 
     border-radius: var(--radius-lg); 
-    padding: clamp(1rem, 4vw, 1.4rem); 
+    padding: 1.2rem; 
     backdrop-filter: blur(10px); 
     transition: all var(--transition-normal); 
     position: relative; 
     overflow: hidden; 
     cursor: pointer; 
-    min-height: 100px;
 }
-
 .stat-card::before { 
     content: ''; 
     position: absolute; 
@@ -718,17 +638,15 @@ body::before {
     transform: scaleX(0); 
     transition: transform var(--transition-normal); 
 }
-
 .stat-card:hover { 
-    transform: translateY(-4px); 
+    transform: translateY(-3px); 
     border-color: var(--accent); 
     box-shadow: var(--shadow-md); 
 }
 .stat-card:hover::before { transform: scaleX(1); }
 .stat-card:active { transform: scale(0.98); }
-
 .stat-card .lbl { 
-    font-size: clamp(0.7rem, 2.5vw, 0.8rem); 
+    font-size: 0.75rem; 
     color: var(--text-muted); 
     text-transform: uppercase; 
     letter-spacing: 0.08em; 
@@ -737,11 +655,10 @@ body::before {
     align-items: center; 
     gap: 0.3rem; 
 }
-
 .stat-card .val { 
     font-family: 'Syne', sans-serif; 
     font-weight: 800; 
-    font-size: clamp(1.4rem, 6vw, 2.2rem); 
+    font-size: 1.8rem; 
     margin-top: 0.3rem; 
     background: var(--gradient-accent); 
     -webkit-background-clip: text; 
@@ -756,11 +673,10 @@ body::before {
     border-radius: var(--radius-lg); 
     overflow: hidden; 
     backdrop-filter: blur(10px); 
-    margin-bottom: 1rem; 
+    margin-bottom: 1.2rem; 
 }
-
 .tbl-head { 
-    padding: clamp(0.8rem, 3vw, 1.2rem) clamp(1rem, 4vw, 1.5rem); 
+    padding: 1rem 1.2rem; 
     border-bottom: 1px solid var(--border); 
     display: flex; 
     align-items: center; 
@@ -768,60 +684,48 @@ body::before {
     flex-wrap: wrap; 
     gap: 0.75rem; 
 }
-
 .tbl-head h3 { 
     font-family: 'Syne', sans-serif; 
     font-weight: 700; 
-    font-size: clamp(1rem, 4vw, 1.1rem); 
+    font-size: 1rem; 
     display: flex; 
     align-items: center; 
     gap: 0.4rem; 
 }
-
 .search-inp { 
-    padding: clamp(0.5rem, 2vw, 0.55rem) clamp(0.8rem, 3vw, 1rem) clamp(0.5rem, 2vw, 0.55rem) clamp(2rem, 6vw, 2.2rem); 
+    padding: 0.5rem 0.8rem 0.5rem 2rem; 
     border: 1.5px solid var(--border); 
     border-radius: var(--radius-full); 
-    font-size: clamp(0.8rem, 3vw, 0.85rem); 
+    font-size: 0.85rem; 
     color: var(--text-primary); 
     background: var(--surface); 
     outline: none; 
-    width: min(100%, 240px); 
+    width: 200px; 
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%237a736a'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z'%3E%3C/path%3E%3C/svg%3E"); 
     background-repeat: no-repeat; 
-    background-position: clamp(0.6rem, 2vw, 0.6rem) center; 
-    background-size: clamp(0.9rem, 3vw, 1rem);
-    min-height: 40px;
+    background-position: 0.5rem center; 
+    background-size: 0.9rem; 
+    min-height: 36px;
 }
-
 .search-inp:focus { 
     border-color: var(--accent); 
     box-shadow: 0 0 0 4px var(--accent-glow); 
 }
-
 .table-responsive { 
     overflow-x: auto; 
     width: 100%; 
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: thin;
+    -webkit-overflow-scrolling: touch; 
 }
-
-.table-responsive::-webkit-scrollbar { height: 6px; }
-.table-responsive::-webkit-scrollbar-track { background: var(--surface); }
-.table-responsive::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 3px; }
-
 table { 
     width: 100%; 
     border-collapse: collapse; 
     min-width: 900px; 
-    font-size: clamp(0.85rem, 3vw, 0.9rem);
 }
-
 th { 
     background: var(--surface); 
-    padding: clamp(0.7rem, 2.5vw, 0.9rem) clamp(0.6rem, 2vw, 1.2rem); 
+    padding: 0.8rem 1rem; 
     text-align: left; 
-    font-size: clamp(0.7rem, 2.5vw, 0.75rem); 
+    font-size: 0.7rem; 
     font-weight: 700; 
     color: var(--text-muted); 
     text-transform: uppercase; 
@@ -830,24 +734,19 @@ th {
     position: sticky;
     top: 0;
     z-index: 10;
-    white-space: nowrap;
 }
-
 td { 
-    padding: clamp(0.8rem, 2.5vw, 1rem) clamp(0.6rem, 2vw, 1.2rem); 
-    font-size: clamp(0.85rem, 3vw, 0.9rem); 
+    padding: 0.85rem 1rem; 
+    font-size: 0.85rem; 
     border-bottom: 1px solid var(--border); 
-    color: var(--text-secondary);
-    vertical-align: middle;
+    color: var(--text-secondary); 
 }
-
 tr:last-child td { border-bottom: none; }
 tr:hover td { background: var(--surface); }
 tr:active td { background: var(--surface-hover); }
-
 .empty-row { 
     text-align: center; 
-    padding: clamp(1.5rem, 5vw, 2rem) !important; 
+    padding: 1.5rem !important; 
     color: var(--text-muted); 
 }
 
@@ -856,14 +755,13 @@ tr:active td { background: var(--surface-hover); }
     display: inline-flex; 
     align-items: center; 
     gap: 0.3rem; 
-    padding: clamp(0.25rem, 1vw, 0.3rem) clamp(0.6rem, 2vw, 0.75rem); 
+    padding: 0.25rem 0.6rem; 
     border-radius: var(--radius-full); 
-    font-size: clamp(0.7rem, 2.5vw, 0.75rem); 
+    font-size: 0.7rem; 
     font-weight: 600; 
     text-transform: capitalize; 
     white-space: nowrap;
 }
-
 .badge-pending { background: rgba(245, 158, 11, 0.15); color: var(--warning); border: 1px solid rgba(245, 158, 11, 0.4); }
 .badge-payment_received { background: rgba(16, 185, 129, 0.15); color: var(--green); border: 1px solid rgba(16, 185, 129, 0.4); }
 .badge-in_progress { background: rgba(59, 130, 246, 0.15); color: var(--blue); border: 1px solid rgba(59, 130, 246, 0.4); }
@@ -880,20 +778,16 @@ tr:active td { background: var(--surface-hover); }
 .payment-display {
     background: var(--surface);
     border-radius: var(--radius-md);
-    padding: clamp(0.8rem, 3vw, 1rem);
+    padding: 0.8rem;
     margin: 0.4rem 0;
 }
-
 .payment-row {
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 0.3rem 0;
-    font-size: clamp(0.85rem, 3vw, 0.9rem);
-    flex-wrap: wrap;
-    gap: 0.3rem;
+    font-size: 0.85rem;
 }
-
 .payment-row .label { color: var(--text-muted); }
 .payment-row .value { font-weight: 600; }
 .payment-row .value.positive { color: var(--green); }
@@ -901,37 +795,30 @@ tr:active td { background: var(--surface-hover); }
 .payment-row .value.warning { color: var(--warning); }
 .payment-row .value.muted { color: var(--text-muted); }
 
-/* ===== 📜 Refund History ===== */
+/* ===== 🔄 Refund History ===== */
 .refund-history-item {
     background: var(--surface);
     border-radius: var(--radius-md);
-    padding: clamp(0.8rem, 3vw, 1rem);
+    padding: 0.8rem;
     margin: 0.4rem 0;
     border-left: 3px solid var(--error);
 }
-
 .refund-history-item.approved { border-left-color: var(--green); }
 .refund-history-item.rejected { border-left-color: var(--error); }
-
 .refund-history-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 0.4rem;
-    flex-wrap: wrap;
-    gap: 0.3rem;
 }
-
 .refund-history-amount {
-    font-size: clamp(1rem, 4vw, 1.1rem);
+    font-size: 1rem;
     font-weight: 700;
     color: var(--error);
 }
-
 .refund-history-amount.approved { color: var(--green); }
-
 .refund-history-meta {
-    font-size: clamp(0.75rem, 2.5vw, 0.8rem);
+    font-size: 0.75rem;
     color: var(--text-muted);
 }
 
@@ -944,33 +831,27 @@ tr:active td { background: var(--surface-hover); }
     display: none; 
     align-items: center; 
     justify-content: center; 
-    padding: clamp(0.5rem, 3vw, 1rem); 
+    padding: 1rem; 
     backdrop-filter: blur(8px);
     animation: fadeIn 0.2s ease;
 }
-
 .modal-ov.open { display: flex; }
-
 .modal { 
     background: var(--bg-card); 
     border-radius: var(--radius-lg); 
-    padding: clamp(1.2rem, 4vw, 2rem); 
+    padding: 1.5rem; 
     width: 100%; 
-    max-width: min(95vw, 700px); 
-    max-height: min(90vh, 85vh); 
+    max-width: 650px; 
+    max-height: 85vh; 
     overflow-y: auto; 
     border: 1px solid var(--border); 
     box-shadow: var(--shadow-lg); 
-    animation: modalSlide 0.3s ease;
-    margin: auto;
-    contain: layout style;
+    animation: modalSlide 0.25s ease; 
 }
-
 @keyframes modalSlide { 
-    from { opacity: 0; transform: scale(0.95) translateY(15px); } 
+    from { opacity: 0; transform: scale(0.97) translateY(10px); } 
     to { opacity: 1; transform: scale(1) translateY(0); } 
 }
-
 .modal-hdr { 
     display: flex; 
     align-items: center; 
@@ -978,47 +859,38 @@ tr:active td { background: var(--surface-hover); }
     margin-bottom: 1.2rem; 
     padding-bottom: 0.8rem; 
     border-bottom: 1px solid var(--border); 
-    gap: 0.5rem;
 }
-
 .modal-hdr h3 { 
     font-family: 'Syne', sans-serif; 
     font-weight: 800; 
-    font-size: clamp(1.1rem, 4vw, 1.3rem); 
+    font-size: 1.2rem; 
     display: flex; 
     align-items: center; 
     gap: 0.4rem; 
-    overflow: hidden;
-    text-overflow: ellipsis;
 }
-
 .close-btn { 
     background: var(--surface); 
     border: 1px solid var(--border); 
     color: var(--text-secondary); 
-    width: 34px; 
-    height: 34px; 
+    width: 32px; 
+    height: 32px; 
     border-radius: var(--radius-sm); 
     display: flex; 
     align-items: center; 
     justify-content: center; 
     cursor: pointer; 
     transition: all var(--transition-normal);
-    flex-shrink: 0;
-    min-width: 34px;
+    min-width: 32px;
 }
-
 .close-btn:hover { 
     background: var(--error); 
     color: white; 
-    transform: scale(1.1); 
+    transform: scale(1.05); 
 }
-
-.fg { margin-bottom: clamp(0.8rem, 2.5vw, 1.1rem); }
-
+.fg { margin-bottom: 0.9rem; }
 .fg label { 
     display: block; 
-    font-size: clamp(0.8rem, 3vw, 0.85rem); 
+    font-size: 0.8rem; 
     font-weight: 500; 
     margin-bottom: 0.4rem; 
     color: var(--text-secondary); 
@@ -1026,40 +898,31 @@ tr:active td { background: var(--surface-hover); }
     align-items: center; 
     gap: 0.3rem; 
 }
-
 .fg label i { color: var(--accent); }
-
 .fg input, .fg textarea, .fg select { 
     width: 100%; 
-    padding: clamp(0.7rem, 2.5vw, 0.8rem) clamp(0.9rem, 3vw, 1rem); 
+    padding: 0.7rem 0.9rem; 
     border: 1.5px solid var(--border); 
     border-radius: var(--radius-md); 
     font-family: 'DM Sans', sans-serif; 
-    font-size: clamp(0.85rem, 3vw, 0.9rem); 
+    font-size: 0.9rem; 
     color: var(--text-primary); 
     background: var(--surface); 
     outline: none; 
-    transition: all var(--transition-normal);
-    min-height: 44px;
+    transition: all var(--transition-normal); 
+    min-height: 40px;
 }
-
 .fg input:focus, .fg textarea:focus, .fg select:focus { 
     border-color: var(--accent); 
     box-shadow: 0 0 0 4px var(--accent-glow); 
 }
-
-.fg textarea { 
-    min-height: clamp(60px, 15vw, 80px); 
-    resize: vertical; 
-    line-height: 1.5;
-}
-
+.fg textarea { min-height: 70px; resize: vertical; }
 .modal-foot { 
     display: flex; 
     gap: 0.6rem; 
     justify-content: flex-end; 
-    margin-top: clamp(1rem, 3vw, 1.5rem); 
-    padding-top: clamp(0.8rem, 2.5vw, 1.2rem); 
+    margin-top: 1.2rem; 
+    padding-top: 1rem; 
     border-top: 1px solid var(--border); 
     flex-wrap: wrap; 
 }
@@ -1073,120 +936,100 @@ tr:active td { background: var(--surface-hover); }
     display: none;
     align-items: center;
     justify-content: center;
-    padding: clamp(0.5rem, 3vw, 1rem);
+    padding: 1rem;
     backdrop-filter: blur(10px);
     animation: fadeIn 0.2s ease;
 }
-
 .message-popup-ov.open { display: flex; }
-
 .message-popup {
     background: var(--bg-card);
     border-radius: var(--radius-lg);
     width: 100%;
-    max-width: min(95vw, 600px);
-    max-height: min(85vh, 90vh);
+    max-width: 550px;
+    max-height: 80vh;
     overflow: hidden;
     border: 1px solid var(--border);
     box-shadow: var(--shadow-lg);
-    animation: modalSlide 0.3s ease;
+    animation: modalSlide 0.25s ease;
     display: flex;
     flex-direction: column;
-    margin: auto;
 }
-
 .message-popup-header {
-    padding: clamp(0.9rem, 3vw, 1.2rem) clamp(1rem, 4vw, 1.5rem);
+    padding: 1rem 1.2rem;
     border-bottom: 1px solid var(--border);
     display: flex;
     align-items: center;
     justify-content: space-between;
     background: var(--surface);
-    gap: 0.5rem;
 }
-
 .message-popup-header h4 {
     font-family: 'Syne', sans-serif;
     font-weight: 700;
-    font-size: clamp(1rem, 4vw, 1.1rem);
+    font-size: 1rem;
     display: flex;
     align-items: center;
     gap: 0.4rem;
-    overflow: hidden;
-    text-overflow: ellipsis;
 }
-
 .message-popup-body {
     flex: 1;
     overflow-y: auto;
-    padding: clamp(1rem, 4vw, 1.5rem);
+    padding: 1.2rem;
     min-height: 150px;
 }
-
 .message-popup-footer {
-    padding: clamp(0.8rem, 3vw, 1rem) clamp(1rem, 4vw, 1.5rem);
+    padding: 0.8rem 1.2rem;
     border-top: 1px solid var(--border);
     display: flex;
     gap: 0.6rem;
     background: var(--surface);
-    flex-wrap: wrap;
 }
-
-.message-popup-footer .btn { flex: 1; min-width: 120px; }
-
 .message-display {
     background: var(--bg-primary);
     border-radius: var(--radius-md);
-    padding: clamp(0.9rem, 3vw, 1.2rem);
+    padding: 1rem;
     margin-bottom: 0.8rem;
     border-left: 3px solid var(--accent);
 }
-
 .message-display .meta {
-    font-size: clamp(0.75rem, 2.5vw, 0.8rem);
+    font-size: 0.75rem;
     color: var(--text-muted);
     margin-bottom: 0.6rem;
     display: flex;
     gap: 0.8rem;
     flex-wrap: wrap;
 }
-
 .message-display .content {
-    font-size: clamp(0.9rem, 3vw, 1rem);
-    line-height: 1.6;
+    font-size: 0.95rem;
+    line-height: 1.5;
     white-space: pre-wrap;
     word-break: break-word;
 }
 
 /* ===== ⚠️ Alerts ===== */
 .global-alert { 
-    padding: clamp(0.7rem, 2.5vw, 0.8rem) clamp(1rem, 3vw, 1.2rem); 
+    padding: 0.7rem 1rem; 
     border-radius: var(--radius-md); 
-    font-size: clamp(0.85rem, 3vw, 0.9rem); 
+    font-size: 0.85rem; 
     font-weight: 500; 
     margin-bottom: 1rem; 
     display: none; 
     align-items: center; 
     gap: 0.5rem; 
     border: 1px solid; 
-    animation: slideDown 0.3s ease; 
+    animation: slideDown 0.25s ease; 
     position: sticky;
-    top: calc(var(--header-height) + 0.5rem);
+    top: 1rem;
     z-index: 100;
-    max-width: 100%;
 }
-
 @keyframes slideDown { 
-    from { opacity: 0; transform: translateY(-10px); } 
+    from { opacity: 0; transform: translateY(-8px); } 
     to { opacity: 1; transform: translateY(0); } 
 }
-
 .ga-success { 
     background: rgba(16, 185, 129, 0.15); 
     color: var(--green); 
     border-color: rgba(16, 185, 129, 0.4); 
 }
-
 .ga-error { 
     background: rgba(239, 68, 68, 0.15); 
     color: var(--error); 
@@ -1197,72 +1040,60 @@ tr:active td { background: var(--surface-hover); }
 .order-detail-card { 
     display: flex; 
     flex-direction: column; 
-    gap: clamp(1rem, 3vw, 1.5rem); 
+    gap: 1.2rem; 
 }
-
 .detail-section { 
     background: var(--surface); 
-    padding: clamp(0.9rem, 3vw, 1.2rem); 
+    padding: 1rem; 
     border-radius: var(--radius-md); 
     border: 1px solid var(--border); 
 }
-
 .section-title { 
     font-family: 'Syne', sans-serif; 
     font-weight: 700; 
-    font-size: clamp(0.95rem, 3.5vw, 1rem); 
+    font-size: 0.95rem; 
     margin-bottom: 0.8rem; 
     color: var(--accent); 
     display: flex; 
     align-items: center; 
     gap: 0.4rem; 
 }
-
 .info-grid { 
     display: grid; 
     grid-template-columns: repeat(2, 1fr); 
-    gap: clamp(0.6rem, 2vw, 1rem); 
+    gap: 0.8rem; 
 }
-
 .info-item { 
     display: flex; 
     flex-direction: column; 
-    gap: 0.25rem; 
-    min-width: 0;
+    gap: 0.2rem; 
 }
-
 .info-item .label { 
-    font-size: clamp(0.7rem, 2.5vw, 0.75rem); 
+    font-size: 0.7rem; 
     color: var(--text-muted); 
     text-transform: uppercase; 
     letter-spacing: 0.05em; 
 }
-
 .info-item .value { 
-    font-size: clamp(0.9rem, 3vw, 0.95rem); 
+    font-size: 0.9rem; 
     color: var(--text-primary); 
     font-weight: 500; 
     word-break: break-word; 
-    overflow-wrap: break-word;
 }
-
 .info-item .value a { 
     color: var(--accent); 
     text-decoration: none; 
     transition: color 0.2s; 
 }
-
 .info-item .value a:hover { 
     color: var(--text-primary); 
     text-decoration: underline; 
 }
-
 .customization-item { 
-    padding: clamp(0.4rem, 1.5vw, 0.5rem) 0; 
+    padding: 0.4rem 0; 
     border-bottom: 1px solid var(--border); 
-    font-size: clamp(0.85rem, 3vw, 0.9rem); 
+    font-size: 0.85rem; 
 }
-
 .progress-bar { 
     height: 5px; 
     background: var(--surface); 
@@ -1270,48 +1101,40 @@ tr:active td { background: var(--surface-hover); }
     overflow: hidden; 
     margin-top: 0.4rem; 
 }
-
 .progress-fill { 
     height: 100%; 
     background: var(--gradient-accent); 
     border-radius: 10px; 
     transition: width 0.5s ease; 
 }
-
 .deliverable-link { 
     display: inline-block; 
     margin: 0.15rem 0; 
     color: var(--green); 
     text-decoration: none; 
-    max-width: 100%;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    font-size: 0.85rem;
 }
-
 .deliverable-link:hover { text-decoration: underline; }
 
-/* ===== 💬 Chat Interface ===== */
+/* ===== 💬 Chat ===== */
 .chat-container { 
     display: grid; 
-    grid-template-columns: clamp(280px, 35vw, 320px) 1fr; 
-    min-height: clamp(400px, 60vh, 500px);
-    max-height: calc(100vh - var(--header-height) - 4rem);
+    grid-template-columns: 280px 1fr; 
+    min-height: 500px; 
     background: var(--bg-card); 
     border-radius: var(--radius-lg); 
     overflow: hidden; 
     border: 1px solid var(--border); 
-    height: calc(100vh - var(--header-height) - 4rem);
+    height: calc(100vh - var(--header-height) - 3rem);
 }
-
 .conversations-list { 
     border-right: 1px solid var(--border); 
     overflow-y: auto; 
-    padding: clamp(0.6rem, 2vw, 1rem); 
+    padding: 0.75rem; 
     max-height: 100%;
 }
-
 .conversation-item { 
-    padding: clamp(0.7rem, 2.5vw, 1rem); 
+    padding: 0.8rem; 
     border-bottom: 1px solid var(--border); 
     cursor: pointer; 
     transition: all var(--transition-normal); 
@@ -1319,86 +1142,68 @@ tr:active td { background: var(--surface-hover); }
     margin-bottom: 0.4rem;
     position: relative;
 }
-
 .conversation-item:hover { 
     background: var(--surface); 
     transform: translateX(3px); 
 }
-
 .conversation-item.unread { 
     background: rgba(255, 107, 53, 0.1); 
     border-left: 3px solid var(--accent); 
 }
-
 .conversation-item.active { 
     background: var(--surface-hover); 
     border-left: 3px solid var(--accent); 
 }
-
-.conversation-item:active { transform: scale(0.99); }
-
+.conversation-item:active { transform: scale(0.98); }
 .chat-area { 
     display: flex; 
     flex-direction: column; 
     height: 100%; 
-    min-width: 0;
 }
-
 .chat-header-area { 
-    padding: clamp(0.8rem, 3vw, 1rem); 
+    padding: 0.8rem 1rem; 
     border-bottom: 1px solid var(--border); 
     background: var(--surface); 
     flex-shrink: 0; 
 }
-
 .chat-messages { 
     flex: 1; 
     overflow-y: auto; 
-    padding: clamp(0.8rem, 3vw, 1rem); 
-    min-height: 200px; 
+    padding: 1rem; 
+    min-height: 300px; 
     max-height: 100%; 
     scroll-behavior: smooth; 
 }
-
 .message-bubble { 
     margin-bottom: 0.8rem; 
     animation: slideUp 0.2s ease;
     position: relative;
-    max-width: 85%;
 }
-
-.message-bubble.admin { margin-left: auto; text-align: right; }
+.message-bubble.admin { text-align: right; }
 .message-bubble.user { text-align: left; }
-
 .message-content { 
     display: inline-block; 
-    padding: clamp(0.6rem, 2vw, 0.8rem) clamp(0.8rem, 3vw, 1rem); 
-    border-radius: 14px; 
-    max-width: 100%; 
+    padding: 0.7rem 0.9rem; 
+    border-radius: 12px; 
+    max-width: 85%; 
     word-wrap: break-word;
     position: relative;
-    font-size: clamp(0.85rem, 3vw, 0.9rem);
+    font-size: 0.9rem;
 }
-
 .message-bubble.admin .message-content { 
     background: var(--gradient-accent); 
     color: white; 
-    border-bottom-right-radius: 4px;
 }
-
 .message-bubble.user .message-content { 
     background: var(--surface); 
     color: var(--text-primary); 
-    border-bottom-left-radius: 4px;
 }
-
 .message-time { 
-    font-size: clamp(0.65rem, 2vw, 0.7rem); 
+    font-size: 0.65rem; 
     color: var(--text-muted); 
     margin-top: 0.15rem; 
     display: block; 
 }
-
 .message-bubble.admin .delete-msg-btn {
     position: absolute;
     top: -6px;
@@ -1418,22 +1223,19 @@ tr:active td { background: var(--surface-hover); }
     transition: opacity var(--transition-fast);
     z-index: 5;
 }
-
 .message-bubble.admin:hover .delete-msg-btn { opacity: 1; }
 .message-bubble.admin .delete-msg-btn:hover { background: #dc2626; transform: scale(1.1); }
-
 .chat-input-area { 
-    padding: clamp(0.8rem, 3vw, 1rem); 
+    padding: 0.8rem 1rem; 
     border-top: 1px solid var(--border); 
     display: flex; 
     gap: 0.5rem; 
     background: var(--surface);
     flex-shrink: 0;
 }
-
 .chat-input-area textarea { 
     flex: 1; 
-    padding: clamp(0.6rem, 2vw, 0.8rem); 
+    padding: 0.7rem 0.9rem; 
     border-radius: 12px; 
     background: var(--bg-primary); 
     color: white; 
@@ -1443,13 +1245,11 @@ tr:active td { background: var(--surface-hover); }
     outline: none; 
     min-height: 44px;
     max-height: 120px;
-    font-size: clamp(0.85rem, 3vw, 0.9rem);
+    font-size: 0.9rem;
 }
-
 .chat-input-area textarea:focus { border-color: var(--accent); }
-
 .chat-input-area button { 
-    padding: clamp(0.6rem, 2vw, 0.8rem) clamp(1rem, 3vw, 1.5rem); 
+    padding: 0.7rem 1.2rem; 
     background: var(--gradient-accent); 
     border: none; 
     border-radius: 12px; 
@@ -1458,10 +1258,8 @@ tr:active td { background: var(--surface-hover); }
     font-weight: 600; 
     transition: all var(--transition-normal); 
     white-space: nowrap;
-    font-size: clamp(0.85rem, 3vw, 0.9rem);
-    min-width: 60px;
+    min-height: 44px;
 }
-
 .chat-input-area button:hover { 
     transform: translateY(-2px); 
     box-shadow: 0 4px 15px var(--accent-glow); 
@@ -1470,13 +1268,12 @@ tr:active td { background: var(--surface-hover); }
 /* ===== 📱 Sidebar Overlay ===== */
 .sidebar-overlay { 
     position: fixed; 
-    inset: 0; 
+    top: 0; left: 0; right: 0; bottom: 0; 
     background: rgba(0, 0, 0, 0.5); 
     z-index: var(--overlay-z); 
     display: none; 
     backdrop-filter: blur(4px); 
 }
-
 .sidebar-overlay.active { display: block; animation: fadeIn 0.2s ease; }
 
 /* ===== ⏳ Loading ===== */
@@ -1485,19 +1282,16 @@ tr:active td { background: var(--surface-hover); }
     align-items: center;
     gap: 0.4rem;
     color: var(--text-muted);
-    font-size: clamp(0.85rem, 3vw, 0.9rem);
 }
-
 .loading::after {
     content: '';
-    width: clamp(14px, 4vw, 16px);
-    height: clamp(14px, 4vw, 16px);
+    width: 14px;
+    height: 14px;
     border: 2px solid var(--surface);
     border-top-color: var(--accent);
     border-radius: 50%;
     animation: spin 0.8s linear infinite;
 }
-
 @keyframes spin { to { transform: rotate(360deg); } }
 
 /* ===== 🔧 Utility Classes ===== */
@@ -1505,10 +1299,9 @@ tr:active td { background: var(--surface-hover); }
     overflow: hidden; 
     text-overflow: ellipsis; 
     white-space: nowrap; 
-    max-width: clamp(120px, 30vw, 200px); 
+    max-width: 180px; 
     display: inline-block; 
 }
-
 .flex-wrap { flex-wrap: wrap; }
 .gap-2 { gap: 0.5rem; }
 .mt-1 { margin-top: 0.5rem; }
@@ -1520,12 +1313,26 @@ tr:active td { background: var(--surface-hover); }
 .text-error { color: var(--error); }
 .hidden { display: none !important; }
 .visible { display: flex !important; }
-
-/* ===== 🧭 Scrollbar ===== */
-::-webkit-scrollbar { width: 6px; height: 6px; }
-::-webkit-scrollbar-track { background: var(--surface); border-radius: var(--radius-sm); }
-::-webkit-scrollbar-thumb { background: var(--accent); border-radius: var(--radius-sm); }
-::-webkit-scrollbar-thumb:hover { background: var(--accent-glow); }
+.delete-conv-btn {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text-secondary);
+    width: 26px;
+    height: 26px;
+    border-radius: var(--radius-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 0.7rem;
+    opacity: 0;
+    transition: opacity var(--transition-fast);
+}
+.conversation-item:hover .delete-conv-btn { opacity: 1; }
+.delete-conv-btn:hover { background: var(--error); color: white; }
 
 /* ===== 🎯 Focus States ===== */
 :focus-visible {
@@ -1533,54 +1340,36 @@ tr:active td { background: var(--surface-hover); }
     outline-offset: 2px;
 }
 
-/* ===== 📱 Responsive Design - Mobile First ===== */
+body.modal-open { overflow: hidden; }
 
-/* Tablet: 1200px and below */
+/* ===== 📱 Responsive Design ===== */
+
+/* Large Tablet / Small Desktop */
 @media (max-width: 1200px) { 
     .stats-grid { grid-template-columns: repeat(2, 1fr); } 
-    .info-grid { grid-template-columns: 1fr; }
+    .sidebar { width: 240px; }
+    @media (min-width: 993px) {
+        .sidebar.collapsed { width: var(--sidebar-width-collapsed); }
+        .main { width: calc(100% - 240px); }
+        .main.expanded { width: calc(100% - var(--sidebar-width-collapsed)); }
+    }
 }
 
-/* Mobile: 992px and below */
+/* Tablet - 992px and below */
 @media (max-width: 992px) { 
-    .sidebar { 
-        transform: translateX(-100%); 
-        width: min(85vw, var(--sidebar-width)); 
-    } 
-    .sidebar.mobile-open { 
-        transform: translateX(0); 
-        box-shadow: var(--shadow-lg); 
-    } 
     .sidebar-overlay.active { display: block; } 
-    .main { margin-left: 0; } 
     .toggle-sidebar { display: flex; } 
-    
-    .chat-container { 
-        grid-template-columns: 1fr; 
-        height: auto;
-        min-height: 400px;
-    } 
-    
+    .chat-container { grid-template-columns: 1fr; } 
     .conversations-list { 
         position: absolute; 
         left: 0; top: 0; bottom: 0; 
         width: 100%; 
         background: var(--bg-card); 
-        z-index: 10; 
+        z-index: 15; 
         display: none; 
-        border-right: none;
-        border-radius: var(--radius-lg);
-        margin: 0.5rem;
     } 
-    
     .conversations-list.mobile-show { display: block; }
-    
-    .chat-header-area { 
-        position: sticky; 
-        top: 0; 
-        z-index: 5; 
-    }
-    
+    .chat-header-area { position: sticky; top: 0; z-index: 5; }
     .back-to-list { 
         display: flex !important; 
         align-items: center; 
@@ -1588,15 +1377,11 @@ tr:active td { background: var(--surface-hover); }
         color: var(--accent); 
         cursor: pointer; 
         font-weight: 500;
-        padding: clamp(0.4rem, 1.5vw, 0.5rem) clamp(0.6rem, 2vw, 0.8rem);
+        padding: 0.4rem 0.6rem;
         border-radius: var(--radius-sm);
-        background: var(--surface);
-        border: 1px solid var(--border);
-        min-height: 36px;
+        font-size: 0.85rem;
     }
-    
-    .back-to-list:hover { background: var(--surface-hover); }
-    
+    .back-to-list:hover { background: var(--surface); }
     .toggle-conversations { 
         display: flex; 
         align-items: center; 
@@ -1605,465 +1390,232 @@ tr:active td { background: var(--surface-hover); }
         background: var(--surface);
         border: 1px solid var(--border);
         color: var(--text-primary);
-        padding: clamp(0.5rem, 2vw, 0.6rem) clamp(0.8rem, 3vw, 1rem);
+        padding: 0.5rem 0.8rem;
         border-radius: var(--radius-sm);
         cursor: pointer;
         margin-bottom: 0.8rem;
         width: 100%;
+        font-size: 0.85rem;
         min-height: 40px;
-        font-size: clamp(0.85rem, 3vw, 0.9rem);
     }
-    
-    .message-bubble { max-width: 90%; }
 }
 
-/* Small Mobile: 768px and below */
+/* Small Mobile - 768px and below */
 @media (max-width: 768px) { 
     .stats-grid { grid-template-columns: 1fr; } 
-    .content { padding: clamp(0.75rem, 3vw, 1rem); } 
+    .content { padding: 1rem; } 
     .tbl-head { flex-direction: column; align-items: flex-start; } 
     .search-inp { width: 100%; } 
-    
-    .modal { 
-        padding: clamp(1rem, 4vw, 1.5rem); 
-        max-width: 95vw; 
-        margin: 0.5rem;
-        border-radius: var(--radius-md);
-    } 
-    
-    .modal-foot { 
-        flex-direction: column; 
-        align-items: stretch;
-    } 
-    
-    .btn { 
-        width: 100%; 
-        justify-content: center; 
-        min-height: 44px;
-    } 
-    
-    table { min-width: 750px; font-size: clamp(0.8rem, 3vw, 0.85rem); }
-    th, td { padding: clamp(0.6rem, 2vw, 0.8rem) clamp(0.4rem, 1.5vw, 0.6rem); }
-    
-    .message-popup { max-width: 95vw; margin: 0.5rem; border-radius: var(--radius-md); }
-    
-    .topbar h1 { font-size: clamp(0.95rem, 4vw, 1rem); }
-    
-    .login-box { padding: clamp(1.2rem, 4vw, 1.5rem); margin: 0.75rem; }
-    
-    .order-detail-card .info-grid { grid-template-columns: 1fr; }
-    
-    .payment-row { flex-direction: column; align-items: flex-start; gap: 0.2rem; }
+    .modal { padding: 1.2rem; max-width: 95%; margin: 0.5rem; } 
+    .modal-foot { flex-direction: column; } 
+    .btn { width: 100%; justify-content: center; } 
+    .info-grid { grid-template-columns: 1fr; } 
+    table { min-width: 700px; font-size: 0.8rem; }
+    th, td { padding: 0.7rem 0.5rem; }
+    .message-popup { max-width: 95%; margin: 0.5rem; }
+    .topbar h1 { font-size: 0.95rem; }
+    .login-box { padding: 1.5rem; }
+    .login-box .icon { font-size: 2.2rem; }
+    .chat-container { height: calc(100vh - var(--header-height) - 2rem); }
 }
 
-/* Extra Small Mobile: 480px and below */
+/* Extra Small Mobile - 480px and below */
 @media (max-width: 480px) { 
-    .stats-grid { gap: clamp(0.5rem, 2vw, 0.75rem); } 
-    .stat-card .val { font-size: clamp(1.3rem, 8vw, 1.6rem); } 
-    .topbar h1 { font-size: clamp(0.9rem, 4vw, 1rem); } 
-    
-    table { min-width: 650px; }
-    
-    .btn-sm { 
-        padding: clamp(0.3rem, 1.5vw, 0.35rem) clamp(0.6rem, 2vw, 0.7rem); 
-        font-size: clamp(0.7rem, 2.5vw, 0.75rem); 
-        min-height: 32px;
-        min-width: 32px;
-    }
-    
-    .text-truncate { max-width: clamp(100px, 25vw, 120px); }
-    
-    .conversation-item { padding: clamp(0.6rem, 2vw, 0.8rem); }
-    
-    .badge { 
-        padding: clamp(0.2rem, 1vw, 0.25rem) clamp(0.5rem, 2vw, 0.6rem); 
-        font-size: clamp(0.65rem, 2.5vw, 0.7rem); 
-    }
+    .stats-grid { gap: 0.6rem; } 
+    .stat-card .val { font-size: 1.4rem; } 
+    .stat-card .lbl { font-size: 0.7rem; }
+    .topbar h1 { font-size: 0.9rem; } 
+    .login-box { padding: 1.2rem; }
+    .login-box .icon { font-size: 2rem; }
+    table { min-width: 600px; }
+    .btn-sm { padding: 0.3rem 0.6rem; font-size: 0.7rem; }
+    .text-truncate { max-width: 100px; }
+    .sidebar-logo a { font-size: 1.1rem; }
+    .nav-item { font-size: 0.85rem; padding: 0.6rem 0.8rem; }
+    .modal { padding: 1rem; }
+    .modal-hdr h3 { font-size: 1.1rem; }
 }
 
-/* ===== ♿ Accessibility & Reduced Motion ===== */
+/* ===== 🎨 Reduced Motion ===== */
 @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after {
         animation-duration: 0.01ms !important;
-        animation-iteration-count: 1 !important;
         transition-duration: 0.01ms !important;
         scroll-behavior: auto !important;
     }
 }
 
-/* ===== 👆 Touch Device Optimizations ===== */
-@media (hover: none) and (pointer: coarse) {
-    .nav-item:hover, .btn:hover, .stat-card:hover, 
-    .conversation-item:hover, .logout-icon:hover { 
-        transform: none !important; 
+/* ===== 👆 Touch Devices ===== */
+@media (hover: none) {
+    .nav-item:hover, .btn:hover, .stat-card:hover, .conversation-item:hover { 
+        transform: none; 
     }
-    
-    .btn:active, .nav-item:active, .stat-card:active {
-        transform: scale(0.98) !important;
-    }
-    
-    /* Larger touch targets */
-    .btn, .nav-item, .close-btn, .logout-icon, 
-    .toggle-sidebar, .back-to-list {
-        min-height: 44px;
-        min-width: 44px;
-    }
-    
-    input, textarea, select {
-        min-height: 48px;
-        font-size: 16px; /* Prevents zoom on iOS */
-    }
+    .message-bubble.admin .delete-msg-btn { opacity: 1; }
+    .conversation-item .delete-conv-btn { opacity: 1; }
 }
 
-/* ===== 🌙 High Contrast Mode Support ===== */
-@media (prefers-contrast: high) {
-    :root {
-        --border: rgba(255, 255, 255, 0.3);
-        --text-muted: rgba(255, 255, 255, 0.7);
-    }
+/* ===== 📐 Safe Area Support (Notch devices) ===== */
+@media (max-width: 992px) {
+    .sidebar { padding-top: var(--safe-area-top); }
+    .topbar { padding-top: var(--safe-area-top); }
 }
 
-/* ===== 📐 Print Styles ===== */
+/* ===== 🎯 Print Styles ===== */
 @media print {
-    .sidebar, .topbar, .toggle-sidebar, .btn, .modal-ov {
-        display: none !important;
-    }
-    .main { margin-left: 0 !important; }
-    body { background: white; color: black; }
-    .tbl-card { border: 1px solid #ccc; }
+    .sidebar, .topbar, .btn, .modal-ov { display: none !important; }
+    .main { margin-left: 0 !important; width: 100% !important; }
+    .content { padding: 0; }
 }
 </style>
 </head>
 <body>
 <div id="app-container">
-    <div class="particles" id="particles" aria-hidden="true"></div>
+    <div class="particles" id="particles"></div>
     <div class="sidebar-overlay" id="sidebar-overlay" onclick="toggleSidebar()" aria-hidden="true"></div>
 
     <!-- 🔐 Login Screen -->
-    <div id="login-screen" role="dialog" aria-labelledby="login-title">
+    <div id="login-screen">
         <div class="login-box">
-            <div class="icon" aria-hidden="true"><i class="fas fa-shield-alt"></i></div>
-            <h2 id="login-title">Admin Access</h2>
-            <p>Enter your credentials to access the dashboard</p>
-            <form onsubmit="event.preventDefault(); doAdminLogin();">
-                <label for="adm-email" class="visually-hidden">Admin email</label>
-                <input type="email" id="adm-email" placeholder="Admin email" autocomplete="email" required aria-required="true">
-                <label for="adm-pass" class="visually-hidden">Admin password</label>
-                <input type="password" id="adm-pass" placeholder="Admin password" onkeypress="if(event.key==='Enter')doAdminLogin()" autocomplete="current-password" required aria-required="true">
-                <button type="submit" id="login-btn">
-                    <i class="fas fa-sign-in-alt" aria-hidden="true"></i> Login
-                </button>
-            </form>
+            <div class="icon"><i class="fas fa-shield-alt"></i></div>
+            <h2>Admin Access</h2>
+            <p>Enter credentials to access dashboard</p>
+            <input type="email" id="adm-email" placeholder="Admin email" autocomplete="email" inputmode="email">
+            <input type="password" id="adm-pass" placeholder="Password" onkeypress="if(event.key==='Enter')doAdminLogin()" autocomplete="current-password" inputmode="text">
+            <button id="login-btn" onclick="doAdminLogin()">
+                <i class="fas fa-sign-in-alt"></i> Login
+            </button>
             <div class="login-err" id="login-err" role="alert" aria-live="polite">
-                <i class="fas fa-exclamation-circle" aria-hidden="true"></i> <span id="login-err-msg">Invalid credentials</span>
+                <i class="fas fa-exclamation-circle"></i> <span id="login-err-msg">Invalid credentials</span>
             </div>
         </div>
     </div>
 
     <!-- 📊 Dashboard -->
-    <div id="dashboard" style="display:none;">
-        <aside class="sidebar" id="sidebar" aria-label="Main navigation">
+    <div id="dashboard">
+        <aside class="sidebar" id="sidebar" role="navigation" aria-label="Main navigation">
             <div class="sidebar-logo">
-                <a href="#" aria-label="NovaStack Home"><i class="fas fa-code" aria-hidden="true"></i> Nova<span>Stack</span></a>
-                <small><i class="fas fa-cog" aria-hidden="true"></i> Admin Dashboard</small>
+                <a href="#" onclick="return false"><i class="fas fa-code"></i> Nova<span>Stack</span></a>
+                <small><i class="fas fa-cog"></i> Admin Panel</small>
             </div>
-            <nav class="sidebar-nav" role="navigation">
-                <div class="nav-section" role="heading" aria-level="2"><i class="fas fa-chart-pie" aria-hidden="true"></i> <span>Overview</span></div>
-                <button class="nav-item active" onclick="switchPanel('overview',this)" role="menuitem" aria-current="page">
-                    <span class="icon" aria-hidden="true"><i class="fas fa-home"></i></span> 
-                    <span>Dashboard</span>
-                </button>
-                <div class="nav-section" role="heading" aria-level="2"><i class="fas fa-comments" aria-hidden="true"></i> <span>Support</span></div>
-                <button class="nav-item" onclick="switchPanel('chat',this)" role="menuitem">
-                    <span class="icon" aria-hidden="true"><i class="fas fa-comment-dots"></i></span> 
-                    <span>Conversations</span>
-                </button>
-                <div class="nav-section" role="heading" aria-level="2"><i class="fas fa-shopping-bag" aria-hidden="true"></i> <span>Orders</span></div>
-                <button class="nav-item" onclick="switchPanel('orders',this)" role="menuitem">
-                    <span class="icon" aria-hidden="true"><i class="fas fa-box-open"></i></span> 
-                    <span>All Orders</span>
-                </button>
-                <div class="nav-section" role="heading" aria-level="2"><i class="fas fa-cube" aria-hidden="true"></i> <span>Services</span></div>
-                <button class="nav-item" onclick="switchPanel('services',this)" role="menuitem">
-                    <span class="icon" aria-hidden="true"><i class="fas fa-cubes"></i></span> 
-                    <span>Manage Services</span>
-                </button>
-                <button class="nav-item" onclick="openModal()" role="menuitem">
-                    <span class="icon" aria-hidden="true"><i class="fas fa-plus-circle"></i></span> 
-                    <span>Add New Service</span>
-                </button>
-                <div class="nav-section" role="heading" aria-level="2"><i class="fas fa-users" aria-hidden="true"></i> <span>Users</span></div>
-                <button class="nav-item" onclick="switchPanel('users',this)" role="menuitem">
-                    <span class="icon" aria-hidden="true"><i class="fas fa-user-friends"></i></span> 
-                    <span>All Users</span>
-                </button>
-                <button class="nav-item" onclick="switchPanel('custom-requests',this)" role="menuitem">
-                    <span class="icon" aria-hidden="true"><i class="fas fa-file-signature"></i></span> 
-                    <span>Custom Requests</span>
-                </button>
-                <div class="nav-section" role="heading" aria-level="2"><i class="fas fa-money-bill-wave" aria-hidden="true"></i> <span>Refunds</span></div>
-                <button class="nav-item" onclick="switchPanel('refund-requests',this)" role="menuitem">
-                    <span class="icon" aria-hidden="true"><i class="fas fa-hourglass-half"></i></span> 
-                    <span>Pending Requests</span>
-                </button>
-                <button class="nav-item" onclick="switchPanel('refund-history',this)" role="menuitem">
-                    <span class="icon" aria-hidden="true"><i class="fas fa-history"></i></span> 
-                    <span>Refund History</span>
-                </button>
+            <nav class="sidebar-nav">
+                <div class="nav-section"><i class="fas fa-chart-pie"></i> <span>Overview</span></div>
+                <button class="nav-item active" onclick="switchPanel('overview',this)" role="menuitem"><span class="icon"><i class="fas fa-home"></i></span> <span>Dashboard</span></button>
+                <div class="nav-section"><i class="fas fa-comments"></i> <span>Support</span></div>
+                <button class="nav-item" onclick="switchPanel('chat',this)" role="menuitem"><span class="icon"><i class="fas fa-comment-dots"></i></span> <span>Conversations</span></button>
+                <div class="nav-section"><i class="fas fa-shopping-bag"></i> <span>Orders</span></div>
+                <button class="nav-item" onclick="switchPanel('orders',this)" role="menuitem"><span class="icon"><i class="fas fa-box-open"></i></span> <span>All Orders</span></button>
+                <div class="nav-section"><i class="fas fa-cube"></i> <span>Services</span></div>
+                <button class="nav-item" onclick="switchPanel('services',this)" role="menuitem"><span class="icon"><i class="fas fa-cubes"></i></span> <span>Manage Services</span></button>
+                <button class="nav-item" onclick="openModal()" role="menuitem"><span class="icon"><i class="fas fa-plus-circle"></i></span> <span>Add Service</span></button>
+                <div class="nav-section"><i class="fas fa-users"></i> <span>Users</span></div>
+                <button class="nav-item" onclick="switchPanel('users',this)" role="menuitem"><span class="icon"><i class="fas fa-user-friends"></i></span> <span>All Users</span></button>
+                <button class="nav-item" onclick="switchPanel('custom-requests',this)" role="menuitem"><span class="icon"><i class="fas fa-file-signature"></i></span> <span>Custom Requests</span></button>
+                <div class="nav-section"><i class="fas fa-money-bill-wave"></i> <span>Refunds</span></div>
+                <button class="nav-item" onclick="switchPanel('refund-requests',this)" role="menuitem"><span class="icon"><i class="fas fa-hourglass-half"></i></span> <span>Pending</span></button>
+                <button class="nav-item" onclick="switchPanel('refund-history',this)" role="menuitem"><span class="icon"><i class="fas fa-history"></i></span> <span>History</span></button>
             </nav>
             <div class="sidebar-foot">
                 <div class="admin-info">
                     <div class="admin-av" aria-hidden="true"><i class="fas fa-user"></i></div>
                     <div>
                         <div class="admin-name" id="admin-name-disp">Admin</div>
-                        <div class="admin-role"><i class="fas fa-crown" aria-hidden="true"></i> Super Admin</div>
+                        <div class="admin-role"><i class="fas fa-crown"></i> Super Admin</div>
                     </div>
-                    <button class="logout-icon" onclick="doAdminLogout()" title="Logout" aria-label="Logout">
-                        <i class="fas fa-sign-out-alt" aria-hidden="true"></i>
-                    </button>
+                    <button class="logout-icon" onclick="doAdminLogout()" title="Logout" aria-label="Logout"><i class="fas fa-sign-out-alt"></i></button>
                 </div>
             </div>
         </aside>
 
         <div class="main" id="main">
             <header class="topbar" role="banner">
-                <div style="display:flex;align-items:center;min-width:0;">
-                    <button class="toggle-sidebar" onclick="toggleSidebar()" aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="sidebar">
-                        <i class="fas fa-bars" aria-hidden="true"></i>
+                <div style="display:flex;align-items:center;">
+                    <button class="toggle-sidebar" onclick="toggleSidebar()" aria-label="Toggle menu" aria-expanded="false" aria-controls="sidebar">
+                        <i class="fas fa-bars"></i>
                     </button>
-                    <h1 id="panel-title"><i class="fas fa-tachometer-alt" aria-hidden="true"></i> <span>Dashboard</span></h1>
+                    <h1><i class="fas fa-tachometer-alt"></i> <span id="panel-title">Dashboard</span></h1>
                 </div>
-                <div>
-                    <time style="font-size:0.8rem;color:var(--text-muted)" id="date-disp" datetime=""></time>
-                </div>
+                <div><span style="font-size:0.8rem;color:var(--text-muted)" id="date-disp"></span></div>
             </header>
 
             <main class="content" role="main">
-                <div class="global-alert ga-success" id="ga-success" role="status" aria-live="polite">
-                    <i class="fas fa-check-circle" aria-hidden="true"></i> <span id="success-msg"></span>
-                </div>
-                <div class="global-alert ga-error" id="ga-error" role="alert" aria-live="assertive">
-                    <i class="fas fa-exclamation-triangle" aria-hidden="true"></i> <span id="error-msg"></span>
-                </div>
+                <div class="global-alert ga-success" id="ga-success" role="alert" aria-live="polite"><i class="fas fa-check-circle"></i> <span id="success-msg"></span></div>
+                <div class="global-alert ga-error" id="ga-error" role="alert" aria-live="assertive"><i class="fas fa-exclamation-triangle"></i> <span id="error-msg"></span></div>
 
                 <!-- Overview Panel -->
-                <section class="panel active" id="panel-overview" aria-labelledby="overview-heading">
-                    <h2 id="overview-heading" class="visually-hidden">Dashboard Overview</h2>
+                <section class="panel active" id="panel-overview" aria-labelledby="panel-title">
                     <div class="stats-grid">
-                        <button class="stat-card" onclick="switchPanel('services',null)" aria-label="View all services">
-                            <div class="lbl"><i class="fas fa-cube" aria-hidden="true"></i> Services</div>
-                            <div class="val" id="st-svc">0</div>
-                        </button>
-                        <button class="stat-card" onclick="switchPanel('orders',null)" aria-label="View all orders">
-                            <div class="lbl"><i class="fas fa-box-open" aria-hidden="true"></i> Orders</div>
-                            <div class="val" id="st-ord">0</div>
-                        </button>
-                        <button class="stat-card" onclick="switchPanel('users',null)" aria-label="View all users">
-                            <div class="lbl"><i class="fas fa-users" aria-hidden="true"></i> Users</div>
-                            <div class="val" id="st-usr">0</div>
-                        </button>
-                        <div class="stat-card" aria-label="Total revenue">
-                            <div class="lbl"><i class="fas fa-dollar-sign" aria-hidden="true"></i> Revenue</div>
-                            <div class="val" id="st-rev">₹0</div>
-                        </div>
+                        <div class="stat-card" onclick="switchPanel('services',null)" role="button" tabindex="0"><div class="lbl"><i class="fas fa-cube"></i> Services</div><div class="val" id="st-svc">0</div></div>
+                        <div class="stat-card" onclick="switchPanel('orders',null)" role="button" tabindex="0"><div class="lbl"><i class="fas fa-box-open"></i> Orders</div><div class="val" id="st-ord">0</div></div>
+                        <div class="stat-card" onclick="switchPanel('users',null)" role="button" tabindex="0"><div class="lbl"><i class="fas fa-users"></i> Users</div><div class="val" id="st-usr">0</div></div>
+                        <div class="stat-card" role="button" tabindex="0"><div class="lbl"><i class="fas fa-dollar-sign"></i> Revenue</div><div class="val" id="st-rev">₹0</div></div>
                     </div>
                 </section>
 
                 <!-- Orders Panel -->
-                <section class="panel" id="panel-orders" aria-labelledby="orders-heading">
-                    <h2 id="orders-heading" class="visually-hidden">All Orders</h2>
+                <section class="panel" id="panel-orders" aria-labelledby="panel-title">
                     <div class="tbl-card">
-                        <div class="tbl-head">
-                            <h3><i class="fas fa-list" aria-hidden="true"></i> All Orders</h3>
-                            <label for="orders-search" class="visually-hidden">Search orders</label>
-                            <input type="search" id="orders-search" class="search-inp" placeholder="Search orders..." oninput="filterOrders(this.value)" aria-label="Search orders">
-                        </div>
-                        <div class="table-responsive">
-                            <table role="table" aria-label="Orders table">
-                                <thead>
-                                    <tr>
-                                        <th scope="col">ID</th>
-                                        <th scope="col">Client</th>
-                                        <th scope="col">Service</th>
-                                        <th scope="col">Total</th>
-                                        <th scope="col">Advance</th>
-                                        <th scope="col">Paid</th>
-                                        <th scope="col">Refund</th>
-                                        <th scope="col">Status</th>
-                                        <th scope="col">Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="ord-tbody"></tbody>
-                            </table>
-                        </div>
+                        <div class="tbl-head"><h3><i class="fas fa-list"></i> All Orders</h3><input type="search" class="search-inp" placeholder="Search orders..." oninput="filterOrders(this.value)" aria-label="Search orders"></div>
+                        <div class="table-responsive"><table><thead><tr><th>ID</th><th>Client</th><th>Service</th><th>Total</th><th>Advance</th><th>Paid</th><th>Refund</th><th>Status</th><th>Actions</th></tr></thead><tbody id="ord-tbody"></tbody></table></div>
                     </div>
                 </section>
 
                 <!-- Refund Requests Panel -->
-                <section class="panel" id="panel-refund-requests" aria-labelledby="refund-requests-heading">
-                    <h2 id="refund-requests-heading" class="visually-hidden">Pending Refund Requests</h2>
+                <section class="panel" id="panel-refund-requests" aria-labelledby="panel-title">
                     <div class="tbl-card">
-                        <div class="tbl-head">
-                            <h3><i class="fas fa-hourglass-half" aria-hidden="true"></i> Pending Refund Requests</h3>
-                        </div>
-                        <div class="table-responsive">
-                            <table role="table" aria-label="Pending refund requests">
-                                <thead>
-                                    <tr>
-                                        <th scope="col">Order ID</th>
-                                        <th scope="col">Client</th>
-                                        <th scope="col">Amount</th>
-                                        <th scope="col">Reason</th>
-                                        <th scope="col">Status</th>
-                                        <th scope="col">Date</th>
-                                        <th scope="col">Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="refund-tbody"></tbody>
-                            </table>
-                        </div>
+                        <div class="tbl-head"><h3><i class="fas fa-hourglass-half"></i> Pending Refund Requests</h3></div>
+                        <div class="table-responsive"><table><thead><tr><th>Order ID</th><th>Client</th><th>Amount</th><th>Reason</th><th>Status</th><th>Date</th><th>Actions</th></tr></thead><tbody id="refund-tbody"></tbody></table></div>
                     </div>
                 </section>
 
                 <!-- Refund History Panel -->
-                <section class="panel" id="panel-refund-history" aria-labelledby="refund-history-heading">
-                    <h2 id="refund-history-heading" class="visually-hidden">Refund History</h2>
+                <section class="panel" id="panel-refund-history" aria-labelledby="panel-title">
                     <div class="tbl-card">
-                        <div class="tbl-head">
-                            <h3><i class="fas fa-history" aria-hidden="true"></i> Refund History</h3>
-                            <label for="refund-history-search" class="visually-hidden">Search refund history</label>
-                            <input type="search" id="refund-history-search" class="search-inp" placeholder="Search history..." oninput="filterRefundHistory(this.value)" aria-label="Search refund history">
-                        </div>
-                        <div class="table-responsive">
-                            <table role="table" aria-label="Refund history">
-                                <thead>
-                                    <tr>
-                                        <th scope="col">Order ID</th>
-                                        <th scope="col">Client</th>
-                                        <th scope="col">Refund Amount</th>
-                                        <th scope="col">Status</th>
-                                        <th scope="col">Processed By</th>
-                                        <th scope="col">Date</th>
-                                        <th scope="col">Notes</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="refund-history-tbody"></tbody>
-                            </table>
-                        </div>
+                        <div class="tbl-head"><h3><i class="fas fa-history"></i> Refund History</h3><input type="search" class="search-inp" placeholder="Search history..." oninput="filterRefundHistory(this.value)" aria-label="Search refund history"></div>
+                        <div class="table-responsive"><table><thead><tr><th>Order ID</th><th>Client</th><th>Amount</th><th>Status</th><th>Processed By</th><th>Date</th><th>Notes</th></tr></thead><tbody id="refund-history-tbody"></tbody></table></div>
                     </div>
                 </section>
 
                 <!-- Services Panel -->
-                <section class="panel" id="panel-services" aria-labelledby="services-heading">
-                    <h2 id="services-heading" class="visually-hidden">All Services</h2>
+                <section class="panel" id="panel-services" aria-labelledby="panel-title">
                     <div class="tbl-card">
-                        <div class="tbl-head">
-                            <h3><i class="fas fa-cubes" aria-hidden="true"></i> All Services</h3>
-                            <label for="services-search" class="visually-hidden">Search services</label>
-                            <input type="search" id="services-search" class="search-inp" placeholder="Search services..." oninput="filterServices(this.value)" aria-label="Search services">
-                        </div>
-                        <div class="table-responsive">
-                            <table role="table" aria-label="Services table">
-                                <thead>
-                                    <tr>
-                                        <th scope="col">Service</th>
-                                        <th scope="col">Category</th>
-                                        <th scope="col">Price</th>
-                                        <th scope="col">Orders</th>
-                                        <th scope="col">Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="svc-tbody"></tbody>
-                            </table>
-                        </div>
+                        <div class="tbl-head"><h3><i class="fas fa-cubes"></i> All Services</h3><input type="search" class="search-inp" placeholder="Search services..." oninput="filterServices(this.value)" aria-label="Search services"></div>
+                        <div class="table-responsive"><table><thead><tr><th>Service</th><th>Category</th><th>Price</th><th>Orders</th><th>Actions</th></tr></thead><tbody id="svc-tbody"></tbody></table></div>
                     </div>
                 </section>
 
                 <!-- Users Panel -->
-                <section class="panel" id="panel-users" aria-labelledby="users-heading">
-                    <h2 id="users-heading" class="visually-hidden">Registered Users</h2>
+                <section class="panel" id="panel-users" aria-labelledby="panel-title">
                     <div class="tbl-card">
-                        <div class="tbl-head">
-                            <h3><i class="fas fa-users" aria-hidden="true"></i> Registered Users</h3>
-                            <label for="users-search" class="visually-hidden">Search users</label>
-                            <input type="search" id="users-search" class="search-inp" placeholder="Search users..." oninput="filterUsers(this.value)" aria-label="Search users">
-                        </div>
-                        <div class="table-responsive">
-                            <table role="table" aria-label="Users table">
-                                <thead>
-                                    <tr>
-                                        <th scope="col">Name</th>
-                                        <th scope="col">Email</th>
-                                        <th scope="col">Verified</th>
-                                        <th scope="col">Orders</th>
-                                        <th scope="col">Total Spent</th>
-                                        <th scope="col">Joined</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="usr-tbody"></tbody>
-                            </table>
-                        </div>
+                        <div class="tbl-head"><h3><i class="fas fa-users"></i> Registered Users</h3><input type="search" class="search-inp" placeholder="Search users..." oninput="filterUsers(this.value)" aria-label="Search users"></div>
+                        <div class="table-responsive"><table><thead><tr><th>Name</th><th>Email</th><th>Verified</th><th>Orders</th><th>Spent</th><th>Joined</th></tr></thead><tbody id="usr-tbody"></tbody></table></div>
                     </div>
                 </section>
 
                 <!-- Custom Requests Panel -->
-                <section class="panel" id="panel-custom-requests" aria-labelledby="custom-requests-heading">
-                    <h2 id="custom-requests-heading" class="visually-hidden">Custom Project Requests</h2>
+                <section class="panel" id="panel-custom-requests" aria-labelledby="panel-title">
                     <div class="tbl-card">
-                        <div class="tbl-head">
-                            <h3><i class="fas fa-file-signature" aria-hidden="true"></i> Custom Project Requests</h3>
-                        </div>
-                        <div class="table-responsive">
-                            <table role="table" aria-label="Custom requests">
-                                <thead>
-                                    <tr>
-                                        <th scope="col">Date</th>
-                                        <th scope="col">Name</th>
-                                        <th scope="col">Email</th>
-                                        <th scope="col">WhatsApp</th>
-                                        <th scope="col">Project</th>
-                                        <th scope="col">Budget</th>
-                                        <th scope="col">Status</th>
-                                        <th scope="col">Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="custom-tbody"></tbody>
-                            </table>
-                        </div>
+                        <div class="tbl-head"><h3><i class="fas fa-file-signature"></i> Custom Requests</h3></div>
+                        <div class="table-responsive"><table><thead><tr><th>Date</th><th>Name</th><th>Email</th><th>WhatsApp</th><th>Project</th><th>Budget</th><th>Status</th><th>Action</th></tr></thead><tbody id="custom-tbody"></tbody></table></div>
                     </div>
                 </section>
 
                 <!-- Chat Panel -->
-                <section class="panel" id="panel-chat" aria-labelledby="chat-heading">
-                    <h2 id="chat-heading" class="visually-hidden">Support Conversations</h2>
+                <section class="panel" id="panel-chat" aria-labelledby="panel-title">
                     <div class="chat-container">
-                        <button class="toggle-conversations" onclick="toggleConversationsList()" aria-label="Toggle conversations list">
-                            <i class="fas fa-list" aria-hidden="true"></i> Conversations
-                        </button>
-                        <aside class="conversations-list" id="conversations-list" role="list" aria-label="Conversations">
-                            <div style="text-align:center;color:var(--text-muted);padding:2rem;">Loading conversations...</div>
-                        </aside>
-                        <div class="chat-area" role="region" aria-label="Chat area">
+                        <button class="toggle-conversations" onclick="toggleConversationsList()" aria-label="Toggle conversations list"><i class="fas fa-list"></i> Conversations</button>
+                        <div class="conversations-list" id="conversations-list" role="list" aria-label="Conversations"><div style="text-align:center;color:var(--text-muted);padding:2rem;">Loading...</div></div>
+                        <div class="chat-area">
                             <div class="chat-header-area">
-                                <div style="display:flex;align-items:center;justify-content:space-between;gap:0.75rem;flex-wrap:wrap;">
-                                    <h3 id="active-conversation-title" style="font-size:1rem;font-weight:600;">
-                                        <i class="fas fa-comment" aria-hidden="true"></i> Select a conversation
-                                    </h3>
-                                    <button class="back-to-list hidden" onclick="toggleConversationsList()" aria-label="Back to conversations list">
-                                        <i class="fas fa-arrow-left" aria-hidden="true"></i> Back
-                                    </button>
+                                <div style="display:flex;align-items:center;justify-content:space-between;gap:0.5rem;">
+                                    <h4 id="active-conversation-title" style="font-size:0.95rem"><i class="fas fa-comment"></i> Select conversation</h4>
+                                    <button class="back-to-list hidden" onclick="toggleConversationsList()" aria-label="Back to list"><i class="fas fa-arrow-left"></i> Back</button>
                                 </div>
                             </div>
-                            <div class="chat-messages" id="admin-chat-messages" role="log" aria-live="polite" aria-label="Chat messages">
-                                <div style="text-align:center;color:var(--text-muted);padding:2rem;">Select a conversation to start chatting</div>
+                            <div class="chat-messages" id="admin-chat-messages" role="log" aria-live="polite"><div style="text-align:center;color:var(--text-muted);padding:2rem;">Select a conversation</div></div>
+                            <div class="chat-input-area">
+                                <textarea id="admin-chat-input" placeholder="Type reply..." rows="2" aria-label="Message input"></textarea>
+                                <button onclick="sendAdminReply()" aria-label="Send message"><i class="fas fa-paper-plane"></i></button>
                             </div>
-                            <form class="chat-input-area" onsubmit="event.preventDefault(); sendAdminReply();" role="form" aria-label="Send message">
-                                <label for="admin-chat-input" class="visually-hidden">Type your reply</label>
-                                <textarea id="admin-chat-input" placeholder="Type your reply..." rows="2" aria-label="Message input"></textarea>
-                                <button type="submit" aria-label="Send message">
-                                    <i class="fas fa-paper-plane" aria-hidden="true"></i> Send
-                                </button>
-                            </form>
                         </div>
                     </div>
                 </section>
@@ -2074,148 +1626,103 @@ tr:active td { background: var(--surface-hover); }
     <!-- ===== 🪟 Modals ===== -->
     
     <!-- Service Modal -->
-    <div class="modal-ov" id="svc-modal" role="dialog" aria-labelledby="svc-modal-title" aria-modal="true">
+    <div class="modal-ov" id="svc-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
         <div class="modal">
             <div class="modal-hdr">
-                <h3 id="svc-modal-title"><i class="fas fa-edit" aria-hidden="true"></i> <span>Add New Service</span></h3>
-                <button class="close-btn" onclick="closeModal()" aria-label="Close modal"><i class="fas fa-times" aria-hidden="true"></i></button>
+                <h3 id="modal-title"><i class="fas fa-edit"></i> <span>Add New Service</span></h3>
+                <button class="close-btn" onclick="closeModal()" aria-label="Close modal"><i class="fas fa-times"></i></button>
             </div>
-            <form onsubmit="event.preventDefault(); saveService();">
-                <div class="fg">
-                    <label for="f-title"><i class="fas fa-heading" aria-hidden="true"></i> Title *</label>
-                    <input id="f-title" placeholder="e.g. Web Application" required aria-required="true">
-                </div>
-                <div class="fg">
-                    <label for="f-desc"><i class="fas fa-align-left" aria-hidden="true"></i> Description *</label>
-                    <textarea id="f-desc" placeholder="Describe the service..." required aria-required="true"></textarea>
-                </div>
-                <div class="fg">
-                    <label for="f-cat"><i class="fas fa-folder" aria-hidden="true"></i> Category</label>
-                    <select id="f-cat">
-                        <option value="web">🌐 Web Application</option>
-                        <option value="mobile">📱 Mobile App</option>
-                        <option value="ai">🤖 AI / ML</option>
-                        <option value="ecom">🛒 E-Commerce</option>
-                        <option value="portfolio">🎨 Portfolio</option>
-                        <option value="custom">⚙️ Custom</option>
-                    </select>
-                </div>
-                <div class="fg">
-                    <label for="f-tech"><i class="fas fa-code" aria-hidden="true"></i> Technologies</label>
-                    <input id="f-tech" placeholder="React, Node.js, PostgreSQL">
-                </div>
-                <div class="fg">
-                    <label for="f-price"><i class="fas fa-tag" aria-hidden="true"></i> Price (₹) *</label>
-                    <input type="number" id="f-price" placeholder="299" min="0" step="0.01" required aria-required="true">
-                </div>
-                <div class="modal-foot">
-                    <button type="button" class="btn btn-cancel" onclick="closeModal()">Cancel</button>
-                    <button type="submit" class="btn btn-save"><i class="fas fa-save" aria-hidden="true"></i> Save</button>
-                </div>
-            </form>
+            <div class="fg"><label for="f-title"><i class="fas fa-heading"></i> Title *</label><input id="f-title" placeholder="e.g. Web Application"></div>
+            <div class="fg"><label for="f-desc"><i class="fas fa-align-left"></i> Description *</label><textarea id="f-desc" placeholder="Describe the service..."></textarea></div>
+            <div class="fg"><label for="f-cat"><i class="fas fa-folder"></i> Category</label><select id="f-cat"><option value="web">🌐 Web Application</option><option value="mobile">📱 Mobile App</option><option value="ai">🤖 AI / ML</option><option value="ecom">🛒 E-Commerce</option><option value="portfolio">🎨 Portfolio</option><option value="custom">⚙️ Custom</option></select></div>
+            <div class="fg"><label for="f-tech"><i class="fas fa-code"></i> Technologies</label><input id="f-tech" placeholder="React, Node.js, PostgreSQL"></div>
+            <div class="fg"><label for="f-price"><i class="fas fa-tag"></i> Price (₹) *</label><input type="number" id="f-price" placeholder="299" min="0"></div>
+            <div class="modal-foot">
+                <button class="btn btn-cancel" onclick="closeModal()">Cancel</button>
+                <button class="btn btn-save" onclick="saveService()"><i class="fas fa-save"></i> Save</button>
+            </div>
         </div>
     </div>
 
     <!-- Order Detail Modal -->
-    <div class="modal-ov" id="order-detail-modal" role="dialog" aria-labelledby="order-detail-title" aria-modal="true">
-        <div class="modal" style="max-width:min(95vw,800px)">
+    <div class="modal-ov" id="order-detail-modal" role="dialog" aria-modal="true">
+        <div class="modal" style="max-width:750px">
             <div class="modal-hdr">
-                <h3 id="order-detail-title"><i class="fas fa-info-circle" aria-hidden="true"></i> Order Details</h3>
-                <button class="close-btn" onclick="closeOrderDetail()" aria-label="Close modal"><i class="fas fa-times" aria-hidden="true"></i></button>
+                <h3><i class="fas fa-info-circle"></i> Order Details</h3>
+                <button class="close-btn" onclick="closeOrderDetail()" aria-label="Close"><i class="fas fa-times"></i></button>
             </div>
             <div id="order-detail-content"></div>
         </div>
     </div>
 
     <!-- Delivery Modal -->
-    <div class="modal-ov" id="delivery-modal" role="dialog" aria-labelledby="delivery-title" aria-modal="true">
-        <div class="modal" style="max-width:min(95vw,650px)">
+    <div class="modal-ov" id="delivery-modal" role="dialog" aria-modal="true">
+        <div class="modal" style="max-width:600px">
             <div class="modal-hdr">
-                <h3 id="delivery-title"><i class="fas fa-box" aria-hidden="true"></i> Deliver Project</h3>
-                <button class="close-btn" onclick="closeDeliveryModal()" aria-label="Close modal"><i class="fas fa-times" aria-hidden="true"></i></button>
+                <h3><i class="fas fa-box"></i> Deliver Project</h3>
+                <button class="close-btn" onclick="closeDeliveryModal()" aria-label="Close"><i class="fas fa-times"></i></button>
             </div>
             <div id="delivery-modal-content"></div>
         </div>
     </div>
 
     <!-- View Deliverables Modal -->
-    <div class="modal-ov" id="view-deliverables-modal" role="dialog" aria-labelledby="deliverables-title" aria-modal="true">
-        <div class="modal" style="max-width:min(95vw,600px)">
+    <div class="modal-ov" id="view-deliverables-modal" role="dialog" aria-modal="true">
+        <div class="modal" style="max-width:550px">
             <div class="modal-hdr">
-                <h3 id="deliverables-title"><i class="fas fa-eye" aria-hidden="true"></i> Project Deliverables</h3>
-                <button class="close-btn" onclick="closeViewDeliverablesModal()" aria-label="Close modal"><i class="fas fa-times" aria-hidden="true"></i></button>
+                <h3><i class="fas fa-eye"></i> Project Deliverables</h3>
+                <button class="close-btn" onclick="closeViewDeliverablesModal()" aria-label="Close"><i class="fas fa-times"></i></button>
             </div>
             <div id="view-deliverables-content"></div>
         </div>
     </div>
 
     <!-- Refund Modal -->
-    <div class="modal-ov" id="refund-modal" role="dialog" aria-labelledby="refund-title" aria-modal="true">
-        <div class="modal" style="max-width:min(95vw,500px)">
+    <div class="modal-ov" id="refund-modal" role="dialog" aria-modal="true">
+        <div class="modal" style="max-width:450px">
             <div class="modal-hdr">
-                <h3 id="refund-title"><i class="fas fa-money-bill-wave" aria-hidden="true"></i> Process Refund</h3>
-                <button class="close-btn" onclick="closeRefundModal()" aria-label="Close modal"><i class="fas fa-times" aria-hidden="true"></i></button>
+                <h3><i class="fas fa-money-bill-wave"></i> Process Refund</h3>
+                <button class="close-btn" onclick="closeRefundModal()" aria-label="Close"><i class="fas fa-times"></i></button>
             </div>
-            <form onsubmit="event.preventDefault(); processRefundNow();">
-                <div class="fg">
-                    <label for="refund-amount"><i class="fas fa-dollar-sign" aria-hidden="true"></i> Refund Amount</label>
-                    <input type="number" id="refund-amount" step="0.01" readonly aria-readonly="true">
-                </div>
-                <div class="fg">
-                    <label for="refund-reason"><i class="fas fa-comment" aria-hidden="true"></i> Reason</label>
-                    <textarea id="refund-reason" placeholder="Refund reason..."></textarea>
-                </div>
-                <div class="modal-foot">
-                    <button type="button" class="btn btn-cancel" onclick="closeRefundModal()">Cancel</button>
-                    <button type="submit" class="btn btn-save"><i class="fas fa-check" aria-hidden="true"></i> Process Refund</button>
-                </div>
-            </form>
+            <div class="fg">
+                <label for="refund-amount"><i class="fas fa-dollar-sign"></i> Refund Amount</label>
+                <input type="number" id="refund-amount" step="0.01" readonly>
+            </div>
+            <div class="fg">
+                <label for="refund-reason"><i class="fas fa-comment"></i> Reason</label>
+                <textarea id="refund-reason" placeholder="Refund reason..."></textarea>
+            </div>
+            <div class="modal-foot">
+                <button class="btn btn-cancel" onclick="closeRefundModal()">Cancel</button>
+                <button class="btn btn-save" onclick="processRefundNow()"><i class="fas fa-check"></i> Process</button>
+            </div>
         </div>
     </div>
 
     <!-- Message Popup -->
-    <div class="message-popup-ov" id="message-popup" role="dialog" aria-labelledby="message-popup-title" aria-modal="true">
+    <div class="message-popup-ov" id="message-popup" role="dialog" aria-modal="true">
         <div class="message-popup">
             <div class="message-popup-header">
-                <h4 id="message-popup-title"><i class="fas fa-envelope" aria-hidden="true"></i> Message Details</h4>
-                <button class="close-btn" onclick="closeMessagePopup()" aria-label="Close"><i class="fas fa-times" aria-hidden="true"></i></button>
+                <h4 id="message-popup-title"><i class="fas fa-envelope"></i> Message Details</h4>
+                <button class="close-btn" onclick="closeMessagePopup()" aria-label="Close"><i class="fas fa-times"></i></button>
             </div>
             <div class="message-popup-body">
                 <div class="message-display">
                     <div class="meta">
-                        <span><i class="fas fa-user" aria-hidden="true"></i> <strong id="msg-client-name">Client Name</strong></span>
-                        <span><i class="fas fa-envelope" aria-hidden="true"></i> <a href="#" id="msg-client-email" style="color:var(--accent)">email@example.com</a></span>
-                        <span><i class="fas fa-hashtag" aria-hidden="true"></i> Order #<span id="msg-order-id">123</span></span>
+                        <span><i class="fas fa-user"></i> <strong id="msg-client-name">Client</strong></span>
+                        <span><i class="fas fa-envelope"></i> <a href="#" id="msg-client-email" style="color:var(--accent)">email@...</a></span>
+                        <span><i class="fas fa-hashtag"></i> Order #<span id="msg-order-id">123</span></span>
                     </div>
-                    <div class="content" id="msg-content">Message content will appear here...</div>
+                    <div class="content" id="msg-content">Message content...</div>
                 </div>
             </div>
             <div class="message-popup-footer">
-                <button class="btn btn-chat" onclick="openChatFromPopup()" style="flex:1;min-width:120px">
-                    <i class="fas fa-comment" aria-hidden="true"></i> Reply in Chat
-                </button>
-                <button class="btn btn-primary" onclick="closeMessagePopup()" style="flex:1;min-width:120px">
-                    <i class="fas fa-check" aria-hidden="true"></i> Got it
-                </button>
+                <button class="btn btn-chat" onclick="openChatFromPopup()" style="flex:1"><i class="fas fa-comment"></i> Reply</button>
+                <button class="btn btn-primary" onclick="closeMessagePopup()" style="flex:1"><i class="fas fa-check"></i> Got it</button>
             </div>
         </div>
     </div>
 </div>
-
-<!-- Visually hidden utility for accessibility -->
-<style>
-.visually-hidden {
-    position: absolute !important;
-    width: 1px !important;
-    height: 1px !important;
-    padding: 0 !important;
-    margin: -1px !important;
-    overflow: hidden !important;
-    clip: rect(0, 0, 0, 0) !important;
-    white-space: nowrap !important;
-    border: 0 !important;
-}
-</style>
 
 <script>
 // ===== 🔧 CONFIG & STATE =====
@@ -2242,7 +1749,7 @@ const CONFIG = {
         GET_MESSAGES: (convId) => `/conversation/${convId}/messages`,
         SEND_MESSAGE: (convId) => `/conversation/${convId}/send`,
         DELETE_CONVERSATION: (convId) => `/conversation/${convId}`,
-        DELETE_MESSAGE: (msgId) => `/conversation/${msgId}/delete`
+        DELETE_MESSAGE: (msgId) => `/conversation/message/${msgId}/delete`
     }
 };
 
@@ -2304,7 +1811,7 @@ class APIClient {
             return await response.json();
         } catch (error) {
             if (error.name === 'AbortError') {
-                throw new Error('Request timeout. Please check your connection.');
+                throw new Error('Request timeout. Please check connection.');
             }
             
             if (attempts < 3 && (error.message.includes('network') || error.message.includes('Failed to fetch'))) {
@@ -2404,13 +1911,11 @@ function setLoading(element, loading = true) {
     if (!element) return;
     if (loading) {
         element.dataset.originalContent = element.innerHTML;
-        element.innerHTML = '<span class="loading"></span> Loading...';
+        element.innerHTML = '<span class="loading"></span>';
         element.disabled = true;
-        element.setAttribute('aria-busy', 'true');
     } else {
         element.innerHTML = element.dataset.originalContent || element.innerHTML;
         element.disabled = false;
-        element.removeAttribute('aria-busy');
     }
 }
 
@@ -2421,15 +1926,10 @@ function openModalOverlay(modalId) {
         modal.classList.add('open');
         state.ui.modalStack.push(modalId);
         document.body.classList.add('modal-open');
-        
-        // Focus management for accessibility
         setTimeout(() => {
-            const firstFocusable = modal.querySelector('input, textarea, select, button:not(.close-btn)');
-            if (firstFocusable) firstFocusable.focus();
+            const firstInput = modal.querySelector('input, textarea, select');
+            if (firstInput) firstInput.focus();
         }, 100);
-        
-        // Trap focus within modal (basic implementation)
-        modal.addEventListener('keydown', trapFocus);
     }
 }
 
@@ -2437,7 +1937,6 @@ function closeModalOverlay(modalId) {
     const modal = document.getElementById(modalId);
     if (modal) {
         modal.classList.remove('open');
-        modal.removeEventListener('keydown', trapFocus);
         state.ui.modalStack = state.ui.modalStack.filter(id => id !== modalId);
         if (state.ui.modalStack.length === 0) {
             document.body.classList.remove('modal-open');
@@ -2446,46 +1945,19 @@ function closeModalOverlay(modalId) {
 }
 
 function closeAllModals() {
-    [...state.ui.modalStack].forEach(modalId => {
+    state.ui.modalStack.forEach(modalId => {
         const modal = document.getElementById(modalId);
-        if (modal) {
-            modal.classList.remove('open');
-            modal.removeEventListener('keydown', trapFocus);
-        }
+        if (modal) modal.classList.remove('open');
     });
     state.ui.modalStack = [];
     document.body.classList.remove('modal-open');
-}
-
-function trapFocus(e) {
-    if (e.key !== 'Tab') return;
-    const modal = e.currentTarget;
-    const focusable = modal.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
-    const first = focusable[0];
-    const last = focusable[focusable.length - 1];
-    
-    if (e.shiftKey) {
-        if (document.activeElement === first) {
-            last.focus();
-            e.preventDefault();
-        }
-    } else {
-        if (document.activeElement === last) {
-            first.focus();
-            e.preventDefault();
-        }
-    }
 }
 
 // ===== 🎨 Particles =====
 function createParticles() {
     const container = document.getElementById('particles');
     if (!container) return;
-    
-    // Reduce particles on mobile for performance
-    const count = window.innerWidth < 768 ? 15 : 30;
-    
-    for (let i = 0; i < count; i++) {
+    for (let i = 0; i < 25; i++) {
         const p = document.createElement('div');
         p.className = 'particle';
         p.style.left = Math.random() * 100 + '%';
@@ -2513,7 +1985,7 @@ async function doAdminLogin() {
     
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
         errEl.style.display = 'block';
-        errMsg.textContent = 'Please enter a valid email address';
+        errMsg.textContent = 'Please enter valid email';
         return;
     }
     
@@ -2526,10 +1998,10 @@ async function doAdminLogin() {
         localStorage.setItem('dc_admin_token', state.token);
         localStorage.setItem('dc_admin_email', state.adminEmail);
         showDashboard(email);
-        showNotification('Welcome back, Admin!');
+        showNotification('Welcome back!');
     } catch (error) {
         errEl.style.display = 'block';
-        errMsg.textContent = error.message || 'Login failed. Please try again.';
+        errMsg.textContent = error.message || 'Login failed';
         console.error('Login error:', error);
     } finally {
         setLoading(btn, false);
@@ -2540,14 +2012,9 @@ function showDashboard(email) {
     document.getElementById('login-screen').style.display = 'none';
     document.getElementById('dashboard').style.display = 'flex';
     document.getElementById('admin-name-disp').textContent = email.split('@')[0];
-    
-    const dateEl = document.getElementById('date-disp');
-    const now = new Date();
-    dateEl.textContent = now.toLocaleDateString('en-US', {
+    document.getElementById('date-disp').textContent = new Date().toLocaleDateString('en-US', {
         weekday: 'short', year: 'numeric', month: 'short', day: 'numeric'
     });
-    dateEl.setAttribute('datetime', now.toISOString());
-    
     loadAllData();
 }
 
@@ -2557,18 +2024,16 @@ function doAdminLogout() {
     state.token = '';
     state.adminEmail = '';
     state.data = { services: [], orders: [], users: [], customRequests: [], refundRequests: [], refundHistory: [] };
-    
     if (state.chat.pollInterval) {
         clearInterval(state.chat.pollInterval);
         state.chat.pollInterval = null;
     }
     state.chat.pollingActive = false;
     state.ui.activeConversation = null;
-    
     closeAllModals();
     document.getElementById('dashboard').style.display = 'none';
     document.getElementById('login-screen').style.display = 'flex';
-    showNotification('Logged out successfully', 'success');
+    showNotification('Logged out');
 }
 
 // ===== 📊 Data Loading =====
@@ -2583,18 +2048,19 @@ async function loadAllData() {
         
         if (servicesRes.status === 'fulfilled') state.data.services = servicesRes.value.services || [];
         if (ordersRes.status === 'fulfilled') {
-            state.data.orders = ordersRes.value.orders || [];
+            state.data.orders = (ordersRes.value.orders || []).map(o => ({
+                ...o,
+                user_name: o.user_name || o.users?.name,
+                user_email: o.user_email || o.users?.email,
+                user_phone: o.user_phone || o.users?.phone,
+                user_whatsapp: o.user_whatsapp || o.users?.whatsapp,
+                service_title: o.service_title || o.services?.title,
+                service_id: o.service_id || o.services?.id
+            }));
             state.data.refundRequests = generateRefundRequests(state.data.orders);
         }
         if (usersRes.status === 'fulfilled') state.data.users = usersRes.value.users || [];
-        
-        if (refundHistoryRes.status === 'fulfilled') {
-            state.data.refundHistory = refundHistoryRes.value.refunds || [];
-        } else {
-            console.warn('⚠️ Using mock refund history data');
-            state.data.refundHistory = [];
-            showNotification('⚠️ Refund history unavailable', 'warning', 6000);
-        }
+        if (refundHistoryRes.status === 'fulfilled') state.data.refundHistory = refundHistoryRes.value.refunds || [];
         
         try {
             const customRes = await api.getCustomRequests();
@@ -2602,9 +2068,10 @@ async function loadAllData() {
         } catch (e) { state.data.customRequests = []; }
         
         renderDashboard();
+        
     } catch (error) {
-        console.error('❌ Error loading data:', error);
-        showNotification('Failed to load dashboard data. Please refresh.', 'error', 6000);
+        console.error('❌ Error loading dashboard:', error);
+        showNotification('Failed to load data', 'error', 6000);
     }
 }
 
@@ -2627,14 +2094,8 @@ function generateRefundRequests(orders) {
 
 // ===== 🎨 Rendering =====
 function renderDashboard() {
-    renderStats(); 
-    renderOrders(); 
-    renderRefundRequests(); 
-    renderRefundHistory();
-    renderServices();
-    renderUsers(); 
-    renderCustomRequests(); 
-    loadConversations();
+    renderStats(); renderOrders(); renderRefundRequests(); renderRefundHistory();
+    renderServices(); renderUsers(); renderCustomRequests(); loadConversations();
 }
 
 function renderStats() {
@@ -2653,9 +2114,9 @@ function renderOrders(filter = '') {
     if (!tbody) return;
     
     const filtered = filter ? state.data.orders.filter(o => 
-        o.user_name?.toLowerCase().includes(filter.toLowerCase()) ||
+        (o.user_name || o.users?.name || '').toLowerCase().includes(filter.toLowerCase()) ||
         o.id?.toString().includes(filter) ||
-        o.service_title?.toLowerCase().includes(filter.toLowerCase())
+        (o.service_title || o.services?.title || '').toLowerCase().includes(filter.toLowerCase())
     ) : state.data.orders;
     
     if (!filtered.length) {
@@ -2664,6 +2125,10 @@ function renderOrders(filter = '') {
     }
     
     tbody.innerHTML = filtered.map(o => {
+        const clientName = o.user_name || o.users?.name || '—';
+        const clientEmail = o.user_email || o.users?.email || '—';
+        const serviceTitle = o.service_title || o.services?.title || '—';
+        
         const total = parseFloat(o.price) || 0;
         const advance = parseFloat(o.advance_paid) || 0;
         const paid = parseFloat(o.total_paid) || advance;
@@ -2671,23 +2136,24 @@ function renderOrders(filter = '') {
         
         return `<tr>
             <td><span style="font-family:monospace;color:var(--accent)">#${o.id}</span></td>
-            <td><strong>${escapeHtml(o.user_name || '—')}</strong><br><small style="color:var(--text-muted)">${escapeHtml(o.user_email || '')}</small></td>
-            <td class="text-truncate" title="${escapeHtml(o.service_title || '')}">${escapeHtml(o.service_title || '—')}</td>
+            <td><strong>${escapeHtml(clientName)}</strong><br><small style="color:var(--text-muted)">${escapeHtml(clientEmail)}</small></td>
+            <td class="text-truncate" title="${escapeHtml(serviceTitle)}">${escapeHtml(serviceTitle)}</td>
             <td><strong style="color:var(--green)">${formatCurrency(total)}</strong></td>
             <td><span style="color:var(--warning)">${formatCurrency(advance)}</span></td>
             <td><span style="color:var(--green)">${formatCurrency(paid)}</span></td>
             <td>${refund > 0 ? `<span class="text-error">-${formatCurrency(refund)}</span>` : '—'}</td>
             <td><span class="badge badge-${o.status || 'unknown'}">${escapeHtml((o.status || 'unknown').replace(/_/g, ' '))}</span></td>
             <td><div style="display:flex;gap:0.4rem;flex-wrap:wrap">
-                <button class="btn btn-sm btn-view" onclick="viewOrderDetails(${o.id})" aria-label="View order #${o.id}"><i class="fas fa-eye"></i></button>
-                <button class="btn btn-sm btn-primary" onclick="openDeliveryModal(${o.id})" aria-label="Deliver order #${o.id}"><i class="fas fa-box"></i></button>
-                <button class="btn btn-sm btn-success" onclick="viewDeliverablesModal(${o.id})" aria-label="View deliverables for order #${o.id}"><i class="fas fa-download"></i></button>
-                <button class="btn btn-sm btn-chat" onclick="openMessagePopup(${o.id})" aria-label="View message for order #${o.id}"><i class="fas fa-envelope"></i></button>
-                <button class="btn btn-sm btn-chat" onclick="chatFromOrder(${o.id})" aria-label="Chat about order #${o.id}"><i class="fas fa-comment"></i></button>
-                <button class="btn btn-sm btn-success" onclick="startProject(${o.id})" aria-label="Start project for order #${o.id}"><i class="fas fa-play"></i></button>
-                <button class="btn btn-sm btn-warning" onclick="markReadyForBalance(${o.id})" aria-label="Mark order #${o.id} ready for balance"><i class="fas fa-money-bill"></i></button>
-                <button class="btn btn-sm btn-primary" onclick="markAsCompleted(${o.id})" aria-label="Mark order #${o.id} as completed"><i class="fas fa-check-circle"></i></button>
-                ${o.status === 'cancellation_requested' || o.refund_status === 'pending' ? `<button class="btn btn-sm btn-danger" onclick="openRefundModalFromOrder(${o.id}, ${o.refund_amount || o.advance_paid || 0})" aria-label="Process refund for order #${o.id}"><i class="fas fa-money-bill-wave"></i></button>` : ''}
+                <button class="btn btn-sm btn-view" onclick="viewOrderDetails(${o.id})" aria-label="View"><i class="fas fa-eye"></i></button>
+                <button class="btn btn-sm btn-primary" onclick="openDeliveryModal(${o.id})" aria-label="Deliver"><i class="fas fa-box"></i></button>
+                <button class="btn btn-sm btn-success" onclick="viewDeliverablesModal(${o.id})" aria-label="View files"><i class="fas fa-download"></i></button>
+                <button class="btn btn-sm btn-chat" onclick="openMessagePopup(${o.id})" aria-label="Message"><i class="fas fa-envelope"></i></button>
+                <button class="btn btn-sm btn-chat" onclick="chatFromOrder(${o.id})" aria-label="Chat"><i class="fas fa-comment"></i></button>
+                <button class="btn btn-sm btn-success" onclick="startProject(${o.id})" aria-label="Start"><i class="fas fa-play"></i></button>
+                <button class="btn btn-sm btn-warning" onclick="markReadyForBalance(${o.id})" aria-label="Balance"><i class="fas fa-money-bill"></i></button>
+                <button class="btn btn-sm btn-primary" onclick="markAsCompleted(${o.id})" aria-label="Complete"><i class="fas fa-check-circle"></i></button>
+                ${o.status === 'cancellation_requested' || o.refund_status === 'pending' ? 
+                    `<button class="btn btn-sm btn-danger" onclick="openRefundModalFromOrder(${o.id}, ${o.refund_amount || o.advance_paid || 0})" aria-label="Refund"><i class="fas fa-money-bill-wave"></i></button>` : ''}
             </div></td>
         </tr>`;
     }).join('');
@@ -2698,18 +2164,12 @@ function renderRefundRequests() {
     if (!tbody) return;
     
     if (!state.data.refundRequests.length) {
-        tbody.innerHTML = '<tr><td colspan="7" class="empty-row">No pending refund requests</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="7" class="empty-row">No pending refunds</td></tr>';
         return;
     }
     
     tbody.innerHTML = state.data.refundRequests.map(r => {
-        const paymentDetails = `
-            <div style="font-size:0.7rem;color:var(--text-muted);margin-top:0.2rem">
-                Total: ${formatCurrency(r.total_amount)} | 
-                Advance: ${formatCurrency(r.advance_paid)} | 
-                Paid: ${formatCurrency(r.total_paid)}
-            </div>
-        `;
+        const paymentDetails = `<div style="font-size:0.7rem;color:var(--text-muted);margin-top:0.2rem">Total: ${formatCurrency(r.total_amount)} | Paid: ${formatCurrency(r.total_paid)}</div>`;
         
         return `<tr>
             <td><span style="color:var(--accent)">#${r.order_id}</span></td>
@@ -2719,8 +2179,8 @@ function renderRefundRequests() {
             <td><span class="badge badge-${r.status || 'pending'}">${escapeHtml(r.status || 'pending')}</span></td>
             <td>${formatDate(r.created_at)}</td>
             <td>
-                <button class="btn btn-sm btn-success" onclick="processRefund(${r.order_id}, ${r.amount_to_refund})" aria-label="Approve refund for order #${r.order_id}"><i class="fas fa-check"></i></button>
-                <button class="btn btn-sm btn-danger" onclick="rejectRefund(${r.order_id})" aria-label="Reject refund for order #${r.order_id}"><i class="fas fa-times"></i></button>
+                <button class="btn btn-sm btn-success" onclick="processRefund(${r.order_id}, ${r.amount_to_refund})"><i class="fas fa-check"></i></button>
+                <button class="btn btn-sm btn-danger" onclick="rejectRefund(${r.order_id})"><i class="fas fa-times"></i></button>
             </td>
         </tr>`;
     }).join('');
@@ -2737,7 +2197,7 @@ function renderRefundHistory(filter = '') {
     ) : state.data.refundHistory;
     
     if (!filtered.length) {
-        tbody.innerHTML = '<tr><td colspan="7" class="empty-row">No refund history found</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="7" class="empty-row">No refund history</td></tr>';
         return;
     }
     
@@ -2774,8 +2234,8 @@ function renderServices(filter = '') {
         <td><strong style="color:var(--green)">${formatCurrency(s.price || 0)}</strong></td>
         <td>${orderCounts[s.id] || 0}</td>
         <td><div style="display:flex;gap:0.4rem">
-            <button class="btn btn-sm btn-edit" onclick="editService(${s.id})" aria-label="Edit service ${escapeHtml(s.title)}"><i class="fas fa-edit"></i></button>
-            <button class="btn btn-sm btn-danger" onclick="deleteService(${s.id})" aria-label="Delete service ${escapeHtml(s.title)}"><i class="fas fa-trash"></i></button>
+            <button class="btn btn-sm btn-edit" onclick="editService(${s.id})"><i class="fas fa-edit"></i></button>
+            <button class="btn btn-sm btn-danger" onclick="deleteService(${s.id})"><i class="fas fa-trash"></i></button>
         </div></td>
     </tr>`).join('');
 }
@@ -2783,26 +2243,38 @@ function renderServices(filter = '') {
 function renderUsers(filter = '') {
     const tbody = document.getElementById('usr-tbody');
     if (!tbody) return;
-    const filtered = filter ? state.data.users.filter(u => u.email?.toLowerCase().includes(filter.toLowerCase()) || u.name?.toLowerCase().includes(filter.toLowerCase())) : state.data.users;
+    
+    const filtered = filter ? state.data.users.filter(u => 
+        (u.email || '').toLowerCase().includes(filter.toLowerCase()) || 
+        (u.name || '').toLowerCase().includes(filter.toLowerCase())
+    ) : state.data.users;
+    
     if (!filtered.length) {
         tbody.innerHTML = '<tr><td colspan="6" class="empty-row">No users found</td></tr>';
         return;
     }
+    
     const userStats = {};
     state.data.orders.forEach(o => {
-        const uid = o.user_id;
-        if (!userStats[uid]) userStats[uid] = { orders: 0, spent: 0 };
-        userStats[uid].orders++;
-        userStats[uid].spent += parseFloat(o.total_paid || o.advance_paid || 0);
+        const uid = o.user_id || o.users?.id;
+        if (uid && !userStats[uid]) userStats[uid] = { orders: 0, spent: 0 };
+        if (uid) {
+            userStats[uid].orders++;
+            userStats[uid].spent += parseFloat(o.total_paid || o.advance_paid || 0);
+        }
     });
-    tbody.innerHTML = filtered.map(u => `<tr>
-        <td><strong>${escapeHtml(u.name || '—')}</strong></td>
-        <td class="text-truncate" title="${escapeHtml(u.email)}">${escapeHtml(u.email)}</td>
-        <td>${u.verified ? '<span class="badge badge-done"><i class="fas fa-check"></i> Verified</span>' : '<span class="badge badge-pending"><i class="fas fa-clock"></i> Pending</span>'}</td>
-        <td><strong>${userStats[u.id]?.orders || 0}</strong></td>
-        <td><strong style="color:var(--green)">${formatCurrency(userStats[u.id]?.spent || 0)}</strong></td>
-        <td>${formatDate(u.created_at).split(',')[0]}</td>
-    </tr>`).join('');
+    
+    tbody.innerHTML = filtered.map(u => {
+        const stats = userStats[u.id] || { orders: 0, spent: 0 };
+        return `<tr>
+            <td><strong>${escapeHtml(u.name || '—')}</strong></td>
+            <td class="text-truncate" title="${escapeHtml(u.email)}">${escapeHtml(u.email)}</td>
+            <td>${u.verified ? '<span class="badge badge-done">✓ Verified</span>' : '<span class="badge badge-pending">⏳ Pending</span>'}</td>
+            <td><strong>${stats.orders}</strong></td>
+            <td><strong style="color:var(--green)">${formatCurrency(stats.spent)}</strong></td>
+            <td>${formatDate(u.created_at).split(',')[0]}</td>
+        </tr>`;
+    }).join('');
 }
 
 function renderCustomRequests() {
@@ -2816,13 +2288,13 @@ function renderCustomRequests() {
         <td>${formatDate(r.created_at).split(',')[0]}</td>
         <td>${escapeHtml(r.name)}</td>
         <td class="text-truncate" title="${escapeHtml(r.email)}">${escapeHtml(r.email)}</td>
-        <td><i class="fab fa-whatsapp" style="color: #25D366;" aria-hidden="true"></i> ${escapeHtml(r.whatsapp || '—')}</td>
+        <td><i class="fab fa-whatsapp" style="color: #25D366;"></i> ${escapeHtml(r.whatsapp || '—')}</td>
         <td class="text-truncate" title="${escapeHtml(r.title)}">${escapeHtml(r.title)}</td>
         <td><strong style="color:var(--green)">${escapeHtml(r.budget)}</strong></td>
         <td><span class="badge badge-pending">${escapeHtml(r.status || 'pending')}</span></td>
         <td><div style="display:flex;gap:0.4rem;">
-            <button class="btn btn-sm btn-success" onclick="contactClient('${r.email}')" aria-label="Email ${escapeHtml(r.name)}"><i class="fas fa-envelope"></i></button>
-            ${r.whatsapp ? `<button class="btn btn-sm btn-chat" onclick="contactWhatsApp('${r.whatsapp}', '${r.name}')" aria-label="WhatsApp ${escapeHtml(r.name)}"><i class="fab fa-whatsapp"></i></button>` : ''}
+            <button class="btn btn-sm btn-success" onclick="contactClient('${r.email}')"><i class="fas fa-envelope"></i></button>
+            ${r.whatsapp ? `<button class="btn btn-sm btn-chat" onclick="contactWhatsApp('${r.whatsapp}', '${r.name}')"><i class="fab fa-whatsapp"></i></button>` : ''}
         </div></td>
     </tr>`).join('');
 }
@@ -2832,29 +2304,29 @@ async function startProject(orderId) {
     if (!confirm(`Start working on Order #${orderId}?`)) return;
     try {
         await api.startProject(orderId);
-        showNotification(`Project started for Order #${orderId}`);
+        showNotification(`Project started for #${orderId}`);
         await loadAllData();
         closeOrderDetail();
     } catch (error) { showNotification('Failed: ' + error.message, 'error'); }
 }
 
 async function markReadyForBalance(orderId) {
-    if (!confirm(`Mark Order #${orderId} as ready for balance payment?`)) return;
+    if (!confirm(`Mark Order #${orderId} ready for balance?`)) return;
     try {
         await api.readyForBalance(orderId);
-        showNotification(`Order #${orderId} is ready for balance payment`);
+        showNotification(`Order #${orderId} ready for balance`);
         await loadAllData();
         closeOrderDetail();
     } catch (error) { showNotification('Failed: ' + error.message, 'error'); }
 }
 
 async function markAsCompleted(orderId) {
-    const liveUrl = prompt("Enter live URL (optional):") || '';
-    const githubRepo = prompt("Enter GitHub repo URL (optional):") || '';
-    const notes = prompt("Enter delivery notes (optional):") || '';
+    const liveUrl = prompt("Live URL (optional):") || '';
+    const githubRepo = prompt("GitHub repo (optional):") || '';
+    const notes = prompt("Delivery notes (optional):") || '';
     try {
         await api.completeOrder(orderId, { live_url: liveUrl, github_repo: githubRepo, delivery_notes: notes });
-        showNotification(`Order #${orderId} marked as completed`);
+        showNotification(`Order #${orderId} completed`);
         await loadAllData();
         closeOrderDetail();
     } catch (error) { showNotification('Failed: ' + error.message, 'error'); }
@@ -2866,106 +2338,87 @@ async function viewOrderDetails(orderId) {
         try {
             const res = await api.getOrder(orderId);
             order = res.order;
-        } catch { order = state.data.orders.find(o => o.id === orderId); }
+        } catch { 
+            order = state.data.orders.find(o => o.id === orderId); 
+        }
         if (!order) { showNotification('Order not found', 'error'); return; }
+        
+        const clientName = order.user_name || order.users?.name || 'N/A';
+        const clientEmail = order.user_email || order.users?.email || 'N/A';
+        const clientPhone = order.user_phone || '';
+        const clientWhatsapp = order.user_whatsapp || '';
         
         const custom = order.customization || {};
         const customHtml = Object.keys(custom).length > 0
-            ? Object.entries(custom).map(([k, v]) => `<div class="customization-item"><strong>${escapeHtml(k)}:</strong> ${typeof v === 'boolean' ? (v ? 'Yes' : 'No') : escapeHtml(v)}</div>`).join('')
+            ? Object.entries(custom).map(([k, v]) => 
+                `<div class="customization-item"><strong>${escapeHtml(k)}:</strong> ${typeof v === 'boolean' ? (v ? 'Yes' : 'No') : escapeHtml(v)}</div>`
+            ).join('')
             : '<p style="color:var(--text-muted)">No customizations</p>';
         
         const total = parseFloat(order.price) || 0;
         const advance = parseFloat(order.advance_paid) || 0;
         const paid = parseFloat(order.total_paid) || advance;
-        const balance = total - paid;
         const refund = parseFloat(order.refund_amount) || 0;
-        const canStart = order.status === 'payment_received';
-        const canMarkReady = ['payment_received', 'in_progress'].includes(order.status);
-        const canComplete = ['ready_for_balance', 'in_progress'].includes(order.status);
         
         const paymentHtml = `
             <div class="payment-display">
-                <div class="payment-row">
-                    <span class="label">Total Amount:</span>
-                    <span class="value">${formatCurrency(total)}</span>
-                </div>
-                <div class="payment-row">
-                    <span class="label">Advance Paid (15%):</span>
-                    <span class="value warning">${formatCurrency(advance)}</span>
-                </div>
-                <div class="payment-row">
-                    <span class="label">Balance Paid:</span>
-                    <span class="value ${order.balance_paid > 0 ? 'positive' : 'muted'}">${formatCurrency(order.balance_paid || 0)}</span>
-                </div>
-                <div class="payment-row">
-                    <span class="label">Total Paid:</span>
-                    <span class="value positive">${formatCurrency(paid)}</span>
-                </div>
-                ${refund > 0 ? `
-                <div class="payment-row">
-                    <span class="label">Refund Processed:</span>
-                    <span class="value negative">-${formatCurrency(refund)}</span>
-                </div>
-                <div class="payment-row">
-                    <span class="label">Net Received:</span>
-                    <span class="value ${paid - refund >= 0 ? 'positive' : 'negative'}">${formatCurrency(paid - refund)}</span>
-                </div>` : ''}
-                <div class="progress-bar">
-                    <div class="progress-fill" style="width:${total > 0 ? Math.min(100, (paid/total)*100) : 0}%"></div>
-                </div>
-                <div style="text-align:center;margin-top:0.4rem;font-size:0.8rem">
-                    ${total > 0 ? Math.round(Math.min(100, (paid/total)*100)) : 0}% Paid
-                    ${refund > 0 ? ` • Refund: -${Math.round((refund/total)*100)}%` : ''}
-                </div>
+                <div class="payment-row"><span class="label">Total:</span><span class="value">${formatCurrency(total)}</span></div>
+                <div class="payment-row"><span class="label">Advance:</span><span class="value warning">${formatCurrency(advance)}</span></div>
+                <div class="payment-row"><span class="label">Balance:</span><span class="value ${order.balance_paid > 0 ? 'positive' : 'muted'}">${formatCurrency(order.balance_paid || 0)}</span></div>
+                <div class="payment-row"><span class="label">Total Paid:</span><span class="value positive">${formatCurrency(paid)}</span></div>
+                ${refund > 0 ? `<div class="payment-row"><span class="label">Refund:</span><span class="value negative">-${formatCurrency(refund)}</span></div>` : ''}
+                <div class="progress-bar"><div class="progress-fill" style="width:${total > 0 ? Math.min(100, (paid/total)*100) : 0}%"></div></div>
             </div>
         `;
         
         const html = `<div class="order-detail-card">
-            <div class="detail-section"><div class="section-title"><i class="fas fa-info-circle" aria-hidden="true"></i> Order Information</div>
+            <div class="detail-section"><div class="section-title"><i class="fas fa-info-circle"></i> Order Info</div>
             <div class="info-grid">
                 <div class="info-item"><div class="label">Order ID</div><div class="value" style="color:var(--accent)">#${order.id}</div></div>
                 <div class="info-item"><div class="label">Date</div><div class="value">${formatDate(order.created_at)}</div></div>
                 <div class="info-item"><div class="label">Status</div><div class="value"><span class="badge badge-${order.status}">${escapeHtml((order.status || 'unknown').replace(/_/g, ' '))}</span></div></div>
-                <div class="info-item"><div class="label">Total Price</div><div class="value" style="color:var(--green)">${formatCurrency(total)}</div></div>
+                <div class="info-item"><div class="label">Price</div><div class="value" style="color:var(--green)">${formatCurrency(total)}</div></div>
             </div></div>
-            <div class="detail-section"><div class="section-title"><i class="fas fa-user-circle" aria-hidden="true"></i> Client Information</div>
+            
+            <div class="detail-section"><div class="section-title"><i class="fas fa-user-circle"></i> Client</div>
             <div class="info-grid">
-                <div class="info-item"><div class="label">Client Name</div><div class="value"><strong>${escapeHtml(order.user_name || 'N/A')}</strong></div></div>
-                <div class="info-item"><div class="label">Email Address</div><div class="value"><a href="mailto:${order.user_email}" style="color:var(--accent)">${escapeHtml(order.user_email || 'N/A')}</a></div></div>
-                ${order.user_phone ? `<div class="info-item"><div class="label">Phone</div><div class="value">${escapeHtml(order.user_phone)}</div></div>` : ''}
-                ${order.user_whatsapp ? `<div class="info-item"><div class="label">WhatsApp</div><div class="value"><a href="https://wa.me/${order.user_whatsapp.replace(/[^0-9]/g,'')}" target="_blank" style="color:var(--green)">${escapeHtml(order.user_whatsapp)}</a></div></div>` : ''}
+                <div class="info-item"><div class="label">Name</div><div class="value"><strong>${escapeHtml(clientName)}</strong></div></div>
+                <div class="info-item"><div class="label">Email</div><div class="value"><a href="mailto:${clientEmail}" style="color:var(--accent)">${escapeHtml(clientEmail)}</a></div></div>
+                ${clientPhone ? `<div class="info-item"><div class="label">Phone</div><div class="value">${escapeHtml(clientPhone)}</div></div>` : ''}
+                ${clientWhatsapp ? `<div class="info-item"><div class="label">WhatsApp</div><div class="value"><a href="https://wa.me/${clientWhatsapp.replace(/[^0-9]/g,'')}" target="_blank" style="color:var(--green)">${escapeHtml(clientWhatsapp)}</a></div></div>` : ''}
             </div></div>
-            <div class="detail-section"><div class="section-title"><i class="fas fa-credit-card" aria-hidden="true"></i> Payment Details</div>
-            ${paymentHtml}
-            </div>
-            <div class="detail-section"><div class="section-title"><i class="fas fa-sliders-h" aria-hidden="true"></i> Customizations</div>${customHtml}</div>
-            ${order.requirements ? `<div class="detail-section"><div class="section-title"><i class="fas fa-clipboard-list" aria-hidden="true"></i> Requirements</div><div style="background:var(--bg-card);padding:0.8rem;border-radius:var(--radius-md);white-space:pre-wrap;font-size:0.9rem">${escapeHtml(order.requirements)}</div></div>` : ''}
-            <div class="detail-section"><div class="section-title"><i class="fas fa-link" aria-hidden="true"></i> Deliverables</div><div class="info-grid">
-                <div class="info-item"><div class="label">Live URL</div><div class="value">${order.live_url ? `<a href="${order.live_url}" target="_blank" class="deliverable-link" rel="noopener">${escapeHtml(order.live_url.substring(0,35))}${order.live_url.length > 35 ? '...' : ''}</a>` : '—'}</div></div>
-                <div class="info-item"><div class="label">GitHub Repo</div><div class="value">${order.github_repo ? `<a href="${order.github_repo}" target="_blank" class="deliverable-link" rel="noopener">View</a>` : '—'}</div></div>
-                <div class="info-item"><div class="label">Preview Ready</div><div class="value">${order.preview_ready ? '<i class="fas fa-check-circle" style="color:var(--green)" aria-label="Yes"></i>' : '<i class="fas fa-times-circle" style="color:var(--error)" aria-label="No"></i>'}</div></div>
-                <div class="info-item"><div class="label">Full Access Ready</div><div class="value">${order.full_access_ready ? '<i class="fas fa-check-circle" style="color:var(--green)" aria-label="Yes"></i>' : '<i class="fas fa-times-circle" style="color:var(--error)" aria-label="No"></i>'}</div></div>
-            </div>${order.delivery_notes ? `<div style="margin-top:0.8rem"><strong>Delivery Notes:</strong><p style="margin-top:0.2rem;font-size:0.9rem">${escapeHtml(order.delivery_notes)}</p></div>` : ''}</div>
-            <div class="detail-section"><div class="section-title"><i class="fas fa-cog" aria-hidden="true"></i> Actions</div>
+            
+            <div class="detail-section"><div class="section-title"><i class="fas fa-credit-card"></i> Payment</div>${paymentHtml}</div>
+            <div class="detail-section"><div class="section-title"><i class="fas fa-sliders-h"></i> Customizations</div>${customHtml}</div>
+            ${order.requirements ? `<div class="detail-section"><div class="section-title"><i class="fas fa-clipboard-list"></i> Requirements</div><div style="background:var(--bg-card);padding:0.8rem;border-radius:var(--radius-md);white-space:pre-wrap;font-size:0.9rem">${escapeHtml(order.requirements)}</div></div>` : ''}
+            
+            <div class="detail-section"><div class="section-title"><i class="fas fa-link"></i> Deliverables</div><div class="info-grid">
+                <div class="info-item"><div class="label">Live URL</div><div class="value">${order.live_url ? `<a href="${order.live_url}" target="_blank" class="deliverable-link">${escapeHtml(order.live_url.substring(0,35))}${order.live_url.length>35?'...':''}</a>` : '—'}</div></div>
+                <div class="info-item"><div class="label">GitHub</div><div class="value">${order.github_repo ? `<a href="${order.github_repo}" target="_blank" class="deliverable-link">View</a>` : '—'}</div></div>
+                <div class="info-item"><div class="label">Preview</div><div class="value">${order.preview_ready ? '✓ Yes' : '✗ No'}</div></div>
+                <div class="info-item"><div class="label">Full Access</div><div class="value">${order.full_access_ready ? '✓ Yes' : '✗ No'}</div></div>
+            </div>${order.delivery_notes ? `<div style="margin-top:0.8rem"><strong>Notes:</strong><p style="margin-top:0.3rem;font-size:0.9rem">${escapeHtml(order.delivery_notes)}</p></div>` : ''}</div>
+            
+            <div class="detail-section"><div class="section-title"><i class="fas fa-cog"></i> Actions</div>
             <div style="display:flex;gap:0.4rem;flex-wrap:wrap">
-                ${canStart ? `<button class="btn btn-success" onclick="startProject(${order.id})"><i class="fas fa-play" aria-hidden="true"></i> Start</button>` : ''}
-                ${canMarkReady ? `<button class="btn btn-warning" onclick="markReadyForBalance(${order.id})"><i class="fas fa-money-bill" aria-hidden="true"></i> Ready</button>` : ''}
-                ${canComplete ? `<button class="btn btn-primary" onclick="markAsCompleted(${order.id})"><i class="fas fa-check-circle" aria-hidden="true"></i> Complete</button>` : ''}
-                <button class="btn btn-primary" onclick="openDeliveryModal(${order.id})"><i class="fas fa-box" aria-hidden="true"></i> Edit</button>
-                <button class="btn btn-view" onclick="viewDeliverablesModal(${order.id})"><i class="fas fa-eye" aria-hidden="true"></i> View</button>
-                <button class="btn btn-chat" onclick="openMessagePopup(${order.id})"><i class="fas fa-envelope" aria-hidden="true"></i> Message</button>
-                <button class="btn btn-chat" onclick="chatFromOrder(${order.id})"><i class="fas fa-comment" aria-hidden="true"></i> Chat</button>
-                ${order.status === 'cancellation_requested' || order.refund_status === 'pending' ? `<button class="btn btn-danger" onclick="openRefundModalFromOrder(${order.id}, ${order.refund_amount || order.advance_paid || 0})"><i class="fas fa-money-bill-wave" aria-hidden="true"></i> Refund</button>` : ''}
+                ${order.status === 'payment_received' ? `<button class="btn btn-success" onclick="startProject(${order.id})"><i class="fas fa-play"></i> Start</button>` : ''}
+                ${['payment_received', 'in_progress'].includes(order.status) ? `<button class="btn btn-warning" onclick="markReadyForBalance(${order.id})"><i class="fas fa-money-bill"></i> Balance</button>` : ''}
+                ${['ready_for_balance', 'in_progress'].includes(order.status) ? `<button class="btn btn-primary" onclick="markAsCompleted(${order.id})"><i class="fas fa-check-circle"></i> Complete</button>` : ''}
+                <button class="btn btn-primary" onclick="openDeliveryModal(${order.id})"><i class="fas fa-box"></i> Edit</button>
+                <button class="btn btn-view" onclick="viewDeliverablesModal(${order.id})"><i class="fas fa-eye"></i> View</button>
+                <button class="btn btn-chat" onclick="openMessagePopup(${order.id})"><i class="fas fa-envelope"></i> Message</button>
+                <button class="btn btn-chat" onclick="chatFromOrder(${order.id})"><i class="fas fa-comment"></i> Chat</button>
+                ${order.status === 'cancellation_requested' || order.refund_status === 'pending' ? 
+                    `<button class="btn btn-danger" onclick="openRefundModalFromOrder(${order.id}, ${order.refund_amount || order.advance_paid || 0})"><i class="fas fa-money-bill-wave"></i> Refund</button>` : ''}
             </div></div></div>`;
         
         document.getElementById('order-detail-content').innerHTML = html;
         openModalOverlay('order-detail-modal');
     } catch (error) {
-        console.error('Failed to load order details:', error);
-        showNotification('Failed to load order details', 'error');
+        console.error('Failed to load order:', error);
+        showNotification('Failed: ' + error.message, 'error');
     }
 }
-
 function closeOrderDetail() { closeModalOverlay('order-detail-modal'); }
 
 // ===== 📦 Delivery Modal =====
@@ -2973,20 +2426,19 @@ function openDeliveryModal(orderId) {
     const order = state.data.orders.find(o => o.id === orderId);
     if (!order) { showNotification('Order not found', 'error'); return; }
     
-    const html = `<div class="fg"><label><i class="fab fa-github" aria-hidden="true"></i> GitHub Repository URL</label><input id="del-github" value="${order.github_repo || ''}" placeholder="https://github.com/username/repo"></div>
-        <div class="fg"><label><i class="fas fa-globe" aria-hidden="true"></i> Live Demo URL</label><input id="del-live" value="${order.live_url || ''}" placeholder="https://example.com"></div>
-        <div class="fg"><label><i class="fas fa-code" aria-hidden="true"></i> Source Code URL</label><input id="del-source" value="${order.source_code_url || ''}" placeholder="https://drive.google.com/..."></div>
-        <div class="fg"><label><i class="fas fa-book" aria-hidden="true"></i> Documentation URL</label><input id="del-docs" value="${order.documentation_url || ''}" placeholder="https://docs.example.com"></div>
-        <div class="fg"><label><i class="fas fa-sticky-note" aria-hidden="true"></i> Delivery Notes</label><textarea id="del-notes" rows="3" placeholder="Add any delivery notes...">${order.delivery_notes || ''}</textarea></div>
-        <div class="fg"><label><input type="checkbox" id="del-preview" ${order.preview_ready ? 'checked' : ''}> <i class="fas fa-eye" aria-hidden="true"></i> Preview Ready</label></div>
-        <div class="fg"><label><input type="checkbox" id="del-full" ${order.full_access_ready ? 'checked' : ''}> <i class="fas fa-download" aria-hidden="true"></i> Full Access Ready</label></div>
-        <div class="fg"><label><input type="checkbox" id="del-mark-delivered"> <i class="fas fa-check-circle" aria-hidden="true"></i> Mark as Delivered</label></div>
-        <div class="modal-foot"><button type="button" class="btn btn-cancel" onclick="closeDeliveryModal()">Cancel</button><button type="button" class="btn btn-save" onclick="submitDelivery(${orderId})"><i class="fas fa-save" aria-hidden="true"></i> Save</button></div>`;
+    const html = `<div class="fg"><label><i class="fab fa-github"></i> GitHub URL</label><input id="del-github" value="${order.github_repo || ''}" placeholder="https://github.com/..."></div>
+        <div class="fg"><label><i class="fas fa-globe"></i> Live URL</label><input id="del-live" value="${order.live_url || ''}" placeholder="https://example.com"></div>
+        <div class="fg"><label><i class="fas fa-code"></i> Source Code</label><input id="del-source" value="${order.source_code_url || ''}" placeholder="Drive link..."></div>
+        <div class="fg"><label><i class="fas fa-book"></i> Documentation</label><input id="del-docs" value="${order.documentation_url || ''}" placeholder="Docs URL..."></div>
+        <div class="fg"><label><i class="fas fa-sticky-note"></i> Notes</label><textarea id="del-notes" rows="2" placeholder="Delivery notes...">${order.delivery_notes || ''}</textarea></div>
+        <div class="fg"><label><input type="checkbox" id="del-preview" ${order.preview_ready ? 'checked' : ''}> <i class="fas fa-eye"></i> Preview Ready</label></div>
+        <div class="fg"><label><input type="checkbox" id="del-full" ${order.full_access_ready ? 'checked' : ''}> <i class="fas fa-download"></i> Full Access Ready</label></div>
+        <div class="fg"><label><input type="checkbox" id="del-mark-delivered"> <i class="fas fa-check-circle"></i> Mark Delivered</label></div>
+        <div class="modal-foot"><button class="btn btn-cancel" onclick="closeDeliveryModal()">Cancel</button><button class="btn btn-save" onclick="submitDelivery(${orderId})"><i class="fas fa-save"></i> Save</button></div>`;
     
     document.getElementById('delivery-modal-content').innerHTML = html;
     openModalOverlay('delivery-modal');
 }
-
 function closeDeliveryModal() { closeModalOverlay('delivery-modal'); }
 
 async function submitDelivery(orderId) {
@@ -3005,38 +2457,27 @@ async function submitDelivery(orderId) {
         closeDeliveryModal();
         closeOrderDetail();
         await loadAllData();
-        showNotification(`Delivery info saved for Order #${orderId}`);
+        showNotification(`Delivery saved for #${orderId}`);
     } catch (error) { showNotification('Failed: ' + error.message, 'error'); }
 }
 
 // ===== 💰 Refund =====
 async function processRefund(orderId, amount) {
     if (!confirm(`Process refund of ${formatCurrency(amount)} for Order #${orderId}?`)) return;
-    
     const refundAmount = parseFloat(amount);
-    if (isNaN(refundAmount) || refundAmount <= 0) {
-        showNotification('Invalid refund amount', 'error');
-        return;
-    }
-    
+    if (isNaN(refundAmount) || refundAmount <= 0) { showNotification('Invalid amount', 'error'); return; }
     try {
-        await api.processRefund(orderId, { 
-            amount: refundAmount, 
-            reason: 'Refund approved by admin',
-            admin_notes: `Processed via dashboard on ${new Date().toLocaleString()}`
-        });
-        showNotification(`Refund of ${formatCurrency(refundAmount)} processed`);
+        await api.processRefund(orderId, { amount: refundAmount, reason: 'Approved by admin', admin_notes: `Processed ${new Date().toLocaleString()}` });
+        showNotification(`Refund ${formatCurrency(refundAmount)} processed`);
         await loadAllData();
-    } catch (error) { 
-        showNotification('Refund failed: ' + error.message, 'error'); 
-    }
+    } catch (error) { showNotification('Failed: ' + error.message, 'error'); }
 }
 
 async function rejectRefund(orderId) {
-    if (!confirm(`Reject refund request for Order #${orderId}?`)) return;
+    if (!confirm(`Reject refund for Order #${orderId}?`)) return;
     try {
-        await api.rejectRefund(orderId, 'Refund rejected by admin');
-        showNotification(`Refund request rejected for Order #${orderId}`);
+        await api.rejectRefund(orderId, 'Rejected by admin');
+        showNotification(`Refund rejected for #${orderId}`);
         await loadAllData();
     } catch (error) { showNotification('Failed: ' + error.message, 'error'); }
 }
@@ -3047,39 +2488,20 @@ function openRefundModalFromOrder(orderId, amount) {
     document.getElementById('refund-reason').value = '';
     openModalOverlay('refund-modal');
 }
-
-function closeRefundModal() { 
-    closeModalOverlay('refund-modal'); 
-    state.ui.currentRefundOrderId = null; 
-}
+function closeRefundModal() { closeModalOverlay('refund-modal'); state.ui.currentRefundOrderId = null; }
 
 async function processRefundNow() {
     const amount = document.getElementById('refund-amount')?.value;
-    const reason = document.getElementById('refund-reason')?.value || 'Admin initiated refund';
-    
-    if (!amount || !state.ui.currentRefundOrderId) { 
-        showNotification('Invalid refund data', 'error'); 
-        return; 
-    }
-    
+    const reason = document.getElementById('refund-reason')?.value || 'Admin initiated';
+    if (!amount || !state.ui.currentRefundOrderId) { showNotification('Invalid data', 'error'); return; }
     const refundAmount = parseFloat(amount);
-    if (isNaN(refundAmount) || refundAmount <= 0) {
-        showNotification('Please enter a valid refund amount', 'error');
-        return;
-    }
-    
+    if (isNaN(refundAmount) || refundAmount <= 0) { showNotification('Enter valid amount', 'error'); return; }
     try {
-        await api.processRefund(state.ui.currentRefundOrderId, { 
-            amount: refundAmount, 
-            reason,
-            admin_notes: `Processed via refund modal on ${new Date().toLocaleString()}`
-        });
+        await api.processRefund(state.ui.currentRefundOrderId, { amount: refundAmount, reason, admin_notes: `Modal: ${new Date().toLocaleString()}` });
         closeRefundModal();
         await loadAllData();
-        showNotification(`Refund of ${formatCurrency(refundAmount)} processed`);
-    } catch (error) { 
-        showNotification('Refund failed: ' + error.message, 'error'); 
-    }
+        showNotification(`Refund ${formatCurrency(refundAmount)} processed`);
+    } catch (error) { showNotification('Failed: ' + error.message, 'error'); }
 }
 
 // ===== 💬 Message Popup =====
@@ -3091,20 +2513,12 @@ function openMessagePopup(orderId) {
     document.getElementById('msg-client-email').textContent = order.user_email || 'N/A';
     document.getElementById('msg-client-email').href = `mailto:${order.user_email}`;
     document.getElementById('msg-order-id').textContent = orderId;
-    document.getElementById('msg-content').textContent = order.requirements || order.custom_notes || 'No message content available.';
+    document.getElementById('msg-content').textContent = order.requirements || order.custom_notes || 'No message.';
     openModalOverlay('message-popup');
 }
-
-function closeMessagePopup() { 
-    closeModalOverlay('message-popup'); 
-    state.ui.currentMessageOrderId = null; 
-}
-
+function closeMessagePopup() { closeModalOverlay('message-popup'); state.ui.currentMessageOrderId = null; }
 function openChatFromPopup() {
-    if (state.ui.currentMessageOrderId) {
-        closeMessagePopup();
-        chatFromOrder(state.ui.currentMessageOrderId);
-    }
+    if (state.ui.currentMessageOrderId) { closeMessagePopup(); chatFromOrder(state.ui.currentMessageOrderId); }
 }
 
 // ===== 📁 Deliverables =====
@@ -3112,33 +2526,30 @@ function viewDeliverablesModal(orderId) {
     const order = state.data.orders.find(o => o.id === orderId);
     if (!order) return;
     const content = document.getElementById('view-deliverables-content');
-    let html = `<div style="margin-bottom:0.8rem"><strong>Client:</strong> ${escapeHtml(order.user_name || 'N/A')}</div><div class="detail-section"><div class="section-title"><i class="fas fa-link" aria-hidden="true"></i> Deliverables</div><div class="info-grid">`;
-    html += `<div class="info-item"><div class="label">Live URL</div><div class="value">${order.live_url ? `<a href="${order.live_url}" target="_blank" class="deliverable-link" rel="noopener">${escapeHtml(order.live_url.substring(0,35))}${order.live_url.length > 35 ? '...' : ''}</a>` : '<span style="color:var(--text-muted)">Not provided</span>'}</div></div>`;
-    html += `<div class="info-item"><div class="label">GitHub Repository</div><div class="value">${order.github_repo ? `<a href="${order.github_repo}" target="_blank" class="deliverable-link" rel="noopener">View Repo</a>` : '<span style="color:var(--text-muted)">Not provided</span>'}</div></div>`;
-    html += `<div class="info-item"><div class="label">Source Code</div><div class="value">${order.source_code_url ? `<a href="${order.source_code_url}" target="_blank" class="deliverable-link" rel="noopener">Download</a>` : '<span style="color:var(--text-muted)">Not provided</span>'}</div></div>`;
-    html += `<div class="info-item"><div class="label">Documentation</div><div class="value">${order.documentation_url ? `<a href="${order.documentation_url}" target="_blank" class="deliverable-link" rel="noopener">View Docs</a>` : '<span style="color:var(--text-muted)">Not provided</span>'}</div></div></div>`;
-    if (order.delivery_notes) html += `<div style="margin-top:0.8rem"><strong>Delivery Notes:</strong><p style="margin-top:0.2rem;font-size:0.9rem">${escapeHtml(order.delivery_notes)}</p></div>`;
-    html += `</div>`;
+    let html = `<div style="margin-bottom:0.8rem"><strong>Client:</strong> ${escapeHtml(order.user_name || 'N/A')}</div><div class="detail-section"><div class="section-title"><i class="fas fa-link"></i> Deliverables</div><div class="info-grid">`;
+    html += `<div class="info-item"><div class="label">Live URL</div><div class="value">${order.live_url ? `<a href="${order.live_url}" target="_blank" class="deliverable-link">${escapeHtml(order.live_url.substring(0,35))}${order.live_url.length>35?'...':''}</a>` : '—'}</div></div>`;
+    html += `<div class="info-item"><div class="label">GitHub</div><div class="value">${order.github_repo ? `<a href="${order.github_repo}" target="_blank" class="deliverable-link">View</a>` : '—'}</div></div>`;
+    html += `<div class="info-item"><div class="label">Source</div><div class="value">${order.source_code_url ? `<a href="${order.source_code_url}" target="_blank" class="deliverable-link">Download</a>` : '—'}</div></div>`;
+    html += `<div class="info-item"><div class="label">Docs</div><div class="value">${order.documentation_url ? `<a href="${order.documentation_url}" target="_blank" class="deliverable-link">View</a>` : '—'}</div></div></div>`;
+    if (order.delivery_notes) html += `<div style="margin-top:0.8rem"><strong>Notes:</strong><p style="margin-top:0.3rem">${escapeHtml(order.delivery_notes)}</p></div>`;
     content.innerHTML = html;
     openModalOverlay('view-deliverables-modal');
 }
-
 function closeViewDeliverablesModal() { closeModalOverlay('view-deliverables-modal'); }
 
 // ===== 🧩 Services =====
 function openModal() {
     state.ui.editingServiceId = null;
-    document.getElementById('svc-modal-title').innerHTML = '<i class="fas fa-edit" aria-hidden="true"></i> <span>Add New Service</span>';
+    document.getElementById('modal-title').textContent = 'Add New Service';
     ['f-title', 'f-desc', 'f-tech', 'f-price'].forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
     const catEl = document.getElementById('f-cat'); if (catEl) catEl.value = 'web';
     openModalOverlay('svc-modal');
 }
-
 function editService(id) {
     const service = state.data.services.find(s => s.id === id);
     if (!service) { showNotification('Service not found', 'error'); return; }
     state.ui.editingServiceId = id;
-    document.getElementById('svc-modal-title').innerHTML = '<i class="fas fa-edit" aria-hidden="true"></i> <span>Edit Service</span>';
+    document.getElementById('modal-title').textContent = 'Edit Service';
     document.getElementById('f-title').value = service.title || '';
     document.getElementById('f-desc').value = service.description || '';
     document.getElementById('f-cat').value = service.category || 'web';
@@ -3146,52 +2557,28 @@ function editService(id) {
     document.getElementById('f-price').value = service.price || '';
     openModalOverlay('svc-modal');
 }
-
-function closeModal() { 
-    closeModalOverlay('svc-modal'); 
-    state.ui.editingServiceId = null; 
-}
+function closeModal() { closeModalOverlay('svc-modal'); state.ui.editingServiceId = null; }
 
 async function saveService() {
     const title = document.getElementById('f-title')?.value.trim();
     const price = document.getElementById('f-price')?.value;
-    if (!title || !price) { showNotification('Title and price are required', 'error'); return; }
-    const serviceData = { 
-        title, 
-        price: parseFloat(price), 
-        description: document.getElementById('f-desc')?.value.trim() || '', 
-        category: document.getElementById('f-cat')?.value || 'web', 
-        technologies: document.getElementById('f-tech')?.value.trim() || '' 
-    };
+    if (!title || !price) { showNotification('Title & price required', 'error'); return; }
+    const serviceData = { title, price: parseFloat(price), description: document.getElementById('f-desc')?.value.trim() || '', category: document.getElementById('f-cat')?.value || 'web', technologies: document.getElementById('f-tech')?.value.trim() || '' };
     const btn = document.querySelector('#svc-modal .btn-save');
     setLoading(btn, true);
     try {
-        if (state.ui.editingServiceId) { 
-            serviceData.id = state.ui.editingServiceId; 
-            await api.updateService(serviceData); 
-            showNotification('Service updated'); 
-        } else { 
-            await api.addService(serviceData); 
-            showNotification('Service added'); 
-        }
+        if (state.ui.editingServiceId) { serviceData.id = state.ui.editingServiceId; await api.updateService(serviceData); showNotification('Service updated'); }
+        else { await api.addService(serviceData); showNotification('Service added'); }
         closeModal();
         await loadAllData();
-    } catch (error) { 
-        showNotification('Error: ' + error.message, 'error'); 
-    } finally { 
-        setLoading(btn, false); 
-    }
+    } catch (error) { showNotification('Error: ' + error.message, 'error'); }
+    finally { setLoading(btn, false); }
 }
 
 async function deleteService(id) {
-    if (!confirm('Are you sure you want to delete this service?')) return;
-    try { 
-        await api.deleteService(id); 
-        await loadAllData(); 
-        showNotification('Service deleted'); 
-    } catch (error) { 
-        showNotification('Error: ' + error.message, 'error'); 
-    }
+    if (!confirm('Delete this service?')) return;
+    try { await api.deleteService(id); await loadAllData(); showNotification('Service deleted'); }
+    catch (error) { showNotification('Error: ' + error.message, 'error'); }
 }
 
 // ===== 💬 Chat =====
@@ -3201,7 +2588,7 @@ async function loadConversations() {
         displayConversations(response.conversations || []);
     } catch (error) {
         console.error('Failed to load conversations:', error);
-        document.getElementById('conversations-list').innerHTML = '<div style="text-align:center;padding:2rem;color:var(--error)">Failed to load conversations</div>';
+        document.getElementById('conversations-list').innerHTML = '<div style="text-align:center;padding:2rem;color:var(--error)">Failed to load</div>';
     }
 }
 
@@ -3209,7 +2596,7 @@ function displayConversations(conversations) {
     const container = document.getElementById('conversations-list');
     if (!container) return;
     if (!conversations || !conversations.length) {
-        container.innerHTML = '<div style="text-align:center;padding:2rem;color:var(--text-muted)" role="status">No conversations yet</div>';
+        container.innerHTML = '<div style="text-align:center;padding:2rem;color:var(--text-muted)">No conversations</div>';
         return;
     }
     container.innerHTML = conversations.map(conv => {
@@ -3218,37 +2605,29 @@ function displayConversations(conversations) {
         const userName = conv.users?.name || 'User';
         const orderId = conv.id.replace('order_', '');
         return `<div class="conversation-item ${hasUnread ? 'unread' : ''} ${isActive ? 'active' : ''}" role="listitem">
-            <div onclick="selectConversation('${conv.id}', '${escapeHtml(userName)}')" style="cursor:pointer" role="button" tabindex="0" aria-label="Chat with ${escapeHtml(userName)}, order #${orderId}">
-                <div style="font-weight:600;margin-bottom:0.25rem;font-size:0.9rem">
-                    <i class="fas fa-user-circle" aria-hidden="true"></i> ${escapeHtml(userName)} 
-                    <span style="font-size:0.7rem;color:var(--accent)">#${orderId}</span>
-                    ${hasUnread ? '<span style="display:inline-block;width:8px;height:8px;background:var(--accent);border-radius:50%;margin-left:5px" aria-label="Unread"></span>' : ''}
-                </div>
+            <div onclick="selectConversation('${conv.id}', '${escapeHtml(userName)}')" style="cursor:pointer" role="button" tabindex="0">
+                <div style="font-weight:600;margin-bottom:0.2rem;font-size:0.9rem"><i class="fas fa-user-circle"></i> ${escapeHtml(userName)} <span style="font-size:0.7rem;color:var(--accent)">#${orderId}</span>${hasUnread ? '<span style="display:inline-block;width:7px;height:7px;background:var(--accent);border-radius:50%;margin-left:4px"></span>' : ''}</div>
                 <div style="font-size:0.8rem;color:var(--text-muted)">${escapeHtml((conv.last_message || 'No messages').substring(0, 45))}${(conv.last_message?.length || 0) > 45 ? '...' : ''}</div>
                 <div style="font-size:0.65rem;color:var(--text-muted)">${conv.last_message_at ? formatDate(conv.last_message_at) : ''}</div>
             </div>
-            <button class="delete-conv-btn" onclick="deleteConversation('${conv.id}')" aria-label="Delete conversation with ${escapeHtml(userName)}" style="position:absolute;top:0.5rem;right:0.5rem;background:transparent;border:none;color:var(--text-muted);cursor:pointer;padding:0.3rem">
-                <i class="fas fa-trash"></i>
-            </button>
+            <button class="delete-conv-btn" onclick="deleteConversation('${conv.id}')" aria-label="Delete"><i class="fas fa-trash"></i></button>
         </div>`;
     }).join('');
 }
 
 async function selectConversation(conversationId, userName) {
     state.ui.activeConversation = conversationId;
-    document.getElementById('active-conversation-title').innerHTML = `<i class="fas fa-comment" aria-hidden="true"></i> Chat with ${escapeHtml(userName)} (Order #${conversationId.replace('order_', '')})`;
-    
+    document.getElementById('active-conversation-title').innerHTML = `<i class="fas fa-comment"></i> ${escapeHtml(userName)} (#${conversationId.replace('order_', '')})`;
     if (window.innerWidth <= 992) {
         document.getElementById('conversations-list').classList.remove('mobile-show');
         document.querySelector('.back-to-list')?.classList.remove('hidden');
     }
-    
     try {
         const response = await api.getMessages(conversationId);
         displayChatMessages(response.messages || []);
     } catch (error) {
         console.error('Failed to load messages:', error);
-        document.getElementById('admin-chat-messages').innerHTML = '<div style="text-align:center;padding:2rem;color:var(--error)">Failed to load messages</div>';
+        document.getElementById('admin-chat-messages').innerHTML = '<div style="text-align:center;padding:2rem;color:var(--error)">Failed</div>';
     }
     loadConversations();
 }
@@ -3257,12 +2636,12 @@ function displayChatMessages(messages) {
     const container = document.getElementById('admin-chat-messages');
     if (!container) return;
     if (!messages || !messages.length) {
-        container.innerHTML = '<div style="text-align:center;padding:2rem;color:var(--text-muted)" role="status">No messages yet</div>';
+        container.innerHTML = '<div style="text-align:center;padding:2rem;color:var(--text-muted)">No messages</div>';
         return;
     }
     container.innerHTML = messages.map(msg => `
-        <div class="message-bubble ${msg.sender_role === 'admin' ? 'admin' : 'user'} ${msg.is_new ? 'message-new' : ''}">
-            ${msg.sender_role === 'admin' ? `<button class="delete-msg-btn" onclick="deleteAdminMessage('${msg.id}')" title="Delete message" aria-label="Delete message"><i class="fas fa-times"></i></button>` : ''}
+        <div class="message-bubble ${msg.sender_role === 'admin' ? 'admin' : 'user'}">
+            ${msg.sender_role === 'admin' ? `<button class="delete-msg-btn" onclick="deleteAdminMessage('${msg.id}')" aria-label="Delete"><i class="fas fa-times"></i></button>` : ''}
             <div class="message-content">${escapeHtml(msg.message)}</div>
             <span class="message-time">${formatDate(msg.created_at)}</span>
         </div>
@@ -3271,18 +2650,16 @@ function displayChatMessages(messages) {
 }
 
 async function deleteAdminMessage(messageId) {
-    if (!confirm('Are you sure you want to delete this message?')) return;
+    if (!confirm('Delete this message?')) return;
     try {
         await api.deleteMessage(messageId);
         showNotification('Message deleted');
-        if (state.ui.activeConversation) {
-            await selectConversation(state.ui.activeConversation, '');
-        }
+        if (state.ui.activeConversation) await selectConversation(state.ui.activeConversation, '');
     } catch (error) { showNotification('Failed: ' + error.message, 'error'); }
 }
 
 async function sendAdminReply() {
-    if (!state.ui.activeConversation) { showNotification('Select a conversation first', 'error'); return; }
+    if (!state.ui.activeConversation) { showNotification('Select conversation first', 'error'); return; }
     const input = document.getElementById('admin-chat-input');
     const message = input?.value.trim();
     if (!message) return;
@@ -3291,11 +2668,10 @@ async function sendAdminReply() {
     try {
         await api.sendMessage(state.ui.activeConversation, message);
         input.value = '';
-        input.style.height = 'auto'; // Reset height
         await selectConversation(state.ui.activeConversation, '');
         await loadConversations();
-    } catch (error) { showNotification('Failed to send message', 'error'); }
-    finally { setLoading(sendBtn, false); input?.focus(); }
+    } catch (error) { showNotification('Failed to send', 'error'); }
+    finally { setLoading(sendBtn, false); }
 }
 
 function startChatPolling() {
@@ -3303,31 +2679,26 @@ function startChatPolling() {
     state.chat.pollingActive = true;
     state.chat.pollInterval = setInterval(async () => {
         if (state.chat.pollingActive && document.getElementById('panel-chat')?.classList.contains('active') && state.ui.activeConversation) {
-            try { 
-                await selectConversation(state.ui.activeConversation, ''); 
-                await loadConversations(); 
-            } catch (e) { console.warn('Polling error:', e); }
+            try { await selectConversation(state.ui.activeConversation, ''); await loadConversations(); }
+            catch (e) { console.warn('Polling error:', e); }
         }
     }, 5000);
 }
 
 function stopChatPolling() {
     state.chat.pollingActive = false;
-    if (state.chat.pollInterval) { 
-        clearInterval(state.chat.pollInterval); 
-        state.chat.pollInterval = null; 
-    }
+    if (state.chat.pollInterval) { clearInterval(state.chat.pollInterval); state.chat.pollInterval = null; }
 }
 
 async function deleteConversation(conversationId) {
-    if (!confirm('Are you sure you want to delete this entire conversation?')) return;
+    if (!confirm('Delete this conversation?')) return;
     try {
         await api.deleteConversation(conversationId);
         showNotification('Conversation deleted');
         if (state.ui.activeConversation === conversationId) {
             state.ui.activeConversation = null;
-            document.getElementById('active-conversation-title').innerHTML = '<i class="fas fa-comment" aria-hidden="true"></i> Select a conversation';
-            document.getElementById('admin-chat-messages').innerHTML = '<div style="text-align:center;padding:2rem;color:var(--text-muted)" role="status">Select a conversation to start chatting</div>';
+            document.getElementById('active-conversation-title').innerHTML = '<i class="fas fa-comment"></i> Select conversation';
+            document.getElementById('admin-chat-messages').innerHTML = '<div style="text-align:center;padding:2rem;color:var(--text-muted)">Select conversation</div>';
         }
         await loadConversations();
     } catch (error) { showNotification('Failed: ' + error.message, 'error'); }
@@ -3336,13 +2707,8 @@ async function deleteConversation(conversationId) {
 function toggleConversationsList() {
     const list = document.getElementById('conversations-list');
     const backBtn = document.querySelector('.back-to-list');
-    if (list.classList.contains('mobile-show')) { 
-        list.classList.remove('mobile-show'); 
-        backBtn?.classList.add('hidden'); 
-    } else { 
-        list.classList.add('mobile-show'); 
-        backBtn?.classList.remove('hidden'); 
-    }
+    if (list.classList.contains('mobile-show')) { list.classList.remove('mobile-show'); backBtn?.classList.add('hidden'); }
+    else { list.classList.add('mobile-show'); backBtn?.classList.remove('hidden'); }
 }
 
 async function chatFromOrder(orderId) {
@@ -3350,18 +2716,17 @@ async function chatFromOrder(orderId) {
     const userName = order?.user_name || 'Client';
     await selectConversation(`order_${orderId}`, userName);
     switchPanel('chat', document.querySelector('[onclick*="chat"]'));
-    showNotification(`Opened chat with ${userName}`);
+    showNotification(`Chat with ${userName}`);
 }
 
 // ===== 📧 Contact =====
 function contactWhatsApp(phone, name) {
-    if (!phone) { showNotification('No WhatsApp number provided', 'error'); return; }
+    if (!phone) { showNotification('No WhatsApp number', 'error'); return; }
     let cleanPhone = phone.replace(/[^0-9]/g, '');
     if (!cleanPhone.startsWith('91') && cleanPhone.length === 10) cleanPhone = '91' + cleanPhone;
-    const message = encodeURIComponent(`Hi ${name}, I'm contacting you regarding your custom project request on NovaStack.`);
+    const message = encodeURIComponent(`Hi ${name}, regarding your NovaStack request.`);
     window.open(`https://wa.me/${cleanPhone}?text=${message}`, '_blank', 'noopener');
 }
-
 function contactClient(email) { if (email) window.location.href = `mailto:${email}`; }
 
 // ===== 🔍 Filters =====
@@ -3375,50 +2740,25 @@ function switchPanel(panelName, navElement) {
     document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
     const targetPanel = document.getElementById(`panel-${panelName}`);
     if (targetPanel) targetPanel.classList.add('active');
-    
     document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
     if (navElement) navElement.classList.add('active');
-    
     const titles = { 
-        overview: 'Dashboard', 
-        orders: 'All Orders', 
-        services: 'Services', 
-        users: 'Users', 
-        'custom-requests': 'Custom Requests', 
-        chat: 'Support Chat', 
-        'refund-requests': 'Pending Refunds',
-        'refund-history': 'Refund History'
+        overview: 'Dashboard', orders: 'All Orders', services: 'Services', users: 'Users', 
+        'custom-requests': 'Custom Requests', chat: 'Support Chat', 
+        'refund-requests': 'Pending Refunds', 'refund-history': 'Refund History'
     };
     const icons = { 
-        overview: 'tachometer-alt', 
-        orders: 'list', 
-        services: 'cubes', 
-        users: 'users', 
-        'custom-requests': 'file-signature', 
-        chat: 'comment-dots', 
-        'refund-requests': 'hourglass-half',
-        'refund-history': 'history'
+        overview: 'tachometer-alt', orders: 'list', services: 'cubes', users: 'users', 
+        'custom-requests': 'file-signature', chat: 'comment-dots', 
+        'refund-requests': 'hourglass-half', 'refund-history': 'history'
     };
-    
-    const titleEl = document.getElementById('panel-title');
-    if (titleEl) {
-        titleEl.innerHTML = `<i class="fas fa-${icons[panelName] || 'tachometer-alt'}" aria-hidden="true"></i> ${titles[panelName] || 'Dashboard'}`;
-    }
-    
-    // Close mobile sidebar after navigation
+    document.getElementById('panel-title').innerHTML = `<i class="fas fa-${icons[panelName] || 'tachometer-alt'}"></i> ${titles[panelName] || 'Dashboard'}`;
     if (window.innerWidth <= 992) {
         document.getElementById('sidebar').classList.remove('mobile-open');
         document.getElementById('sidebar-overlay').classList.remove('active');
-        const toggleBtn = document.querySelector('.toggle-sidebar');
-        if (toggleBtn) toggleBtn.setAttribute('aria-expanded', 'false');
     }
-    
-    if (panelName === 'chat') { 
-        loadConversations(); 
-        startChatPolling(); 
-    } else { 
-        stopChatPolling(); 
-    }
+    if (panelName === 'chat') { loadConversations(); startChatPolling(); }
+    else { stopChatPolling(); }
     state.ui.activePanel = panelName;
 }
 
@@ -3429,29 +2769,20 @@ function toggleSidebar() {
     const toggleBtn = document.querySelector('.toggle-sidebar');
     const isMobile = window.innerWidth <= 992;
     
-    if (isMobile) { 
-        const isOpen = sidebar.classList.toggle('mobile-open');
-        overlay.classList.toggle('active', isOpen);
-        if (toggleBtn) toggleBtn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
-        
-        // Focus first nav item when opened
-        if (isOpen) {
-            setTimeout(() => {
-                const firstNav = sidebar.querySelector('.nav-item');
-                if (firstNav) firstNav.focus();
-            }, 300);
-        }
-    } else { 
-        sidebar.classList.toggle('collapsed'); 
-        document.getElementById('main')?.classList.toggle('expanded'); 
+    if (isMobile) {
+        sidebar.classList.toggle('mobile-open');
+        overlay.classList.toggle('active');
+        toggleBtn.setAttribute('aria-expanded', sidebar.classList.contains('mobile-open'));
+    } else {
+        sidebar.classList.toggle('collapsed');
+        document.getElementById('main')?.classList.toggle('expanded');
         overlay.classList.remove('active');
-        if (toggleBtn) toggleBtn.setAttribute('aria-expanded', sidebar.classList.contains('collapsed') ? 'true' : 'false');
+        toggleBtn.setAttribute('aria-expanded', !sidebar.classList.contains('collapsed'));
     }
 }
 
 // ===== ⚡ Event Listeners =====
 function setupEventListeners() {
-    // ESC key closes modals
     document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') {
             if (state.ui.modalStack.length > 0) {
@@ -3463,46 +2794,26 @@ function setupEventListeners() {
         }
     });
     
-    // Chat input: Send on Enter (without Shift)
     const chatInput = document.getElementById('admin-chat-input');
     if (chatInput) {
         chatInput.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter' && !e.shiftKey) { 
-                e.preventDefault(); 
-                sendAdminReply(); 
-            }
-        });
-        
-        // Auto-resize textarea
-        chatInput.addEventListener('input', function() {
-            this.style.height = 'auto';
-            this.style.height = Math.min(this.scrollHeight, 120) + 'px';
+            if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendAdminReply(); }
         });
     }
     
-    // Responsive sidebar handling
-    let lastWidth = window.innerWidth;
     window.addEventListener('resize', () => {
         const sidebar = document.getElementById('sidebar');
         const main = document.getElementById('main');
         const overlay = document.getElementById('sidebar-overlay');
-        const toggleBtn = document.querySelector('.toggle-sidebar');
-        
-        if (window.innerWidth > 992) {
-            // Desktop: ensure sidebar is visible
-            sidebar.classList.remove('mobile-open');
-            overlay.classList.remove('active');
-            if (toggleBtn) toggleBtn.setAttribute('aria-expanded', sidebar.classList.contains('collapsed') ? 'true' : 'false');
-        } else {
-            // Mobile: reset to collapsed state
-            sidebar.classList.remove('collapsed');
-            main?.classList.remove('expanded');
-            if (toggleBtn) toggleBtn.setAttribute('aria-expanded', 'false');
+        if (window.innerWidth > 992) { 
+            sidebar.classList.remove('mobile-open'); 
+            overlay.classList.remove('active'); 
+        } else { 
+            sidebar.classList.remove('collapsed'); 
+            main?.classList.remove('expanded'); 
         }
-        lastWidth = window.innerWidth;
     });
     
-    // Close modals when clicking overlay
     document.querySelectorAll('.modal-ov, .message-popup-ov').forEach(overlay => {
         overlay.addEventListener('click', (e) => {
             if (e.target === overlay) {
@@ -3511,49 +2822,35 @@ function setupEventListeners() {
         });
     });
     
-    // Prevent body scroll when modal is open
-    const observer = new MutationObserver(() => {
-        const hasOpenModal = document.querySelector('.modal-ov.open, .message-popup-ov.open');
-        document.body.classList.toggle('modal-open', !!hasOpenModal);
-    });
-    observer.observe(document.body, { childList: true, subtree: true });
-    
-    // Touch swipe to close mobile sidebar
-    let touchStartX = 0;
-    const sidebar = document.getElementById('sidebar');
-    
-    sidebar?.addEventListener('touchstart', (e) => {
-        touchStartX = e.touches[0].clientX;
-    }, { passive: true });
-    
-    sidebar?.addEventListener('touchend', (e) => {
-        if (window.innerWidth <= 992 && sidebar.classList.contains('mobile-open')) {
-            const touchEndX = e.changedTouches[0].clientX;
-            if (touchEndX - touchStartX > 100) { // Swipe right to close
-                toggleSidebar();
-            }
+    // Close sidebar when clicking overlay on mobile
+    document.getElementById('sidebar-overlay')?.addEventListener('click', () => {
+        if (window.innerWidth <= 992) {
+            document.getElementById('sidebar')?.classList.remove('mobile-open');
+            document.getElementById('sidebar-overlay')?.classList.remove('active');
         }
-    }, { passive: true });
+    });
+    
+    // Make stat cards keyboard accessible
+    document.querySelectorAll('.stat-card').forEach(card => {
+        card.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                card.click();
+            }
+        });
+    });
 }
 
 // ===== 🚀 Initialize =====
 function initialize() {
     createParticles();
     setupEventListeners();
-    
-    // Check for saved login
-    if (state.token && state.adminEmail) {
-        showDashboard(state.adminEmail);
-    }
-    
-    console.log('🚀 NovaStack Admin Dashboard initialized');
+    if (state.token && state.adminEmail) showDashboard(state.adminEmail);
+    console.log('🚀 NovaStack Admin Dashboard loaded');
 }
 
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initialize);
-} else {
-    initialize();
-}
+if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initialize);
+else initialize();
 </script>
 </body>
 </html>
