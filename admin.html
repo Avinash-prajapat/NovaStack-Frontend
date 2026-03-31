@@ -1633,7 +1633,7 @@ const state = {
     chat: { pollInterval: null, pollingActive: false }
 };
 
-// ===== 🔌 API Client =====
+// ===== 🔌 API Client with CORS Fallback =====
 class APIClient {
     constructor(config) {
         this.config = config;
@@ -1706,7 +1706,6 @@ class APIClient {
     async completeOrder(id, data) { return this.request('POST', this.config.ENDPOINTS.COMPLETE_ORDER(id), data); }
     async updateDelivery(id, data) { return this.request('POST', this.config.ENDPOINTS.UPDATE_DELIVERY(id), data); }
     async processRefund(id, data) { 
-        // Ensure amount is a number
         const payload = { 
             amount: parseFloat(data.amount) || 0, 
             reason: data.reason || 'Admin initiated refund',
