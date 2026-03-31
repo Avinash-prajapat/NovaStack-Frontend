@@ -1896,6 +1896,8 @@ function doAdminLogout() {
 // ===== 📊 Data Loading =====
 async function loadAllData() {
     try {
+        console.log('🔄 Loading dashboard data...');
+        
         const [servicesRes, ordersRes, usersRes, refundHistoryRes] = await Promise.allSettled([
             api.getServices(), 
             api.getOrders(), 
@@ -1903,31 +1905,58 @@ async function loadAllData() {
             api.getRefundHistory()
         ]);
         
-        if (servicesRes.status === 'fulfilled') state.data.services = servicesRes.value.services || [];
-        if (ordersRes.status === 'fulfilled') {
-            state.data.orders = ordersRes.value.orders || [];
-            state.data.refundRequests = generateRefundRequests(state.data.orders);
+        // Services
+        if (servicesRes.status === 'fulfilled') {
+            state.data.services = servicesRes.value.services || [];
+            console.log(`✅ Loaded ${state.data.services.length} services`);
         }
-        if (usersRes.status === 'fulfilled') state.data.users = usersRes.value.users || [];
         
-        // Handle refund history with fallback
+        // Orders - normalize data structure
+        if (ordersRes.status === 'fulfilled') {
+            state.data.orders = (ordersRes.value.orders || []).map(o => ({
+                ...o,
+                // Ensure flat structure for easy access
+                user_name: o.user_name || o.users?.name,
+                user_email: o.user_email || o.users?.email,
+                user_phone: o.user_phone || o.users?.phone,
+                user_whatsapp: o.user_whatsapp || o.users?.whatsapp,
+                service_title: o.service_title || o.services?.title,
+                service_id: o.service_id || o.services?.id
+            }));
+            state.data.refundRequests = generateRefundRequests(state.data.orders);
+            console.log(`✅ Loaded ${state.data.orders.length} orders`);
+        }
+        
+        // Users
+        if (usersRes.status === 'fulfilled') {
+            state.data.users = usersRes.value.users || [];
+            console.log(`✅ Loaded ${state.data.users.length} users`);
+        }
+        
+        // Refund History
         if (refundHistoryRes.status === 'fulfilled') {
             state.data.refundHistory = refundHistoryRes.value.refunds || [];
+            console.log(`✅ Loaded ${state.data.refundHistory.length} refund history items`);
         } else {
-            console.warn('⚠️ Using mock refund history data');
+            console.warn('⚠️ Could not load refund history:', refundHistoryRes.reason);
             state.data.refundHistory = [];
-            showNotification('⚠️ Refund history unavailable', 'warning', 6000);
         }
         
+        // Custom Requests
         try {
             const customRes = await api.getCustomRequests();
             state.data.customRequests = customRes.requests || [];
-        } catch (e) { state.data.customRequests = []; }
+        } catch (e) { 
+            console.warn('⚠️ Could not load custom requests');
+            state.data.customRequests = []; 
+        }
         
         renderDashboard();
+        showNotification('Dashboard loaded successfully', 'success', 2000);
+        
     } catch (error) {
-        console.error('❌ Error loading ', error);
-        showNotification('Failed to load dashboard data. Please refresh.', 'error', 6000);
+        console.error('❌ Error loading dashboard:', error);
+        showNotification('Failed to load data. Please refresh.', 'error', 6000);
     }
 }
 
@@ -1976,9 +2005,9 @@ function renderOrders(filter = '') {
     if (!tbody) return;
     
     const filtered = filter ? state.data.orders.filter(o => 
-        o.user_name?.toLowerCase().includes(filter.toLowerCase()) ||
+        (o.user_name || o.users?.name || '').toLowerCase().includes(filter.toLowerCase()) ||
         o.id?.toString().includes(filter) ||
-        o.service_title?.toLowerCase().includes(filter.toLowerCase())
+        (o.service_title || o.services?.title || '').toLowerCase().includes(filter.toLowerCase())
     ) : state.data.orders;
     
     if (!filtered.length) {
@@ -1987,16 +2016,23 @@ function renderOrders(filter = '') {
     }
     
     tbody.innerHTML = filtered.map(o => {
+        // ✅ Safe access for client info (handles both flat & nested)
+        const clientName = o.user_name || o.users?.name || '—';
+        const clientEmail = o.user_email || o.users?.email || '—';
+        const serviceTitle = o.service_title || o.services?.title || '—';
+        
         const total = parseFloat(o.price) || 0;
         const advance = parseFloat(o.advance_paid) || 0;
         const paid = parseFloat(o.total_paid) || advance;
         const refund = parseFloat(o.refund_amount) || 0;
-        const hasDeliverables = o.live_url || o.github_repo || o.source_code_url || o.documentation_url;
         
         return `<tr>
             <td><span style="font-family:monospace;color:var(--accent)">#${o.id}</span></td>
-            <td><strong>${escapeHtml(o.user_name || '—')}</strong><br><small style="color:var(--text-muted)">${escapeHtml(o.user_email || '')}</small></td>
-            <td class="text-truncate" title="${escapeHtml(o.service_title || '')}">${escapeHtml(o.service_title || '—')}</td>
+            <td>
+                <strong>${escapeHtml(clientName)}</strong><br>
+                <small style="color:var(--text-muted)">${escapeHtml(clientEmail)}</small>
+            </td>
+            <td class="text-truncate" title="${escapeHtml(serviceTitle)}">${escapeHtml(serviceTitle)}</td>
             <td><strong style="color:var(--green)">${formatCurrency(total)}</strong></td>
             <td><span style="color:var(--warning)">${formatCurrency(advance)}</span></td>
             <td><span style="color:var(--green)">${formatCurrency(paid)}</span></td>
@@ -2011,7 +2047,8 @@ function renderOrders(filter = '') {
                 <button class="btn btn-sm btn-success" onclick="startProject(${o.id})"><i class="fas fa-play"></i></button>
                 <button class="btn btn-sm btn-warning" onclick="markReadyForBalance(${o.id})"><i class="fas fa-money-bill"></i></button>
                 <button class="btn btn-sm btn-primary" onclick="markAsCompleted(${o.id})"><i class="fas fa-check-circle"></i></button>
-                ${o.status === 'cancellation_requested' || o.refund_status === 'pending' ? `<button class="btn btn-sm btn-danger" onclick="openRefundModalFromOrder(${o.id}, ${o.refund_amount || o.advance_paid || 0})"><i class="fas fa-money-bill-wave"></i></button>` : ''}
+                ${o.status === 'cancellation_requested' || o.refund_status === 'pending' ? 
+                    `<button class="btn btn-sm btn-danger" onclick="openRefundModalFromOrder(${o.id}, ${o.refund_amount || o.advance_paid || 0})"><i class="fas fa-money-bill-wave"></i></button>` : ''}
             </div></td>
         </tr>`;
     }).join('');
@@ -2107,26 +2144,41 @@ function renderServices(filter = '') {
 function renderUsers(filter = '') {
     const tbody = document.getElementById('usr-tbody');
     if (!tbody) return;
-    const filtered = filter ? state.data.users.filter(u => u.email?.toLowerCase().includes(filter.toLowerCase()) || u.name?.toLowerCase().includes(filter.toLowerCase())) : state.data.users;
+    
+    const filtered = filter ? state.data.users.filter(u => 
+        (u.email || '').toLowerCase().includes(filter.toLowerCase()) || 
+        (u.name || '').toLowerCase().includes(filter.toLowerCase())
+    ) : state.data.users;
+    
     if (!filtered.length) {
         tbody.innerHTML = '<tr><td colspan="6" class="empty-row">No users found</td></tr>';
         return;
     }
+    
+    // Calculate user stats from orders
     const userStats = {};
     state.data.orders.forEach(o => {
-        const uid = o.user_id;
-        if (!userStats[uid]) userStats[uid] = { orders: 0, spent: 0 };
-        userStats[uid].orders++;
-        userStats[uid].spent += parseFloat(o.total_paid || o.advance_paid || 0);
+        const uid = o.user_id || o.users?.id;
+        if (uid && !userStats[uid]) {
+            userStats[uid] = { orders: 0, spent: 0 };
+        }
+        if (uid) {
+            userStats[uid].orders++;
+            userStats[uid].spent += parseFloat(o.total_paid || o.advance_paid || 0);
+        }
     });
-    tbody.innerHTML = filtered.map(u => `<tr>
-        <td><strong>${escapeHtml(u.name || '—')}</strong></td>
-        <td class="text-truncate" title="${escapeHtml(u.email)}">${escapeHtml(u.email)}</td>
-        <td>${u.verified ? '<span class="badge badge-done"><i class="fas fa-check"></i> Verified</span>' : '<span class="badge badge-pending"><i class="fas fa-clock"></i> Pending</span>'}</td>
-        <td><strong>${userStats[u.id]?.orders || 0}</strong></td>
-        <td><strong style="color:var(--green)">${formatCurrency(userStats[u.id]?.spent || 0)}</strong></td>
-        <td>${formatDate(u.created_at).split(',')[0]}</td>
-    </tr>`).join('');
+    
+    tbody.innerHTML = filtered.map(u => {
+        const stats = userStats[u.id] || { orders: 0, spent: 0 };
+        return `<tr>
+            <td><strong>${escapeHtml(u.name || '—')}</strong></td>
+            <td class="text-truncate" title="${escapeHtml(u.email)}">${escapeHtml(u.email)}</td>
+            <td>${u.verified ? '<span class="badge badge-done"><i class="fas fa-check"></i> Verified</span>' : '<span class="badge badge-pending"><i class="fas fa-clock"></i> Pending</span>'}</td>
+            <td><strong>${stats.orders}</strong></td>
+            <td><strong style="color:var(--green)">${formatCurrency(stats.spent)}</strong></td>
+            <td>${formatDate(u.created_at).split(',')[0]}</td>
+        </tr>`;
+    }).join('');
 }
 
 function renderCustomRequests() {
@@ -2190,24 +2242,30 @@ async function viewOrderDetails(orderId) {
         try {
             const res = await api.getOrder(orderId);
             order = res.order;
-        } catch { order = state.data.orders.find(o => o.id === orderId); }
+        } catch { 
+            order = state.data.orders.find(o => o.id === orderId); 
+        }
         if (!order) { showNotification('Order not found', 'error'); return; }
+        
+        // ✅ Safe access for all fields
+        const clientName = order.user_name || order.users?.name || 'N/A';
+        const clientEmail = order.user_email || order.users?.email || 'N/A';
+        const clientPhone = order.user_phone || '';
+        const clientWhatsapp = order.user_whatsapp || '';
         
         const custom = order.customization || {};
         const customHtml = Object.keys(custom).length > 0
-            ? Object.entries(custom).map(([k, v]) => `<div class="customization-item"><strong>${escapeHtml(k)}:</strong> ${typeof v === 'boolean' ? (v ? 'Yes' : 'No') : escapeHtml(v)}</div>`).join('')
+            ? Object.entries(custom).map(([k, v]) => 
+                `<div class="customization-item"><strong>${escapeHtml(k)}:</strong> ${typeof v === 'boolean' ? (v ? 'Yes' : 'No') : escapeHtml(v)}</div>`
+            ).join('')
             : '<p style="color:var(--text-muted)">No customizations</p>';
         
         const total = parseFloat(order.price) || 0;
         const advance = parseFloat(order.advance_paid) || 0;
         const paid = parseFloat(order.total_paid) || advance;
-        const balance = total - paid;
         const refund = parseFloat(order.refund_amount) || 0;
-        const canStart = order.status === 'payment_received';
-        const canMarkReady = ['payment_received', 'in_progress'].includes(order.status);
-        const canComplete = ['ready_for_balance', 'in_progress'].includes(order.status);
         
-        // ✅ Payment Display with Refund
+        // ✅ Complete Payment Breakdown
         const paymentHtml = `
             <div class="payment-display">
                 <div class="payment-row">
@@ -2253,44 +2311,50 @@ async function viewOrderDetails(orderId) {
                 <div class="info-item"><div class="label">Status</div><div class="value"><span class="badge badge-${order.status}">${escapeHtml((order.status || 'unknown').replace(/_/g, ' '))}</span></div></div>
                 <div class="info-item"><div class="label">Total Price</div><div class="value" style="color:var(--green)">${formatCurrency(total)}</div></div>
             </div></div>
+            
             <div class="detail-section"><div class="section-title"><i class="fas fa-user-circle"></i> Client Information</div>
             <div class="info-grid">
-                <div class="info-item"><div class="label">Client Name</div><div class="value"><strong>${escapeHtml(order.user_name || 'N/A')}</strong></div></div>
-                <div class="info-item"><div class="label">Email Address</div><div class="value"><a href="mailto:${order.user_email}" style="color:var(--accent)">${escapeHtml(order.user_email || 'N/A')}</a></div></div>
-                ${order.user_phone ? `<div class="info-item"><div class="label">Phone</div><div class="value">${escapeHtml(order.user_phone)}</div></div>` : ''}
-                ${order.user_whatsapp ? `<div class="info-item"><div class="label">WhatsApp</div><div class="value"><a href="https://wa.me/${order.user_whatsapp.replace(/[^0-9]/g,'')}" target="_blank" style="color:var(--green)">${escapeHtml(order.user_whatsapp)}</a></div></div>` : ''}
+                <div class="info-item"><div class="label">Client Name</div><div class="value"><strong>${escapeHtml(clientName)}</strong></div></div>
+                <div class="info-item"><div class="label">Email Address</div><div class="value"><a href="mailto:${clientEmail}" style="color:var(--accent)">${escapeHtml(clientEmail)}</a></div></div>
+                ${clientPhone ? `<div class="info-item"><div class="label">Phone</div><div class="value">${escapeHtml(clientPhone)}</div></div>` : ''}
+                ${clientWhatsapp ? `<div class="info-item"><div class="label">WhatsApp</div><div class="value"><a href="https://wa.me/${clientWhatsapp.replace(/[^0-9]/g,'')}" target="_blank" style="color:var(--green)">${escapeHtml(clientWhatsapp)}</a></div></div>` : ''}
             </div></div>
+            
             <div class="detail-section"><div class="section-title"><i class="fas fa-credit-card"></i> Payment Details</div>
             ${paymentHtml}
             </div>
+            
             <div class="detail-section"><div class="section-title"><i class="fas fa-sliders-h"></i> Customizations</div>${customHtml}</div>
+            
             ${order.requirements ? `<div class="detail-section"><div class="section-title"><i class="fas fa-clipboard-list"></i> Requirements</div><div style="background:var(--bg-card);padding:1rem;border-radius:var(--radius-md);white-space:pre-wrap">${escapeHtml(order.requirements)}</div></div>` : ''}
+            
             <div class="detail-section"><div class="section-title"><i class="fas fa-link"></i> Deliverables</div><div class="info-grid">
                 <div class="info-item"><div class="label">Live URL</div><div class="value">${order.live_url ? `<a href="${order.live_url}" target="_blank" class="deliverable-link" rel="noopener">${escapeHtml(order.live_url.substring(0,40))}${order.live_url.length > 40 ? '...' : ''}</a>` : '—'}</div></div>
                 <div class="info-item"><div class="label">GitHub Repo</div><div class="value">${order.github_repo ? `<a href="${order.github_repo}" target="_blank" class="deliverable-link" rel="noopener">View</a>` : '—'}</div></div>
                 <div class="info-item"><div class="label">Preview Ready</div><div class="value">${order.preview_ready ? '<i class="fas fa-check-circle" style="color:var(--green)"></i> Yes' : '<i class="fas fa-times-circle" style="color:var(--error)"></i> No'}</div></div>
                 <div class="info-item"><div class="label">Full Access Ready</div><div class="value">${order.full_access_ready ? '<i class="fas fa-check-circle" style="color:var(--green)"></i> Yes' : '<i class="fas fa-times-circle" style="color:var(--error)"></i> No'}</div></div>
             </div>${order.delivery_notes ? `<div style="margin-top:1rem"><strong>Delivery Notes:</strong><p style="margin-top:0.3rem">${escapeHtml(order.delivery_notes)}</p></div>` : ''}</div>
+            
             <div class="detail-section"><div class="section-title"><i class="fas fa-cog"></i> Actions</div>
             <div style="display:flex;gap:0.5rem;flex-wrap:wrap">
-                ${canStart ? `<button class="btn btn-success" onclick="startProject(${order.id})"><i class="fas fa-play"></i> Start Project</button>` : ''}
-                ${canMarkReady ? `<button class="btn btn-warning" onclick="markReadyForBalance(${order.id})"><i class="fas fa-money-bill"></i> Ready for Balance</button>` : ''}
-                ${canComplete ? `<button class="btn btn-primary" onclick="markAsCompleted(${order.id})"><i class="fas fa-check-circle"></i> Mark Complete</button>` : ''}
+                ${order.status === 'payment_received' ? `<button class="btn btn-success" onclick="startProject(${order.id})"><i class="fas fa-play"></i> Start Project</button>` : ''}
+                ${['payment_received', 'in_progress'].includes(order.status) ? `<button class="btn btn-warning" onclick="markReadyForBalance(${order.id})"><i class="fas fa-money-bill"></i> Ready for Balance</button>` : ''}
+                ${['ready_for_balance', 'in_progress'].includes(order.status) ? `<button class="btn btn-primary" onclick="markAsCompleted(${order.id})"><i class="fas fa-check-circle"></i> Mark Complete</button>` : ''}
                 <button class="btn btn-primary" onclick="openDeliveryModal(${order.id})"><i class="fas fa-box"></i> Edit Deliverables</button>
                 <button class="btn btn-view" onclick="viewDeliverablesModal(${order.id})"><i class="fas fa-eye"></i> View Deliverables</button>
                 <button class="btn btn-chat" onclick="openMessagePopup(${order.id})"><i class="fas fa-envelope"></i> View Message</button>
                 <button class="btn btn-chat" onclick="chatFromOrder(${order.id})"><i class="fas fa-comment"></i> Chat</button>
-                ${order.status === 'cancellation_requested' || order.refund_status === 'pending' ? `<button class="btn btn-danger" onclick="openRefundModalFromOrder(${order.id}, ${order.refund_amount || order.advance_paid || 0})"><i class="fas fa-money-bill-wave"></i> Process Refund</button>` : ''}
+                ${order.status === 'cancellation_requested' || order.refund_status === 'pending' ? 
+                    `<button class="btn btn-danger" onclick="openRefundModalFromOrder(${order.id}, ${order.refund_amount || order.advance_paid || 0})"><i class="fas fa-money-bill-wave"></i> Process Refund</button>` : ''}
             </div></div></div>`;
         
         document.getElementById('order-detail-content').innerHTML = html;
         openModalOverlay('order-detail-modal');
     } catch (error) {
         console.error('Failed to load order details:', error);
-        showNotification('Failed to load order details', 'error');
+        showNotification('Failed to load order details: ' + error.message, 'error');
     }
 }
-
 function closeOrderDetail() { closeModalOverlay('order-detail-modal'); }
 
 // ===== 📦 Delivery Modal =====
