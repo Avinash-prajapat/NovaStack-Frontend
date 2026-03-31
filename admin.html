@@ -6,7 +6,7 @@
 <title>Admin Dashboard — NovaStack</title>
 
 <!-- SEO & Meta -->
-<meta name="description" content="NovaStack Admin Dashboard - Manage services, orders, users, and support">
+<meta name="description" content="NovaStack Admin Dashboard - Manage services, orders, users, support & refunds">
 <meta name="robots" content="noindex, nofollow">
 
 <!-- Fonts & Icons -->
@@ -130,6 +130,11 @@ body::before {
     min-height: 100vh;
     padding: 1.5rem;
     width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background: var(--bg-primary);
+    z-index: 3000;
 }
 
 .login-box {
@@ -491,7 +496,7 @@ body::before {
     border: 1px solid rgba(245, 158, 11, 0.4); 
 }
 .btn-warning:hover { background: var(--warning); color: white; }
-.btn-sm { padding: 0.4rem 0.9rem; font-size: 0.8rem; }
+.btn-sm { padding: 0.4rem 0.9rem; font-size: 0.8rem; min-height: 36px; }
 .btn-cancel { background: var(--surface); color: var(--text-secondary); border: 1px solid var(--border); }
 .btn-cancel:hover { background: var(--surface-hover); color: var(--text-primary); }
 .btn-save { background: var(--gradient-accent); color: white; }
@@ -667,6 +672,9 @@ tr:active td { background: var(--surface-hover); }
 .badge-delivered { background: rgba(139, 92, 246, 0.15); color: var(--purple); border: 1px solid rgba(139, 92, 246, 0.4); }
 .badge-cancelled { background: rgba(239, 68, 68, 0.15); color: var(--error); border: 1px solid rgba(239, 68, 68, 0.4); }
 .badge-refunded { background: rgba(239, 68, 68, 0.15); color: var(--error); border: 1px solid rgba(239, 68, 68, 0.4); }
+.badge-refund_pending { background: rgba(245, 158, 11, 0.15); color: var(--warning); border: 1px solid rgba(245, 158, 11, 0.4); }
+.badge-refund_approved { background: rgba(16, 185, 129, 0.15); color: var(--green); border: 1px solid rgba(16, 185, 129, 0.4); }
+.badge-refund_rejected { background: rgba(239, 68, 68, 0.15); color: var(--error); border: 1px solid rgba(239, 68, 68, 0.4); }
 
 /* Payment Display Styles */
 .payment-display {
@@ -687,6 +695,34 @@ tr:active td { background: var(--surface-hover); }
 .payment-row .value.positive { color: var(--green); }
 .payment-row .value.negative { color: var(--error); }
 .payment-row .value.warning { color: var(--warning); }
+.payment-row .value.muted { color: var(--text-muted); }
+
+/* Refund History Styles */
+.refund-history-item {
+    background: var(--surface);
+    border-radius: var(--radius-md);
+    padding: 1rem;
+    margin: 0.5rem 0;
+    border-left: 3px solid var(--error);
+}
+.refund-history-item.approved { border-left-color: var(--green); }
+.refund-history-item.rejected { border-left-color: var(--error); }
+.refund-history-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+.refund-history-amount {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--error);
+}
+.refund-history-amount.approved { color: var(--green); }
+.refund-history-meta {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
 
 /* Modals */
 .modal-ov { 
@@ -1333,7 +1369,9 @@ body.modal-open { overflow: hidden; }
                 <div class="nav-section"><i class="fas fa-users"></i> <span>Users</span></div>
                 <button class="nav-item" onclick="switchPanel('users',this)"><span class="icon"><i class="fas fa-user-friends"></i></span> <span>All Users</span></button>
                 <button class="nav-item" onclick="switchPanel('custom-requests',this)"><span class="icon"><i class="fas fa-file-signature"></i></span> <span>Custom Requests</span></button>
-                <button class="nav-item" onclick="switchPanel('refund-requests',this)"><span class="icon"><i class="fas fa-money-bill-wave"></i></span> <span>Refund Requests</span></button>
+                <div class="nav-section"><i class="fas fa-money-bill-wave"></i> <span>Refunds</span></div>
+                <button class="nav-item" onclick="switchPanel('refund-requests',this)"><span class="icon"><i class="fas fa-hourglass-half"></i></span> <span>Pending Requests</span></button>
+                <button class="nav-item" onclick="switchPanel('refund-history',this)"><span class="icon"><i class="fas fa-history"></i></span> <span>Refund History</span></button>
             </nav>
             <div class="sidebar-foot">
                 <div class="admin-info">
@@ -1378,11 +1416,19 @@ body.modal-open { overflow: hidden; }
                     </div>
                 </div>
 
-                <!-- Refund Requests Panel -->
+                <!-- Refund Requests Panel (Pending) -->
                 <div class="panel" id="panel-refund-requests">
                     <div class="tbl-card">
-                        <div class="tbl-head"><h3><i class="fas fa-money-bill-wave"></i> Refund Requests</h3></div>
+                        <div class="tbl-head"><h3><i class="fas fa-hourglass-half"></i> Pending Refund Requests</h3></div>
                         <div class="table-responsive"><table><thead><tr><th>Order ID</th><th>Client</th><th>Amount</th><th>Reason</th><th>Status</th><th>Date</th><th>Actions</th></tr></thead><tbody id="refund-tbody"></tbody></table></div>
+                    </div>
+                </div>
+
+                <!-- Refund History Panel (Processed) -->
+                <div class="panel" id="panel-refund-history">
+                    <div class="tbl-card">
+                        <div class="tbl-head"><h3><i class="fas fa-history"></i> Refund History</h3><input type="text" class="search-inp" placeholder="Search history..." oninput="filterRefundHistory(this.value)"></div>
+                        <div class="table-responsive"><table><thead><tr><th>Order ID</th><th>Client</th><th>Refund Amount</th><th>Status</th><th>Processed By</th><th>Date</th><th>Notes</th></tr></thead><tbody id="refund-history-tbody"></tbody></table></div>
                     </div>
                 </div>
 
@@ -1553,6 +1599,7 @@ const CONFIG = {
         UPDATE_DELIVERY: (id) => `/admin/order/${id}/update-delivery`,
         PROCESS_REFUND: (id) => `/admin/order/${id}/refund`,
         REJECT_REFUND: (id) => `/admin/order/${id}/reject-refund`,
+        GET_REFUND_HISTORY: '/admin/refunds/history',
         GET_USERS: '/admin/users',
         GET_CUSTOM_REQUESTS: '/custom-requests',
         GET_CONVERSATIONS: '/conversations',
@@ -1566,7 +1613,14 @@ const CONFIG = {
 const state = {
     token: localStorage.getItem('dc_admin_token') || '',
     adminEmail: localStorage.getItem('dc_admin_email') || '',
-    data: { services: [], orders: [], users: [], customRequests: [], refundRequests: [] },
+    data: { 
+        services: [], 
+        orders: [], 
+        users: [], 
+        customRequests: [], 
+        refundRequests: [],
+        refundHistory: []
+    },
     ui: {
         activePanel: 'overview',
         activeConversation: null,
@@ -1653,6 +1707,9 @@ class APIClient {
     async updateDelivery(id, data) { return this.request('POST', this.config.ENDPOINTS.UPDATE_DELIVERY(id), data); }
     async processRefund(id, data) { return this.request('POST', this.config.ENDPOINTS.PROCESS_REFUND(id), data); }
     async rejectRefund(id, reason) { return this.request('POST', this.config.ENDPOINTS.REJECT_REFUND(id), { reason }); }
+    
+    // Refunds
+    async getRefundHistory() { return this.request('GET', this.config.ENDPOINTS.GET_REFUND_HISTORY); }
     
     // Users
     async getUsers() { return this.request('GET', this.config.ENDPOINTS.GET_USERS); }
@@ -1815,7 +1872,7 @@ function doAdminLogout() {
     localStorage.removeItem('dc_admin_email');
     state.token = '';
     state.adminEmail = '';
-    state.data = { services: [], orders: [], users: [], customRequests: [], refundRequests: [] };
+    state.data = { services: [], orders: [], users: [], customRequests: [], refundRequests: [], refundHistory: [] };
     if (state.chat.pollInterval) {
         clearInterval(state.chat.pollInterval);
         state.chat.pollInterval = null;
@@ -1831,8 +1888,11 @@ function doAdminLogout() {
 // ===== 📊 Data Loading =====
 async function loadAllData() {
     try {
-        const [servicesRes, ordersRes, usersRes] = await Promise.allSettled([
-            api.getServices(), api.getOrders(), api.getUsers()
+        const [servicesRes, ordersRes, usersRes, refundHistoryRes] = await Promise.allSettled([
+            api.getServices(), 
+            api.getOrders(), 
+            api.getUsers(),
+            api.getRefundHistory()
         ]);
         
         if (servicesRes.status === 'fulfilled') state.data.services = servicesRes.value.services || [];
@@ -1841,6 +1901,7 @@ async function loadAllData() {
             state.data.refundRequests = generateRefundRequests(state.data.orders);
         }
         if (usersRes.status === 'fulfilled') state.data.users = usersRes.value.users || [];
+        if (refundHistoryRes.status === 'fulfilled') state.data.refundHistory = refundHistoryRes.value.refunds || [];
         
         try {
             const customRes = await api.getCustomRequests();
@@ -1849,7 +1910,7 @@ async function loadAllData() {
         
         renderDashboard();
     } catch (error) {
-        console.error('❌ Error loading data:', error);
+        console.error('❌ Error loading ', error);
         showNotification('Failed to load dashboard data. Please refresh.', 'error', 6000);
     }
 }
@@ -1864,7 +1925,6 @@ function generateRefundRequests(orders) {
         reason: o.cancel_reason || o.refund_reason || 'Customer requested refund',
         status: o.refund_status || 'pending', 
         created_at: o.created_at,
-        // ✅ Payment details for display
         total_amount: o.price || 0,
         advance_paid: o.advance_paid || 0,
         balance_paid: o.balance_paid || 0,
@@ -1877,6 +1937,7 @@ function renderDashboard() {
     renderStats(); 
     renderOrders(); 
     renderRefundRequests(); 
+    renderRefundHistory();
     renderServices();
     renderUsers(); 
     renderCustomRequests(); 
@@ -1945,18 +2006,16 @@ function renderRefundRequests() {
     if (!tbody) return;
     
     if (!state.data.refundRequests.length) {
-        tbody.innerHTML = '<tr><td colspan="7" class="empty-row">No refund requests</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="7" class="empty-row">No pending refund requests</td></tr>';
         return;
     }
     
     tbody.innerHTML = state.data.refundRequests.map(r => {
-        // ✅ Show all payment details in refund row
         const paymentDetails = `
             <div style="font-size:0.75rem;color:var(--text-muted);margin-top:0.3rem">
                 Total: ${formatCurrency(r.total_amount)} | 
                 Advance: ${formatCurrency(r.advance_paid)} | 
-                Paid: ${formatCurrency(r.total_paid)} | 
-                Refund: <span class="text-error">-${formatCurrency(r.amount_to_refund)}</span>
+                Paid: ${formatCurrency(r.total_paid)}
             </div>
         `;
         
@@ -1971,6 +2030,38 @@ function renderRefundRequests() {
                 <button class="btn btn-sm btn-success" onclick="processRefund(${r.order_id}, ${r.amount_to_refund})"><i class="fas fa-check"></i> Approve</button>
                 <button class="btn btn-sm btn-danger" onclick="rejectRefund(${r.order_id})"><i class="fas fa-times"></i> Reject</button>
             </td>
+        </tr>`;
+    }).join('');
+}
+
+function renderRefundHistory(filter = '') {
+    const tbody = document.getElementById('refund-history-tbody');
+    if (!tbody) return;
+    
+    const filtered = filter ? state.data.refundHistory.filter(r => 
+        r.order_id?.toString().includes(filter) ||
+        r.user_name?.toLowerCase().includes(filter.toLowerCase()) ||
+        r.reason?.toLowerCase().includes(filter.toLowerCase())
+    ) : state.data.refundHistory;
+    
+    if (!filtered.length) {
+        tbody.innerHTML = '<tr><td colspan="7" class="empty-row">No refund history found</td></tr>';
+        return;
+    }
+    
+    tbody.innerHTML = filtered.map(r => {
+        const statusBadge = r.status === 'approved' ? 'badge-refund_approved' : 
+                           r.status === 'rejected' ? 'badge-refund_rejected' : 'badge-pending';
+        const amountClass = r.status === 'approved' ? 'approved' : '';
+        
+        return `<tr>
+            <td><span style="color:var(--accent)">#${r.order_id}</span></td>
+            <td><strong>${escapeHtml(r.user_name || 'Unknown')}</strong><br><small>${escapeHtml(r.user_email || '')}</small></td>
+            <td><strong class="refund-history-amount ${amountClass}">${formatCurrency(r.amount)}</strong></td>
+            <td><span class="badge ${statusBadge}">${escapeHtml(r.status)}</span></td>
+            <td>${escapeHtml(r.processed_by || 'Admin')}</td>
+            <td>${formatDate(r.processed_at || r.created_at)}</td>
+            <td class="text-truncate" title="${escapeHtml(r.notes || '')}">${escapeHtml((r.notes || '').substring(0, 30))}</td>
         </tr>`;
     }).join('');
 }
@@ -2100,7 +2191,7 @@ async function viewOrderDetails(orderId) {
         const canMarkReady = ['payment_received', 'in_progress'].includes(order.status);
         const canComplete = ['ready_for_balance', 'in_progress'].includes(order.status);
         
-        // ✅ Payment Display with Refund
+        // ✅ Payment Display with Refund History
         const paymentHtml = `
             <div class="payment-display">
                 <div class="payment-row">
@@ -2508,6 +2599,7 @@ function contactClient(email) { if (email) window.location.href = `mailto:${emai
 function filterServices(val) { renderServices(val); }
 function filterUsers(val) { renderUsers(val); }
 function filterOrders(val) { renderOrders(val); }
+function filterRefundHistory(val) { renderRefundHistory(val); }
 
 // ===== 🧭 Panel Navigation =====
 function switchPanel(panelName, navElement) {
@@ -2516,8 +2608,26 @@ function switchPanel(panelName, navElement) {
     if (targetPanel) targetPanel.classList.add('active');
     document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
     if (navElement) navElement.classList.add('active');
-    const titles = { overview: 'Dashboard', orders: 'All Orders', services: 'Services', users: 'Users', 'custom-requests': 'Custom Requests', chat: 'Support Chat', 'refund-requests': 'Refund Requests' };
-    const icons = { overview: 'tachometer-alt', orders: 'list', services: 'cubes', users: 'users', 'custom-requests': 'file-signature', chat: 'comment-dots', 'refund-requests': 'money-bill-wave' };
+    const titles = { 
+        overview: 'Dashboard', 
+        orders: 'All Orders', 
+        services: 'Services', 
+        users: 'Users', 
+        'custom-requests': 'Custom Requests', 
+        chat: 'Support Chat', 
+        'refund-requests': 'Pending Refunds',
+        'refund-history': 'Refund History'
+    };
+    const icons = { 
+        overview: 'tachometer-alt', 
+        orders: 'list', 
+        services: 'cubes', 
+        users: 'users', 
+        'custom-requests': 'file-signature', 
+        chat: 'comment-dots', 
+        'refund-requests': 'hourglass-half',
+        'refund-history': 'history'
+    };
     document.getElementById('panel-title').innerHTML = `<i class="fas fa-${icons[panelName] || 'tachometer-alt'}"></i> ${titles[panelName] || 'Dashboard'}`;
     if (window.innerWidth <= 992) {
         document.getElementById('sidebar').classList.remove('mobile-open');
