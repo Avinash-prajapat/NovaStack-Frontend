@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>🛡️ NovaStack Admin Panel</title>
+<link rel="icon" type="image/jpeg" href="logo.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -175,6 +176,12 @@ tr:hover td{background:var(--surface)}
 .deliverable-item .meta{font-size:.8rem;color:var(--muted);margin:.3rem 0}
 .deliverable-item a{color:var(--green);text-decoration:none}
 .deliverable-item a:hover{text-decoration:underline}
+.whatsapp-btn{background:#25D366;color:#fff;padding:.3rem .7rem;border-radius:6px;font-size:.8rem;display:inline-flex;align-items:center;gap:.3rem;text-decoration:none}
+.whatsapp-btn:hover{background:#128C7E}
+.client-info{background:rgba(59,130,246,.1);padding:.8rem;border-radius:8px;margin:.5rem 0}
+.client-info .label{font-size:.75rem;color:var(--muted)}
+.client-info .value{font-weight:500}
+.refund-reason{font-size:.85rem;color:var(--muted);margin-top:.3rem;max-height:60px;overflow:hidden;text-overflow:ellipsis}
 @media(max-width:1200px){.stats-grid{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:992px){.sidebar{transform:translateX(-100%);width:var(--sw)}.sidebar.mobile-open{transform:translateX(0)}.sidebar-overlay.active{display:block}.main{margin-left:0}.toggle-sidebar{display:flex}.chat-container{grid-template-columns:1fr}.conversations-list{display:none}.conversations-list.mobile-show{display:block}}
 @media(max-width:768px){.stats-grid{grid-template-columns:1fr}.content{padding:1rem}.tbl-head{flex-direction:column;align-items:flex-start}.search-inp{width:100%}.modal{padding:1.5rem;max-width:95%}.modal-foot{flex-direction:column}.btn{width:100%;justify-content:center}.info-grid{grid-template-columns:1fr}}
@@ -263,7 +270,7 @@ tr:hover td{background:var(--surface)}
 <div class="panel" id="panel-orders">
 <div class="tbl-card">
 <div class="tbl-head"><h3><i class="fas fa-list"></i> All Orders</h3><input type="text" class="search-inp" placeholder="Search orders..." oninput="filterOrders(this.value)"></div>
-<div class="table-responsive"><table><thead><tr><th>ID</th><th>Client</th><th>Service</th><th>Price</th><th>Advance</th><th>Paid</th><th>Due</th><th>Status</th><th>Actions</th></tr></thead><tbody id="ord-tbody"></tbody></table></div>
+<div class="table-responsive"><table><thead><tr><th>ID</th><th>Client</th><th>Email</th><th>Service</th><th>Price</th><th>Advance</th><th>Paid</th><th>Due</th><th>Status</th><th>Actions</th></tr></thead><tbody id="ord-tbody"></tbody></table></div>
 </div>
 </div>
 
@@ -271,7 +278,7 @@ tr:hover td{background:var(--surface)}
 <div class="panel" id="panel-refund-requests">
 <div class="tbl-card">
 <div class="tbl-head"><h3><i class="fas fa-money-bill-wave"></i> Refund History</h3></div>
-<div class="table-responsive"><table><thead><tr><th>Order</th><th>User</th><th>Amount</th><th>Reason</th><th>Status</th><th>Date</th></tr></thead><tbody id="refund-tbody"></tbody></table></div>
+<div class="table-responsive"><table><thead><tr><th>Order</th><th>User</th><th>Email</th><th>Amount</th><th>Reason</th><th>Status</th><th>Date</th><th>Actions</th></tr></thead><tbody id="refund-tbody"></tbody></table></div>
 </div>
 </div>
 
@@ -287,7 +294,7 @@ tr:hover td{background:var(--surface)}
 <div class="panel" id="panel-users">
 <div class="tbl-card">
 <div class="tbl-head"><h3><i class="fas fa-users"></i> Registered Users</h3><input type="text" class="search-inp" placeholder="Search users..." oninput="filterUsers(this.value)"></div>
-<div class="table-responsive"><table><thead><tr><th>Name</th><th>Email</th><th>Verified</th><th>Orders</th><th>Spent</th><th>Joined</th></tr></thead><tbody id="usr-tbody"></tbody></table></div>
+<div class="table-responsive"><table><thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Verified</th><th>Orders</th><th>Spent</th><th>Joined</th><th>Actions</th></tr></thead><tbody id="usr-tbody"></tbody></table></div>
 </div>
 </div>
 
@@ -295,7 +302,7 @@ tr:hover td{background:var(--surface)}
 <div class="panel" id="panel-custom-requests">
 <div class="tbl-card">
 <div class="tbl-head"><h3><i class="fas fa-file-signature"></i> Custom Project Requests</h3></div>
-<div class="table-responsive"><table><thead><tr><th>Date</th><th>Name</th><th>Email</th><th>Project</th><th>Budget</th><th>Status</th><th>Action</th></tr></thead><tbody id="custom-tbody"></tbody></table></div>
+<div class="table-responsive"><table><thead><tr><th>Date</th><th>Name</th><th>Email</th><th>WhatsApp</th><th>Project</th><th>Budget</th><th>Status</th><th>Action</th></tr></thead><tbody id="custom-tbody"></tbody></table></div>
 </div>
 </div>
 
@@ -443,7 +450,7 @@ async function loadAll(){
         adminData.users=ud.users||[];
         adminData.refunds=rd.refunds||[];
         try{const cr=await api('GET','/custom-requests');adminData.customRequests=cr.requests||[];}catch(e){adminData.customRequests=[];}
-    }catch(e){toast('Failed to load data: '+e.message,'error');}
+    }catch(e){toast('Failed to load  '+e.message,'error');}
     renderAll();
 }
 function renderAll(){
@@ -464,12 +471,13 @@ function renderRecentOrders(){
 function renderOrders(filter=''){
     const tb=$('#ord-tbody');
     const f=filter?adminData.orders.filter(o=>o.user_name?.toLowerCase().includes(filter.toLowerCase())||o.id?.toString().includes(filter)||o.service_title?.toLowerCase().includes(filter.toLowerCase())):adminData.orders;
-    if(!f.length){tb.innerHTML='<tr><td colspan="9" class="empty-row">No orders</td></tr>';return;}
+    if(!f.length){tb.innerHTML='<tr><td colspan="10" class="empty-row">No orders</td></tr>';return;}
     tb.innerHTML=f.map(o=>{
         const total=parseFloat(o.price)||0,adv=parseFloat(o.advance_paid)||0,paid=parseFloat(o.total_paid)||adv,due=total-paid;
         return `<tr>
             <td><span style="color:var(--accent)">#${o.id}</span></td>
-            <td><strong>${o.user_name||'—'}</strong><br><small style="color:var(--muted)">${o.user_email||''}</small></td>
+            <td><strong>${o.user_name||'—'}</strong></td>
+            <td><small style="color:var(--muted)">${o.user_email||''}</small></td>
             <td>${o.service_title||'—'}</td>
             <td><strong style="color:var(--green)">${fmt(total)}</strong></td>
             <td><span class="payment-badge payment-advance">${fmt(adv)}</span></td>
@@ -490,14 +498,16 @@ function renderOrders(filter=''){
 }
 function renderRefunds(){
     const tb=$('#refund-tbody');
-    if(!adminData.refunds.length){tb.innerHTML='<tr><td colspan="6" class="empty-row">No refunds</td></tr>';return;}
+    if(!adminData.refunds.length){tb.innerHTML='<tr><td colspan="8" class="empty-row">No refunds</td></tr>';return;}
     tb.innerHTML=adminData.refunds.map(r=>`<tr>
         <td><span style="color:var(--accent)">#${r.order_id}</span></td>
-        <td>${r.user_name||'—'}<br><small style="color:var(--muted)">${r.user_email||''}</small></td>
+        <td>${r.user_name||'—'}</td>
+        <td><small style="color:var(--muted)">${r.user_email||''}</small></td>
         <td style="color:var(--error)">${fmt(r.amount)}</td>
-        <td>${(r.reason||'').substring(0,40)}${r.reason?.length>40?'...':''}</td>
+        <td><div class="refund-reason" title="${r.reason||''}">${(r.reason||'').substring(0,40)}${r.reason?.length>40?'...':''}</div></td>
         <td><span class="badge badge-${r.status==='completed'?'completed':'pending'}">${r.status}</span></td>
         <td>${date(r.processed_at)}</td>
+        <td><button class="btn btn-sm btn-danger" onclick="deleteRefundRecord(${r.id})"><i class="fas fa-trash"></i></button></td>
     </tr>`).join('');
 }
 function renderServices(filter=''){
@@ -516,24 +526,27 @@ function renderServices(filter=''){
 function renderUsers(filter=''){
     const tb=$('#usr-tbody');
     const f=filter?adminData.users.filter(u=>u.email?.toLowerCase().includes(filter.toLowerCase())||u.name?.toLowerCase().includes(filter.toLowerCase())):adminData.users;
-    if(!f.length){tb.innerHTML='<tr><td colspan="6" class="empty-row">No users</td></tr>';return;}
+    if(!f.length){tb.innerHTML='<tr><td colspan="8" class="empty-row">No users</td></tr>';return;}
     const cnt={},sp={};adminData.orders.forEach(o=>{cnt[o.user_id]=(cnt[o.user_id]||0)+1;sp[o.user_id]=(sp[o.user_id]||0)+(parseFloat(o.total_paid||o.advance_paid||0));});
     tb.innerHTML=f.map(u=>`<tr>
         <td><strong>${u.name||'—'}</strong></td>
         <td>${u.email}</td>
+        <td>${u.phone||'—'}</td>
         <td>${u.verified?'<span class="badge badge-completed"><i class="fas fa-check"></i> Yes</span>':'<span class="badge badge-pending"><i class="fas fa-clock"></i> No</span>'}</td>
         <td><strong>${cnt[u.id]||0}</strong></td>
         <td><strong style="color:var(--green)">${fmt(sp[u.id]||0)}</strong></td>
         <td>${date(u.created_at)}</td>
+        <td><button class="btn btn-sm btn-view" onclick="viewUserOrders('${u.id}')">Orders</button></td>
     </tr>`).join('');
 }
 function renderCustomRequests(){
     const tb=$('#custom-tbody');
-    if(!adminData.customRequests.length){tb.innerHTML='<tr><td colspan="7" class="empty-row">No requests</td></tr>';return;}
+    if(!adminData.customRequests.length){tb.innerHTML='<tr><td colspan="8" class="empty-row">No requests</td></tr>';return;}
     tb.innerHTML=adminData.customRequests.map(r=>`<tr>
         <td>${date(r.created_at)}</td>
-        <td>${r.name}</td>
+        <td><strong>${r.name}</strong></td>
         <td>${r.email}</td>
+        <td>${r.whatsapp?`<a href="https://wa.me/${r.whatsapp.replace(/[^0-9]/g,'').startsWith('91')?r.whatsapp:'91'+r.whatsapp.replace(/[^0-9]/g,'')}" target="_blank" class="whatsapp-btn"><i class="fab fa-whatsapp"></i> Chat</a>`:'—'}</td>
         <td>${r.title}</td>
         <td><strong style="color:var(--green)">${r.budget||'N/A'}</strong></td>
         <td><span class="badge badge-${r.status}">${r.status}</span></td>
@@ -578,7 +591,10 @@ async function viewOrderDetails(id){
         <div class="info-grid"><div class="info-item"><div class="label">Date</div><div class="value">${new Date(o.created_at).toLocaleString()}</div></div>
         <div class="info-item"><div class="label">Status</div><div class="value"><span class="badge badge-${o.status}">${o.status.replace(/_/g,' ')}</span></div></div>
         <div class="info-item"><div class="label">Total</div><div class="value" style="color:var(--green)">${fmt(total)}</div></div>
-        <div class="info-item"><div class="label">Client</div><div class="value"><strong>${o.user_name||'N/A'}</strong><br><small style="color:var(--muted)">${o.user_email||''}</small></div></div></div></div>
+        <div class="info-item"><div class="label">Service</div><div class="value"><strong>${o.service_title||'N/A'}</strong></div></div></div></div>
+        <div class="client-info"><div class="label"><i class="fas fa-user"></i> Client Information</div>
+        <div style="margin-top:.5rem"><div><strong>Name:</strong> ${o.user_name||'N/A'}</div>
+        <div><strong>Email:</strong> <a href="mailto:${o.user_email}" style="color:var(--accent)">${o.user_email||'N/A'}</a></div></div></div>
         <div class="detail-section"><div class="section-title"><i class="fas fa-credit-card"></i> Payment</div>
         <div class="info-grid"><div class="info-item"><div class="label">Advance (15%)</div><div class="value" style="color:var(--warning)">${fmt(adv)}</div></div>
         <div class="info-item"><div class="label">Total Paid</div><div class="value" style="color:var(--green)">${fmt(paid)}</div></div>
@@ -646,6 +662,7 @@ async function processRefundNow(){
     const amt=parseFloat($('#refund-amount').value),reason=$('#refund-reason').value;
     if(!amt){toast('Amount required','error');return;}
     try{await api('POST',`/admin/order/${currentOrderIdForRefund}/refund`,{amount:amt,reason:reason||'Admin refund'});toast('Refund processed','success');closeRefundModal();await loadAll();}catch(e){toast('Error: '+e.message,'error');}}
+async function deleteRefundRecord(id){if(!confirm('Delete this refund record?'))return;try{await api('DELETE',`/admin/refund/${id}`);toast('Record deleted','success');await loadAll();}catch(e){toast('Error: '+e.message,'error');}}
 
 // ===== CUSTOM REQUESTS =====
 async function updateReq(id,status){try{await api('PUT',`/custom-request/${id}/status`,{status});toast(`Status: ${status}`,'success');await loadAll();}catch(e){toast('Error: '+e.message,'error');}}
@@ -704,6 +721,17 @@ async function chatFromOrder(oid){
     await selectConversation(`order_${oid}`,name);
     switchPanel('chat',$$('.nav-item')[6]);
     toast(`Chat with ${name}`,'success');
+}
+
+// ===== VIEW USER ORDERS =====
+async function viewUserOrders(userId){
+    const user=adminData.users.find(u=>u.id==userId);
+    if(!user){toast('User not found','error');return;}
+    toast(`Showing orders for ${user.name}`,'success');
+    // Filter orders by user and switch to orders panel
+    const userOrders=adminData.orders.filter(o=>o.user_id==userId);
+    renderOrders(''); // Re-render with filter logic if needed
+    switchPanel('orders',$$('.nav-item')[2]);
 }
 
 // ===== UTILS =====
