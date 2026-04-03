@@ -507,6 +507,7 @@ tr:hover td {
 .badge-ready_for_balance { background: rgba(255,107,53,0.15); color: var(--accent-primary); }
 .badge-completed, .badge-delivered { background: rgba(16,185,129,0.15); color: var(--success); }
 .badge-cancelled { background: rgba(239,68,68,0.15); color: var(--error); }
+.badge-cancellation_requested { background: rgba(239,68,68,0.15); color: var(--error); }
 
 /* Buttons */
 .btn {
@@ -975,6 +976,21 @@ tr:hover td {
     font-size: 13px;
 }
 
+/* Loading Spinner */
+.loading-spinner {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 2px solid var(--border);
+    border-top-color: var(--accent-primary);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
 /* Responsive */
 @media (max-width: 1024px) {
     .stats-grid { grid-template-columns: repeat(2, 1fr); }
@@ -1091,7 +1107,9 @@ tr:hover td {
             <div class="date-display" id="date-display"></div>
         </div>
         <div class="content-area" id="content-area">
-            <div style="text-align: center; padding: 40px;">Loading dashboard...</div>
+            <div style="text-align: center; padding: 40px;">
+                <div class="loading-spinner"></div> Loading dashboard...
+            </div>
         </div>
     </div>
 </div>
@@ -1230,6 +1248,10 @@ tr:hover td {
                 <label><i class="fas fa-comment"></i> Reason for Refund</label>
                 <textarea id="refund-reason" rows="3" placeholder="Enter refund reason..."></textarea>
             </div>
+            <div class="form-group">
+                <label><i class="fas fa-exclamation-triangle"></i> Warning</label>
+                <p style="font-size: 12px; color: var(--warning);">This will refund the amount to customer's original payment method. This action cannot be undone!</p>
+            </div>
         </div>
         <div class="modal-footer">
             <button class="btn btn-danger" onclick="closeModal('refund-modal')">Cancel</button>
@@ -1320,7 +1342,6 @@ async function apiCall(method, endpoint, body = null) {
     try {
         const response = await fetch(`${CONFIG.API}${endpoint}`, options);
         
-        // Handle CORS preflight errors gracefully
         if (!response.ok && response.status === 0) {
             throw new Error('Network error - CORS issue. Check backend CORS configuration.');
         }
@@ -1449,6 +1470,7 @@ function renderOverview() {
         .filter(p => p.amount > 0 && p.status === 'completed')
         .reduce((sum, p) => sum + parseFloat(p.amount || 0), 0);
     const pendingOrders = appData.orders.filter(o => o.status === 'payment_received').length;
+    const cancellationRequests = appData.orders.filter(o => o.status === 'cancellation_requested').length;
     const recentOrders = appData.orders.slice(0, 5);
     
     const html = `
@@ -1468,6 +1490,17 @@ function renderOverview() {
             <div class="stat-card" onclick="switchPage('payments')">
                 <div class="stat-label"><i class="fas fa-rupee-sign"></i> Total Revenue</div>
                 <div class="stat-value">${formatCurrency(totalRevenue)}</div>
+            </div>
+        </div>
+        
+        <div class="stats-grid">
+            <div class="stat-card" onclick="switchPage('orders')">
+                <div class="stat-label"><i class="fas fa-clock"></i> Pending Orders</div>
+                <div class="stat-value">${pendingOrders}</div>
+            </div>
+            <div class="stat-card" onclick="switchPage('refunds')">
+                <div class="stat-label"><i class="fas fa-undo-alt"></i> Cancellation Requests</div>
+                <div class="stat-value" style="color: var(--error);">${cancellationRequests}</div>
             </div>
         </div>
         
@@ -1509,7 +1542,7 @@ function renderOverview() {
                         <tbody>
                             <tr><td><i class="fas fa-shopping-cart"></i> Orders ready to start</td><td><strong>${pendingOrders}</strong></td><td><button class="btn btn-sm btn-primary" onclick="switchPage('orders')">View</button></td></tr>
                             <tr><td><i class="fas fa-file-signature"></i> Custom requests pending</td><td><strong>${appData.customRequests.filter(r => r.status === 'pending').length}</strong></td><td><button class="btn btn-sm btn-primary" onclick="switchPage('custom-requests')">View</button></td></tr>
-                            <tr><td><i class="fas fa-comment"></i> Active conversations</td><td><strong>—</strong></td><td><button class="btn btn-sm btn-primary" onclick="switchPage('chat')">View</button></td></tr>
+                            <tr><td><i class="fas fa-undo-alt"></i> Cancellation requests</td><td><strong>${cancellationRequests}</strong></td><td><button class="btn btn-sm btn-danger" onclick="switchPage('orders')">Process</button></td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -1612,8 +1645,11 @@ async function viewOrderDetails(orderId) {
     const due = total - paid;
     const percentPaid = total > 0 ? (paid / total) * 100 : 0;
     
+    // Get user details for client info
+    const user = appData.users.find(u => u.email === order.user_email);
+    
     // Load timeline
-    let timelineHtml = '<div class="timeline-item">Loading timeline...</div>';
+    let timelineHtml = '<div class="timeline-item"><div class="loading-spinner"></div> Loading timeline...</div>';
     try {
         const timeline = await apiCall('GET', `/order/${orderId}/timeline`);
         if (timeline.data && timeline.data.length) {
@@ -1631,20 +1667,28 @@ async function viewOrderDetails(orderId) {
     }
     
     const html = `
-        <!-- Client Information Card -->
+        <!-- Client Information Card - COMPLETE -->
         <div class="client-info-card">
             <h4><i class="fas fa-user-circle"></i> Client Information</h4>
             <div class="client-detail-row">
-                <span class="client-detail-label"><i class="fas fa-user"></i> Name</span>
+                <span class="client-detail-label"><i class="fas fa-user"></i> Full Name</span>
                 <span class="client-detail-value">${escapeHtml(order.user_name || '—')}</span>
             </div>
             <div class="client-detail-row">
-                <span class="client-detail-label"><i class="fas fa-envelope"></i> Email</span>
+                <span class="client-detail-label"><i class="fas fa-envelope"></i> Email Address</span>
                 <span class="client-detail-value"><a href="mailto:${order.user_email}" style="color: var(--accent-primary);">${escapeHtml(order.user_email || '—')}</a></span>
             </div>
             <div class="client-detail-row">
-                <span class="client-detail-label"><i class="fas fa-calendar"></i> Member Since</span>
-                <span class="client-detail-value">${order.user_created_at ? formatDate(order.user_created_at) : '—'}</span>
+                <span class="client-detail-label"><i class="fas fa-phone"></i> Phone Number</span>
+                <span class="client-detail-value">${user?.phone || '—'}</span>
+            </div>
+            <div class="client-detail-row">
+                <span class="client-detail-label"><i class="fas fa-calendar-alt"></i> Member Since</span>
+                <span class="client-detail-value">${user?.created_at ? formatDate(user.created_at) : '—'}</span>
+            </div>
+            <div class="client-detail-row">
+                <span class="client-detail-label"><i class="fas fa-check-circle"></i> Email Verified</span>
+                <span class="client-detail-value">${user?.verified ? '<span style="color: var(--success);"><i class="fas fa-check"></i> Yes</span>' : '<span style="color: var(--warning);"><i class="fas fa-clock"></i> No</span>'}</span>
             </div>
         </div>
         
@@ -1707,6 +1751,7 @@ async function viewOrderDetails(orderId) {
                 ${order.status === 'payment_received' ? `<button class="btn btn-success" onclick="updateOrderStatus(${order.id}, 'in_progress'); closeModal('order-modal');"><i class="fas fa-play"></i> Start Project</button>` : ''}
                 ${order.status === 'in_progress' ? `<button class="btn btn-warning" onclick="updateOrderStatus(${order.id}, 'ready_for_balance'); closeModal('order-modal');"><i class="fas fa-money-bill"></i> Ready for Balance</button>` : ''}
                 ${order.status === 'ready_for_balance' ? `<button class="btn btn-primary" onclick="updateOrderStatus(${order.id}, 'completed'); closeModal('order-modal');"><i class="fas fa-check-circle"></i> Mark Completed</button>` : ''}
+                ${order.status === 'cancellation_requested' ? `<button class="btn btn-danger" onclick="openRefundModal(${order.id}, ${paid}); closeModal('order-modal');"><i class="fas fa-undo"></i> Process Refund</button>` : ''}
                 <button class="btn btn-info" onclick="chatFromOrder(${order.id}); closeModal('order-modal');"><i class="fas fa-comment"></i> Open Chat</button>
             </div>
         </div>
@@ -1781,6 +1826,10 @@ async function processRefund() {
     const amount = parseFloat(document.getElementById('refund-amount').value);
     const reason = document.getElementById('refund-reason').value;
     
+    if (!confirm(`Are you sure you want to refund ₹${amount}? This action cannot be undone!`)) {
+        return;
+    }
+    
     try {
         await apiCall('POST', `/admin/order/${currentOrderId}/refund`, { amount, reason: reason || 'Admin initiated refund' });
         showToast('Refund processed successfully', 'success');
@@ -1837,7 +1886,7 @@ function renderPaymentHistory(filter = '') {
             <div class="table-responsive">
                 <table>
                     <thead>
-                        <tr><th>ID</th><th>Order</th><th>Customer</th><th>Amount</th><th>Type</th><th>Status</th><th>Transaction ID</th><th>Date</th></tr>
+                        <tr><th>ID</th><th>Order</th><th>Customer</th><th>Amount</th><th>Type</th><th>Status</th><th>Transaction ID</th><th>Date</th><tr>
                     </thead>
                     <tbody>
                         ${filteredPayments.map(payment => `
@@ -2140,7 +2189,7 @@ function renderCustomRequests() {
                 <h3><i class="fas fa-file-signature"></i> Custom Project Requests</h3>
             </div>
             <div class="table-responsive">
-                <table>
+                </table>
                     <thead>
                         <tr><th>Date</th><th>Name</th><th>Email</th><th>WhatsApp</th><th>Project</th><th>Budget</th><th>Status</th><th>Actions</th></tr>
                     </thead>
@@ -2163,7 +2212,7 @@ function renderCustomRequests() {
                                  </td>
                             </tr>
                         `).join('')}
-                        ${appData.customRequests.length === 0 ? '<tr><td colspan="8" class="empty-row">No custom requests found</td>' : ''}
+                        ${appData.customRequests.length === 0 ? '<td><td colspan="8" class="empty-row">No custom requests found</td>' : ''}
                     </tbody>
                 </table>
             </div>
