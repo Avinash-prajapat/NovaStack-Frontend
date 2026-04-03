@@ -1,636 +1,717 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>🛡️ NovaStack Admin Panel</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <style>
-    :root{--bg:#0f172a;--card:#1e293b;--text:#e2e8f0;--muted:#94a3b8;--primary:#3b82f6;--primary-h:#2563eb;--success:#22c55e;--warning:#f59e0b;--danger:#ef4444;--border:#334155;--radius:12px;--shadow:0 10px 40px -10px rgba(0,0,0,.5);--sidebar-w:260px}
-    *{box-sizing:border-box;margin:0;padding:0}html,body{height:100%;font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden}
-    a{color:var(--primary);text-decoration:none}button{cursor:pointer;font:inherit}.hidden{display:none!important}
-    .flex{display:flex}.flex-col{flex-direction:column}.items-c{align-items:center}.justify-c{justify-content:center}.justify-b{justify-content:space-between}
-    .gap-1{gap:.5rem}.gap-2{gap:1rem}.gap-3{gap:1.5rem}.p-2{padding:.5rem}.p-3{padding:1rem}.p-4{padding:1.5rem}
-    .w-full{width:100%}.max-w{max-width:1400px}.mx-auto{margin:auto}
-    
-    /* LOGIN */
-    #login{position:fixed;inset:0;background:linear-gradient(135deg,#0f172a,#1e293b);display:flex;align-items:center;justify-content:center;z-index:1000}
-    .login-card{background:var(--card);padding:2.5rem;border-radius:var(--radius);width:95%;max-width:420px;box-shadow:var(--shadow);border:1px solid var(--border)}
-    .login-card h2{color:var(--primary);text-align:center;margin-bottom:1.5rem;display:flex;align-items:center;justify-content:center;gap:.5rem}
-    .form-grp{margin-bottom:1rem}.form-grp label{display:block;margin-bottom:.4rem;font-size:.9rem;color:var(--muted)}
-    .form-grp input,.form-grp select,.form-grp textarea{width:100%;padding:.8rem 1rem;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:1rem}
-    .form-grp input:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 3px rgba(59,130,246,.2)}
-    .btn{display:inline-flex;align-items:center;gap:.5rem;padding:.7rem 1.4rem;border:none;border-radius:8px;font-weight:500;transition:.2s}
-    .btn-primary{background:var(--primary);color:#fff}.btn-primary:hover{background:var(--primary-h)}
-    .btn-outline{background:transparent;border:1px solid var(--border);color:var(--text)}.btn-outline:hover{background:var(--card)}
-    .btn-sm{padding:.4rem .8rem;font-size:.9rem}.btn-danger{background:var(--danger);color:#fff}.btn-success{background:var(--success);color:#fff}.btn-warning{background:var(--warning);color:#000}
-    .error{color:var(--danger);text-align:center;margin-top:.5rem;font-size:.9rem}
-    
-    /* DASHBOARD */
-    #dashboard{display:grid;grid-template-columns:var(--sidebar-w) 1fr;min-height:100vh}
-    .sidebar{background:var(--card);border-right:1px solid var(--border);padding:1.5rem 1rem;display:flex;flex-direction:column}
-    .logo{font-size:1.3rem;font-weight:700;color:var(--primary);display:flex;align-items:center;gap:.6rem;padding:.5rem 1rem;margin-bottom:1.5rem;border-radius:8px;background:rgba(59,130,246,.1)}
-    .nav-item{display:flex;align-items:center;gap:.8rem;padding:.8rem 1rem;border-radius:8px;margin-bottom:.3rem;cursor:pointer;transition:.2s;font-size:.95rem}
-    .nav-item:hover,.nav-item.active{background:var(--primary);color:#fff}
-    .nav-item i{width:20px;text-align:center}
-    .sidebar-footer{margin-top:auto;padding-top:1rem;border-top:1px solid var(--border)}
-    
-    .main{padding:1.5rem;overflow-y:auto}
-    .header{display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;padding-bottom:1rem;border-bottom:1px solid var(--border)}
-    .user-bar{display:flex;align-items:center;gap:1rem}
-    .user-avatar{width:40px;height:40px;border-radius:50%;background:var(--primary);display:flex;align-items:center;justify-content:center;font-weight:600}
-    
-    /* STATS & CARDS */
-    .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;margin-bottom:1.5rem}
-    .stat-card{background:var(--card);padding:1.2rem;border-radius:var(--radius);border:1px solid var(--border)}
-    .stat-card h4{color:var(--muted);font-size:.9rem;margin-bottom:.3rem}
-    .stat-card .val{font-size:1.8rem;font-weight:700}
-    .card{background:var(--card);border-radius:var(--radius);border:1px solid var(--border);margin-bottom:1.5rem}
-    .card-h{padding:1rem 1.5rem;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.5rem}
-    .card-b{padding:1.5rem}
-    
-    /* TABLES */
-    .table-wrap{overflow-x:auto}
-    table{width:100%;border-collapse:collapse;font-size:.95rem;min-width:700px}
-    th,td{padding:.9rem 1rem;text-align:left;border-bottom:1px solid var(--border)}
-    th{background:rgba(0,0,0,.2);font-weight:600;color:var(--muted);font-size:.9rem;white-space:nowrap}
-    tr:hover{background:rgba(255,255,255,.03)}
-    .badge{padding:.25rem .6rem;border-radius:20px;font-size:.8rem;font-weight:500;text-transform:capitalize;display:inline-block}
-    .badge-pending{background:#f59e0b20;color:#f59e0b}.badge-paid{background:#3b82f620;color:#3b82f6}
-    .badge-completed,.badge-delivered{background:#22c55e20;color:#22c55e}.badge-in_progress{background:#8b5cf620;color:#8b5cf6}
-    .badge-refunded{background:#ef444420;color:#ef4444}.badge-cancelled{background:#64748b20;color:#64748b}
-    .badge-contacted{background:#06b6d420;color:#06b6d4}
-    
-    /* ACTIONS */
-    .actions{display:flex;gap:.4rem;flex-wrap:wrap}.action-btn{padding:.4rem .7rem;border-radius:6px;font-size:.85rem;border:none;display:inline-flex;align-items:center;gap:.3rem}
-    .action-btn.edit{background:var(--primary);color:#fff}.action-btn.del{background:var(--danger);color:#fff}
-    .action-btn.view{background:var(--success);color:#fff}.action-btn:hover{filter:brightness(1.1)}
-    
-    /* MODALS */
-    .modal{position:fixed;inset:0;background:rgba(0,0,0,.7);display:flex;align-items:center;justify-content:center;z-index:500;padding:1rem}
-    .modal-c{background:var(--card);border-radius:var(--radius);width:100%;max-width:650px;max-height:90vh;overflow-y:auto;border:1px solid var(--border)}
-    .modal-h{padding:1rem 1.5rem;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
-    .modal-b{padding:1.5rem}.modal-f{padding:1rem 1.5rem;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:.5rem}
-    .close-modal{background:none;border:none;color:var(--muted);font-size:1.5rem;cursor:pointer}
-    
-    /* CHAT */
-    .chat-layout{display:grid;grid-template-columns:320px 1fr;height:calc(100vh - 200px);background:var(--card);border-radius:var(--radius);border:1px solid var(--border)}
-    .chat-list{border-right:1px solid var(--border);overflow-y:auto}.chat-item{padding:1rem;border-bottom:1px solid var(--border);cursor:pointer;transition:.2s}
-    .chat-item:hover,.chat-item.active{background:var(--primary);color:#fff}
-    .chat-item .name{font-weight:500}.chat-item .last{font-size:.85rem;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-    .chat-window{display:flex;flex-direction:column}.chat-h{padding:1rem;background:rgba(0,0,0,.2);font-weight:600;border-bottom:1px solid var(--border)}
-    .chat-msgs{flex:1;padding:1rem;overflow-y:auto;display:flex;flex-direction:column;gap:.8rem}
-    .msg{padding:.6rem 1rem;border-radius:12px;max-width:75%;word-wrap:break-word}
-    .msg.admin{align-self:flex-end;background:var(--primary);color:#fff}.msg.user{align-self:flex-start;background:var(--bg);border:1px solid var(--border)}
-    .msg-time{font-size:.75rem;color:var(--muted);margin-top:.3rem;text-align:right}
-    .chat-input{display:flex;gap:.5rem;padding:1rem;border-top:1px solid var(--border)}
-    .chat-input input{flex:1}
-    
-    /* TIMELINE */
-    .timeline{position:relative;padding-left:2rem}.timeline::before{content:'';position:absolute;left:8px;top:0;bottom:0;width:2px;background:var(--border)}
-    .timeline-item{position:relative;padding-bottom:1.2rem}
-    .timeline-item::before{content:'';position:absolute;left:-26px;top:4px;width:12px;height:12px;border-radius:50%;background:var(--primary);border:3px solid var(--bg)}
-    .timeline-time{font-size:.8rem;color:var(--muted)}.timeline-msg{margin-top:.3rem}
-    
-    /* PAYMENT BADGES */
-    .payment-info{display:flex;gap:1rem;flex-wrap:wrap;font-size:.9rem}
-    .payment-item{background:rgba(59,130,246,.1);padding:.5rem 1rem;border-radius:8px}
-    .payment-item.due{background:rgba(245,158,11,.1);color:#f59e0b}
-    
-    /* TOAST */
-    #toast{position:fixed;bottom:20px;right:20px;z-index:1000;display:flex;flex-direction:column;gap:.5rem}
-    .toast{background:var(--card);border-left:4px solid var(--primary);padding:1rem 1.5rem;border-radius:8px;box-shadow:var(--shadow);animation:slideIn .3s;display:flex;align-items:center;gap:.6rem}
-    .toast.success{border-color:var(--success)}.toast.error{border-color:var(--danger)}.toast.warning{border-color:var(--warning)}
-    @keyframes slideIn{from{transform:translateX(100%);opacity:0}to{transform:translateX(0);opacity:1}}
-    
-    /* LOADING */
-    .loading{display:inline-block;width:16px;height:16px;border:2px solid var(--border);border-top-color:var(--primary);border-radius:50%;animation:spin .6s linear infinite;margin-right:.5rem}
-    @keyframes spin{to{transform:rotate(360deg)}}
-    .loading-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;z-index:2000}
-    
-    /* RESPONSIVE */
-    @media(max-width:900px){#dashboard{grid-template-columns:1fr}.sidebar{position:fixed;bottom:0;width:100%;height:auto;display:flex;flex-direction:row;justify-content:space-around;padding:.5rem;border-top:1px solid var(--border);border-right:none;z-index:100}.logo,.sidebar-footer{display:none}.nav-item{flex-direction:column;gap:.2rem;padding:.6rem;font-size:.8rem}.nav-item i{font-size:1.1rem}.main{padding:1rem;margin-bottom:70px}.chat-layout{grid-template-columns:1fr;height:auto}.chat-list{max-height:200px;border-right:none;border-bottom:1px solid var(--border)}}
-    @media(max-width:600px){.stats{grid-template-columns:1fr 1fr}.actions{flex-direction:column}.modal-c{max-width:95%}.payment-info{flex-direction:column;gap:.5rem}}
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>🛡️ NovaStack Admin Panel</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+:root{--bg:#0f0c1a;--card:#1a162a;--surface:rgba(255,255,255,.08);--border:rgba(255,255,255,.12);--text:#fff;--muted:rgba(255,255,255,.6);--accent:#ff6b35;--accent-glow:rgba(255,107,53,.4);--green:#10b981;--blue:#3b82f6;--error:#ef4444;--warning:#f59e0b;--purple:#8b5cf6;--grad:linear-gradient(135deg,#ff6b35,#f7c531);--shadow:0 10px 40px rgba(0,0,0,.5);--rad:14px;--sw:280px;--swc:80px;--trans:300ms ease}
+*{margin:0;padding:0;box-sizing:border-box}html{font-size:16px}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);line-height:1.6;min-height:100vh;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 20% 80%,rgba(124,58,237,.12),transparent 50%),radial-gradient(ellipse at 80% 20%,rgba(255,107,53,.1),transparent 50%);z-index:-2;pointer-events:none}
+.particles{position:fixed;inset:0;z-index:-1;pointer-events:none;overflow:hidden}
+.particle{position:absolute;width:3px;height:3px;background:var(--accent);border-radius:50%;opacity:.25;animation:float 18s infinite linear}
+@keyframes float{0%{transform:translateY(100vh) rotate(0);opacity:0}10%,90%{opacity:.25}100%{transform:translateY(-20vh) rotate(720deg);opacity:0}}
+.hidden{display:none!important}
+#login{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:1.5rem}
+.login-box{background:var(--card);border:1px solid var(--border);border-radius:var(--rad);padding:2.5rem;width:100%;max-width:420px;text-align:center;backdrop-filter:blur(20px);box-shadow:var(--shadow);animation:slideUp .5s ease}
+@keyframes slideUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+.login-box .icon{font-size:3.5rem;margin-bottom:1.2rem;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.login-box h2{font-family:'Syne',sans-serif;font-weight:800;font-size:1.8rem;margin-bottom:.5rem}
+.login-box p{color:var(--muted);font-size:.95rem;margin-bottom:2rem}
+.login-box input{width:100%;padding:.9rem 1.2rem;border:1.5px solid var(--border);border-radius:var(--rad);font-size:.95rem;margin-bottom:1rem;outline:none;background:var(--surface);color:var(--text);transition:var(--trans)}
+.login-box input:focus{border-color:var(--accent);box-shadow:0 0 0 4px var(--accent-glow)}
+.login-box button{width:100%;padding:1rem;background:var(--grad);color:#fff;border:none;border-radius:var(--rad);font-family:'Syne',sans-serif;font-weight:700;font-size:1rem;cursor:pointer;margin-top:.5rem;transition:var(--trans)}
+.login-box button:hover{transform:translateY(-2px);box-shadow:0 10px 35px var(--accent-glow)}
+.login-err{color:var(--error);font-size:.85rem;margin-top:.8rem;display:none;padding:.5rem;background:rgba(239,68,68,.15);border-radius:8px}
+#dashboard{display:none;min-height:100vh}
+.sidebar{width:var(--sw);background:linear-gradient(180deg,#1a162a,#0f0c1a);position:fixed;top:0;left:0;height:100vh;display:flex;flex-direction:column;z-index:1000;border-right:1px solid var(--border);backdrop-filter:blur(20px);transition:transform var(--trans),width var(--trans);overflow-y:auto}
+.sidebar.collapsed{width:var(--swc)}
+.sidebar.collapsed .sidebar-logo small,.sidebar.collapsed .nav-section span,.sidebar.collapsed .nav-item span:not(.icon),.sidebar.collapsed .admin-info>div:not(.admin-av):not(.logout-icon){display:none}
+.sidebar-logo{padding:1.5rem;border-bottom:1px solid var(--border)}
+.sidebar-logo a{font-family:'Syne',sans-serif;font-weight:800;font-size:1.5rem;color:var(--text);text-decoration:none;display:flex;align-items:center;gap:.4rem}
+.sidebar-logo a span{background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.sidebar-logo small{font-size:.7rem;color:var(--muted);display:block;margin-top:.3rem}
+.sidebar-nav{flex:1;padding:1rem .75rem;display:flex;flex-direction:column;gap:.25rem}
+.nav-section{font-size:.68rem;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);padding:1rem 1.2rem .5rem;font-weight:600;display:flex;align-items:center;gap:.5rem}
+.nav-item{display:flex;align-items:center;gap:.85rem;padding:.75rem 1.2rem;border-radius:var(--rad);cursor:pointer;color:var(--muted);font-size:.92rem;font-weight:500;transition:var(--trans);background:none;border:none;width:100%;text-align:left}
+.nav-item:hover{background:var(--surface);color:var(--text);transform:translateX(4px)}
+.nav-item.active{background:rgba(255,255,255,.15);color:var(--accent);border-left:3px solid var(--accent)}
+.nav-item .icon{width:20px;text-align:center;font-size:1.1rem}
+.sidebar-foot{padding:1rem 1.2rem;border-top:1px solid var(--border);background:rgba(0,0,0,.1)}
+.admin-info{display:flex;align-items:center;gap:.85rem}
+.admin-av{width:36px;height:36px;border-radius:var(--rad);background:var(--grad);display:flex;align-items:center;justify-content:center}
+.admin-name{font-size:.9rem;color:var(--text);font-weight:600}
+.admin-role{font-size:.72rem;color:var(--muted)}
+.logout-icon{margin-left:auto;background:var(--surface);border:1px solid var(--border);color:var(--muted);cursor:pointer;width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;transition:var(--trans)}
+.logout-icon:hover{background:var(--error);color:#fff}
+.main{margin-left:var(--sw);display:flex;flex-direction:column;min-height:100vh;transition:margin-left var(--trans)}
+.main.expanded{margin-left:var(--swc)}
+.topbar{background:var(--card);border-bottom:1px solid var(--border);padding:0 1.5rem;height:68px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:500;backdrop-filter:blur(20px)}
+.topbar h1{font-family:'Syne',sans-serif;font-weight:700;font-size:1.3rem;display:flex;align-items:center;gap:.6rem}
+.topbar h1 i{color:var(--accent)}
+.toggle-sidebar{display:none;background:var(--surface);border:1px solid var(--border);color:var(--text);padding:.5rem .8rem;border-radius:8px;cursor:pointer;margin-right:1rem}
+.btn{padding:.55rem 1.2rem;border-radius:9999px;font-size:.85rem;font-weight:600;cursor:pointer;border:none;transition:var(--trans);display:inline-flex;align-items:center;gap:.5rem}
+.btn-primary{background:var(--grad);color:#fff;box-shadow:0 4px 20px var(--accent-glow)}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 30px var(--accent-glow)}
+.btn-edit{background:rgba(59,130,246,.15);color:var(--blue);border:1px solid rgba(59,130,246,.4)}
+.btn-edit:hover{background:var(--blue);color:#fff}
+.btn-danger{background:rgba(239,68,68,.15);color:var(--error);border:1px solid rgba(239,68,68,.4)}
+.btn-danger:hover{background:var(--error);color:#fff}
+.btn-success{background:rgba(16,185,129,.15);color:var(--green);border:1px solid rgba(16,185,129,.4)}
+.btn-success:hover{background:var(--green);color:#fff}
+.btn-chat{background:rgba(139,92,246,.15);color:var(--purple);border:1px solid rgba(139,92,246,.4)}
+.btn-chat:hover{background:var(--purple);color:#fff}
+.btn-view{background:rgba(59,130,246,.15);color:var(--blue);border:1px solid rgba(59,130,246,.4)}
+.btn-view:hover{background:var(--blue);color:#fff}
+.btn-warning{background:rgba(245,158,11,.15);color:var(--warning);border:1px solid rgba(245,158,11,.4)}
+.btn-warning:hover{background:var(--warning);color:#fff}
+.btn-sm{padding:.4rem .9rem;font-size:.8rem}
+.btn-cancel{background:rgba(239,68,68,.15);color:var(--error);border:1px solid rgba(239,68,68,.4)}
+.btn-cancel:hover{background:var(--error);color:#fff}
+.btn-save{background:var(--grad);color:#fff}
+.content{flex:1;padding:2rem;max-width:100%;overflow-x:hidden}
+.panel{display:none;animation:fadeIn .4s ease-out}
+.panel.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1.2rem;margin-bottom:2rem}
+.stat-card{background:var(--card);border:1px solid var(--border);border-radius:var(--rad);padding:1.4rem;backdrop-filter:blur(10px);transition:var(--trans);position:relative;overflow:hidden;cursor:pointer}
+.stat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--grad);transform:scaleX(0);transition:transform var(--trans)}
+.stat-card:hover{transform:translateY(-4px);border-color:var(--accent);box-shadow:var(--shadow)}
+.stat-card:hover::before{transform:scaleX(1)}
+.stat-card .lbl{font-size:.8rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;font-weight:600;display:flex;align-items:center;gap:.4rem}
+.stat-card .val{font-family:'Syne',sans-serif;font-weight:800;font-size:2.2rem;margin-top:.4rem;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1.2}
+.tbl-card{background:var(--card);border:1px solid var(--border);border-radius:var(--rad);overflow:hidden;backdrop-filter:blur(10px);margin-bottom:1.5rem}
+.tbl-head{padding:1.2rem 1.5rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem}
+.tbl-head h3{font-family:'Syne',sans-serif;font-weight:700;font-size:1.1rem;display:flex;align-items:center;gap:.5rem}
+.search-inp{padding:.55rem 1rem .55rem 2.2rem;border:1.5px solid var(--border);border-radius:9999px;font-size:.85rem;color:var(--text);background:var(--surface);outline:none;width:220px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%237a736a'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z'%3E%3C/path%3E%3C/svg%3E");background-repeat:no-repeat;background-position:.6rem center;background-size:1rem}
+.search-inp:focus{border-color:var(--accent);box-shadow:0 0 0 4px var(--accent-glow)}
+.table-responsive{overflow-x:auto;width:100%}
+table{width:100%;border-collapse:collapse;min-width:1000px}
+th{background:var(--surface);padding:.9rem 1.2rem;text-align:left;font-size:.75rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;border-bottom:1px solid var(--border)}
+td{padding:1rem 1.2rem;font-size:.9rem;border-bottom:1px solid var(--border);color:var(--muted)}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:var(--surface)}
+.empty-row{text-align:center;padding:2rem!important;color:var(--muted)}
+.badge{display:inline-flex;align-items:center;gap:.35rem;padding:.3rem .75rem;border-radius:9999px;font-size:.75rem;font-weight:600;text-transform:capitalize}
+.badge-pending{background:rgba(245,158,11,.15);color:var(--warning);border:1px solid rgba(245,158,11,.4)}
+.badge-payment_received{background:rgba(16,185,129,.15);color:var(--green);border:1px solid rgba(16,185,129,.4)}
+.badge-in_progress{background:rgba(59,130,246,.15);color:var(--blue);border:1px solid rgba(59,130,246,.4)}
+.badge-ready_for_balance{background:rgba(255,107,53,.15);color:var(--accent);border:1px solid rgba(255,107,53,.4)}
+.badge-completed,.badge-delivered{background:rgba(16,185,129,.15);color:var(--green);border:1px solid rgba(16,185,129,.4)}
+.badge-cancelled{background:rgba(239,68,68,.15);color:var(--error);border:1px solid rgba(239,68,68,.4)}
+.badge-refunded{background:rgba(139,92,246,.15);color:var(--purple);border:1px solid rgba(139,92,246,.4)}
+.modal-ov{position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:2000;display:none;align-items:center;justify-content:center;padding:1rem;backdrop-filter:blur(8px)}
+.modal-ov.open{display:flex}
+.modal{background:var(--card);border-radius:var(--rad);padding:2rem;width:100%;max-width:700px;max-height:90vh;overflow-y:auto;border:1px solid var(--border);box-shadow:var(--shadow);animation:modalSlide .3s ease}
+@keyframes modalSlide{from{opacity:0;transform:scale(.95)}to{opacity:1;transform:scale(1)}}
+.modal-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;padding-bottom:1rem;border-bottom:1px solid var(--border)}
+.modal-hdr h3{font-family:'Syne',sans-serif;font-weight:800;font-size:1.3rem;display:flex;align-items:center;gap:.5rem}
+.close-btn{background:var(--surface);border:1px solid var(--border);color:var(--muted);width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:var(--trans)}
+.close-btn:hover{background:var(--error);color:#fff}
+.fg{margin-bottom:1.1rem}
+.fg label{display:block;font-size:.85rem;font-weight:500;margin-bottom:.5rem;color:var(--muted);display:flex;align-items:center;gap:.4rem}
+.fg label i{color:var(--accent)}
+.fg input,.fg textarea,.fg select{width:100%;padding:.8rem 1rem;border:1.5px solid var(--border);border-radius:var(--rad);font-family:'DM Sans',sans-serif;font-size:.9rem;color:var(--text);background:var(--surface);outline:none;transition:var(--trans)}
+.fg input:focus,.fg textarea:focus,.fg select:focus{border-color:var(--accent);box-shadow:0 0 0 4px var(--accent-glow)}
+.fg textarea{min-height:80px;resize:vertical}
+.modal-foot{display:flex;gap:.8rem;justify-content:flex-end;margin-top:1.5rem;padding-top:1.2rem;border-top:1px solid var(--border);flex-wrap:wrap}
+.global-alert{padding:.8rem 1.2rem;border-radius:var(--rad);font-size:.9rem;font-weight:500;margin-bottom:1.2rem;display:none;align-items:center;gap:.6rem;border:1px solid;animation:slideDown .3s ease}
+@keyframes slideDown{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:translateY(0)}}
+.ga-success{background:rgba(16,185,129,.15);color:var(--green);border-color:rgba(16,185,129,.4)}
+.ga-error{background:rgba(239,68,68,.15);color:var(--error);border-color:rgba(239,68,68,.4)}
+.order-detail-card{display:flex;flex-direction:column;gap:1.5rem}
+.detail-section{background:var(--surface);padding:1.2rem;border-radius:var(--rad);border:1px solid var(--border)}
+.section-title{font-family:'Syne',sans-serif;font-weight:700;font-size:1rem;margin-bottom:1rem;color:var(--accent);display:flex;align-items:center;gap:.5rem}
+.info-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1rem}
+.info-item{display:flex;flex-direction:column;gap:.3rem}
+.info-item .label{font-size:.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+.info-item .value{font-size:.95rem;color:var(--text);font-weight:500;word-break:break-word}
+.customization-item{padding:.5rem 0;border-bottom:1px solid var(--border);font-size:.9rem}
+.progress-bar{height:6px;background:var(--surface);border-radius:10px;overflow:hidden;margin-top:.5rem}
+.progress-fill{height:100%;background:var(--grad);border-radius:10px;transition:width .5s ease}
+.deliverable-link{display:inline-block;margin:.2rem 0;color:var(--green);text-decoration:none}
+.deliverable-link:hover{text-decoration:underline}
+.chat-container{display:grid;grid-template-columns:320px 1fr;min-height:500px;background:var(--card);border-radius:20px;overflow:hidden;border:1px solid var(--border)}
+.conversations-list{border-right:1px solid var(--border);overflow-y:auto;padding:1rem}
+.conversation-item{padding:1rem;border-bottom:1px solid var(--border);cursor:pointer;transition:var(--trans);position:relative}
+.conversation-item:hover{background:var(--surface)}
+.conversation-item.unread{background:rgba(255,107,53,.1)}
+.conversation-item.active{background:rgba(255,255,255,.15);border-left:3px solid var(--accent)}
+.chat-area{display:flex;flex-direction:column}
+.chat-header-area{padding:1rem;border-bottom:1px solid var(--border);background:var(--surface)}
+.chat-messages{flex:1;overflow-y:auto;padding:1rem;min-height:400px;max-height:500px}
+.message-bubble{margin-bottom:1rem}
+.message-bubble.admin{text-align:right}
+.message-bubble.user{text-align:left}
+.message-content{display:inline-block;padding:.8rem 1rem;border-radius:12px;max-width:80%;word-wrap:break-word}
+.message-bubble.admin .message-content{background:var(--grad);color:#fff}
+.message-bubble.user .message-content{background:var(--surface);color:var(--text)}
+.message-time{font-size:.7rem;color:var(--muted);margin-top:.2rem;display:block}
+.chat-input-area{padding:1rem;border-top:1px solid var(--border);display:flex;gap:.5rem;background:var(--surface)}
+.chat-input-area textarea{flex:1;padding:.8rem;border-radius:12px;background:var(--bg);color:#fff;border:1px solid var(--border);resize:none;font-family:inherit;outline:none}
+.chat-input-area textarea:focus{border-color:var(--accent)}
+.chat-input-area button{padding:.8rem 1.5rem;background:var(--grad);border:none;border-radius:12px;color:#fff;cursor:pointer;font-weight:600;transition:var(--trans)}
+.chat-input-area button:hover{transform:translateY(-2px);box-shadow:0 4px 15px var(--accent-glow)}
+.sidebar-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.5);z-index:999;display:none;backdrop-filter:blur(4px)}
+.sidebar-overlay.active{display:block}
+.fg input[type="checkbox"]{width:auto;margin-right:.5rem;transform:scale(1.2);cursor:pointer}
+.fg label:has(input[type="checkbox"]){display:flex;align-items:center;cursor:pointer}
+.payment-badge{display:inline-flex;align-items:center;gap:.3rem;padding:.25rem .6rem;border-radius:6px;font-size:.75rem;font-weight:600}
+.payment-advance{background:rgba(245,158,11,.15);color:var(--warning)}
+.payment-balance{background:rgba(59,130,246,.15);color:var(--blue)}
+.payment-full{background:rgba(16,185,129,.15);color:var(--green)}
+.timeline{position:relative;padding-left:2rem;margin:1rem 0}
+.timeline::before{content:'';position:absolute;left:8px;top:0;bottom:0;width:2px;background:var(--border)}
+.timeline-item{position:relative;padding-bottom:1rem}
+.timeline-item::before{content:'';position:absolute;left:-26px;top:4px;width:12px;height:12px;border-radius:50%;background:var(--accent);border:3px solid var(--bg)}
+.timeline-time{font-size:.75rem;color:var(--muted)}
+.timeline-msg{margin-top:.3rem;font-size:.9rem}
+.deliverable-item{padding:.8rem;border:1px solid var(--border);border-radius:8px;margin-bottom:.5rem;background:rgba(255,255,255,.03)}
+.deliverable-item .title{font-weight:600;color:var(--accent)}
+.deliverable-item .meta{font-size:.8rem;color:var(--muted);margin:.3rem 0}
+.deliverable-item a{color:var(--green);text-decoration:none}
+.deliverable-item a:hover{text-decoration:underline}
+@media(max-width:1200px){.stats-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:992px){.sidebar{transform:translateX(-100%);width:var(--sw)}.sidebar.mobile-open{transform:translateX(0)}.sidebar-overlay.active{display:block}.main{margin-left:0}.toggle-sidebar{display:flex}.chat-container{grid-template-columns:1fr}.conversations-list{display:none}.conversations-list.mobile-show{display:block}}
+@media(max-width:768px){.stats-grid{grid-template-columns:1fr}.content{padding:1rem}.tbl-head{flex-direction:column;align-items:flex-start}.search-inp{width:100%}.modal{padding:1.5rem;max-width:95%}.modal-foot{flex-direction:column}.btn{width:100%;justify-content:center}.info-grid{grid-template-columns:1fr}}
+@media(max-width:480px){.stats-grid{gap:.75rem}.stat-card .val{font-size:1.6rem}.topbar h1{font-size:1rem}}
+::-webkit-scrollbar{width:8px;height:8px}
+::-webkit-scrollbar-track{background:var(--surface);border-radius:8px}
+::-webkit-scrollbar-thumb{background:var(--accent);border-radius:8px}
+</style>
 </head>
 <body>
+<div class="particles" id="particles"></div>
+<div class="sidebar-overlay" id="sidebar-overlay" onclick="toggleSidebar()"></div>
 
-<!-- LOGIN SCREEN -->
+<!-- LOGIN -->
 <div id="login">
-  <div class="login-card">
-    <h2><i class="fas fa-shield-alt"></i> NovaStack Admin</h2>
-    <form id="loginForm">
-      <div class="form-grp"><label>Email</label><input type="email" id="adm-email" required placeholder="admin@novastack.me"></div>
-      <div class="form-grp"><label>Password</label><input type="password" id="adm-pass" required placeholder="••••••••"></div>
-      <button type="submit" class="btn btn-primary w-full" id="login-btn"><i class="fas fa-sign-in-alt"></i> Login</button>
-      <p id="login-err" class="error"></p>
-    </form>
-  </div>
+<div class="login-box">
+<div class="icon"><i class="fas fa-shield-alt"></i></div>
+<h2>🛡️ NovaStack Admin</h2>
+<p>Enter credentials to access dashboard</p>
+<input type="email" id="adm-email" placeholder="Admin email" autocomplete="email">
+<input type="password" id="adm-pass" placeholder="Password" onkeypress="if(event.key==='Enter')doAdminLogin()" autocomplete="current-password">
+<button id="login-btn" onclick="doAdminLogin()"><i class="fas fa-sign-in-alt"></i> Login</button>
+<div class="login-err" id="login-err"><i class="fas fa-exclamation-circle"></i> <span id="login-err-msg"></span></div>
+</div>
 </div>
 
 <!-- DASHBOARD -->
-<div id="dashboard" class="hidden">
-  <aside class="sidebar">
-    <div class="logo"><i class="fas fa-cube"></i> NovaStack Admin</div>
-    <nav>
-      <div class="nav-item active" data-view="dash"><i class="fas fa-chart-pie"></i> Dashboard</div>
-      <div class="nav-item" data-view="services"><i class="fas fa-box-open"></i> Services</div>
-      <div class="nav-item" data-view="orders"><i class="fas fa-shopping-cart"></i> Orders</div>
-      <div class="nav-item" data-view="users"><i class="fas fa-users"></i> Users</div>
-      <div class="nav-item" data-view="requests"><i class="fas fa-clipboard-list"></i> Requests</div>
-      <div class="nav-item" data-view="messages"><i class="fas fa-comments"></i> Messages</div>
-      <div class="nav-item" data-view="refunds"><i class="fas fa-undo"></i> Refunds</div>
-      <div class="nav-item" data-view="profile"><i class="fas fa-user-cog"></i> Profile</div>
-    </nav>
-    <div class="sidebar-footer"><div class="nav-item" id="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</div></div>
-  </aside>
+<div id="dashboard">
+<aside class="sidebar" id="sidebar">
+<div class="sidebar-logo">
+<a href="#"><i class="fas fa-code"></i> Nova<span>Stack</span></a>
+<small><i class="fas fa-cog"></i> Admin Panel</small>
+</div>
+<nav class="sidebar-nav">
+<div class="nav-section"><i class="fas fa-chart-pie"></i> <span>Overview</span></div>
+<button class="nav-item active" onclick="switchPanel('overview',this)"><span class="icon"><i class="fas fa-home"></i></span> <span>Dashboard</span></button>
+<div class="nav-section"><i class="fas fa-shopping-bag"></i> <span>Orders</span></div>
+<button class="nav-item" onclick="switchPanel('orders',this)"><span class="icon"><i class="fas fa-box-open"></i></span> <span>All Orders</span></button>
+<button class="nav-item" onclick="switchPanel('refund-requests',this)"><span class="icon"><i class="fas fa-money-bill-wave"></i></span> <span>Refunds</span></button>
+<div class="nav-section"><i class="fas fa-cube"></i> <span>Services</span></div>
+<button class="nav-item" onclick="switchPanel('services',this)"><span class="icon"><i class="fas fa-cubes"></i></span> <span>Manage Services</span></button>
+<button class="nav-item" onclick="openModal()"><span class="icon"><i class="fas fa-plus-circle"></i></span> <span>Add Service</span></button>
+<div class="nav-section"><i class="fas fa-users"></i> <span>Users</span></div>
+<button class="nav-item" onclick="switchPanel('users',this)"><span class="icon"><i class="fas fa-user-friends"></i></span> <span>All Users</span></button>
+<button class="nav-item" onclick="switchPanel('custom-requests',this)"><span class="icon"><i class="fas fa-file-signature"></i></span> <span>Custom Requests</span></button>
+<div class="nav-section"><i class="fas fa-comments"></i> <span>Support</span></div>
+<button class="nav-item" onclick="switchPanel('chat',this)"><span class="icon"><i class="fas fa-comment-dots"></i></span> <span>Conversations</span></button>
+</nav>
+<div class="sidebar-foot">
+<div class="admin-info">
+<div class="admin-av"><i class="fas fa-user"></i></div>
+<div><div class="admin-name" id="admin-name-disp">Admin</div><div class="admin-role"><i class="fas fa-crown"></i> Super Admin</div></div>
+<button class="logout-icon" onclick="doAdminLogout()" title="Logout"><i class="fas fa-sign-out-alt"></i></button>
+</div>
+</div>
+</aside>
 
-  <main class="main">
-    <header class="header">
-      <h2 id="page-title">Dashboard Overview</h2>
-      <div class="user-bar">
-        <span id="admin-name-disp">Admin</span>
-        <div class="user-avatar" id="admin-initial">A</div>
-        <button class="btn btn-sm btn-outline" onclick="location.reload()"><i class="fas fa-sync"></i> Refresh</button>
-      </div>
-    </header>
+<div class="main" id="main">
+<div class="topbar">
+<div style="display:flex;align-items:center;">
+<button class="toggle-sidebar" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+<h1><i class="fas fa-tachometer-alt"></i> <span id="panel-title">Dashboard</span></h1>
+</div>
+<div><span style="font-size:.85rem;color:var(--muted)" id="date-disp"></span></div>
+</div>
 
-    <!-- DASHBOARD VIEW -->
-    <section id="view-dash" class="view active">
-      <div class="stats">
-        <div class="stat-card"><h4>Total Orders</h4><div class="val" id="stat-orders">0</div></div>
-        <div class="stat-card"><h4>Revenue</h4><div class="val" id="stat-revenue">₹0</div></div>
-        <div class="stat-card"><h4>Active Users</h4><div class="val" id="stat-users">0</div></div>
-        <div class="stat-card"><h4>Pending Requests</h4><div class="val" id="stat-requests">0</div></div>
-      </div>
-      <div class="card">
-        <div class="card-h"><h3>Recent Orders</h3></div>
-        <div class="card-b">
-          <div class="table-wrap"><table><thead><tr><th>ID</th><th>Customer</th><th>Service</th><th>Status</th><th>Paid</th><th>Actions</th></tr></thead><tbody id="recent-orders"></tbody></table></div>
-        </div>
-      </div>
-    </section>
+<div class="content">
+<div class="global-alert ga-success" id="ga-success"><i class="fas fa-check-circle"></i> <span id="success-msg"></span></div>
+<div class="global-alert ga-error" id="ga-error"><i class="fas fa-exclamation-triangle"></i> <span id="error-msg"></span></div>
 
-    <!-- SERVICES VIEW -->
-    <section id="view-services" class="view hidden">
-      <div class="card">
-        <div class="card-h"><h3>Manage Services</h3><button class="btn btn-primary" onclick="openSvcModal()"><i class="fas fa-plus"></i> Add Service</button></div>
-        <div class="card-b">
-          <div class="table-wrap"><table><thead><tr><th>Title</th><th>Category</th><th>Price</th><th>Delivery</th><th>Actions</th></tr></thead><tbody id="svc-table"></tbody></table></div>
-        </div>
-      </div>
-    </section>
+<!-- OVERVIEW -->
+<div class="panel active" id="panel-overview">
+<div class="stats-grid">
+<div class="stat-card" onclick="switchPanel('services',null)"><div class="lbl"><i class="fas fa-cube"></i> Services</div><div class="val" id="st-svc">0</div></div>
+<div class="stat-card" onclick="switchPanel('orders',null)"><div class="lbl"><i class="fas fa-box-open"></i> Orders</div><div class="val" id="st-ord">0</div></div>
+<div class="stat-card" onclick="switchPanel('users',null)"><div class="lbl"><i class="fas fa-users"></i> Users</div><div class="val" id="st-usr">0</div></div>
+<div class="stat-card"><div class="lbl"><i class="fas fa-dollar-sign"></i> Revenue</div><div class="val" id="st-rev">₹0</div></div>
+</div>
+<div class="tbl-card">
+<div class="tbl-head"><h3><i class="fas fa-clock"></i> Recent Orders</h3></div>
+<div class="table-responsive"><table><thead><tr><th>ID</th><th>Client</th><th>Service</th><th>Status</th><th>Paid</th><th>Actions</th></tr></thead><tbody id="recent-ord-tbody"></tbody></table></div>
+</div>
+</div>
 
-    <!-- ORDERS VIEW -->
-    <section id="view-orders" class="view hidden">
-      <div class="card">
-        <div class="card-h">
-          <h3>Order Management</h3>
-          <select id="order-filter" class="btn btn-sm btn-outline"><option value="all">All Status</option><option value="pending">Pending</option><option value="payment_received">Payment Received</option><option value="in_progress">In Progress</option><option value="ready_for_balance">Ready for Balance</option><option value="completed">Completed</option><option value="delivered">Delivered</option><option value="cancelled">Cancelled</option></select>
-        </div>
-        <div class="card-b">
-          <div class="table-wrap"><table><thead><tr><th>Order</th><th>Customer</th><th>Service</th><th>Price</th><th>Status</th><th>Payment</th><th>Actions</th></tr></thead><tbody id="order-table"></tbody></table></div>
-        </div>
-      </div>
-    </section>
+<!-- ORDERS -->
+<div class="panel" id="panel-orders">
+<div class="tbl-card">
+<div class="tbl-head"><h3><i class="fas fa-list"></i> All Orders</h3><input type="text" class="search-inp" placeholder="Search orders..." oninput="filterOrders(this.value)"></div>
+<div class="table-responsive"><table><thead><tr><th>ID</th><th>Client</th><th>Service</th><th>Price</th><th>Advance</th><th>Paid</th><th>Due</th><th>Status</th><th>Actions</th></tr></thead><tbody id="ord-tbody"></tbody></table></div>
+</div>
+</div>
 
-    <!-- USERS VIEW -->
-    <section id="view-users" class="view hidden">
-      <div class="card"><div class="card-h"><h3>Customer Management</h3></div><div class="card-b"><div class="table-wrap"><table><thead><tr><th>Name</th><th>Email</th><th>Orders</th><th>Spent</th><th>Joined</th><th>Actions</th></tr></thead><tbody id="user-table"></tbody></table></div></div></div>
-    </section>
+<!-- REFUNDS -->
+<div class="panel" id="panel-refund-requests">
+<div class="tbl-card">
+<div class="tbl-head"><h3><i class="fas fa-money-bill-wave"></i> Refund History</h3></div>
+<div class="table-responsive"><table><thead><tr><th>Order</th><th>User</th><th>Amount</th><th>Reason</th><th>Status</th><th>Date</th></tr></thead><tbody id="refund-tbody"></tbody></table></div>
+</div>
+</div>
 
-    <!-- CUSTOM REQUESTS VIEW -->
-    <section id="view-requests" class="view hidden">
-      <div class="card"><div class="card-h"><h3>Custom Project Requests</h3></div><div class="card-b"><div class="table-wrap"><table><thead><tr><th>Name</th><th>Email</th><th>Title</th><th>Budget</th><th>Status</th><th>Actions</th></tr></thead><tbody id="req-table"></tbody></table></div></div></div>
-    </section>
+<!-- SERVICES -->
+<div class="panel" id="panel-services">
+<div class="tbl-card">
+<div class="tbl-head"><h3><i class="fas fa-cubes"></i> All Services</h3><input type="text" class="search-inp" placeholder="Search services..." oninput="filterServices(this.value)"></div>
+<div class="table-responsive"><table><thead><tr><th>Service</th><th>Category</th><th>Price</th><th>Orders</th><th>Actions</th></tr></thead><tbody id="svc-tbody"></tbody></table></div>
+</div>
+</div>
 
-    <!-- MESSAGES VIEW -->
-    <section id="view-messages" class="view hidden">
-      <div class="chat-layout">
-        <div class="chat-list" id="chat-list"></div>
-        <div class="chat-window">
-          <div class="chat-h" id="chat-header">Select a conversation</div>
-          <div class="chat-msgs" id="chat-msgs"></div>
-          <form class="chat-input" id="chat-form"><input type="text" id="chat-input" placeholder="Type message..." disabled><button type="submit" class="btn btn-primary" disabled>Send</button></form>
-        </div>
-      </div>
-    </section>
+<!-- USERS -->
+<div class="panel" id="panel-users">
+<div class="tbl-card">
+<div class="tbl-head"><h3><i class="fas fa-users"></i> Registered Users</h3><input type="text" class="search-inp" placeholder="Search users..." oninput="filterUsers(this.value)"></div>
+<div class="table-responsive"><table><thead><tr><th>Name</th><th>Email</th><th>Verified</th><th>Orders</th><th>Spent</th><th>Joined</th></tr></thead><tbody id="usr-tbody"></tbody></table></div>
+</div>
+</div>
 
-    <!-- REFUNDS VIEW -->
-    <section id="view-refunds" class="view hidden">
-      <div class="card"><div class="card-h"><h3>Refund History</h3></div><div class="card-b"><div class="table-wrap"><table><thead><tr><th>Order</th><th>User</th><th>Amount</th><th>Reason</th><th>Status</th><th>Date</th></tr></thead><tbody id="refund-table"></tbody></table></div></div></div>
-    </section>
+<!-- CUSTOM REQUESTS -->
+<div class="panel" id="panel-custom-requests">
+<div class="tbl-card">
+<div class="tbl-head"><h3><i class="fas fa-file-signature"></i> Custom Project Requests</h3></div>
+<div class="table-responsive"><table><thead><tr><th>Date</th><th>Name</th><th>Email</th><th>Project</th><th>Budget</th><th>Status</th><th>Action</th></tr></thead><tbody id="custom-tbody"></tbody></table></div>
+</div>
+</div>
 
-    <!-- PROFILE VIEW -->
-    <section id="view-profile" class="view hidden">
-      <div class="card"><div class="card-h"><h3>Admin Profile</h3></div><div class="card-b"><div class="form-grp"><label>Admin Email</label><input type="email" id="profile-email" disabled></div><div class="form-grp"><label>Change Password</label><div class="flex gap-2"><input type="password" id="new-pass" placeholder="New password (8+ chars)"><button class="btn btn-primary" onclick="changeAdminPass()">Update</button></div></div></div></div>
-    </section>
-  </main>
+<!-- CHAT -->
+<div class="panel" id="panel-chat">
+<div class="chat-container">
+<div class="conversations-list" id="conversations-list"><div style="text-align:center;color:var(--muted);padding:2rem;">Loading...</div></div>
+<div class="chat-area">
+<div class="chat-header-area"><h4 id="active-conversation-title"><i class="fas fa-comment"></i> Select a conversation</h4></div>
+<div class="chat-messages" id="admin-chat-messages"><div style="text-align:center;color:var(--muted);padding:2rem;">Select to chat</div></div>
+<div class="chat-input-area"><textarea id="admin-chat-input" placeholder="Type reply..." rows="2"></textarea><button onclick="sendAdminReply()"><i class="fas fa-paper-plane"></i> Send</button></div>
+</div>
+</div>
+</div>
+</div>
+</div>
 </div>
 
 <!-- SERVICE MODAL -->
-<div id="svc-modal" class="modal hidden">
-  <div class="modal-c">
-    <div class="modal-h"><h3 id="svc-modal-title">Add Service</h3><button class="close-modal" onclick="closeSvcModal()">&times;</button></div>
-    <div class="modal-b">
-      <form id="svc-form">
-        <input type="hidden" id="svc-id">
-        <div class="form-grp"><label>Title *</label><input type="text" id="svc-title" required></div>
-        <div class="flex gap-2"><div class="form-grp w-full"><label>Category</label><select id="svc-cat"><option value="web">Web Development</option><option value="mobile">Mobile App</option><option value="design">UI/UX Design</option><option value="other">Other</option></select></div><div class="form-grp w-full"><label>Price (₹) *</label><input type="number" id="svc-price" required min="0" step="0.01"></div></div>
-        <div class="flex gap-2"><div class="form-grp w-full"><label>Delivery Days</label><input type="number" id="svc-days" value="14" min="1"></div><div class="form-grp w-full"><label>Revisions</label><input type="number" id="svc-rev" value="3" min="0"></div></div>
-        <div class="form-grp"><label>Description</label><textarea id="svc-desc" rows="3"></textarea></div>
-        <div class="form-grp"><label>Technologies</label><input type="text" id="svc-tech" placeholder="React, Node, MongoDB"></div>
-        <div class="flex gap-2"><div class="form-grp w-full"><label>GitHub Link</label><input type="url" id="svc-git"></div><div class="form-grp w-full"><label>Live URL</label><input type="url" id="svc-live"></div></div>
-        <div class="form-grp"><label>Emoji Icon</label><input type="text" id="svc-emoji" value="💻" maxlength="3"></div>
-      </form>
-    </div>
-    <div class="modal-f"><button class="btn btn-outline" onclick="closeSvcModal()">Cancel</button><button class="btn btn-primary" onclick="saveService()">Save Service</button></div>
-  </div>
-</div>
+<div class="modal-ov" id="svc-modal"><div class="modal">
+<div class="modal-hdr"><h3><i class="fas fa-edit"></i> <span id="modal-title">Add Service</span></h3><button class="close-btn" onclick="closeModal()"><i class="fas fa-times"></i></button></div>
+<div class="fg"><label><i class="fas fa-heading"></i> Title *</label><input id="f-title" placeholder="e.g. Web Application"></div>
+<div class="fg"><label><i class="fas fa-align-left"></i> Description *</label><textarea id="f-desc" placeholder="Describe service..."></textarea></div>
+<div class="fg"><label><i class="fas fa-folder"></i> Category</label><select id="f-cat"><option value="web">🌐 Web</option><option value="mobile">📱 Mobile</option><option value="ai">🤖 AI/ML</option><option value="ecom">🛒 E-Commerce</option><option value="portfolio">🎨 Portfolio</option><option value="other">⚙️ Other</option></select></div>
+<div class="fg"><label><i class="fas fa-code"></i> Technologies</label><input id="f-tech" placeholder="React, Node, MongoDB"></div>
+<div class="fg"><label><i class="fas fa-tag"></i> Price (₹) *</label><input type="number" id="f-price" placeholder="299" min="0" step="0.01"></div>
+<div class="fg"><label><i class="fas fa-clock"></i> Delivery Days</label><input type="number" id="f-days" value="14" min="1"></div>
+<div class="fg"><label><i class="fas fa-sync"></i> Revisions</label><input type="number" id="f-rev" value="3" min="0"></div>
+<div class="modal-foot"><button class="btn btn-cancel" onclick="closeModal()">Cancel</button><button class="btn btn-save" onclick="saveService()"><i class="fas fa-save"></i> Save</button></div>
+</div></div>
 
 <!-- ORDER DETAIL MODAL -->
-<div id="order-modal" class="modal hidden">
-  <div class="modal-c" style="max-width:850px">
-    <div class="modal-h"><h3>Order #<span id="ord-id"></span></h3><button class="close-modal" onclick="closeOrderModal()">&times;</button></div>
-    <div class="modal-b">
-      <div class="flex gap-3 mb-2" style="flex-wrap:wrap"><div><strong>Customer:</strong> <span id="ord-cust"></span></div><div><strong>Service:</strong> <span id="ord-svc"></span></div><div><strong>Price:</strong> ₹<span id="ord-price"></span></div></div>
-      
-      <div class="form-grp"><label>Current Status</label><select id="ord-status" class="w-full"><option value="pending">Pending</option><option value="payment_received">Payment Received</option><option value="in_progress">In Progress</option><option value="ready_for_balance">Ready for Balance</option><option value="completed">Completed</option><option value="delivered">Delivered</option><option value="cancelled">Cancelled</option></select></div>
-      
-      <div class="card" style="margin:1rem 0"><div class="card-h"><h4>Payment Details</h4></div><div class="card-b"><div class="payment-info"><div class="payment-item"><strong>Advance (15%):</strong> ₹<span id="ord-adv">0</span></div><div class="payment-item"><strong>Total Paid:</strong> ₹<span id="ord-paid">0</span></div><div class="payment-item due"><strong>Balance Due:</strong> ₹<span id="ord-due">0</span></div></div></div></div>
-      
-      <div class="card"><div class="card-h"><h4>Deliverables</h4><button class="btn btn-sm btn-primary" onclick="openDelModal()"><i class="fas fa-plus"></i> Add</button></div><div class="card-b"><div id="deliverables-list"></div></div></div>
-      
-      <div class="card"><div class="card-h"><h4>Timeline</h4></div><div class="card-b"><div class="timeline" id="order-timeline"></div></div></div>
-      
-      <div class="flex gap-2 mt-2" style="flex-wrap:wrap">
-        <button class="btn btn-success" onclick="updateOrderStatus()"><i class="fas fa-save"></i> Update Status</button>
-        <button class="btn btn-warning" onclick="markReadyForBalance()"><i class="fas fa-bell"></i> Ready for Balance</button>
-        <button class="btn btn-primary" onclick="completeOrder()"><i class="fas fa-check-circle"></i> Mark Completed</button>
-        <button class="btn btn-danger" onclick="openRefundModal()"><i class="fas fa-undo"></i> Process Refund</button>
-      </div>
-    </div>
-  </div>
-</div>
+<div class="modal-ov" id="order-detail-modal"><div class="modal" style="max-width:850px">
+<div class="modal-hdr"><h3><i class="fas fa-info-circle"></i> Order #<span id="ord-detail-id"></span></h3><button class="close-btn" onclick="closeOrderDetail()"><i class="fas fa-times"></i></button></div>
+<div id="order-detail-content"></div>
+</div></div>
 
-<!-- DELIVERABLE MODAL -->
-<div id="del-modal" class="modal hidden">
-  <div class="modal-c">
-    <div class="modal-h"><h3>Add Deliverable</h3><button class="close-modal" onclick="closeDelModal()">&times;</button></div>
-    <div class="modal-b">
-      <form id="del-form"><input type="hidden" id="del-order-id">
-        <div class="form-grp"><label>Title *</label><input type="text" id="del-title" required></div>
-        <div class="form-grp"><label>Description</label><textarea id="del-desc" rows="2"></textarea></div>
-        <div class="form-grp"><label>File URL *</label><input type="url" id="del-url" required placeholder="https://..."></div>
-        <div class="flex gap-2"><div class="form-grp w-full"><label>File Type</label><select id="del-type"><option value="file">File</option><option value="link">Link</option><option value="code">Code</option><option value="doc">Documentation</option></select></div><div class="form-grp w-full"><label>Version</label><input type="number" id="del-ver" value="1" min="1"></div></div>
-        <div class="flex gap-2 mt-2"><label><input type="checkbox" id="del-preview"> Preview Only</label><label><input type="checkbox" id="del-full"> Full Access</label></div>
-      </form>
-    </div>
-    <div class="modal-f"><button class="btn btn-outline" onclick="closeDelModal()">Cancel</button><button class="btn btn-primary" onclick="saveDeliverable()">Save</button></div>
-  </div>
-</div>
+<!-- DELIVERY MODAL -->
+<div class="modal-ov" id="delivery-modal"><div class="modal" style="max-width:650px">
+<div class="modal-hdr"><h3><i class="fas fa-box"></i> Deliver Project</h3><button class="close-btn" onclick="closeDeliveryModal()"><i class="fas fa-times"></i></button></div>
+<div id="delivery-modal-content"></div>
+</div></div>
 
 <!-- REFUND MODAL -->
-<div id="refund-modal" class="modal hidden">
-  <div class="modal-c">
-    <div class="modal-h"><h3>Process Refund</h3><button class="close-modal" onclick="closeRefundModal()">&times;</button></div>
-    <div class="modal-b">
-      <input type="hidden" id="refund-order-id">
-      <div class="form-grp"><label>Refund Amount (₹)</label><input type="number" id="refund-amt" required min="0" step="0.01"></div>
-      <div class="form-grp"><label>Reason</label><textarea id="refund-reason" rows="3" placeholder="Reason for refund..."></textarea></div>
-      <p class="error" style="font-size:.85rem">⚠️ This will initiate refund via Razorpay if payment exists.</p>
-    </div>
-    <div class="modal-f"><button class="btn btn-outline" onclick="closeRefundModal()">Cancel</button><button class="btn btn-danger" onclick="submitRefund()">Process Refund</button></div>
-  </div>
-</div>
+<div class="modal-ov" id="refund-modal"><div class="modal" style="max-width:500px">
+<div class="modal-hdr"><h3><i class="fas fa-money-bill-wave"></i> Process Refund</h3><button class="close-btn" onclick="closeRefundModal()"><i class="fas fa-times"></i></button></div>
+<div class="fg"><label><i class="fas fa-dollar-sign"></i> Amount (₹)</label><input type="number" id="refund-amount" step="0.01" readonly></div>
+<div class="fg"><label><i class="fas fa-comment"></i> Reason</label><textarea id="refund-reason" placeholder="Refund reason..."></textarea></div>
+<div class="modal-foot"><button class="btn btn-cancel" onclick="closeRefundModal()">Cancel</button><button class="btn btn-save" onclick="processRefundNow()"><i class="fas fa-check"></i> Process</button></div>
+</div></div>
 
 <!-- TOAST -->
-<div id="toast"></div>
+<div id="toast" style="position:fixed;bottom:20px;right:20px;z-index:3000;display:flex;flex-direction:column;gap:.5rem"></div>
 
 <script>
 // ===== CONFIG =====
 const CONFIG = { API: 'https://novastack-backend.onrender.com' };
 let adminToken = localStorage.getItem('dc_admin_token') || '';
-let editingId = null, activeConversation = null, chatPollInterval = null, currentOrderId = null;
+let editingId = null, activeConversation = null, chatPollInterval = null, currentOrderIdForRefund = null;
 let adminData = { services: [], orders: [], users: [], customRequests: [], refunds: [] };
 
 // ===== UTILS =====
 const $ = s => document.querySelector(s), $$ = s => document.querySelectorAll(s);
 const fmt = n => `₹${parseFloat(n||0).toLocaleString('en-IN')}`;
 const date = d => new Date(d).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'});
-const toast = (msg, type='info') => { const t = document.createElement('div'); t.className = `toast ${type}`; t.innerHTML = `<i class="fas fa-${type==='success'?'check-circle':type==='error'?'exclamation-circle':'info-circle'}"></i> ${msg}`; $('#toast').appendChild(t); setTimeout(()=>t.remove(),3500); };
-
+const toast = (msg, type='info') => {
+    const t = document.createElement('div');
+    t.style.cssText = `padding:.8rem 1.2rem;border-radius:8px;font-size:.9rem;font-weight:500;display:flex;align-items:center;gap:.5rem;animation:slideIn .3s;background:${type==='success'?'rgba(16,185,129,.15)':type==='error'?'rgba(239,68,68,.15)':'rgba(59,130,246,.15)'};border:1px solid ${type==='success'?'rgba(16,185,129,.4)':type==='error'?'rgba(239,68,68,.4)':'rgba(59,130,246,.4)'};color:${type==='success'?'#10b981':type==='error'?'#ef4444':'#3b82f6'}`;
+    t.innerHTML = `<i class="fas fa-${type==='success'?'check-circle':type==='error'?'exclamation-circle':'info-circle'}"></i> ${msg}`;
+    $('#toast').appendChild(t);
+    setTimeout(()=>t.remove(),3500);
+};
 const api = async (method, path, body = null) => {
-  const headers = { 'Content-Type': 'application/json' };
-  if (adminToken) headers.Authorization = `Bearer ${adminToken}`;
-  const opts = { method, headers };
-  if (body) opts.body = JSON.stringify(body);
-  const res = await fetch(CONFIG.API + path, opts);
-  const json = await res.json();
-  if (!res.ok) throw new Error(json.error || `HTTP ${res.status}`);
-  return json;
+    const headers = { 'Content-Type': 'application/json' };
+    if (adminToken) headers.Authorization = `Bearer ${adminToken}`;
+    const opts = { method, headers };
+    if (body) opts.body = JSON.stringify(body);
+    const res = await fetch(CONFIG.API + path, opts);
+    const json = await res.json();
+    if (!res.ok) throw new Error(json.error || `HTTP ${res.status}`);
+    return json;
 };
 
+// ===== PARTICLES =====
+function createParticles(){const c=$('#particles');for(let i=0;i<30;i++){const p=document.createElement('div');p.className='particle';p.style.left=Math.random()*100+'%';p.style.animationDelay=Math.random()*18+'s';p.style.animationDuration=(18+Math.random()*12)+'s';c.appendChild(p);}}createParticles();
+
+// ===== SIDEBAR =====
+function toggleSidebar(){const sb=$('#sidebar'),ov=$('#sidebar-overlay');if(window.innerWidth>992){sb.classList.toggle('collapsed');$('#main').classList.toggle('expanded');ov.classList.remove('active');}else{sb.classList.toggle('mobile-open');ov.classList.toggle('active');}}
+
 // ===== AUTH =====
-$('#loginForm').addEventListener('submit', async e => {
-  e.preventDefault();
-  const email = $('#adm-email').value.trim(), password = $('#adm-pass').value;
-  const btn = $('#login-btn'), errEl = $('#login-err');
-  errEl.style.display = 'none';
-  if (!email || !password) { errEl.style.display = 'block'; errEl.textContent = 'Fill all fields'; return; }
-  btn.disabled = true; btn.innerHTML = '<span class="loading"></span>Logging in...';
-  try {
-    const res = await fetch(CONFIG.API + '/admin/login', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email, password }) });
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.error || 'Login failed');
-    adminToken = data.token;
-    localStorage.setItem('dc_admin_token', adminToken);
-    localStorage.setItem('dc_admin_email', email);
-    showDashboard(email);
-    toast('Welcome back!', 'success');
-  } catch(err) { errEl.style.display = 'block'; errEl.textContent = err.message; toast(err.message, 'error'); }
-  finally { btn.disabled = false; btn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Login'; }
-});
-
-$('#logout-btn').addEventListener('click', () => {
-  localStorage.removeItem('dc_admin_token'); localStorage.removeItem('dc_admin_email');
-  adminToken = '';
-  if (chatPollInterval) clearInterval(chatPollInterval);
-  location.reload();
-});
-
-function showDashboard(email) {
-  $('#login').style.display = 'none'; $('#dashboard').style.display = 'grid';
-  $('#admin-name-disp').textContent = email.split('@')[0];
-  $('#admin-initial').textContent = email[0].toUpperCase();
-  $('#profile-email').value = email;
-  loadAll();
+async function doAdminLogin(){
+    const email=$('#adm-email').value.trim(),pass=$('#adm-pass').value;
+    const btn=$('#login-btn'),err=$('#login-err'),errMsg=$('#login-err-msg');
+    errMsg.textContent='';err.style.display='none';
+    if(!email||!pass){err.style.display='block';errMsg.textContent='Fill all fields';return;}
+    btn.disabled=true;btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> Logging...';
+    try{
+        const res=await fetch(CONFIG.API+'/admin/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,password:pass})});
+        const data=await res.json();
+        if(!res.ok)throw new Error(data.error||'Login failed');
+        adminToken=data.token;
+        localStorage.setItem('dc_admin_token',adminToken);
+        localStorage.setItem('dc_admin_email',email);
+        showDashboard(email);
+        toast('Welcome back!','success');
+    }catch(e){err.style.display='block';errMsg.textContent=e.message;toast(e.message,'error');}
+    btn.disabled=false;btn.innerHTML='<i class="fas fa-sign-in-alt"></i> Login';
+}
+function showDashboard(email){
+    $('#login').style.display='none';$('#dashboard').style.display='flex';
+    $('#admin-name-disp').textContent=email.split('@')[0];
+    $('#date-disp').textContent=new Date().toLocaleDateString('en-US',{weekday:'short',year:'numeric',month:'short',day:'numeric'});
+    loadAll();
+}
+function doAdminLogout(){
+    localStorage.removeItem('dc_admin_token');localStorage.removeItem('dc_admin_email');
+    adminToken='';$('#dashboard').style.display='none';$('#login').style.display='flex';
+    if(chatPollInterval)clearInterval(chatPollInterval);
+    toast('Logged out','success');
 }
 
-// ===== NAVIGATION =====
-$$('.nav-item').forEach(item => {
-  if (item.id === 'logout-btn') return;
-  item.addEventListener('click', () => {
-    $$('.nav-item').forEach(i => i.classList.remove('active'));
-    item.classList.add('active');
-    const view = item.dataset.view;
-    $$('.view').forEach(v => v.classList.add('hidden'));
-    $(`#view-${view}`).classList.remove('hidden');
-    $('#page-title').textContent = item.textContent.trim().replace(/^\s*\S+\s*/, '');
-    if (view === 'messages') loadConversations();
-    if (view === 'dash') loadDashboard();
-  });
-});
+// ===== NAV =====
+function switchPanel(name,el){
+    $$('.panel').forEach(p=>p.classList.remove('active'));
+    $(`#panel-${name}`).classList.add('active');
+    $$('.nav-item').forEach(n=>n.classList.remove('active'));
+    if(el)el.classList.add('active');
+    const titles={overview:'Dashboard',orders:'All Orders',services:'Services',users:'Users','custom-requests':'Custom Requests',chat:'Support Chat','refund-requests':'Refund History'};
+    $('#panel-title').innerHTML=`<i class="fas fa-${name==='overview'?'tachometer-alt':name==='orders'?'list':name==='services'?'cubes':name==='users'?'users':name==='custom-requests'?'file-signature':name==='chat'?'comment-dots':'money-bill-wave'}"></i> ${titles[name]||'Dashboard'}`;
+    $('#sidebar').classList.remove('mobile-open');$('#sidebar-overlay').classList.remove('active');
+    if(name==='chat'){loadConversations();startChatPolling();}else{stopChatPolling();}
+}
 
-// ===== DASHBOARD =====
-async function loadDashboard() {
-  try {
-    const [ordersRes, usersRes, reqsRes] = await Promise.all([
-      api('GET', '/admin/orders'),
-      api('GET', '/admin/users'),
-      api('GET', '/custom-requests')
-    ]);
-    const orders = ordersRes.orders || [], users = usersRes.users || [], requests = reqsRes.requests || [];
-    $('#stat-orders').textContent = orders.length;
-    $('#stat-revenue').textContent = fmt(orders.reduce((a, o) => a + (o.total_paid || o.price || 0), 0));
-    $('#stat-users').textContent = users.length;
-    $('#stat-requests').textContent = requests.filter(r => r.status === 'pending').length;
-    
-    const tbody = $('#recent-orders'); tbody.innerHTML = '';
-    orders.slice(0, 5).forEach(o => {
-      tbody.innerHTML += `<tr><td>#${o.id}</td><td>${o.user_name||'—'}</td><td>${o.service_title||'—'}</td><td><span class="badge badge-${o.status}">${o.status}</span></td><td>${fmt(o.total_paid||o.price||0)}</td><td><button class="action-btn view" onclick="openOrderDetail(${o.id})">View</button></td></tr>`;
+// ===== LOAD DATA =====
+async function loadAll(){
+    try{
+        const [sd,od,ud,rd]=await Promise.all([
+            api('GET','/admin/services'),
+            api('GET','/admin/orders'),
+            api('GET','/admin/users'),
+            api('GET','/admin/refunds/history').catch(()=>({refunds:[]}))
+        ]);
+        adminData.services=sd.services||[];
+        adminData.orders=od.orders||[];
+        adminData.users=ud.users||[];
+        adminData.refunds=rd.refunds||[];
+        try{const cr=await api('GET','/custom-requests');adminData.customRequests=cr.requests||[];}catch(e){adminData.customRequests=[];}
+    }catch(e){toast('Failed to load data: '+e.message,'error');}
+    renderAll();
+}
+function renderAll(){
+    const paid=adminData.orders.filter(o=>['payment_received','in_progress','ready_for_balance','completed','delivered'].includes(o.status));
+    const rev=paid.reduce((s,o)=>s+(parseFloat(o.total_paid)||parseFloat(o.advance_paid)||0),0);
+    $('#st-svc').textContent=adminData.services.length;
+    $('#st-ord').textContent=adminData.orders.length;
+    $('#st-usr').textContent=adminData.users.length;
+    $('#st-rev').textContent='₹'+Math.round(rev).toLocaleString();
+    renderRecentOrders();renderOrders();renderRefunds();renderServices();renderUsers();renderCustomRequests();
+}
+function renderRecentOrders(){
+    const tb=$('#recent-ord-tbody');tb.innerHTML='';
+    adminData.orders.slice(0,5).forEach(o=>{
+        tb.innerHTML+=`<tr><td><span style="color:var(--accent)">#${o.id}</span></td><td>${o.user_name||'—'}</td><td>${o.service_title||'—'}</td><td><span class="badge badge-${o.status}">${o.status.replace(/_/g,' ')}</span></td><td>${fmt(o.total_paid||o.advance_paid||0)}</td><td><button class="btn btn-sm btn-view" onclick="viewOrderDetails(${o.id})">View</button></td></tr>`;
     });
-  } catch(err) { console.error(err); toast('Failed to load dashboard', 'error'); }
+}
+function renderOrders(filter=''){
+    const tb=$('#ord-tbody');
+    const f=filter?adminData.orders.filter(o=>o.user_name?.toLowerCase().includes(filter.toLowerCase())||o.id?.toString().includes(filter)||o.service_title?.toLowerCase().includes(filter.toLowerCase())):adminData.orders;
+    if(!f.length){tb.innerHTML='<tr><td colspan="9" class="empty-row">No orders</td></tr>';return;}
+    tb.innerHTML=f.map(o=>{
+        const total=parseFloat(o.price)||0,adv=parseFloat(o.advance_paid)||0,paid=parseFloat(o.total_paid)||adv,due=total-paid;
+        return `<tr>
+            <td><span style="color:var(--accent)">#${o.id}</span></td>
+            <td><strong>${o.user_name||'—'}</strong><br><small style="color:var(--muted)">${o.user_email||''}</small></td>
+            <td>${o.service_title||'—'}</td>
+            <td><strong style="color:var(--green)">${fmt(total)}</strong></td>
+            <td><span class="payment-badge payment-advance">${fmt(adv)}</span></td>
+            <td><span class="payment-badge payment-full">${fmt(paid)}</span></td>
+            <td><span class="payment-badge payment-balance">${fmt(due)}</span></td>
+            <td><span class="badge badge-${o.status}">${o.status.replace(/_/g,' ')}</span></td>
+            <td><div style="display:flex;gap:.3rem;flex-wrap:wrap">
+                <button class="btn btn-sm btn-view" onclick="viewOrderDetails(${o.id})"><i class="fas fa-eye"></i></button>
+                <button class="btn btn-sm btn-primary" onclick="openDeliveryModal(${o.id})"><i class="fas fa-box"></i></button>
+                <button class="btn btn-sm btn-chat" onclick="chatFromOrder(${o.id})"><i class="fas fa-comment"></i></button>
+                ${o.status==='payment_received'?'<button class="btn btn-sm btn-success" onclick="startProject('+o.id+')"><i class="fas fa-play"></i></button>':''}
+                ${['payment_received','in_progress'].includes(o.status)?'<button class="btn btn-sm btn-warning" onclick="markReadyForBalance('+o.id+')"><i class="fas fa-money-bill"></i></button>':''}
+                ${['ready_for_balance','in_progress'].includes(o.status)?'<button class="btn btn-sm btn-primary" onclick="markAsCompleted('+o.id+')"><i class="fas fa-check-circle"></i></button>':''}
+                ${o.status==='cancellation_requested'?`<button class="btn btn-sm btn-danger" onclick="openRefundModalFromOrder(${o.id},${adv})"><i class="fas fa-money-bill-wave"></i></button>`:''}
+            </div></td>
+        </tr>`;
+    }).join('');
+}
+function renderRefunds(){
+    const tb=$('#refund-tbody');
+    if(!adminData.refunds.length){tb.innerHTML='<tr><td colspan="6" class="empty-row">No refunds</td></tr>';return;}
+    tb.innerHTML=adminData.refunds.map(r=>`<tr>
+        <td><span style="color:var(--accent)">#${r.order_id}</span></td>
+        <td>${r.user_name||'—'}<br><small style="color:var(--muted)">${r.user_email||''}</small></td>
+        <td style="color:var(--error)">${fmt(r.amount)}</td>
+        <td>${(r.reason||'').substring(0,40)}${r.reason?.length>40?'...':''}</td>
+        <td><span class="badge badge-${r.status==='completed'?'completed':'pending'}">${r.status}</span></td>
+        <td>${date(r.processed_at)}</td>
+    </tr>`).join('');
+}
+function renderServices(filter=''){
+    const tb=$('#svc-tbody');
+    const f=filter?adminData.services.filter(s=>s.title?.toLowerCase().includes(filter.toLowerCase())):adminData.services;
+    if(!f.length){tb.innerHTML='<tr><td colspan="5" class="empty-row">No services</td></tr>';return;}
+    const cnt={};adminData.orders.forEach(o=>{cnt[o.service_id]=(cnt[o.service_id]||0)+1;});
+    tb.innerHTML=f.map(s=>`<tr>
+        <td><strong>${s.emoji||'💻'} ${s.title}</strong></td>
+        <td><span class="badge badge-payment_received">${s.category}</span></td>
+        <td><strong style="color:var(--green)">${fmt(s.price)}</strong></td>
+        <td>${cnt[s.id]||0}</td>
+        <td><div style="display:flex;gap:.3rem"><button class="btn btn-sm btn-edit" onclick="editService(${s.id})"><i class="fas fa-edit"></i></button><button class="btn btn-sm btn-danger" onclick="deleteService(${s.id})"><i class="fas fa-trash"></i></button></div></td>
+    </tr>`).join('');
+}
+function renderUsers(filter=''){
+    const tb=$('#usr-tbody');
+    const f=filter?adminData.users.filter(u=>u.email?.toLowerCase().includes(filter.toLowerCase())||u.name?.toLowerCase().includes(filter.toLowerCase())):adminData.users;
+    if(!f.length){tb.innerHTML='<tr><td colspan="6" class="empty-row">No users</td></tr>';return;}
+    const cnt={},sp={};adminData.orders.forEach(o=>{cnt[o.user_id]=(cnt[o.user_id]||0)+1;sp[o.user_id]=(sp[o.user_id]||0)+(parseFloat(o.total_paid||o.advance_paid||0));});
+    tb.innerHTML=f.map(u=>`<tr>
+        <td><strong>${u.name||'—'}</strong></td>
+        <td>${u.email}</td>
+        <td>${u.verified?'<span class="badge badge-completed"><i class="fas fa-check"></i> Yes</span>':'<span class="badge badge-pending"><i class="fas fa-clock"></i> No</span>'}</td>
+        <td><strong>${cnt[u.id]||0}</strong></td>
+        <td><strong style="color:var(--green)">${fmt(sp[u.id]||0)}</strong></td>
+        <td>${date(u.created_at)}</td>
+    </tr>`).join('');
+}
+function renderCustomRequests(){
+    const tb=$('#custom-tbody');
+    if(!adminData.customRequests.length){tb.innerHTML='<tr><td colspan="7" class="empty-row">No requests</td></tr>';return;}
+    tb.innerHTML=adminData.customRequests.map(r=>`<tr>
+        <td>${date(r.created_at)}</td>
+        <td>${r.name}</td>
+        <td>${r.email}</td>
+        <td>${r.title}</td>
+        <td><strong style="color:var(--green)">${r.budget||'N/A'}</strong></td>
+        <td><span class="badge badge-${r.status}">${r.status}</span></td>
+        <td><div style="display:flex;gap:.3rem">
+            <button class="btn btn-sm btn-success" onclick="updateReq(${r.id},'contacted')">Contacted</button>
+            <button class="btn btn-sm btn-primary" onclick="updateReq(${r.id},'completed')">Done</button>
+            <button class="btn btn-sm btn-danger" onclick="deleteReq(${r.id})"><i class="fas fa-trash"></i></button>
+        </div></td>
+    </tr>`).join('');
 }
 
-// ===== SERVICES =====
-async function loadServices() {
-  const data = await api('GET', '/admin/services');
-  const tbody = $('#svc-table'); tbody.innerHTML = '';
-  (data.services || []).forEach(s => {
-    tbody.innerHTML += `<tr><td>${s.emoji||''} ${s.title}</td><td><span class="badge badge-paid">${s.category}</span></td><td>${fmt(s.price)}</td><td>${s.delivery_days||14}d</td><td class="actions"><button class="action-btn edit" onclick="editService(${s.id})"><i class="fas fa-edit"></i></button><button class="action-btn del" onclick="deleteService(${s.id})"><i class="fas fa-trash"></i></button></td></tr>`;
-  });
+// ===== SERVICES CRUD =====
+function openModal(){editingId=null;$('#modal-title').textContent='Add Service';['f-title','f-desc','f-tech'].forEach(id=>$(id).value='');$('#f-price').value='';$('#f-cat').value='web';$('#f-days').value='14';$('#f-rev').value='3';$('#svc-modal').classList.add('open');}
+function closeModal(){$('#svc-modal').classList.remove('open');}
+async function saveService(){
+    const title=$('#f-title').value.trim(),price=$('#f-price').value;
+    if(!title||!price){toast('Title and price required','error');return;}
+    const payload={title,price:parseFloat(price),description:$('#f-desc').value.trim(),category:$('#f-cat').value,technologies:$('#f-tech').value.trim(),delivery_days:parseInt($('#f-days').value)||14,revisions:parseInt($('#f-rev').value)||3};
+    try{
+        if(editingId){payload.id=editingId;await api('PUT','/admin/service/update',payload);toast('Service updated','success');}
+        else{await api('POST','/admin/service/add',payload);toast('Service added','success');}
+        closeModal();await loadAll();
+    }catch(e){toast('Error: '+e.message,'error');}
 }
-
-function openSvcModal() { $('#svc-id').value=''; $('#svc-form').reset(); $('#svc-modal-title').textContent='Add Service'; $('#svc-modal').classList.remove('hidden'); }
-function closeSvcModal() { $('#svc-modal').classList.add('hidden'); }
-
-async function saveService() {
-  const id = $('#svc-id').value;
-  const payload = { title:$('#svc-title').value, category:$('#svc-cat').value, price:parseFloat($('#svc-price').value), description:$('#svc-desc').value, technologies:$('#svc-tech').value, github_link:$('#svc-git').value, live_url:$('#svc-live').value, emoji:$('#svc-emoji').value, delivery_days:parseInt($('#svc-days').value)||14, revisions:parseInt($('#svc-rev').value)||3 };
-  if (id) payload.id = parseInt(id);
-  const url = id ? '/admin/service/update' : '/admin/service/add', method = id ? 'PUT' : 'POST';
-  const res = await api(method, url, payload);
-  toast(res.message || 'Saved', 'success'); closeSvcModal(); loadServices();
+async function editService(id){
+    const s=adminData.services.find(x=>x.id===id);if(!s)return;
+    editingId=id;$('#modal-title').textContent='Edit Service';
+    $('#f-title').value=s.title||'';$('#f-desc').value=s.description||'';$('#f-cat').value=s.category||'web';
+    $('#f-tech').value=s.technologies||'';$('#f-price').value=s.price||'';$('#f-days').value=s.delivery_days||14;$('#f-rev').value=s.revisions||3;
+    $('#svc-modal').classList.add('open');
 }
+async function deleteService(id){if(!confirm('Delete this service?'))return;try{await api('DELETE','/admin/service/delete',{id});toast('Deleted','success');await loadAll();}catch(e){toast('Error: '+e.message,'error');}}
 
-async function editService(id) {
-  const data = await api('GET', '/admin/services');
-  const s = data.services.find(x => x.id === id);
-  if (s) {
-    $('#svc-id').value = s.id; $('#svc-title').value = s.title; $('#svc-cat').value = s.category;
-    $('#svc-price').value = s.price; $('#svc-desc').value = s.description||''; $('#svc-tech').value = s.technologies||'';
-    $('#svc-git').value = s.github_link||''; $('#svc-live').value = s.live_url||''; $('#svc-emoji').value = s.emoji||'💻';
-    $('#svc-days').value = s.delivery_days||14; $('#svc-rev').value = s.revisions||3;
-    $('#svc-modal-title').textContent = 'Edit Service'; $('#svc-modal').classList.remove('hidden');
-  }
+// ===== ORDER DETAILS =====
+async function viewOrderDetails(id){
+    const o=adminData.orders.find(x=>x.id===id);if(!o)return;
+    const custom=o.customization||{};
+    const total=parseFloat(o.price)||0,adv=parseFloat(o.advance_paid)||0,paid=parseFloat(o.total_paid)||adv,due=total-paid;
+    $('#ord-detail-id').textContent=id;
+    let html=`<div class="order-detail-card">
+        <div class="detail-section"><div class="section-title"><i class="fas fa-info-circle"></i> Order Info</div>
+        <div class="info-grid"><div class="info-item"><div class="label">Date</div><div class="value">${new Date(o.created_at).toLocaleString()}</div></div>
+        <div class="info-item"><div class="label">Status</div><div class="value"><span class="badge badge-${o.status}">${o.status.replace(/_/g,' ')}</span></div></div>
+        <div class="info-item"><div class="label">Total</div><div class="value" style="color:var(--green)">${fmt(total)}</div></div>
+        <div class="info-item"><div class="label">Client</div><div class="value"><strong>${o.user_name||'N/A'}</strong><br><small style="color:var(--muted)">${o.user_email||''}</small></div></div></div></div>
+        <div class="detail-section"><div class="section-title"><i class="fas fa-credit-card"></i> Payment</div>
+        <div class="info-grid"><div class="info-item"><div class="label">Advance (15%)</div><div class="value" style="color:var(--warning)">${fmt(adv)}</div></div>
+        <div class="info-item"><div class="label">Total Paid</div><div class="value" style="color:var(--green)">${fmt(paid)}</div></div>
+        <div class="info-item"><div class="label">Balance Due</div><div class="value" style="color:var(--accent)">${fmt(due)}</div></div></div>
+        <div class="progress-bar"><div class="progress-fill" style="width:${(paid/total)*100}%"></div></div><div style="text-align:center;margin-top:.3rem;font-size:.85rem">${Math.round((paid/total)*100)}% Paid</div></div>`;
+    if(Object.keys(custom).length>0){html+=`<div class="detail-section"><div class="section-title"><i class="fas fa-sliders-h"></i> Customizations</div>${Object.entries(custom).map(([k,v])=>`<div class="customization-item"><strong>${k}:</strong> ${typeof v==='boolean'?(v?'Yes':'No'):v}</div>`).join('')}</div>`;}
+    if(o.requirements){html+=`<div class="detail-section"><div class="section-title"><i class="fas fa-clipboard-list"></i> Requirements</div><div style="background:var(--card);padding:1rem;border-radius:8px;white-space:pre-wrap">${o.requirements}</div></div>`;}
+    html+=`<div class="detail-section"><div class="section-title"><i class="fas fa-link"></i> Deliverables</div><div class="info-grid">
+        <div class="info-item"><div class="label">Live URL</div><div class="value">${o.live_url?`<a href="${o.live_url}" target="_blank" class="deliverable-link">${o.live_url.substring(0,35)}...</a>`:'—'}</div></div>
+        <div class="info-item"><div class="label">GitHub</div><div class="value">${o.github_repo?`<a href="${o.github_repo}" target="_blank" class="deliverable-link">View</a>`:'—'}</div></div>
+        <div class="info-item"><div class="label">Preview</div><div class="value">${o.preview_ready?'<i class="fas fa-check-circle" style="color:var(--green)"></i> Ready':'<i class="fas fa-times-circle" style="color:var(--error)"></i> No'}</div></div>
+        <div class="info-item"><div class="label">Full Access</div><div class="value">${o.full_access_ready?'<i class="fas fa-check-circle" style="color:var(--green)"></i> Ready':'<i class="fas fa-times-circle" style="color:var(--error)"></i> No'}</div></div></div>`;
+    if(o.delivery_notes){html+=`<div style="margin-top:1rem"><strong>Notes:</strong><p style="margin-top:.3rem">${o.delivery_notes}</p></div>`;}
+    html+=`</div><div class="detail-section"><div class="section-title"><i class="fas fa-history"></i> Timeline</div><div id="order-timeline" class="timeline">Loading...</div></div>`;
+    html+=`<div class="detail-section"><div class="section-title"><i class="fas fa-cog"></i> Actions</div><div style="display:flex;gap:.5rem;flex-wrap:wrap">
+        ${o.status==='payment_received'?'<button class="btn btn-success" onclick="startProject('+o.id+')"><i class="fas fa-play"></i> Start</button>':''}
+        ${['payment_received','in_progress'].includes(o.status)?'<button class="btn btn-warning" onclick="markReadyForBalance('+o.id+')"><i class="fas fa-money-bill"></i> Ready for Balance</button>':''}
+        ${['ready_for_balance','in_progress'].includes(o.status)?'<button class="btn btn-primary" onclick="markAsCompleted('+o.id+')"><i class="fas fa-check-circle"></i> Complete</button>':''}
+        <button class="btn btn-primary" onclick="openDeliveryModal(${o.id})"><i class="fas fa-box"></i> Edit Deliverables</button>
+        <button class="btn btn-chat" onclick="chatFromOrder(${o.id})"><i class="fas fa-comment"></i> Chat</button>
+        ${o.status==='cancellation_requested'?`<button class="btn btn-danger" onclick="openRefundModalFromOrder(${o.id},${adv})"><i class="fas fa-money-bill-wave"></i> Refund</button>`:''}
+    </div></div></div>`;
+    $('#order-detail-content').innerHTML=html;
+    $('#order-detail-modal').classList.add('open');
+    loadTimeline(id);
 }
+async function loadTimeline(orderId){
+    try{
+        const tl=await api('GET',`/order/${orderId}/timeline`);
+        const tm=$('#order-timeline');tm.innerHTML='';
+        if(!tl.data||!tl.data.length){tm.innerHTML='<p style="color:var(--muted)">No timeline entries</p>';return;}
+        tl.data.forEach(t=>{tm.innerHTML+=`<div class="timeline-item"><div class="timeline-time">${date(t.created_at)}</div><div class="timeline-msg">${t.message||`Status: ${t.status}`}</div></div>`;});
+    }catch(e){console.log('Timeline error:',e);}
+}
+function closeOrderDetail(){$('#order-detail-modal').classList.remove('open');}
 
-async function deleteService(id) {
-  if (!confirm('Delete this service?')) return;
-  const res = await api('DELETE', '/admin/service/delete', { id });
-  toast(res.message || 'Deleted', 'success'); loadServices();
-}
-
-// ===== ORDERS =====
-$('#order-filter').addEventListener('change', loadOrders);
-async function loadOrders() {
-  const filter = $('#order-filter').value;
-  const data = await api('GET', '/admin/orders');
-  let orders = data.orders || [];
-  if (filter !== 'all') orders = orders.filter(o => o.status === filter);
-  const tbody = $('#order-table'); tbody.innerHTML = '';
-  orders.forEach(o => {
-    const paid = o.total_paid || o.advance_paid || 0, due = (o.price||0) - paid;
-    tbody.innerHTML += `<tr><td>#${o.id}</td><td>${o.user_name||'—'}<br><small style="color:var(--muted)">${o.user_email||''}</small></td><td>${o.service_title||'—'}</td><td>${fmt(o.price||0)}</td><td><span class="badge badge-${o.status}">${o.status}</span></td><td><small>Adv: ${fmt(o.advance_paid||0)}<br>Paid: ${fmt(paid)}<br>Due: ${fmt(due)}</small></td><td class="actions"><button class="action-btn view" onclick="openOrderDetail(${o.id})">Details</button>${o.status==='payment_received'?'<button class="action-btn edit" onclick="startProject('+o.id+')">Start</button>':''}</td></tr>`;
-  });
-}
-
-// ===== ORDER DETAIL =====
-async function openOrderDetail(id) {
-  currentOrderId = id;
-  try {
-    const data = await api('GET', '/admin/orders');
-    const o = (data.orders||[]).find(x => x.id === id);
-    if (!o) return;
-    $('#ord-id').textContent = o.id; $('#ord-cust').textContent = `${o.user_name||'—'} (${o.user_email||'—'})`;
-    $('#ord-svc').textContent = o.service_title||'—'; $('#ord-price').textContent = o.price||0;
-    $('#ord-adv').textContent = o.advance_paid||0; $('#ord-paid').textContent = o.total_paid||o.advance_paid||0;
-    $('#ord-due').textContent = (o.price||0) - (o.total_paid||o.advance_paid||0); $('#ord-status').value = o.status;
-    
-    // Deliverables
-    try {
-      const dels = await api('GET', `/admin/order/${id}/deliverables`);
-      const dl = $('#deliverables-list'); dl.innerHTML = '';
-      (dels.deliverables||[]).forEach(d => {
-        dl.innerHTML += `<div style="padding:.5rem 0;border-bottom:1px dashed var(--border)"><strong>${d.title}</strong> <small>v${d.version||1}</small><br><small style="color:var(--muted)">${d.description||''}</small><br><a href="${d.file_url}" target="_blank" style="color:var(--primary)">${d.file_url}</a>${d.is_preview?' <span class="badge badge-pending">Preview</span>':''}${d.is_full_access?' <span class="badge badge-success">Full</span>':''}</div>`;
-      });
-    } catch(e) { console.log('Deliverables not loaded:', e); }
-    
-    // Timeline
-    try {
-      const tl = await api('GET', `/order/${id}/timeline`);
-      const tm = $('#order-timeline'); tm.innerHTML = '';
-      (tl.data||[]).forEach(t => { tm.innerHTML += `<div class="timeline-item"><div class="timeline-time">${date(t.created_at)}</div><div class="timeline-msg">${t.message||\`Status: ${t.status}\`}</div></div>`; });
-    } catch(e) { console.log('Timeline not loaded:', e); }
-    
-    $('#order-modal').classList.remove('hidden');
-  } catch(err) { toast('Failed to load order', 'error'); }
-}
-function closeOrderModal() { $('#order-modal').classList.add('hidden'); currentOrderId = null; }
-
-async function updateOrderStatus() {
-  if (!currentOrderId) return;
-  const status = $('#ord-status').value;
-  const res = await api('PUT', `/admin/order/${currentOrderId}/status`, { status });
-  toast(res.message || 'Updated', 'success'); loadOrders(); openOrderDetail(currentOrderId);
-}
-
-async function startProject(id) {
-  const res = await api('POST', `/admin/order/${id}/start-project`);
-  toast(res.message || 'Project started', 'success'); loadOrders();
-}
-
-async function markReadyForBalance() {
-  if (!currentOrderId) return;
-  const res = await api('POST', `/admin/order/${currentOrderId}/ready-for-balance`);
-  toast(res.message || 'Marked ready', 'success'); loadOrders(); openOrderDetail(currentOrderId);
-}
-
-async function completeOrder() {
-  if (!currentOrderId) return;
-  const live = prompt('Live URL (optional):')||'', github = prompt('GitHub Repo (optional):')||'', notes = prompt('Delivery notes:')||'';
-  const res = await api('POST', `/admin/order/${currentOrderId}/complete`, { live_url: live, github_repo: github, delivery_notes: notes });
-  toast(res.message || 'Completed', 'success'); loadOrders(); closeOrderModal();
-}
+// ===== ORDER ACTIONS =====
+async function startProject(id){if(!confirm(`Start Order #${id}?`))return;try{await api('POST',`/admin/order/${id}/start-project`);toast('Project started','success');await loadAll();closeOrderDetail();}catch(e){toast('Error: '+e.message,'error');}}
+async function markReadyForBalance(id){if(!confirm(`Mark Order #${id} ready for balance?`))return;try{await api('POST',`/admin/order/${id}/ready-for-balance`);toast('Marked ready','success');await loadAll();closeOrderDetail();}catch(e){toast('Error: '+e.message,'error');}}
+async function markAsCompleted(id){const live=prompt('Live URL (optional):')||'',gh=prompt('GitHub (optional):')||'',notes=prompt('Notes (optional):')||'';try{await api('POST',`/admin/order/${id}/complete`,{live_url:live,github_repo:gh,delivery_notes:notes});toast('Order completed','success');await loadAll();closeOrderDetail();}catch(e){toast('Error: '+e.message,'error');}}
 
 // ===== DELIVERABLES =====
-function openDelModal() { if (!currentOrderId) return; $('#del-order-id').value = currentOrderId; $('#del-form').reset(); $('#del-modal').classList.remove('hidden'); }
-function closeDelModal() { $('#del-modal').classList.add('hidden'); }
-
-async function saveDeliverable() {
-  const oid = $('#del-order-id').value;
-  const payload = { title:$('#del-title').value, description:$('#del-desc').value, file_url:$('#del-url').value, file_type:$('#del-type').value, version:parseInt($('#del-ver').value)||1, is_preview:$('#del-preview').checked, is_full_access:$('#del-full').checked };
-  const res = await api('POST', `/admin/order/${oid}/deliverables/add`, payload);
-  toast(res.message || 'Deliverable added', 'success'); closeDelModal(); openOrderDetail(oid);
+function openDeliveryModal(orderId){
+    const o=adminData.orders.find(x=>x.id===orderId);if(!o)return;
+    const html=`<div class="fg"><label><i class="fab fa-github"></i> GitHub URL</label><input id="del-github" value="${o.github_repo||''}" placeholder="https://github.com/..."></div>
+    <div class="fg"><label><i class="fas fa-globe"></i> Live URL</label><input id="del-live" value="${o.live_url||''}" placeholder="https://example.com"></div>
+    <div class="fg"><label><i class="fas fa-code"></i> Source Code URL</label><input id="del-source" value="${o.source_code_url||''}" placeholder="https://drive.google.com/..."></div>
+    <div class="fg"><label><i class="fas fa-book"></i> Documentation URL</label><input id="del-docs" value="${o.documentation_url||''}" placeholder="https://docs.example.com"></div>
+    <div class="fg"><label><i class="fas fa-sticky-note"></i> Delivery Notes</label><textarea id="del-notes" rows="3" placeholder="Notes...">${o.delivery_notes||''}</textarea></div>
+    <div class="fg"><label><input type="checkbox" id="del-preview" ${o.preview_ready?'checked':''}> <i class="fas fa-eye"></i> Preview Ready (15% payment)</label></div>
+    <div class="fg"><label><input type="checkbox" id="del-full" ${o.full_access_ready?'checked':''}> <i class="fas fa-download"></i> Full Access Ready (85% payment)</label></div>
+    <div class="fg"><label><input type="checkbox" id="del-mark-delivered"> <i class="fas fa-check-circle"></i> Mark as Delivered</label></div>
+    <div class="modal-foot"><button class="btn btn-cancel" onclick="closeDeliveryModal()">Cancel</button><button class="btn btn-save" onclick="submitDelivery(${orderId})"><i class="fas fa-save"></i> Save</button></div>`;
+    $('#delivery-modal-content').innerHTML=html;$('#delivery-modal').classList.add('open');
 }
+function closeDeliveryModal(){$('#delivery-modal').classList.remove('open');}
+async function submitDelivery(orderId){
+    const data={delivery_notes:$('#del-notes').value,github_repo:$('#del-github').value,live_url:$('#del-live').value,source_code_url:$('#del-source').value,documentation_url:$('#del-docs').value,preview_ready:$('#del-preview').checked,full_access_ready:$('#del-full').checked,mark_delivered:$('#del-mark-delivered').checked};
+    try{await api('POST',`/admin/order/${orderId}/update-delivery`,data);toast('Delivery updated','success');closeDeliveryModal();closeOrderDetail();await loadAll();}catch(e){toast('Error: '+e.message,'error');}}
 
 // ===== REFUNDS =====
-function openRefundModal() { if (!currentOrderId) return; $('#refund-order-id').value = currentOrderId; $('#refund-modal').classList.remove('hidden'); }
-function closeRefundModal() { $('#refund-modal').classList.add('hidden'); }
-
-async function submitRefund() {
-  const oid = $('#refund-order-id').value, amt = parseFloat($('#refund-amt').value), reason = $('#refund-reason').value;
-  if (!amt || !reason) { toast('Amount and reason required', 'error'); return; }
-  const res = await api('POST', `/admin/order/${oid}/refund`, { amount: amt, reason });
-  toast(res.message || 'Refund processed', 'success'); closeRefundModal(); closeOrderModal(); loadOrders(); loadRefunds();
-}
-
-// ===== USERS =====
-async function loadUsers() {
-  const data = await api('GET', '/admin/users');
-  const tbody = $('#user-table'); tbody.innerHTML = '';
-  (data.users||[]).forEach(u => {
-    tbody.innerHTML += `<tr><td>${u.name||'—'}</td><td>${u.email||'—'}</td><td>${u.order_count||0}</td><td>${fmt(u.total_spent||0)}</td><td>${date(u.created_at)}</td><td><button class="action-btn view" onclick="alert('View orders for ${u.email}')">Orders</button></td></tr>`;
-  });
-}
+function openRefundModalFromOrder(orderId,amount){currentOrderIdForRefund=orderId;$('#refund-amount').value=amount;$('#refund-reason').value='';$('#refund-modal').classList.add('open');}
+function closeRefundModal(){$('#refund-modal').classList.remove('open');}
+async function processRefundNow(){
+    const amt=parseFloat($('#refund-amount').value),reason=$('#refund-reason').value;
+    if(!amt){toast('Amount required','error');return;}
+    try{await api('POST',`/admin/order/${currentOrderIdForRefund}/refund`,{amount:amt,reason:reason||'Admin refund'});toast('Refund processed','success');closeRefundModal();await loadAll();}catch(e){toast('Error: '+e.message,'error');}}
 
 // ===== CUSTOM REQUESTS =====
-async function loadRequests() {
-  const data = await api('GET', '/custom-requests');
-  const tbody = $('#req-table'); tbody.innerHTML = '';
-  (data.requests||[]).forEach(r => {
-    tbody.innerHTML += `<tr><td>${r.name||'—'}</td><td>${r.email||'—'}</td><td>${r.title||'—'}</td><td>${r.budget||'N/A'}</td><td><span class="badge badge-${r.status}">${r.status}</span></td><td class="actions"><button class="action-btn edit" onclick="updateReq(${r.id},'contacted')">Contacted</button><button class="action-btn success" onclick="updateReq(${r.id},'completed')">Done</button><button class="action-btn del" onclick="deleteReq(${r.id})">Delete</button></td></tr>`;
-  });
+async function updateReq(id,status){try{await api('PUT',`/custom-request/${id}/status`,{status});toast(`Status: ${status}`,'success');await loadAll();}catch(e){toast('Error: '+e.message,'error');}}
+async function deleteReq(id){if(!confirm('Delete request?'))return;try{await api('DELETE',`/custom-request/${id}`);toast('Deleted','success');await loadAll();}catch(e){toast('Error: '+e.message,'error');}}
+
+// ===== CHAT =====
+async function loadConversations(){
+    try{
+        const res=await fetch(`${CONFIG.API}/conversations`,{headers:{'Authorization':`Bearer ${adminToken}`}});
+        const data=await res.json();
+        if(res.ok)displayConversations(data.conversations||[]);
+    }catch(e){console.error('Chat load error:',e);}
 }
-async function updateReq(id, status) { const res = await api('PUT', `/custom-request/${id}/status`, { status }); toast(res.message, 'success'); loadRequests(); }
-async function deleteReq(id) { if (!confirm('Delete this request?')) return; await api('DELETE', `/custom-request/${id}`); toast('Deleted', 'success'); loadRequests(); }
-
-// ===== MESSAGES =====
-async function loadConversations() {
-  try {
-    const data = await api('GET', '/conversations');
-    const list = $('#chat-list'); list.innerHTML = '';
-    (data.conversations||[]).forEach(c => {
-      list.innerHTML += `<div class="chat-item" data-id="${c.id}"><div class="name">${c.users?.name||'Unknown'} ${c.unread_count>0?\`<span class="badge badge-danger">\${c.unread_count}</span>\`:''}</div><div class="last">\${(c.last_message||'').slice(0,40)}...</div><small style="color:var(--muted)">\${date(c.last_message_at)}</small></div>`;
-    });
-    $$('.chat-item').forEach(item => {
-      item.addEventListener('click', async () => {
-        $$('.chat-item').forEach(i => i.classList.remove('active')); item.classList.add('active');
-        activeConversation = item.dataset.id;
-        $('#chat-header').textContent = item.querySelector('.name').textContent.trim();
-        $('#chat-input').disabled = false; $('#chat-form button').disabled = false;
-        await loadMessages(activeConversation);
-      });
-    });
-    // Poll for new messages
-    if (chatPollInterval) clearInterval(chatPollInterval);
-    chatPollInterval = setInterval(() => { if (activeConversation) loadMessages(activeConversation); }, 10000);
-  } catch(err) { console.error('Chat load error:', err); }
+function displayConversations(convos){
+    const c=$('#conversations-list');
+    if(!convos.length){c.innerHTML='<div style="text-align:center;padding:2rem;color:var(--muted)">No conversations</div>';return;}
+    c.innerHTML=convos.map(cv=>{
+        const active=activeConversation===cv.id,unread=cv.unread_count>0,name=cv.users?.name||'User',oid=cv.id.replace('order_','');
+        return `<div class="conversation-item ${unread?'unread':''} ${active?'active':''}" style="position:relative">
+            <div onclick="selectConversation('${cv.id}','${escapeHtml(name)}')" style="cursor:pointer">
+                <div style="font-weight:600;margin-bottom:.3rem"><i class="fas fa-user-circle"></i> ${escapeHtml(name)} <span style="font-size:.7rem;color:var(--accent)">#${oid}</span>${unread?'<span style="display:inline-block;width:8px;height:8px;background:var(--accent);border-radius:50%;margin-left:5px"></span>':''}</div>
+                <div style="font-size:.85rem;color:var(--muted)">${escapeHtml((cv.last_message||'No messages').substring(0,45))}${cv.last_message?.length>45?'...':''}</div>
+                <div style="font-size:.7rem;color:var(--muted)">${cv.last_message_at?new Date(cv.last_message_at).toLocaleString():''}</div>
+            </div>
+            <button onclick="deleteConversation('${cv.id}')" style="position:absolute;top:8px;right:8px;background:rgba(239,68,68,.2);border:none;color:var(--error);width:28px;height:28px;border-radius:6px;cursor:pointer;transition:all .2s" onmouseover="this.style.background='var(--error)';this.style.color='#fff'" onmouseout="this.style.background='rgba(239,68,68,.2)';this.style.color='var(--error)'"><i class="fas fa-trash"></i></button>
+        </div>`;
+    }).join('');
 }
-
-async function loadMessages(convId) {
-  try {
-    const data = await api('GET', `/conversation/${convId}/messages`);
-    const box = $('#chat-msgs'); box.innerHTML = '';
-    (data.messages||[]).forEach(m => {
-      const isMe = m.sender_role === 'admin';
-      box.innerHTML += `<div class="msg \${isMe?'admin':'user'}">\${m.message}<div class="msg-time">\${new Date(m.created_at).toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'})}</div></div>`;
-    });
-    box.scrollTop = box.scrollHeight;
-  } catch(err) { console.error('Messages load error:', err); }
+async function deleteConversation(cid){if(!confirm('Delete this conversation?'))return;try{await fetch(`${CONFIG.API}/conversation/${cid}`,{method:'DELETE',headers:{'Authorization':`Bearer ${adminToken}`}});toast('Deleted','success');if(activeConversation===cid){activeConversation=null;$('#active-conversation-title').innerHTML='<i class="fas fa-comment"></i> Select a conversation';$('#admin-chat-messages').innerHTML='<div style="text-align:center;padding:2rem;color:var(--muted)">Select to chat</div>';}await loadConversations();}catch(e){toast('Error: '+e.message,'error');}}
+async function selectConversation(cid,name){
+    activeConversation=cid;$('#active-conversation-title').innerHTML=`<i class="fas fa-comment"></i> Chat with ${name} (Order #${cid.replace('order_','')})`;
+    try{const res=await fetch(`${CONFIG.API}/conversation/${cid}/messages`,{headers:{'Authorization':`Bearer ${adminToken}`}});const data=await res.json();if(res.ok)displayChatMessages(data.messages||[]);}catch(e){console.error('Messages error:',e);}
+    loadConversations();
 }
+function displayChatMessages(msgs){
+    const c=$('#admin-chat-messages');
+    if(!msgs.length){c.innerHTML='<div style="text-align:center;padding:2rem;color:var(--muted)">No messages</div>';return;}
+    c.innerHTML=msgs.map(m=>`<div class="message-bubble ${m.sender_role==='admin'?'admin':'user'}"><div class="message-content">${escapeHtml(m.message)}</div><span class="message-time">${new Date(m.created_at).toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'})}</span></div>`).join('');
+    c.scrollTop=c.scrollHeight;
+}
+async function sendAdminReply(){
+    if(!activeConversation){toast('Select conversation first','error');return;}
+    const msg=$('#admin-chat-input').value.trim();if(!msg)return;
+    try{await fetch(`${CONFIG.API}/conversation/${activeConversation}/send`,{method:'POST',headers:{'Content-Type':'application/json','Authorization':`Bearer ${adminToken}`},body:JSON.stringify({message:msg})});$('#admin-chat-input').value='';await selectConversation(activeConversation,'');await loadConversations();toast('Sent','success');}catch(e){toast('Failed to send','error');}}
+function startChatPolling(){if(chatPollInterval)clearInterval(chatPollInterval);chatPollInterval=setInterval(()=>{if($('#panel-chat').classList.contains('active')&&activeConversation){selectConversation(activeConversation,'');loadConversations();}},5000);}
+function stopChatPolling(){if(chatPollInterval){clearInterval(chatPollInterval);chatPollInterval=null;}}
 
-$('#chat-form').addEventListener('submit', async e => {
-  e.preventDefault();
-  if (!activeConversation) return;
-  const msg = $('#chat-input').value.trim();
-  if (!msg) return;
-  $('#chat-input').value = '';
-  await api('POST', `/conversation/${activeConversation}/send`, { message: msg });
-  loadMessages(activeConversation);
-});
+// ===== FILTERS =====
+function filterOrders(v){renderOrders(v);}
+function filterServices(v){renderServices(v);}
+function filterUsers(v){renderUsers(v);}
 
-// ===== REFUNDS HISTORY =====
-async function loadRefunds() {
-  const data = await api('GET', '/admin/refunds/history');
-  const tbody = $('#refund-table'); tbody.innerHTML = '';
-  (data.refunds||[]).forEach(r => {
-    tbody.innerHTML += `<tr><td>#\${r.order_id}</td><td>\${r.user_name||'—'}<br><small style="color:var(--muted)">\${r.user_email||''}</small></td><td style="color:var(--danger)">\${fmt(r.amount)}</td><td>\${r.reason||'N/A'}</td><td><span class="badge badge-\${r.status==='completed'?'completed':'pending'}">\${r.status}</span></td><td>\${date(r.processed_at)}</td></tr>`;
-  });
+// ===== CHAT FROM ORDER =====
+async function chatFromOrder(oid){
+    const o=adminData.orders.find(x=>x.id===oid);const name=o?.user_name||'Client';
+    await selectConversation(`order_${oid}`,name);
+    switchPanel('chat',$$('.nav-item')[6]);
+    toast(`Chat with ${name}`,'success');
 }
 
-// ===== PROFILE =====
-function changeAdminPass() {
-  const np = $('#new-pass').value;
-  if (np.length < 8) { toast('Password must be 8+ characters', 'error'); return; }
-  toast('Password change requires backend endpoint - contact developer', 'warning');
-}
+// ===== UTILS =====
+function escapeHtml(t){if(!t)return'';return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#039;');}
 
 // ===== INIT =====
-async function loadAll() {
-  if (!adminToken) { $('#login').style.display = 'flex'; $('#dashboard').style.display = 'none'; return; }
-  try {
-    await Promise.all([loadDashboard(), loadServices(), loadOrders(), loadUsers(), loadRequests(), loadRefunds()]);
-  } catch(err) { console.error('Load error:', err); toast('Failed to load data', 'error'); }
-}
-
-// ===== AUTO LOGIN =====
-window.addEventListener('load', () => {
-  const storedEmail = localStorage.getItem('dc_admin_email');
-  if (adminToken && storedEmail) showDashboard(storedEmail);
-});
+window.addEventListener('resize',()=>{const sb=$('#sidebar'),main=$('#main'),ov=$('#sidebar-overlay');if(window.innerWidth>992){sb.classList.remove('mobile-open');ov.classList.remove('active');}else{sb.classList.remove('collapsed');main.classList.remove('expanded');}});
+window.onload=()=>{const t=localStorage.getItem('dc_admin_token'),e=localStorage.getItem('dc_admin_email');if(t&&e){adminToken=t;showDashboard(e);}};
 </script>
 </body>
 </html>
