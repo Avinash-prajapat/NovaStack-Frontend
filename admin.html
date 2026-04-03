@@ -3,743 +3,2259 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>🛡️ NovaStack Admin Panel</title>
-<link rel="icon" type="image/jpeg" href="logo.png">
+<title>NovaStack Admin Panel 🛡️</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
-:root{--bg:#0f0c1a;--card:#1a162a;--surface:rgba(255,255,255,.08);--border:rgba(255,255,255,.12);--text:#fff;--muted:rgba(255,255,255,.6);--accent:#ff6b35;--accent-glow:rgba(255,107,53,.4);--green:#10b981;--blue:#3b82f6;--error:#ef4444;--warning:#f59e0b;--purple:#8b5cf6;--grad:linear-gradient(135deg,#ff6b35,#f7c531);--shadow:0 10px 40px rgba(0,0,0,.5);--rad:14px;--sw:280px;--swc:80px;--trans:300ms ease}
-*{margin:0;padding:0;box-sizing:border-box}html{font-size:16px}
-body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);line-height:1.6;min-height:100vh;overflow-x:hidden}
-body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 20% 80%,rgba(124,58,237,.12),transparent 50%),radial-gradient(ellipse at 80% 20%,rgba(255,107,53,.1),transparent 50%);z-index:-2;pointer-events:none}
-.particles{position:fixed;inset:0;z-index:-1;pointer-events:none;overflow:hidden}
-.particle{position:absolute;width:3px;height:3px;background:var(--accent);border-radius:50%;opacity:.25;animation:float 18s infinite linear}
-@keyframes float{0%{transform:translateY(100vh) rotate(0);opacity:0}10%,90%{opacity:.25}100%{transform:translateY(-20vh) rotate(720deg);opacity:0}}
-.hidden{display:none!important}
-#login{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:1.5rem}
-.login-box{background:var(--card);border:1px solid var(--border);border-radius:var(--rad);padding:2.5rem;width:100%;max-width:420px;text-align:center;backdrop-filter:blur(20px);box-shadow:var(--shadow);animation:slideUp .5s ease}
-@keyframes slideUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
-.login-box .icon{font-size:3.5rem;margin-bottom:1.2rem;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.login-box h2{font-family:'Syne',sans-serif;font-weight:800;font-size:1.8rem;margin-bottom:.5rem}
-.login-box p{color:var(--muted);font-size:.95rem;margin-bottom:2rem}
-.login-box input{width:100%;padding:.9rem 1.2rem;border:1.5px solid var(--border);border-radius:var(--rad);font-size:.95rem;margin-bottom:1rem;outline:none;background:var(--surface);color:var(--text);transition:var(--trans)}
-.login-box input:focus{border-color:var(--accent);box-shadow:0 0 0 4px var(--accent-glow)}
-.login-box button{width:100%;padding:1rem;background:var(--grad);color:#fff;border:none;border-radius:var(--rad);font-family:'Syne',sans-serif;font-weight:700;font-size:1rem;cursor:pointer;margin-top:.5rem;transition:var(--trans)}
-.login-box button:hover{transform:translateY(-2px);box-shadow:0 10px 35px var(--accent-glow)}
-.login-err{color:var(--error);font-size:.85rem;margin-top:.8rem;display:none;padding:.5rem;background:rgba(239,68,68,.15);border-radius:8px}
-#dashboard{display:none;min-height:100vh}
-.sidebar{width:var(--sw);background:linear-gradient(180deg,#1a162a,#0f0c1a);position:fixed;top:0;left:0;height:100vh;display:flex;flex-direction:column;z-index:1000;border-right:1px solid var(--border);backdrop-filter:blur(20px);transition:transform var(--trans),width var(--trans);overflow-y:auto}
-.sidebar.collapsed{width:var(--swc)}
-.sidebar.collapsed .sidebar-logo small,.sidebar.collapsed .nav-section span,.sidebar.collapsed .nav-item span:not(.icon),.sidebar.collapsed .admin-info>div:not(.admin-av):not(.logout-icon){display:none}
-.sidebar-logo{padding:1.5rem;border-bottom:1px solid var(--border)}
-.sidebar-logo a{font-family:'Syne',sans-serif;font-weight:800;font-size:1.5rem;color:var(--text);text-decoration:none;display:flex;align-items:center;gap:.4rem}
-.sidebar-logo a span{background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.sidebar-logo small{font-size:.7rem;color:var(--muted);display:block;margin-top:.3rem}
-.sidebar-nav{flex:1;padding:1rem .75rem;display:flex;flex-direction:column;gap:.25rem}
-.nav-section{font-size:.68rem;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);padding:1rem 1.2rem .5rem;font-weight:600;display:flex;align-items:center;gap:.5rem}
-.nav-item{display:flex;align-items:center;gap:.85rem;padding:.75rem 1.2rem;border-radius:var(--rad);cursor:pointer;color:var(--muted);font-size:.92rem;font-weight:500;transition:var(--trans);background:none;border:none;width:100%;text-align:left}
-.nav-item:hover{background:var(--surface);color:var(--text);transform:translateX(4px)}
-.nav-item.active{background:rgba(255,255,255,.15);color:var(--accent);border-left:3px solid var(--accent)}
-.nav-item .icon{width:20px;text-align:center;font-size:1.1rem}
-.sidebar-foot{padding:1rem 1.2rem;border-top:1px solid var(--border);background:rgba(0,0,0,.1)}
-.admin-info{display:flex;align-items:center;gap:.85rem}
-.admin-av{width:36px;height:36px;border-radius:var(--rad);background:var(--grad);display:flex;align-items:center;justify-content:center}
-.admin-name{font-size:.9rem;color:var(--text);font-weight:600}
-.admin-role{font-size:.72rem;color:var(--muted)}
-.logout-icon{margin-left:auto;background:var(--surface);border:1px solid var(--border);color:var(--muted);cursor:pointer;width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;transition:var(--trans)}
-.logout-icon:hover{background:var(--error);color:#fff}
-.main{margin-left:var(--sw);display:flex;flex-direction:column;min-height:100vh;transition:margin-left var(--trans)}
-.main.expanded{margin-left:var(--swc)}
-.topbar{background:var(--card);border-bottom:1px solid var(--border);padding:0 1.5rem;height:68px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:500;backdrop-filter:blur(20px)}
-.topbar h1{font-family:'Syne',sans-serif;font-weight:700;font-size:1.3rem;display:flex;align-items:center;gap:.6rem}
-.topbar h1 i{color:var(--accent)}
-.toggle-sidebar{display:none;background:var(--surface);border:1px solid var(--border);color:var(--text);padding:.5rem .8rem;border-radius:8px;cursor:pointer;margin-right:1rem}
-.btn{padding:.55rem 1.2rem;border-radius:9999px;font-size:.85rem;font-weight:600;cursor:pointer;border:none;transition:var(--trans);display:inline-flex;align-items:center;gap:.5rem}
-.btn-primary{background:var(--grad);color:#fff;box-shadow:0 4px 20px var(--accent-glow)}
-.btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 30px var(--accent-glow)}
-.btn-edit{background:rgba(59,130,246,.15);color:var(--blue);border:1px solid rgba(59,130,246,.4)}
-.btn-edit:hover{background:var(--blue);color:#fff}
-.btn-danger{background:rgba(239,68,68,.15);color:var(--error);border:1px solid rgba(239,68,68,.4)}
-.btn-danger:hover{background:var(--error);color:#fff}
-.btn-success{background:rgba(16,185,129,.15);color:var(--green);border:1px solid rgba(16,185,129,.4)}
-.btn-success:hover{background:var(--green);color:#fff}
-.btn-chat{background:rgba(139,92,246,.15);color:var(--purple);border:1px solid rgba(139,92,246,.4)}
-.btn-chat:hover{background:var(--purple);color:#fff}
-.btn-view{background:rgba(59,130,246,.15);color:var(--blue);border:1px solid rgba(59,130,246,.4)}
-.btn-view:hover{background:var(--blue);color:#fff}
-.btn-warning{background:rgba(245,158,11,.15);color:var(--warning);border:1px solid rgba(245,158,11,.4)}
-.btn-warning:hover{background:var(--warning);color:#fff}
-.btn-sm{padding:.4rem .9rem;font-size:.8rem}
-.btn-cancel{background:rgba(239,68,68,.15);color:var(--error);border:1px solid rgba(239,68,68,.4)}
-.btn-cancel:hover{background:var(--error);color:#fff}
-.btn-save{background:var(--grad);color:#fff}
-.content{flex:1;padding:2rem;max-width:100%;overflow-x:hidden}
-.panel{display:none;animation:fadeIn .4s ease-out}
-.panel.active{display:block}
-@keyframes fadeIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
-.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1.2rem;margin-bottom:2rem}
-.stat-card{background:var(--card);border:1px solid var(--border);border-radius:var(--rad);padding:1.4rem;backdrop-filter:blur(10px);transition:var(--trans);position:relative;overflow:hidden;cursor:pointer}
-.stat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--grad);transform:scaleX(0);transition:transform var(--trans)}
-.stat-card:hover{transform:translateY(-4px);border-color:var(--accent);box-shadow:var(--shadow)}
-.stat-card:hover::before{transform:scaleX(1)}
-.stat-card .lbl{font-size:.8rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;font-weight:600;display:flex;align-items:center;gap:.4rem}
-.stat-card .val{font-family:'Syne',sans-serif;font-weight:800;font-size:2.2rem;margin-top:.4rem;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1.2}
-.tbl-card{background:var(--card);border:1px solid var(--border);border-radius:var(--rad);overflow:hidden;backdrop-filter:blur(10px);margin-bottom:1.5rem}
-.tbl-head{padding:1.2rem 1.5rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem}
-.tbl-head h3{font-family:'Syne',sans-serif;font-weight:700;font-size:1.1rem;display:flex;align-items:center;gap:.5rem}
-.search-inp{padding:.55rem 1rem .55rem 2.2rem;border:1.5px solid var(--border);border-radius:9999px;font-size:.85rem;color:var(--text);background:var(--surface);outline:none;width:220px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%237a736a'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z'%3E%3C/path%3E%3C/svg%3E");background-repeat:no-repeat;background-position:.6rem center;background-size:1rem}
-.search-inp:focus{border-color:var(--accent);box-shadow:0 0 0 4px var(--accent-glow)}
-.table-responsive{overflow-x:auto;width:100%}
-table{width:100%;border-collapse:collapse;min-width:1000px}
-th{background:var(--surface);padding:.9rem 1.2rem;text-align:left;font-size:.75rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;border-bottom:1px solid var(--border)}
-td{padding:1rem 1.2rem;font-size:.9rem;border-bottom:1px solid var(--border);color:var(--muted)}
-tr:last-child td{border-bottom:none}
-tr:hover td{background:var(--surface)}
-.empty-row{text-align:center;padding:2rem!important;color:var(--muted)}
-.badge{display:inline-flex;align-items:center;gap:.35rem;padding:.3rem .75rem;border-radius:9999px;font-size:.75rem;font-weight:600;text-transform:capitalize}
-.badge-pending{background:rgba(245,158,11,.15);color:var(--warning);border:1px solid rgba(245,158,11,.4)}
-.badge-payment_received{background:rgba(16,185,129,.15);color:var(--green);border:1px solid rgba(16,185,129,.4)}
-.badge-in_progress{background:rgba(59,130,246,.15);color:var(--blue);border:1px solid rgba(59,130,246,.4)}
-.badge-ready_for_balance{background:rgba(255,107,53,.15);color:var(--accent);border:1px solid rgba(255,107,53,.4)}
-.badge-completed,.badge-delivered{background:rgba(16,185,129,.15);color:var(--green);border:1px solid rgba(16,185,129,.4)}
-.badge-cancelled{background:rgba(239,68,68,.15);color:var(--error);border:1px solid rgba(239,68,68,.4)}
-.badge-refunded{background:rgba(139,92,246,.15);color:var(--purple);border:1px solid rgba(139,92,246,.4)}
-.modal-ov{position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:2000;display:none;align-items:center;justify-content:center;padding:1rem;backdrop-filter:blur(8px)}
-.modal-ov.open{display:flex}
-.modal{background:var(--card);border-radius:var(--rad);padding:2rem;width:100%;max-width:700px;max-height:90vh;overflow-y:auto;border:1px solid var(--border);box-shadow:var(--shadow);animation:modalSlide .3s ease}
-@keyframes modalSlide{from{opacity:0;transform:scale(.95)}to{opacity:1;transform:scale(1)}}
-.modal-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;padding-bottom:1rem;border-bottom:1px solid var(--border)}
-.modal-hdr h3{font-family:'Syne',sans-serif;font-weight:800;font-size:1.3rem;display:flex;align-items:center;gap:.5rem}
-.close-btn{background:var(--surface);border:1px solid var(--border);color:var(--muted);width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:var(--trans)}
-.close-btn:hover{background:var(--error);color:#fff}
-.fg{margin-bottom:1.1rem}
-.fg label{display:block;font-size:.85rem;font-weight:500;margin-bottom:.5rem;color:var(--muted);display:flex;align-items:center;gap:.4rem}
-.fg label i{color:var(--accent)}
-.fg input,.fg textarea,.fg select{width:100%;padding:.8rem 1rem;border:1.5px solid var(--border);border-radius:var(--rad);font-family:'DM Sans',sans-serif;font-size:.9rem;color:var(--text);background:var(--surface);outline:none;transition:var(--trans)}
-.fg input:focus,.fg textarea:focus,.fg select:focus{border-color:var(--accent);box-shadow:0 0 0 4px var(--accent-glow)}
-.fg textarea{min-height:80px;resize:vertical}
-.modal-foot{display:flex;gap:.8rem;justify-content:flex-end;margin-top:1.5rem;padding-top:1.2rem;border-top:1px solid var(--border);flex-wrap:wrap}
-.global-alert{padding:.8rem 1.2rem;border-radius:var(--rad);font-size:.9rem;font-weight:500;margin-bottom:1.2rem;display:none;align-items:center;gap:.6rem;border:1px solid;animation:slideDown .3s ease}
-@keyframes slideDown{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:translateY(0)}}
-.ga-success{background:rgba(16,185,129,.15);color:var(--green);border-color:rgba(16,185,129,.4)}
-.ga-error{background:rgba(239,68,68,.15);color:var(--error);border-color:rgba(239,68,68,.4)}
-.order-detail-card{display:flex;flex-direction:column;gap:1.5rem}
-.detail-section{background:var(--surface);padding:1.2rem;border-radius:var(--rad);border:1px solid var(--border)}
-.section-title{font-family:'Syne',sans-serif;font-weight:700;font-size:1rem;margin-bottom:1rem;color:var(--accent);display:flex;align-items:center;gap:.5rem}
-.info-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1rem}
-.info-item{display:flex;flex-direction:column;gap:.3rem}
-.info-item .label{font-size:.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
-.info-item .value{font-size:.95rem;color:var(--text);font-weight:500;word-break:break-word}
-.customization-item{padding:.5rem 0;border-bottom:1px solid var(--border);font-size:.9rem}
-.progress-bar{height:6px;background:var(--surface);border-radius:10px;overflow:hidden;margin-top:.5rem}
-.progress-fill{height:100%;background:var(--grad);border-radius:10px;transition:width .5s ease}
-.deliverable-link{display:inline-block;margin:.2rem 0;color:var(--green);text-decoration:none}
-.deliverable-link:hover{text-decoration:underline}
-.chat-container{display:grid;grid-template-columns:320px 1fr;min-height:500px;background:var(--card);border-radius:20px;overflow:hidden;border:1px solid var(--border)}
-.conversations-list{border-right:1px solid var(--border);overflow-y:auto;padding:1rem}
-.conversation-item{padding:1rem;border-bottom:1px solid var(--border);cursor:pointer;transition:var(--trans);position:relative}
-.conversation-item:hover{background:var(--surface)}
-.conversation-item.unread{background:rgba(255,107,53,.1)}
-.conversation-item.active{background:rgba(255,255,255,.15);border-left:3px solid var(--accent)}
-.chat-area{display:flex;flex-direction:column}
-.chat-header-area{padding:1rem;border-bottom:1px solid var(--border);background:var(--surface)}
-.chat-messages{flex:1;overflow-y:auto;padding:1rem;min-height:400px;max-height:500px}
-.message-bubble{margin-bottom:1rem}
-.message-bubble.admin{text-align:right}
-.message-bubble.user{text-align:left}
-.message-content{display:inline-block;padding:.8rem 1rem;border-radius:12px;max-width:80%;word-wrap:break-word}
-.message-bubble.admin .message-content{background:var(--grad);color:#fff}
-.message-bubble.user .message-content{background:var(--surface);color:var(--text)}
-.message-time{font-size:.7rem;color:var(--muted);margin-top:.2rem;display:block}
-.chat-input-area{padding:1rem;border-top:1px solid var(--border);display:flex;gap:.5rem;background:var(--surface)}
-.chat-input-area textarea{flex:1;padding:.8rem;border-radius:12px;background:var(--bg);color:#fff;border:1px solid var(--border);resize:none;font-family:inherit;outline:none}
-.chat-input-area textarea:focus{border-color:var(--accent)}
-.chat-input-area button{padding:.8rem 1.5rem;background:var(--grad);border:none;border-radius:12px;color:#fff;cursor:pointer;font-weight:600;transition:var(--trans)}
-.chat-input-area button:hover{transform:translateY(-2px);box-shadow:0 4px 15px var(--accent-glow)}
-.sidebar-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.5);z-index:999;display:none;backdrop-filter:blur(4px)}
-.sidebar-overlay.active{display:block}
-.fg input[type="checkbox"]{width:auto;margin-right:.5rem;transform:scale(1.2);cursor:pointer}
-.fg label:has(input[type="checkbox"]){display:flex;align-items:center;cursor:pointer}
-.payment-badge{display:inline-flex;align-items:center;gap:.3rem;padding:.25rem .6rem;border-radius:6px;font-size:.75rem;font-weight:600}
-.payment-advance{background:rgba(245,158,11,.15);color:var(--warning)}
-.payment-balance{background:rgba(59,130,246,.15);color:var(--blue)}
-.payment-full{background:rgba(16,185,129,.15);color:var(--green)}
-.timeline{position:relative;padding-left:2rem;margin:1rem 0}
-.timeline::before{content:'';position:absolute;left:8px;top:0;bottom:0;width:2px;background:var(--border)}
-.timeline-item{position:relative;padding-bottom:1rem}
-.timeline-item::before{content:'';position:absolute;left:-26px;top:4px;width:12px;height:12px;border-radius:50%;background:var(--accent);border:3px solid var(--bg)}
-.timeline-time{font-size:.75rem;color:var(--muted)}
-.timeline-msg{margin-top:.3rem;font-size:.9rem}
-.deliverable-item{padding:.8rem;border:1px solid var(--border);border-radius:8px;margin-bottom:.5rem;background:rgba(255,255,255,.03)}
-.deliverable-item .title{font-weight:600;color:var(--accent)}
-.deliverable-item .meta{font-size:.8rem;color:var(--muted);margin:.3rem 0}
-.deliverable-item a{color:var(--green);text-decoration:none}
-.deliverable-item a:hover{text-decoration:underline}
-.whatsapp-btn{background:#25D366;color:#fff;padding:.3rem .7rem;border-radius:6px;font-size:.8rem;display:inline-flex;align-items:center;gap:.3rem;text-decoration:none}
-.whatsapp-btn:hover{background:#128C7E}
-.client-info{background:rgba(59,130,246,.1);padding:.8rem;border-radius:8px;margin:.5rem 0}
-.client-info .label{font-size:.75rem;color:var(--muted)}
-.client-info .value{font-weight:500}
-.refund-reason{font-size:.85rem;color:var(--muted);margin-top:.3rem;max-height:60px;overflow:hidden;text-overflow:ellipsis}
-@media(max-width:1200px){.stats-grid{grid-template-columns:repeat(2,1fr)}}
-@media(max-width:992px){.sidebar{transform:translateX(-100%);width:var(--sw)}.sidebar.mobile-open{transform:translateX(0)}.sidebar-overlay.active{display:block}.main{margin-left:0}.toggle-sidebar{display:flex}.chat-container{grid-template-columns:1fr}.conversations-list{display:none}.conversations-list.mobile-show{display:block}}
-@media(max-width:768px){.stats-grid{grid-template-columns:1fr}.content{padding:1rem}.tbl-head{flex-direction:column;align-items:flex-start}.search-inp{width:100%}.modal{padding:1.5rem;max-width:95%}.modal-foot{flex-direction:column}.btn{width:100%;justify-content:center}.info-grid{grid-template-columns:1fr}}
-@media(max-width:480px){.stats-grid{gap:.75rem}.stat-card .val{font-size:1.6rem}.topbar h1{font-size:1rem}}
-::-webkit-scrollbar{width:8px;height:8px}
-::-webkit-scrollbar-track{background:var(--surface);border-radius:8px}
-::-webkit-scrollbar-thumb{background:var(--accent);border-radius:8px}
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --bg-primary: #0a0a0f;
+    --bg-secondary: #12121a;
+    --bg-card: #1a1a2a;
+    --bg-surface: rgba(255,255,255,0.05);
+    --border: rgba(255,255,255,0.1);
+    --text-primary: #ffffff;
+    --text-secondary: rgba(255,255,255,0.7);
+    --text-muted: rgba(255,255,255,0.5);
+    --accent-primary: #ff6b35;
+    --accent-secondary: #f7c531;
+    --accent-glow: rgba(255,107,53,0.3);
+    --success: #10b981;
+    --warning: #f59e0b;
+    --error: #ef4444;
+    --info: #3b82f6;
+    --purple: #8b5cf6;
+    --gradient: linear-gradient(135deg, #ff6b35, #f7c531);
+    --radius: 16px;
+    --shadow: 0 8px 32px rgba(0,0,0,0.4);
+    --sidebar-width: 280px;
+    --sidebar-collapsed: 80px;
+    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    overflow-x: hidden;
+    min-height: 100vh;
+}
+
+/* ========== LOGIN PAGE ========== */
+#login-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, #0a0a0f 0%, #1a1a2a 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+    transition: var(--transition);
+}
+
+.login-box {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 40px;
+    width: 90%;
+    max-width: 420px;
+    backdrop-filter: blur(20px);
+    box-shadow: var(--shadow);
+    animation: slideUp 0.5s ease;
+}
+
+@keyframes slideUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.login-icon {
+    text-align: center;
+    font-size: 48px;
+    background: var(--gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 20px;
+}
+
+.login-box h2 {
+    text-align: center;
+    font-size: 28px;
+    font-weight: 800;
+    margin-bottom: 8px;
+}
+
+.login-box p {
+    text-align: center;
+    color: var(--text-secondary);
+    margin-bottom: 32px;
+}
+
+.login-input {
+    width: 100%;
+    padding: 14px 18px;
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    color: var(--text-primary);
+    font-size: 14px;
+    margin-bottom: 16px;
+    transition: var(--transition);
+}
+
+.login-input:focus {
+    outline: none;
+    border-color: var(--accent-primary);
+    box-shadow: 0 0 0 3px var(--accent-glow);
+}
+
+.login-btn {
+    width: 100%;
+    padding: 14px;
+    background: var(--gradient);
+    border: none;
+    border-radius: 12px;
+    color: white;
+    font-weight: 700;
+    font-size: 16px;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.login-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px var(--accent-glow);
+}
+
+.login-error {
+    background: rgba(239,68,68,0.15);
+    color: var(--error);
+    padding: 12px;
+    border-radius: 10px;
+    margin-top: 16px;
+    display: none;
+    font-size: 14px;
+    text-align: center;
+}
+
+/* ========== DASHBOARD ========== */
+#dashboard-container {
+    display: none;
+    min-height: 100vh;
+}
+
+/* Sidebar */
+.sidebar {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: var(--sidebar-width);
+    height: 100vh;
+    background: var(--bg-card);
+    border-right: 1px solid var(--border);
+    z-index: 100;
+    transition: var(--transition);
+    overflow-y: auto;
+}
+
+.sidebar.collapsed {
+    width: var(--sidebar-collapsed);
+}
+
+.sidebar.collapsed .sidebar-logo span,
+.sidebar.collapsed .nav-item span:not(.nav-icon),
+.sidebar.collapsed .nav-section span,
+.sidebar.collapsed .admin-info-details {
+    display: none;
+}
+
+.sidebar-logo {
+    padding: 24px 20px;
+    border-bottom: 1px solid var(--border);
+}
+
+.sidebar-logo a {
+    font-size: 24px;
+    font-weight: 800;
+    text-decoration: none;
+    background: var(--gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.sidebar-logo small {
+    font-size: 11px;
+    color: var(--text-muted);
+    display: block;
+    margin-top: 6px;
+}
+
+.sidebar-nav {
+    padding: 20px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.nav-section {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text-muted);
+    padding: 16px 16px 8px;
+    font-weight: 600;
+}
+
+.nav-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    border-radius: 12px;
+    cursor: pointer;
+    color: var(--text-secondary);
+    transition: var(--transition);
+    background: none;
+    border: none;
+    width: 100%;
+    text-align: left;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.nav-item:hover {
+    background: var(--bg-surface);
+    color: var(--text-primary);
+    transform: translateX(4px);
+}
+
+.nav-item.active {
+    background: var(--gradient);
+    color: white;
+    box-shadow: 0 4px 12px var(--accent-glow);
+}
+
+.nav-icon {
+    width: 20px;
+    text-align: center;
+}
+
+.sidebar-footer {
+    padding: 20px;
+    border-top: 1px solid var(--border);
+    margin-top: auto;
+}
+
+.admin-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.admin-avatar {
+    width: 40px;
+    height: 40px;
+    background: var(--gradient);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+}
+
+.admin-info-details {
+    flex: 1;
+}
+
+.admin-name {
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.admin-role {
+    font-size: 11px;
+    color: var(--text-muted);
+}
+
+.logout-btn {
+    background: rgba(239,68,68,0.2);
+    border: none;
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    color: var(--error);
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.logout-btn:hover {
+    background: var(--error);
+    color: white;
+}
+
+/* Main Content */
+.main-content {
+    margin-left: var(--sidebar-width);
+    transition: var(--transition);
+    min-height: 100vh;
+}
+
+.main-content.expanded {
+    margin-left: var(--sidebar-collapsed);
+}
+
+.top-bar {
+    background: var(--bg-card);
+    border-bottom: 1px solid var(--border);
+    padding: 0 24px;
+    height: 70px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 99;
+    backdrop-filter: blur(20px);
+}
+
+.toggle-sidebar {
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    padding: 8px 12px;
+    border-radius: 10px;
+    cursor: pointer;
+    color: var(--text-primary);
+    margin-right: 16px;
+    display: none;
+}
+
+.page-title {
+    font-size: 20px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.date-display {
+    font-size: 13px;
+    color: var(--text-muted);
+}
+
+/* Content Area */
+.content-area {
+    padding: 24px;
+}
+
+/* Stats Grid */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+    margin-bottom: 28px;
+}
+
+.stat-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    transition: var(--transition);
+    cursor: pointer;
+}
+
+.stat-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--accent-primary);
+    box-shadow: var(--shadow);
+}
+
+.stat-label {
+    font-size: 13px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.stat-value {
+    font-size: 32px;
+    font-weight: 800;
+    background: var(--gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+/* Cards */
+.card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    margin-bottom: 24px;
+}
+
+.card-header {
+    padding: 18px 24px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.card-header h3 {
+    font-size: 18px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.search-input {
+    padding: 8px 16px 8px 36px;
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: 30px;
+    color: var(--text-primary);
+    font-size: 13px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='rgba(255,255,255,0.5)'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z'%3E%3C/path%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: 12px center;
+    background-size: 16px;
+    width: 240px;
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: var(--accent-primary);
+}
+
+/* Tables */
+.table-responsive {
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th {
+    text-align: left;
+    padding: 14px 16px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text-muted);
+    background: var(--bg-surface);
+    border-bottom: 1px solid var(--border);
+}
+
+td {
+    padding: 14px 16px;
+    font-size: 13px;
+    color: var(--text-secondary);
+    border-bottom: 1px solid var(--border);
+}
+
+tr:hover td {
+    background: var(--bg-surface);
+}
+
+.empty-row {
+    text-align: center;
+    padding: 40px !important;
+    color: var(--text-muted);
+}
+
+/* Badges */
+.badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 4px 12px;
+    border-radius: 30px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: capitalize;
+}
+
+.badge-pending { background: rgba(245,158,11,0.15); color: var(--warning); }
+.badge-payment_received { background: rgba(16,185,129,0.15); color: var(--success); }
+.badge-in_progress { background: rgba(59,130,246,0.15); color: var(--info); }
+.badge-ready_for_balance { background: rgba(255,107,53,0.15); color: var(--accent-primary); }
+.badge-completed, .badge-delivered { background: rgba(16,185,129,0.15); color: var(--success); }
+.badge-cancelled { background: rgba(239,68,68,0.15); color: var(--error); }
+
+/* Buttons */
+.btn {
+    padding: 6px 14px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: var(--transition);
+    border: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.btn-sm {
+    padding: 5px 10px;
+    font-size: 11px;
+}
+
+.btn-primary { background: var(--gradient); color: white; }
+.btn-primary:hover { transform: translateY(-1px); box-shadow: 0 4px 12px var(--accent-glow); }
+.btn-success { background: rgba(16,185,129,0.2); color: var(--success); border: 1px solid rgba(16,185,129,0.3); }
+.btn-success:hover { background: var(--success); color: white; }
+.btn-warning { background: rgba(245,158,11,0.2); color: var(--warning); border: 1px solid rgba(245,158,11,0.3); }
+.btn-warning:hover { background: var(--warning); color: white; }
+.btn-danger { background: rgba(239,68,68,0.2); color: var(--error); border: 1px solid rgba(239,68,68,0.3); }
+.btn-danger:hover { background: var(--error); color: white; }
+.btn-info { background: rgba(59,130,246,0.2); color: var(--info); border: 1px solid rgba(59,130,246,0.3); }
+.btn-info:hover { background: var(--info); color: white; }
+
+/* Modal */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.8);
+    backdrop-filter: blur(8px);
+    z-index: 1000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.modal-overlay.open {
+    display: flex;
+}
+
+.modal {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    width: 100%;
+    max-width: 700px;
+    max-height: 90vh;
+    overflow-y: auto;
+    animation: modalSlide 0.3s ease;
+}
+
+@keyframes modalSlide {
+    from { opacity: 0; transform: scale(0.95); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+.modal-header {
+    padding: 20px 24px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modal-header h3 {
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.close-modal {
+    background: var(--bg-surface);
+    border: none;
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    cursor: pointer;
+    color: var(--text-secondary);
+    transition: var(--transition);
+}
+
+.close-modal:hover {
+    background: var(--error);
+    color: white;
+}
+
+.modal-body {
+    padding: 24px;
+}
+
+.form-group {
+    margin-bottom: 18px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-secondary);
+}
+
+.form-group input,
+.form-group textarea,
+.form-group select {
+    width: 100%;
+    padding: 12px 14px;
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    color: var(--text-primary);
+    font-size: 14px;
+    font-family: inherit;
+    transition: var(--transition);
+}
+
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus {
+    outline: none;
+    border-color: var(--accent-primary);
+    box-shadow: 0 0 0 3px var(--accent-glow);
+}
+
+.form-group textarea {
+    min-height: 80px;
+    resize: vertical;
+}
+
+.modal-footer {
+    padding: 16px 24px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+}
+
+/* Chat Section */
+.chat-container {
+    display: grid;
+    grid-template-columns: 320px 1fr;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    min-height: 550px;
+}
+
+.conversations-list {
+    border-right: 1px solid var(--border);
+    overflow-y: auto;
+    max-height: 550px;
+}
+
+.conversation-item {
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--border);
+    cursor: pointer;
+    transition: var(--transition);
+    position: relative;
+}
+
+.conversation-item:hover {
+    background: var(--bg-surface);
+}
+
+.conversation-item.unread {
+    background: rgba(255,107,53,0.1);
+}
+
+.conversation-item.active {
+    background: var(--gradient);
+}
+
+.conversation-name {
+    font-weight: 600;
+    font-size: 14px;
+    margin-bottom: 4px;
+}
+
+.conversation-last-msg {
+    font-size: 12px;
+    color: var(--text-muted);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.conversation-time {
+    font-size: 10px;
+    color: var(--text-muted);
+    margin-top: 4px;
+}
+
+.delete-conv {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: var(--error);
+    cursor: pointer;
+    opacity: 0;
+    transition: var(--transition);
+}
+
+.conversation-item:hover .delete-conv {
+    opacity: 1;
+}
+
+.chat-area {
+    display: flex;
+    flex-direction: column;
+}
+
+.chat-header {
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg-surface);
+}
+
+.chat-messages {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+    max-height: 450px;
+    min-height: 400px;
+}
+
+.message {
+    margin-bottom: 16px;
+    display: flex;
+}
+
+.message.admin {
+    justify-content: flex-end;
+}
+
+.message.user {
+    justify-content: flex-start;
+}
+
+.message-content {
+    max-width: 70%;
+    padding: 10px 16px;
+    border-radius: 18px;
+    font-size: 13px;
+}
+
+.message.admin .message-content {
+    background: var(--gradient);
+    color: white;
+}
+
+.message.user .message-content {
+    background: var(--bg-surface);
+    color: var(--text-primary);
+}
+
+.message-time {
+    font-size: 10px;
+    color: var(--text-muted);
+    margin-top: 4px;
+    display: block;
+}
+
+.chat-input-area {
+    padding: 16px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    gap: 12px;
+    background: var(--bg-surface);
+}
+
+.chat-input-area textarea {
+    flex: 1;
+    padding: 12px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    color: var(--text-primary);
+    resize: none;
+    font-family: inherit;
+}
+
+.chat-input-area button {
+    padding: 0 20px;
+    background: var(--gradient);
+    border: none;
+    border-radius: 12px;
+    color: white;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+/* Toast Notifications */
+.toast-container {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1100;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.toast {
+    padding: 12px 20px;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    animation: slideIn 0.3s ease;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+}
+
+.toast-success { border-left: 3px solid var(--success); color: var(--success); }
+.toast-error { border-left: 3px solid var(--error); color: var(--error); }
+.toast-info { border-left: 3px solid var(--info); color: var(--info); }
+
+@keyframes slideIn {
+    from { transform: translateX(100%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+}
+
+/* Order Detail Styles */
+.order-detail-section {
+    margin-bottom: 20px;
+    padding: 16px;
+    background: var(--bg-surface);
+    border-radius: 12px;
+}
+
+.order-detail-section h4 {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 12px;
+    color: var(--accent-primary);
+}
+
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+}
+
+.info-item .label {
+    font-size: 11px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+}
+
+.info-item .value {
+    font-size: 14px;
+    font-weight: 500;
+    margin-top: 4px;
+}
+
+.progress-bar {
+    height: 6px;
+    background: var(--bg-surface);
+    border-radius: 10px;
+    overflow: hidden;
+    margin: 12px 0;
+}
+
+.progress-fill {
+    height: 100%;
+    background: var(--gradient);
+    border-radius: 10px;
+    transition: width 0.5s ease;
+}
+
+.timeline-item {
+    position: relative;
+    padding-left: 24px;
+    padding-bottom: 16px;
+    border-left: 2px solid var(--border);
+}
+
+.timeline-item::before {
+    content: '';
+    position: absolute;
+    left: -6px;
+    top: 0;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--accent-primary);
+}
+
+.timeline-time {
+    font-size: 11px;
+    color: var(--text-muted);
+}
+
+.timeline-message {
+    font-size: 13px;
+    margin-top: 4px;
+}
+
+.whatsapp-link {
+    background: #25D366;
+    color: white;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 11px;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+    .stats-grid { grid-template-columns: repeat(2, 1fr); }
+    .chat-container { grid-template-columns: 1fr; }
+    .conversations-list { display: none; }
+    .conversations-list.mobile-show { display: block; }
+}
+
+@media (max-width: 768px) {
+    .sidebar { transform: translateX(-100%); }
+    .sidebar.mobile-open { transform: translateX(0); }
+    .main-content { margin-left: 0; }
+    .toggle-sidebar { display: flex; }
+    .stats-grid { grid-template-columns: 1fr; }
+    .info-grid { grid-template-columns: 1fr; }
+    .modal { max-width: 95%; }
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--bg-surface); }
+::-webkit-scrollbar-thumb { background: var(--accent-primary); border-radius: 10px; }
 </style>
 </head>
 <body>
-<div class="particles" id="particles"></div>
-<div class="sidebar-overlay" id="sidebar-overlay" onclick="toggleSidebar()"></div>
 
-<!-- LOGIN -->
-<div id="login">
-<div class="login-box">
-<div class="icon"><i class="fas fa-shield-alt"></i></div>
-<h2>🛡️ NovaStack Admin</h2>
-<p>Enter credentials to access dashboard</p>
-<input type="email" id="adm-email" placeholder="Admin email" autocomplete="email">
-<input type="password" id="adm-pass" placeholder="Password" onkeypress="if(event.key==='Enter')doAdminLogin()" autocomplete="current-password">
-<button id="login-btn" onclick="doAdminLogin()"><i class="fas fa-sign-in-alt"></i> Login</button>
-<div class="login-err" id="login-err"><i class="fas fa-exclamation-circle"></i> <span id="login-err-msg"></span></div>
-</div>
-</div>
-
-<!-- DASHBOARD -->
-<div id="dashboard">
-<aside class="sidebar" id="sidebar">
-<div class="sidebar-logo">
-<a href="#"><i class="fas fa-code"></i> Nova<span>Stack</span></a>
-<small><i class="fas fa-cog"></i> Admin Panel</small>
-</div>
-<nav class="sidebar-nav">
-<div class="nav-section"><i class="fas fa-chart-pie"></i> <span>Overview</span></div>
-<button class="nav-item active" onclick="switchPanel('overview',this)"><span class="icon"><i class="fas fa-home"></i></span> <span>Dashboard</span></button>
-<div class="nav-section"><i class="fas fa-shopping-bag"></i> <span>Orders</span></div>
-<button class="nav-item" onclick="switchPanel('orders',this)"><span class="icon"><i class="fas fa-box-open"></i></span> <span>All Orders</span></button>
-<button class="nav-item" onclick="switchPanel('refund-requests',this)"><span class="icon"><i class="fas fa-money-bill-wave"></i></span> <span>Refunds</span></button>
-<div class="nav-section"><i class="fas fa-cube"></i> <span>Services</span></div>
-<button class="nav-item" onclick="switchPanel('services',this)"><span class="icon"><i class="fas fa-cubes"></i></span> <span>Manage Services</span></button>
-<button class="nav-item" onclick="openModal()"><span class="icon"><i class="fas fa-plus-circle"></i></span> <span>Add Service</span></button>
-<div class="nav-section"><i class="fas fa-users"></i> <span>Users</span></div>
-<button class="nav-item" onclick="switchPanel('users',this)"><span class="icon"><i class="fas fa-user-friends"></i></span> <span>All Users</span></button>
-<button class="nav-item" onclick="switchPanel('custom-requests',this)"><span class="icon"><i class="fas fa-file-signature"></i></span> <span>Custom Requests</span></button>
-<div class="nav-section"><i class="fas fa-comments"></i> <span>Support</span></div>
-<button class="nav-item" onclick="switchPanel('chat',this)"><span class="icon"><i class="fas fa-comment-dots"></i></span> <span>Conversations</span></button>
-</nav>
-<div class="sidebar-foot">
-<div class="admin-info">
-<div class="admin-av"><i class="fas fa-user"></i></div>
-<div><div class="admin-name" id="admin-name-disp">Admin</div><div class="admin-role"><i class="fas fa-crown"></i> Super Admin</div></div>
-<button class="logout-icon" onclick="doAdminLogout()" title="Logout"><i class="fas fa-sign-out-alt"></i></button>
-</div>
-</div>
-</aside>
-
-<div class="main" id="main">
-<div class="topbar">
-<div style="display:flex;align-items:center;">
-<button class="toggle-sidebar" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
-<h1><i class="fas fa-tachometer-alt"></i> <span id="panel-title">Dashboard</span></h1>
-</div>
-<div><span style="font-size:.85rem;color:var(--muted)" id="date-disp"></span></div>
+<!-- LOGIN SECTION -->
+<div id="login-container">
+    <div class="login-box">
+        <div class="login-icon">
+            <i class="fas fa-shield-alt"></i>
+        </div>
+        <h2>NovaStack Admin</h2>
+        <p>Enter credentials to access dashboard</p>
+        <input type="email" id="login-email" class="login-input" placeholder="Admin Email" autocomplete="email">
+        <input type="password" id="login-password" class="login-input" placeholder="Password" onkeypress="if(event.key==='Enter') handleLogin()">
+        <button class="login-btn" onclick="handleLogin()">
+            <i class="fas fa-sign-in-alt"></i> Login
+        </button>
+        <div id="login-error" class="login-error"></div>
+    </div>
 </div>
 
-<div class="content">
-<div class="global-alert ga-success" id="ga-success"><i class="fas fa-check-circle"></i> <span id="success-msg"></span></div>
-<div class="global-alert ga-error" id="ga-error"><i class="fas fa-exclamation-triangle"></i> <span id="error-msg"></span></div>
+<!-- DASHBOARD SECTION -->
+<div id="dashboard-container">
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-logo">
+            <a href="#"><i class="fas fa-code"></i> <span>Nova<span style="color:var(--accent-primary)">Stack</span></span></a>
+            <small>Admin Control Panel</small>
+        </div>
+        <nav class="sidebar-nav">
+            <div class="nav-section"><i class="fas fa-chart-line"></i> <span>MAIN</span></div>
+            <button class="nav-item active" data-page="overview" onclick="switchPage('overview', this)">
+                <i class="fas fa-tachometer-alt nav-icon"></i> <span>Dashboard</span>
+            </button>
+            
+            <div class="nav-section"><i class="fas fa-shopping-cart"></i> <span>ORDERS</span></div>
+            <button class="nav-item" data-page="orders" onclick="switchPage('orders', this)">
+                <i class="fas fa-box-open nav-icon"></i> <span>All Orders</span>
+            </button>
+            <button class="nav-item" data-page="refunds" onclick="switchPage('refunds', this)">
+                <i class="fas fa-money-bill-wave nav-icon"></i> <span>Refunds</span>
+            </button>
+            
+            <div class="nav-section"><i class="fas fa-cube"></i> <span>SERVICES</span></div>
+            <button class="nav-item" data-page="services" onclick="switchPage('services', this)">
+                <i class="fas fa-cubes nav-icon"></i> <span>Manage Services</span>
+            </button>
+            
+            <div class="nav-section"><i class="fas fa-users"></i> <span>USERS</span></div>
+            <button class="nav-item" data-page="users" onclick="switchPage('users', this)">
+                <i class="fas fa-user-friends nav-icon"></i> <span>All Users</span>
+            </button>
+            <button class="nav-item" data-page="custom-requests" onclick="switchPage('custom-requests', this)">
+                <i class="fas fa-file-signature nav-icon"></i> <span>Custom Requests</span>
+            </button>
+            
+            <div class="nav-section"><i class="fas fa-comments"></i> <span>SUPPORT</span></div>
+            <button class="nav-item" data-page="chat" onclick="switchPage('chat', this)">
+                <i class="fas fa-comment-dots nav-icon"></i> <span>Conversations</span>
+            </button>
+        </nav>
+        <div class="sidebar-footer">
+            <div class="admin-info">
+                <div class="admin-avatar" id="admin-avatar">A</div>
+                <div class="admin-info-details">
+                    <div class="admin-name" id="admin-name">Admin</div>
+                    <div class="admin-role">Super Administrator</div>
+                </div>
+                <button class="logout-btn" onclick="handleLogout()" title="Logout">
+                    <i class="fas fa-sign-out-alt"></i>
+                </button>
+            </div>
+        </div>
+    </aside>
 
-<!-- OVERVIEW -->
-<div class="panel active" id="panel-overview">
-<div class="stats-grid">
-<div class="stat-card" onclick="switchPanel('services',null)"><div class="lbl"><i class="fas fa-cube"></i> Services</div><div class="val" id="st-svc">0</div></div>
-<div class="stat-card" onclick="switchPanel('orders',null)"><div class="lbl"><i class="fas fa-box-open"></i> Orders</div><div class="val" id="st-ord">0</div></div>
-<div class="stat-card" onclick="switchPanel('users',null)"><div class="lbl"><i class="fas fa-users"></i> Users</div><div class="val" id="st-usr">0</div></div>
-<div class="stat-card"><div class="lbl"><i class="fas fa-dollar-sign"></i> Revenue</div><div class="val" id="st-rev">₹0</div></div>
-</div>
-<div class="tbl-card">
-<div class="tbl-head"><h3><i class="fas fa-clock"></i> Recent Orders</h3></div>
-<div class="table-responsive"><table><thead><tr><th>ID</th><th>Client</th><th>Service</th><th>Status</th><th>Paid</th><th>Actions</th></tr></thead><tbody id="recent-ord-tbody"></tbody></table></div>
-</div>
-</div>
-
-<!-- ORDERS -->
-<div class="panel" id="panel-orders">
-<div class="tbl-card">
-<div class="tbl-head"><h3><i class="fas fa-list"></i> All Orders</h3><input type="text" class="search-inp" placeholder="Search orders..." oninput="filterOrders(this.value)"></div>
-<div class="table-responsive"><table><thead><tr><th>ID</th><th>Client</th><th>Email</th><th>Service</th><th>Price</th><th>Advance</th><th>Paid</th><th>Due</th><th>Status</th><th>Actions</th></tr></thead><tbody id="ord-tbody"></tbody></table></div>
-</div>
+    <!-- Main Content -->
+    <div class="main-content" id="main-content">
+        <div class="top-bar">
+            <div style="display: flex; align-items: center;">
+                <button class="toggle-sidebar" onclick="toggleSidebar()">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <h1 class="page-title" id="page-title">
+                    <i class="fas fa-tachometer-alt"></i> <span>Dashboard Overview</span>
+                </h1>
+            </div>
+            <div class="date-display" id="date-display"></div>
+        </div>
+        <div class="content-area" id="content-area">
+            <!-- Dynamic content loads here -->
+            <div style="text-align: center; padding: 40px;">Loading dashboard...</div>
+        </div>
+    </div>
 </div>
 
-<!-- REFUNDS -->
-<div class="panel" id="panel-refund-requests">
-<div class="tbl-card">
-<div class="tbl-head"><h3><i class="fas fa-money-bill-wave"></i> Refund History</h3></div>
-<div class="table-responsive"><table><thead><tr><th>Order</th><th>User</th><th>Email</th><th>Amount</th><th>Reason</th><th>Status</th><th>Date</th><th>Actions</th></tr></thead><tbody id="refund-tbody"></tbody></table></div>
-</div>
+<!-- Toast Container -->
+<div class="toast-container" id="toast-container"></div>
+
+<!-- Modals -->
+<div id="service-modal" class="modal-overlay">
+    <div class="modal">
+        <div class="modal-header">
+            <h3 id="service-modal-title"><i class="fas fa-plus-circle"></i> Add New Service</h3>
+            <button class="close-modal" onclick="closeModal('service-modal')"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="modal-body">
+            <div class="form-group">
+                <label><i class="fas fa-heading"></i> Service Title *</label>
+                <input type="text" id="service-title" placeholder="e.g., Full Stack Web Application">
+            </div>
+            <div class="form-group">
+                <label><i class="fas fa-align-left"></i> Description</label>
+                <textarea id="service-desc" placeholder="Describe the service..."></textarea>
+            </div>
+            <div class="form-group">
+                <label><i class="fas fa-folder"></i> Category</label>
+                <select id="service-category">
+                    <option value="web">🌐 Web Development</option>
+                    <option value="mobile">📱 Mobile App</option>
+                    <option value="ai">🤖 AI/ML</option>
+                    <option value="ecom">🛒 E-Commerce</option>
+                    <option value="design">🎨 UI/UX Design</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label><i class="fas fa-code"></i> Technologies</label>
+                <input type="text" id="service-tech" placeholder="React, Node.js, MongoDB">
+            </div>
+            <div class="form-group">
+                <label><i class="fas fa-tag"></i> Price (₹) *</label>
+                <input type="number" id="service-price" placeholder="29999" step="0.01">
+            </div>
+            <div class="form-group">
+                <label><i class="fas fa-emoji"></i> Emoji</label>
+                <input type="text" id="service-emoji" placeholder="💻" maxlength="2">
+            </div>
+            <div class="form-group">
+                <label><i class="fas fa-clock"></i> Delivery Days</label>
+                <input type="number" id="service-days" value="14">
+            </div>
+            <div class="form-group">
+                <label><i class="fas fa-sync"></i> Revisions</label>
+                <input type="number" id="service-revisions" value="3">
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-danger" onclick="closeModal('service-modal')">Cancel</button>
+            <button class="btn btn-primary" onclick="saveService()">Save Service</button>
+        </div>
+    </div>
 </div>
 
-<!-- SERVICES -->
-<div class="panel" id="panel-services">
-<div class="tbl-card">
-<div class="tbl-head"><h3><i class="fas fa-cubes"></i> All Services</h3><input type="text" class="search-inp" placeholder="Search services..." oninput="filterServices(this.value)"></div>
-<div class="table-responsive"><table><thead><tr><th>Service</th><th>Category</th><th>Price</th><th>Orders</th><th>Actions</th></tr></thead><tbody id="svc-tbody"></tbody></table></div>
-</div>
-</div>
-
-<!-- USERS -->
-<div class="panel" id="panel-users">
-<div class="tbl-card">
-<div class="tbl-head"><h3><i class="fas fa-users"></i> Registered Users</h3><input type="text" class="search-inp" placeholder="Search users..." oninput="filterUsers(this.value)"></div>
-<div class="table-responsive"><table><thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Verified</th><th>Orders</th><th>Spent</th><th>Joined</th><th>Actions</th></tr></thead><tbody id="usr-tbody"></tbody></table></div>
-</div>
+<div id="order-modal" class="modal-overlay">
+    <div class="modal" style="max-width: 850px;">
+        <div class="modal-header">
+            <h3><i class="fas fa-info-circle"></i> Order Details</h3>
+            <button class="close-modal" onclick="closeModal('order-modal')"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="modal-body" id="order-detail-content">
+            <!-- Dynamic order details -->
+        </div>
+    </div>
 </div>
 
-<!-- CUSTOM REQUESTS -->
-<div class="panel" id="panel-custom-requests">
-<div class="tbl-card">
-<div class="tbl-head"><h3><i class="fas fa-file-signature"></i> Custom Project Requests</h3></div>
-<div class="table-responsive"><table><thead><tr><th>Date</th><th>Name</th><th>Email</th><th>WhatsApp</th><th>Project</th><th>Budget</th><th>Status</th><th>Action</th></tr></thead><tbody id="custom-tbody"></tbody></table></div>
-</div>
+<div id="delivery-modal" class="modal-overlay">
+    <div class="modal">
+        <div class="modal-header">
+            <h3><i class="fas fa-box"></i> Update Deliverables</h3>
+            <button class="close-modal" onclick="closeModal('delivery-modal')"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="modal-body">
+            <div class="form-group">
+                <label><i class="fab fa-github"></i> GitHub Repository URL</label>
+                <input type="text" id="delivery-github" placeholder="https://github.com/...">
+            </div>
+            <div class="form-group">
+                <label><i class="fas fa-globe"></i> Live URL</label>
+                <input type="text" id="delivery-live" placeholder="https://example.com">
+            </div>
+            <div class="form-group">
+                <label><i class="fas fa-code"></i> Source Code URL</label>
+                <input type="text" id="delivery-source" placeholder="https://drive.google.com/...">
+            </div>
+            <div class="form-group">
+                <label><i class="fas fa-book"></i> Documentation URL</label>
+                <input type="text" id="delivery-docs" placeholder="https://docs.example.com">
+            </div>
+            <div class="form-group">
+                <label><i class="fas fa-sticky-note"></i> Delivery Notes</label>
+                <textarea id="delivery-notes" rows="3" placeholder="Add delivery notes..."></textarea>
+            </div>
+            <div class="form-group">
+                <label>
+                    <input type="checkbox" id="delivery-preview"> Preview Ready (For 15% paid clients)
+                </label>
+            </div>
+            <div class="form-group">
+                <label>
+                    <input type="checkbox" id="delivery-full"> Full Access Ready (For fully paid clients)
+                </label>
+            </div>
+            <div class="form-group">
+                <label>
+                    <input type="checkbox" id="delivery-mark"> Mark as Delivered
+                </label>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-danger" onclick="closeModal('delivery-modal')">Cancel</button>
+            <button class="btn btn-primary" onclick="submitDelivery()">Save Changes</button>
+        </div>
+    </div>
 </div>
 
-<!-- CHAT -->
-<div class="panel" id="panel-chat">
-<div class="chat-container">
-<div class="conversations-list" id="conversations-list"><div style="text-align:center;color:var(--muted);padding:2rem;">Loading...</div></div>
-<div class="chat-area">
-<div class="chat-header-area"><h4 id="active-conversation-title"><i class="fas fa-comment"></i> Select a conversation</h4></div>
-<div class="chat-messages" id="admin-chat-messages"><div style="text-align:center;color:var(--muted);padding:2rem;">Select to chat</div></div>
-<div class="chat-input-area"><textarea id="admin-chat-input" placeholder="Type reply..." rows="2"></textarea><button onclick="sendAdminReply()"><i class="fas fa-paper-plane"></i> Send</button></div>
+<div id="refund-modal" class="modal-overlay">
+    <div class="modal">
+        <div class="modal-header">
+            <h3><i class="fas fa-money-bill-wave"></i> Process Refund</h3>
+            <button class="close-modal" onclick="closeModal('refund-modal')"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="modal-body">
+            <div class="form-group">
+                <label><i class="fas fa-dollar-sign"></i> Refund Amount (₹)</label>
+                <input type="number" id="refund-amount" readonly style="background: rgba(255,255,255,0.05);">
+            </div>
+            <div class="form-group">
+                <label><i class="fas fa-comment"></i> Reason for Refund</label>
+                <textarea id="refund-reason" rows="3" placeholder="Enter refund reason..."></textarea>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-danger" onclick="closeModal('refund-modal')">Cancel</button>
+            <button class="btn btn-primary" onclick="processRefund()">Process Refund</button>
+        </div>
+    </div>
 </div>
-</div>
-</div>
-</div>
-</div>
-</div>
-
-<!-- SERVICE MODAL -->
-<div class="modal-ov" id="svc-modal"><div class="modal">
-<div class="modal-hdr"><h3><i class="fas fa-edit"></i> <span id="modal-title">Add Service</span></h3><button class="close-btn" onclick="closeModal()"><i class="fas fa-times"></i></button></div>
-<div class="fg"><label><i class="fas fa-heading"></i> Title *</label><input id="f-title" placeholder="e.g. Web Application"></div>
-<div class="fg"><label><i class="fas fa-align-left"></i> Description *</label><textarea id="f-desc" placeholder="Describe service..."></textarea></div>
-<div class="fg"><label><i class="fas fa-folder"></i> Category</label><select id="f-cat"><option value="web">🌐 Web</option><option value="mobile">📱 Mobile</option><option value="ai">🤖 AI/ML</option><option value="ecom">🛒 E-Commerce</option><option value="portfolio">🎨 Portfolio</option><option value="other">⚙️ Other</option></select></div>
-<div class="fg"><label><i class="fas fa-code"></i> Technologies</label><input id="f-tech" placeholder="React, Node, MongoDB"></div>
-<div class="fg"><label><i class="fas fa-tag"></i> Price (₹) *</label><input type="number" id="f-price" placeholder="299" min="0" step="0.01"></div>
-<div class="fg"><label><i class="fas fa-clock"></i> Delivery Days</label><input type="number" id="f-days" value="14" min="1"></div>
-<div class="fg"><label><i class="fas fa-sync"></i> Revisions</label><input type="number" id="f-rev" value="3" min="0"></div>
-<div class="modal-foot"><button class="btn btn-cancel" onclick="closeModal()">Cancel</button><button class="btn btn-save" onclick="saveService()"><i class="fas fa-save"></i> Save</button></div>
-</div></div>
-
-<!-- ORDER DETAIL MODAL -->
-<div class="modal-ov" id="order-detail-modal"><div class="modal" style="max-width:850px">
-<div class="modal-hdr"><h3><i class="fas fa-info-circle"></i> Order #<span id="ord-detail-id"></span></h3><button class="close-btn" onclick="closeOrderDetail()"><i class="fas fa-times"></i></button></div>
-<div id="order-detail-content"></div>
-</div></div>
-
-<!-- DELIVERY MODAL -->
-<div class="modal-ov" id="delivery-modal"><div class="modal" style="max-width:650px">
-<div class="modal-hdr"><h3><i class="fas fa-box"></i> Deliver Project</h3><button class="close-btn" onclick="closeDeliveryModal()"><i class="fas fa-times"></i></button></div>
-<div id="delivery-modal-content"></div>
-</div></div>
-
-<!-- REFUND MODAL -->
-<div class="modal-ov" id="refund-modal"><div class="modal" style="max-width:500px">
-<div class="modal-hdr"><h3><i class="fas fa-money-bill-wave"></i> Process Refund</h3><button class="close-btn" onclick="closeRefundModal()"><i class="fas fa-times"></i></button></div>
-<div class="fg"><label><i class="fas fa-dollar-sign"></i> Amount (₹)</label><input type="number" id="refund-amount" step="0.01" readonly></div>
-<div class="fg"><label><i class="fas fa-comment"></i> Reason</label><textarea id="refund-reason" placeholder="Refund reason..."></textarea></div>
-<div class="modal-foot"><button class="btn btn-cancel" onclick="closeRefundModal()">Cancel</button><button class="btn btn-save" onclick="processRefundNow()"><i class="fas fa-check"></i> Process</button></div>
-</div></div>
-
-<!-- TOAST -->
-<div id="toast" style="position:fixed;bottom:20px;right:20px;z-index:3000;display:flex;flex-direction:column;gap:.5rem"></div>
 
 <script>
-// ===== CONFIG =====
-const CONFIG = { API: 'https://novastack-backend.onrender.com' };
-let adminToken = localStorage.getItem('dc_admin_token') || '';
-let editingId = null, activeConversation = null, chatPollInterval = null, currentOrderIdForRefund = null;
-let adminData = { services: [], orders: [], users: [], customRequests: [], refunds: [] };
-
-// ===== UTILS =====
-const $ = s => document.querySelector(s), $$ = s => document.querySelectorAll(s);
-const fmt = n => `₹${parseFloat(n||0).toLocaleString('en-IN')}`;
-const date = d => new Date(d).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'});
-const toast = (msg, type='info') => {
-    const t = document.createElement('div');
-    t.style.cssText = `padding:.8rem 1.2rem;border-radius:8px;font-size:.9rem;font-weight:500;display:flex;align-items:center;gap:.5rem;animation:slideIn .3s;background:${type==='success'?'rgba(16,185,129,.15)':type==='error'?'rgba(239,68,68,.15)':'rgba(59,130,246,.15)'};border:1px solid ${type==='success'?'rgba(16,185,129,.4)':type==='error'?'rgba(239,68,68,.4)':'rgba(59,130,246,.4)'};color:${type==='success'?'#10b981':type==='error'?'#ef4444':'#3b82f6'}`;
-    t.innerHTML = `<i class="fas fa-${type==='success'?'check-circle':type==='error'?'exclamation-circle':'info-circle'}"></i> ${msg}`;
-    $('#toast').appendChild(t);
-    setTimeout(()=>t.remove(),3500);
-};
-const api = async (method, path, body = null) => {
-    const headers = { 'Content-Type': 'application/json' };
-    if (adminToken) headers.Authorization = `Bearer ${adminToken}`;
-    const opts = { method, headers };
-    if (body) opts.body = JSON.stringify(body);
-    const res = await fetch(CONFIG.API + path, opts);
-    const json = await res.json();
-    if (!res.ok) throw new Error(json.error || `HTTP ${res.status}`);
-    return json;
+// ============================================================
+// CONFIGURATION
+// ============================================================
+const CONFIG = {
+    API: window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
+        ? 'http://localhost:5000' 
+        : 'https://novastack-backend.onrender.com',
+    TOKEN_KEY: 'nova_admin_token',
+    EMAIL_KEY: 'nova_admin_email'
 };
 
-// ===== PARTICLES =====
-function createParticles(){const c=$('#particles');for(let i=0;i<30;i++){const p=document.createElement('div');p.className='particle';p.style.left=Math.random()*100+'%';p.style.animationDelay=Math.random()*18+'s';p.style.animationDuration=(18+Math.random()*12)+'s';c.appendChild(p);}}createParticles();
+// Global state
+let adminToken = localStorage.getItem(CONFIG.TOKEN_KEY);
+let adminEmail = localStorage.getItem(CONFIG.EMAIL_KEY);
+let editingServiceId = null;
+let currentOrderId = null;
+let currentConversation = null;
+let chatPollInterval = null;
 
-// ===== SIDEBAR =====
-function toggleSidebar(){const sb=$('#sidebar'),ov=$('#sidebar-overlay');if(window.innerWidth>992){sb.classList.toggle('collapsed');$('#main').classList.toggle('expanded');ov.classList.remove('active');}else{sb.classList.toggle('mobile-open');ov.classList.toggle('active');}}
+// Data stores
+let appData = {
+    services: [],
+    orders: [],
+    users: [],
+    customRequests: [],
+    refunds: []
+};
 
-// ===== AUTH =====
-async function doAdminLogin(){
-    const email=$('#adm-email').value.trim(),pass=$('#adm-pass').value;
-    const btn=$('#login-btn'),err=$('#login-err'),errMsg=$('#login-err-msg');
-    errMsg.textContent='';err.style.display='none';
-    if(!email||!pass){err.style.display='block';errMsg.textContent='Fill all fields';return;}
-    btn.disabled=true;btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> Logging...';
-    try{
-        const res=await fetch(CONFIG.API+'/admin/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,password:pass})});
-        const data=await res.json();
-        if(!res.ok)throw new Error(data.error||'Login failed');
-        adminToken=data.token;
-        localStorage.setItem('dc_admin_token',adminToken);
-        localStorage.setItem('dc_admin_email',email);
-        showDashboard(email);
-        toast('Welcome back!','success');
-    }catch(e){err.style.display='block';errMsg.textContent=e.message;toast(e.message,'error');}
-    btn.disabled=false;btn.innerHTML='<i class="fas fa-sign-in-alt"></i> Login';
-}
-function showDashboard(email){
-    $('#login').style.display='none';$('#dashboard').style.display='flex';
-    $('#admin-name-disp').textContent=email.split('@')[0];
-    $('#date-disp').textContent=new Date().toLocaleDateString('en-US',{weekday:'short',year:'numeric',month:'short',day:'numeric'});
-    loadAll();
-}
-function doAdminLogout(){
-    localStorage.removeItem('dc_admin_token');localStorage.removeItem('dc_admin_email');
-    adminToken='';$('#dashboard').style.display='none';$('#login').style.display='flex';
-    if(chatPollInterval)clearInterval(chatPollInterval);
-    toast('Logged out','success');
+// ============================================================
+// UTILITY FUNCTIONS
+// ============================================================
+function showToast(message, type = 'info') {
+    const container = document.getElementById('toast-container');
+    const toast = document.createElement('div');
+    toast.className = `toast toast-${type}`;
+    toast.innerHTML = `<i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle'}"></i> ${message}`;
+    container.appendChild(toast);
+    setTimeout(() => toast.remove(), 4000);
 }
 
-// ===== NAV =====
-function switchPanel(name,el){
-    $$('.panel').forEach(p=>p.classList.remove('active'));
-    $(`#panel-${name}`).classList.add('active');
-    $$('.nav-item').forEach(n=>n.classList.remove('active'));
-    if(el)el.classList.add('active');
-    const titles={overview:'Dashboard',orders:'All Orders',services:'Services',users:'Users','custom-requests':'Custom Requests',chat:'Support Chat','refund-requests':'Refund History'};
-    $('#panel-title').innerHTML=`<i class="fas fa-${name==='overview'?'tachometer-alt':name==='orders'?'list':name==='services'?'cubes':name==='users'?'users':name==='custom-requests'?'file-signature':name==='chat'?'comment-dots':'money-bill-wave'}"></i> ${titles[name]||'Dashboard'}`;
-    $('#sidebar').classList.remove('mobile-open');$('#sidebar-overlay').classList.remove('active');
-    if(name==='chat'){loadConversations();startChatPolling();}else{stopChatPolling();}
+function formatCurrency(amount) {
+    return `₹${parseFloat(amount || 0).toLocaleString('en-IN')}`;
 }
 
-// ===== LOAD DATA =====
-async function loadAll(){
-    try{
-        const [sd,od,ud,rd]=await Promise.all([
-            api('GET','/admin/services'),
-            api('GET','/admin/orders'),
-            api('GET','/admin/users'),
-            api('GET','/admin/refunds/history').catch(()=>({refunds:[]}))
+function formatDate(dateStr) {
+    if (!dateStr) return '—';
+    const d = new Date(dateStr);
+    return d.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
+}
+
+function formatDateTime(dateStr) {
+    if (!dateStr) return '—';
+    const d = new Date(dateStr);
+    return d.toLocaleString('en-IN');
+}
+
+function escapeHtml(text) {
+    if (!text) return '';
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
+
+// ============================================================
+// API CALLS
+// ============================================================
+async function apiCall(method, endpoint, body = null) {
+    const headers = {
+        'Content-Type': 'application/json'
+    };
+    if (adminToken) {
+        headers['Authorization'] = `Bearer ${adminToken}`;
+    }
+    
+    const options = { method, headers };
+    if (body) options.body = JSON.stringify(body);
+    
+    const response = await fetch(`${CONFIG.API}${endpoint}`, options);
+    const data = await response.json();
+    
+    if (!response.ok) {
+        throw new Error(data.error || `HTTP ${response.status}`);
+    }
+    
+    return data;
+}
+
+// ============================================================
+// AUTHENTICATION
+// ============================================================
+async function handleLogin() {
+    const email = document.getElementById('login-email').value.trim();
+    const password = document.getElementById('login-password').value;
+    const errorDiv = document.getElementById('login-error');
+    
+    if (!email || !password) {
+        errorDiv.textContent = 'Please enter email and password';
+        errorDiv.style.display = 'block';
+        return;
+    }
+    
+    errorDiv.style.display = 'none';
+    
+    try {
+        const result = await apiCall('POST', '/admin/login', { email, password: password });
+        if (result.success && result.token) {
+            adminToken = result.token;
+            adminEmail = email;
+            localStorage.setItem(CONFIG.TOKEN_KEY, adminToken);
+            localStorage.setItem(CONFIG.EMAIL_KEY, adminEmail);
+            showDashboard();
+            showToast('Login successful! Welcome back.', 'success');
+        } else {
+            throw new Error(result.error || 'Login failed');
+        }
+    } catch (err) {
+        errorDiv.textContent = err.message;
+        errorDiv.style.display = 'block';
+        showToast(err.message, 'error');
+    }
+}
+
+function handleLogout() {
+    localStorage.removeItem(CONFIG.TOKEN_KEY);
+    localStorage.removeItem(CONFIG.EMAIL_KEY);
+    adminToken = null;
+    adminEmail = null;
+    
+    if (chatPollInterval) clearInterval(chatPollInterval);
+    
+    document.getElementById('dashboard-container').style.display = 'none';
+    document.getElementById('login-container').style.display = 'flex';
+    document.getElementById('login-email').value = '';
+    document.getElementById('login-password').value = '';
+    showToast('Logged out successfully', 'success');
+}
+
+function showDashboard() {
+    document.getElementById('login-container').style.display = 'none';
+    document.getElementById('dashboard-container').style.display = 'block';
+    document.getElementById('admin-name').textContent = adminEmail.split('@')[0];
+    document.getElementById('admin-avatar').textContent = adminEmail[0].toUpperCase();
+    document.getElementById('date-display').textContent = new Date().toLocaleDateString('en-IN', { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' });
+    
+    loadAllData();
+}
+
+// ============================================================
+// LOAD DATA
+// ============================================================
+async function loadAllData() {
+    try {
+        const [services, orders, users, customRequests, refunds] = await Promise.all([
+            apiCall('GET', '/admin/services').catch(() => ({ services: [] })),
+            apiCall('GET', '/admin/orders').catch(() => ({ orders: [] })),
+            apiCall('GET', '/admin/users').catch(() => ({ users: [] })),
+            apiCall('GET', '/custom-requests').catch(() => ({ requests: [] })),
+            apiCall('GET', '/admin/refunds/history').catch(() => ({ refunds: [] }))
         ]);
-        adminData.services=sd.services||[];
-        adminData.orders=od.orders||[];
-        adminData.users=ud.users||[];
-        adminData.refunds=rd.refunds||[];
-        try{const cr=await api('GET','/custom-requests');adminData.customRequests=cr.requests||[];}catch(e){adminData.customRequests=[];}
-    }catch(e){toast('Failed to load  '+e.message,'error');}
-    renderAll();
-}
-function renderAll(){
-    const paid=adminData.orders.filter(o=>['payment_received','in_progress','ready_for_balance','completed','delivered'].includes(o.status));
-    const rev=paid.reduce((s,o)=>s+(parseFloat(o.total_paid)||parseFloat(o.advance_paid)||0),0);
-    $('#st-svc').textContent=adminData.services.length;
-    $('#st-ord').textContent=adminData.orders.length;
-    $('#st-usr').textContent=adminData.users.length;
-    $('#st-rev').textContent='₹'+Math.round(rev).toLocaleString();
-    renderRecentOrders();renderOrders();renderRefunds();renderServices();renderUsers();renderCustomRequests();
-}
-function renderRecentOrders(){
-    const tb=$('#recent-ord-tbody');tb.innerHTML='';
-    adminData.orders.slice(0,5).forEach(o=>{
-        tb.innerHTML+=`<tr><td><span style="color:var(--accent)">#${o.id}</span></td><td>${o.user_name||'—'}</td><td>${o.service_title||'—'}</td><td><span class="badge badge-${o.status}">${o.status.replace(/_/g,' ')}</span></td><td>${fmt(o.total_paid||o.advance_paid||0)}</td><td><button class="btn btn-sm btn-view" onclick="viewOrderDetails(${o.id})">View</button></td></tr>`;
-    });
-}
-function renderOrders(filter=''){
-    const tb=$('#ord-tbody');
-    const f=filter?adminData.orders.filter(o=>o.user_name?.toLowerCase().includes(filter.toLowerCase())||o.id?.toString().includes(filter)||o.service_title?.toLowerCase().includes(filter.toLowerCase())):adminData.orders;
-    if(!f.length){tb.innerHTML='<tr><td colspan="10" class="empty-row">No orders</td></tr>';return;}
-    tb.innerHTML=f.map(o=>{
-        const total=parseFloat(o.price)||0,adv=parseFloat(o.advance_paid)||0,paid=parseFloat(o.total_paid)||adv,due=total-paid;
-        return `<tr>
-            <td><span style="color:var(--accent)">#${o.id}</span></td>
-            <td><strong>${o.user_name||'—'}</strong></td>
-            <td><small style="color:var(--muted)">${o.user_email||''}</small></td>
-            <td>${o.service_title||'—'}</td>
-            <td><strong style="color:var(--green)">${fmt(total)}</strong></td>
-            <td><span class="payment-badge payment-advance">${fmt(adv)}</span></td>
-            <td><span class="payment-badge payment-full">${fmt(paid)}</span></td>
-            <td><span class="payment-badge payment-balance">${fmt(due)}</span></td>
-            <td><span class="badge badge-${o.status}">${o.status.replace(/_/g,' ')}</span></td>
-            <td><div style="display:flex;gap:.3rem;flex-wrap:wrap">
-                <button class="btn btn-sm btn-view" onclick="viewOrderDetails(${o.id})"><i class="fas fa-eye"></i></button>
-                <button class="btn btn-sm btn-primary" onclick="openDeliveryModal(${o.id})"><i class="fas fa-box"></i></button>
-                <button class="btn btn-sm btn-chat" onclick="chatFromOrder(${o.id})"><i class="fas fa-comment"></i></button>
-                ${o.status==='payment_received'?'<button class="btn btn-sm btn-success" onclick="startProject('+o.id+')"><i class="fas fa-play"></i></button>':''}
-                ${['payment_received','in_progress'].includes(o.status)?'<button class="btn btn-sm btn-warning" onclick="markReadyForBalance('+o.id+')"><i class="fas fa-money-bill"></i></button>':''}
-                ${['ready_for_balance','in_progress'].includes(o.status)?'<button class="btn btn-sm btn-primary" onclick="markAsCompleted('+o.id+')"><i class="fas fa-check-circle"></i></button>':''}
-                ${o.status==='cancellation_requested'?`<button class="btn btn-sm btn-danger" onclick="openRefundModalFromOrder(${o.id},${adv})"><i class="fas fa-money-bill-wave"></i></button>`:''}
-            </div></td>
-        </tr>`;
-    }).join('');
-}
-function renderRefunds(){
-    const tb=$('#refund-tbody');
-    if(!adminData.refunds.length){tb.innerHTML='<tr><td colspan="8" class="empty-row">No refunds</td></tr>';return;}
-    tb.innerHTML=adminData.refunds.map(r=>`<tr>
-        <td><span style="color:var(--accent)">#${r.order_id}</span></td>
-        <td>${r.user_name||'—'}</td>
-        <td><small style="color:var(--muted)">${r.user_email||''}</small></td>
-        <td style="color:var(--error)">${fmt(r.amount)}</td>
-        <td><div class="refund-reason" title="${r.reason||''}">${(r.reason||'').substring(0,40)}${r.reason?.length>40?'...':''}</div></td>
-        <td><span class="badge badge-${r.status==='completed'?'completed':'pending'}">${r.status}</span></td>
-        <td>${date(r.processed_at)}</td>
-        <td><button class="btn btn-sm btn-danger" onclick="deleteRefundRecord(${r.id})"><i class="fas fa-trash"></i></button></td>
-    </tr>`).join('');
-}
-function renderServices(filter=''){
-    const tb=$('#svc-tbody');
-    const f=filter?adminData.services.filter(s=>s.title?.toLowerCase().includes(filter.toLowerCase())):adminData.services;
-    if(!f.length){tb.innerHTML='<tr><td colspan="5" class="empty-row">No services</td></tr>';return;}
-    const cnt={};adminData.orders.forEach(o=>{cnt[o.service_id]=(cnt[o.service_id]||0)+1;});
-    tb.innerHTML=f.map(s=>`<tr>
-        <td><strong>${s.emoji||'💻'} ${s.title}</strong></td>
-        <td><span class="badge badge-payment_received">${s.category}</span></td>
-        <td><strong style="color:var(--green)">${fmt(s.price)}</strong></td>
-        <td>${cnt[s.id]||0}</td>
-        <td><div style="display:flex;gap:.3rem"><button class="btn btn-sm btn-edit" onclick="editService(${s.id})"><i class="fas fa-edit"></i></button><button class="btn btn-sm btn-danger" onclick="deleteService(${s.id})"><i class="fas fa-trash"></i></button></div></td>
-    </tr>`).join('');
-}
-function renderUsers(filter=''){
-    const tb=$('#usr-tbody');
-    const f=filter?adminData.users.filter(u=>u.email?.toLowerCase().includes(filter.toLowerCase())||u.name?.toLowerCase().includes(filter.toLowerCase())):adminData.users;
-    if(!f.length){tb.innerHTML='<tr><td colspan="8" class="empty-row">No users</td></tr>';return;}
-    const cnt={},sp={};adminData.orders.forEach(o=>{cnt[o.user_id]=(cnt[o.user_id]||0)+1;sp[o.user_id]=(sp[o.user_id]||0)+(parseFloat(o.total_paid||o.advance_paid||0));});
-    tb.innerHTML=f.map(u=>`<tr>
-        <td><strong>${u.name||'—'}</strong></td>
-        <td>${u.email}</td>
-        <td>${u.phone||'—'}</td>
-        <td>${u.verified?'<span class="badge badge-completed"><i class="fas fa-check"></i> Yes</span>':'<span class="badge badge-pending"><i class="fas fa-clock"></i> No</span>'}</td>
-        <td><strong>${cnt[u.id]||0}</strong></td>
-        <td><strong style="color:var(--green)">${fmt(sp[u.id]||0)}</strong></td>
-        <td>${date(u.created_at)}</td>
-        <td><button class="btn btn-sm btn-view" onclick="viewUserOrders('${u.id}')">Orders</button></td>
-    </tr>`).join('');
-}
-function renderCustomRequests(){
-    const tb=$('#custom-tbody');
-    if(!adminData.customRequests.length){tb.innerHTML='<tr><td colspan="8" class="empty-row">No requests</td></tr>';return;}
-    tb.innerHTML=adminData.customRequests.map(r=>`<tr>
-        <td>${date(r.created_at)}</td>
-        <td><strong>${r.name}</strong></td>
-        <td>${r.email}</td>
-        <td>${r.whatsapp?`<a href="https://wa.me/${r.whatsapp.replace(/[^0-9]/g,'').startsWith('91')?r.whatsapp:'91'+r.whatsapp.replace(/[^0-9]/g,'')}" target="_blank" class="whatsapp-btn"><i class="fab fa-whatsapp"></i> Chat</a>`:'—'}</td>
-        <td>${r.title}</td>
-        <td><strong style="color:var(--green)">${r.budget||'N/A'}</strong></td>
-        <td><span class="badge badge-${r.status}">${r.status}</span></td>
-        <td><div style="display:flex;gap:.3rem">
-            <button class="btn btn-sm btn-success" onclick="updateReq(${r.id},'contacted')">Contacted</button>
-            <button class="btn btn-sm btn-primary" onclick="updateReq(${r.id},'completed')">Done</button>
-            <button class="btn btn-sm btn-danger" onclick="deleteReq(${r.id})"><i class="fas fa-trash"></i></button>
-        </div></td>
-    </tr>`).join('');
+        
+        appData.services = services.services || [];
+        appData.orders = orders.orders || [];
+        appData.users = users.users || [];
+        appData.customRequests = customRequests.requests || [];
+        appData.refunds = refunds.refunds || [];
+        
+        renderCurrentPage();
+    } catch (err) {
+        showToast('Error loading data: ' + err.message, 'error');
+    }
 }
 
-// ===== SERVICES CRUD =====
-function openModal(){editingId=null;$('#modal-title').textContent='Add Service';['f-title','f-desc','f-tech'].forEach(id=>$(id).value='');$('#f-price').value='';$('#f-cat').value='web';$('#f-days').value='14';$('#f-rev').value='3';$('#svc-modal').classList.add('open');}
-function closeModal(){$('#svc-modal').classList.remove('open');}
-async function saveService(){
-    const title=$('#f-title').value.trim(),price=$('#f-price').value;
-    if(!title||!price){toast('Title and price required','error');return;}
-    const payload={title,price:parseFloat(price),description:$('#f-desc').value.trim(),category:$('#f-cat').value,technologies:$('#f-tech').value.trim(),delivery_days:parseInt($('#f-days').value)||14,revisions:parseInt($('#f-rev').value)||3};
-    try{
-        if(editingId){payload.id=editingId;await api('PUT','/admin/service/update',payload);toast('Service updated','success');}
-        else{await api('POST','/admin/service/add',payload);toast('Service added','success');}
-        closeModal();await loadAll();
-    }catch(e){toast('Error: '+e.message,'error');}
+function renderCurrentPage() {
+    const activePage = document.querySelector('.nav-item.active')?.getAttribute('data-page') || 'overview';
+    switch (activePage) {
+        case 'overview': renderOverview(); break;
+        case 'orders': renderOrders(); break;
+        case 'refunds': renderRefunds(); break;
+        case 'services': renderServices(); break;
+        case 'users': renderUsers(); break;
+        case 'custom-requests': renderCustomRequests(); break;
+        case 'chat': renderChat(); break;
+        default: renderOverview();
+    }
 }
-async function editService(id){
-    const s=adminData.services.find(x=>x.id===id);if(!s)return;
-    editingId=id;$('#modal-title').textContent='Edit Service';
-    $('#f-title').value=s.title||'';$('#f-desc').value=s.description||'';$('#f-cat').value=s.category||'web';
-    $('#f-tech').value=s.technologies||'';$('#f-price').value=s.price||'';$('#f-days').value=s.delivery_days||14;$('#f-rev').value=s.revisions||3;
-    $('#svc-modal').classList.add('open');
-}
-async function deleteService(id){if(!confirm('Delete this service?'))return;try{await api('DELETE','/admin/service/delete',{id});toast('Deleted','success');await loadAll();}catch(e){toast('Error: '+e.message,'error');}}
 
-// ===== ORDER DETAILS =====
-async function viewOrderDetails(id){
-    const o=adminData.orders.find(x=>x.id===id);if(!o)return;
-    const custom=o.customization||{};
-    const total=parseFloat(o.price)||0,adv=parseFloat(o.advance_paid)||0,paid=parseFloat(o.total_paid)||adv,due=total-paid;
-    $('#ord-detail-id').textContent=id;
-    let html=`<div class="order-detail-card">
-        <div class="detail-section"><div class="section-title"><i class="fas fa-info-circle"></i> Order Info</div>
-        <div class="info-grid"><div class="info-item"><div class="label">Date</div><div class="value">${new Date(o.created_at).toLocaleString()}</div></div>
-        <div class="info-item"><div class="label">Status</div><div class="value"><span class="badge badge-${o.status}">${o.status.replace(/_/g,' ')}</span></div></div>
-        <div class="info-item"><div class="label">Total</div><div class="value" style="color:var(--green)">${fmt(total)}</div></div>
-        <div class="info-item"><div class="label">Service</div><div class="value"><strong>${o.service_title||'N/A'}</strong></div></div></div></div>
-        <div class="client-info"><div class="label"><i class="fas fa-user"></i> Client Information</div>
-        <div style="margin-top:.5rem"><div><strong>Name:</strong> ${o.user_name||'N/A'}</div>
-        <div><strong>Email:</strong> <a href="mailto:${o.user_email}" style="color:var(--accent)">${o.user_email||'N/A'}</a></div></div></div>
-        <div class="detail-section"><div class="section-title"><i class="fas fa-credit-card"></i> Payment</div>
-        <div class="info-grid"><div class="info-item"><div class="label">Advance (15%)</div><div class="value" style="color:var(--warning)">${fmt(adv)}</div></div>
-        <div class="info-item"><div class="label">Total Paid</div><div class="value" style="color:var(--green)">${fmt(paid)}</div></div>
-        <div class="info-item"><div class="label">Balance Due</div><div class="value" style="color:var(--accent)">${fmt(due)}</div></div></div>
-        <div class="progress-bar"><div class="progress-fill" style="width:${(paid/total)*100}%"></div></div><div style="text-align:center;margin-top:.3rem;font-size:.85rem">${Math.round((paid/total)*100)}% Paid</div></div>`;
-    if(Object.keys(custom).length>0){html+=`<div class="detail-section"><div class="section-title"><i class="fas fa-sliders-h"></i> Customizations</div>${Object.entries(custom).map(([k,v])=>`<div class="customization-item"><strong>${k}:</strong> ${typeof v==='boolean'?(v?'Yes':'No'):v}</div>`).join('')}</div>`;}
-    if(o.requirements){html+=`<div class="detail-section"><div class="section-title"><i class="fas fa-clipboard-list"></i> Requirements</div><div style="background:var(--card);padding:1rem;border-radius:8px;white-space:pre-wrap">${o.requirements}</div></div>`;}
-    html+=`<div class="detail-section"><div class="section-title"><i class="fas fa-link"></i> Deliverables</div><div class="info-grid">
-        <div class="info-item"><div class="label">Live URL</div><div class="value">${o.live_url?`<a href="${o.live_url}" target="_blank" class="deliverable-link">${o.live_url.substring(0,35)}...</a>`:'—'}</div></div>
-        <div class="info-item"><div class="label">GitHub</div><div class="value">${o.github_repo?`<a href="${o.github_repo}" target="_blank" class="deliverable-link">View</a>`:'—'}</div></div>
-        <div class="info-item"><div class="label">Preview</div><div class="value">${o.preview_ready?'<i class="fas fa-check-circle" style="color:var(--green)"></i> Ready':'<i class="fas fa-times-circle" style="color:var(--error)"></i> No'}</div></div>
-        <div class="info-item"><div class="label">Full Access</div><div class="value">${o.full_access_ready?'<i class="fas fa-check-circle" style="color:var(--green)"></i> Ready':'<i class="fas fa-times-circle" style="color:var(--error)"></i> No'}</div></div></div>`;
-    if(o.delivery_notes){html+=`<div style="margin-top:1rem"><strong>Notes:</strong><p style="margin-top:.3rem">${o.delivery_notes}</p></div>`;}
-    html+=`</div><div class="detail-section"><div class="section-title"><i class="fas fa-history"></i> Timeline</div><div id="order-timeline" class="timeline">Loading...</div></div>`;
-    html+=`<div class="detail-section"><div class="section-title"><i class="fas fa-cog"></i> Actions</div><div style="display:flex;gap:.5rem;flex-wrap:wrap">
-        ${o.status==='payment_received'?'<button class="btn btn-success" onclick="startProject('+o.id+')"><i class="fas fa-play"></i> Start</button>':''}
-        ${['payment_received','in_progress'].includes(o.status)?'<button class="btn btn-warning" onclick="markReadyForBalance('+o.id+')"><i class="fas fa-money-bill"></i> Ready for Balance</button>':''}
-        ${['ready_for_balance','in_progress'].includes(o.status)?'<button class="btn btn-primary" onclick="markAsCompleted('+o.id+')"><i class="fas fa-check-circle"></i> Complete</button>':''}
-        <button class="btn btn-primary" onclick="openDeliveryModal(${o.id})"><i class="fas fa-box"></i> Edit Deliverables</button>
-        <button class="btn btn-chat" onclick="chatFromOrder(${o.id})"><i class="fas fa-comment"></i> Chat</button>
-        ${o.status==='cancellation_requested'?`<button class="btn btn-danger" onclick="openRefundModalFromOrder(${o.id},${adv})"><i class="fas fa-money-bill-wave"></i> Refund</button>`:''}
-    </div></div></div>`;
-    $('#order-detail-content').innerHTML=html;
-    $('#order-detail-modal').classList.add('open');
-    loadTimeline(id);
-}
-async function loadTimeline(orderId){
-    try{
-        const tl=await api('GET',`/order/${orderId}/timeline`);
-        const tm=$('#order-timeline');tm.innerHTML='';
-        if(!tl.data||!tl.data.length){tm.innerHTML='<p style="color:var(--muted)">No timeline entries</p>';return;}
-        tl.data.forEach(t=>{tm.innerHTML+=`<div class="timeline-item"><div class="timeline-time">${date(t.created_at)}</div><div class="timeline-msg">${t.message||`Status: ${t.status}`}</div></div>`;});
-    }catch(e){console.log('Timeline error:',e);}
-}
-function closeOrderDetail(){$('#order-detail-modal').classList.remove('open');}
-
-// ===== ORDER ACTIONS =====
-async function startProject(id){if(!confirm(`Start Order #${id}?`))return;try{await api('POST',`/admin/order/${id}/start-project`);toast('Project started','success');await loadAll();closeOrderDetail();}catch(e){toast('Error: '+e.message,'error');}}
-async function markReadyForBalance(id){if(!confirm(`Mark Order #${id} ready for balance?`))return;try{await api('POST',`/admin/order/${id}/ready-for-balance`);toast('Marked ready','success');await loadAll();closeOrderDetail();}catch(e){toast('Error: '+e.message,'error');}}
-async function markAsCompleted(id){const live=prompt('Live URL (optional):')||'',gh=prompt('GitHub (optional):')||'',notes=prompt('Notes (optional):')||'';try{await api('POST',`/admin/order/${id}/complete`,{live_url:live,github_repo:gh,delivery_notes:notes});toast('Order completed','success');await loadAll();closeOrderDetail();}catch(e){toast('Error: '+e.message,'error');}}
-
-// ===== DELIVERABLES =====
-function openDeliveryModal(orderId){
-    const o=adminData.orders.find(x=>x.id===orderId);if(!o)return;
-    const html=`<div class="fg"><label><i class="fab fa-github"></i> GitHub URL</label><input id="del-github" value="${o.github_repo||''}" placeholder="https://github.com/..."></div>
-    <div class="fg"><label><i class="fas fa-globe"></i> Live URL</label><input id="del-live" value="${o.live_url||''}" placeholder="https://example.com"></div>
-    <div class="fg"><label><i class="fas fa-code"></i> Source Code URL</label><input id="del-source" value="${o.source_code_url||''}" placeholder="https://drive.google.com/..."></div>
-    <div class="fg"><label><i class="fas fa-book"></i> Documentation URL</label><input id="del-docs" value="${o.documentation_url||''}" placeholder="https://docs.example.com"></div>
-    <div class="fg"><label><i class="fas fa-sticky-note"></i> Delivery Notes</label><textarea id="del-notes" rows="3" placeholder="Notes...">${o.delivery_notes||''}</textarea></div>
-    <div class="fg"><label><input type="checkbox" id="del-preview" ${o.preview_ready?'checked':''}> <i class="fas fa-eye"></i> Preview Ready (15% payment)</label></div>
-    <div class="fg"><label><input type="checkbox" id="del-full" ${o.full_access_ready?'checked':''}> <i class="fas fa-download"></i> Full Access Ready (85% payment)</label></div>
-    <div class="fg"><label><input type="checkbox" id="del-mark-delivered"> <i class="fas fa-check-circle"></i> Mark as Delivered</label></div>
-    <div class="modal-foot"><button class="btn btn-cancel" onclick="closeDeliveryModal()">Cancel</button><button class="btn btn-save" onclick="submitDelivery(${orderId})"><i class="fas fa-save"></i> Save</button></div>`;
-    $('#delivery-modal-content').innerHTML=html;$('#delivery-modal').classList.add('open');
-}
-function closeDeliveryModal(){$('#delivery-modal').classList.remove('open');}
-async function submitDelivery(orderId){
-    const data={delivery_notes:$('#del-notes').value,github_repo:$('#del-github').value,live_url:$('#del-live').value,source_code_url:$('#del-source').value,documentation_url:$('#del-docs').value,preview_ready:$('#del-preview').checked,full_access_ready:$('#del-full').checked,mark_delivered:$('#del-mark-delivered').checked};
-    try{await api('POST',`/admin/order/${orderId}/update-delivery`,data);toast('Delivery updated','success');closeDeliveryModal();closeOrderDetail();await loadAll();}catch(e){toast('Error: '+e.message,'error');}}
-
-// ===== REFUNDS =====
-function openRefundModalFromOrder(orderId,amount){currentOrderIdForRefund=orderId;$('#refund-amount').value=amount;$('#refund-reason').value='';$('#refund-modal').classList.add('open');}
-function closeRefundModal(){$('#refund-modal').classList.remove('open');}
-async function processRefundNow(){
-    const amt=parseFloat($('#refund-amount').value),reason=$('#refund-reason').value;
-    if(!amt){toast('Amount required','error');return;}
-    try{await api('POST',`/admin/order/${currentOrderIdForRefund}/refund`,{amount:amt,reason:reason||'Admin refund'});toast('Refund processed','success');closeRefundModal();await loadAll();}catch(e){toast('Error: '+e.message,'error');}}
-async function deleteRefundRecord(id){if(!confirm('Delete this refund record?'))return;try{await api('DELETE',`/admin/refund/${id}`);toast('Record deleted','success');await loadAll();}catch(e){toast('Error: '+e.message,'error');}}
-
-// ===== CUSTOM REQUESTS =====
-async function updateReq(id,status){try{await api('PUT',`/custom-request/${id}/status`,{status});toast(`Status: ${status}`,'success');await loadAll();}catch(e){toast('Error: '+e.message,'error');}}
-async function deleteReq(id){if(!confirm('Delete request?'))return;try{await api('DELETE',`/custom-request/${id}`);toast('Deleted','success');await loadAll();}catch(e){toast('Error: '+e.message,'error');}}
-
-// ===== CHAT =====
-async function loadConversations(){
-    try{
-        const res=await fetch(`${CONFIG.API}/conversations`,{headers:{'Authorization':`Bearer ${adminToken}`}});
-        const data=await res.json();
-        if(res.ok)displayConversations(data.conversations||[]);
-    }catch(e){console.error('Chat load error:',e);}
-}
-function displayConversations(convos){
-    const c=$('#conversations-list');
-    if(!convos.length){c.innerHTML='<div style="text-align:center;padding:2rem;color:var(--muted)">No conversations</div>';return;}
-    c.innerHTML=convos.map(cv=>{
-        const active=activeConversation===cv.id,unread=cv.unread_count>0,name=cv.users?.name||'User',oid=cv.id.replace('order_','');
-        return `<div class="conversation-item ${unread?'unread':''} ${active?'active':''}" style="position:relative">
-            <div onclick="selectConversation('${cv.id}','${escapeHtml(name)}')" style="cursor:pointer">
-                <div style="font-weight:600;margin-bottom:.3rem"><i class="fas fa-user-circle"></i> ${escapeHtml(name)} <span style="font-size:.7rem;color:var(--accent)">#${oid}</span>${unread?'<span style="display:inline-block;width:8px;height:8px;background:var(--accent);border-radius:50%;margin-left:5px"></span>':''}</div>
-                <div style="font-size:.85rem;color:var(--muted)">${escapeHtml((cv.last_message||'No messages').substring(0,45))}${cv.last_message?.length>45?'...':''}</div>
-                <div style="font-size:.7rem;color:var(--muted)">${cv.last_message_at?new Date(cv.last_message_at).toLocaleString():''}</div>
+// ============================================================
+// OVERVIEW PAGE
+// ============================================================
+function renderOverview() {
+    const totalRevenue = appData.orders.reduce((sum, o) => sum + (parseFloat(o.total_paid) || parseFloat(o.advance_paid) || 0), 0);
+    const pendingOrders = appData.orders.filter(o => o.status === 'payment_received').length;
+    const recentOrders = appData.orders.slice(0, 5);
+    
+    const html = `
+        <div class="stats-grid">
+            <div class="stat-card" onclick="switchPage('services')">
+                <div class="stat-label"><i class="fas fa-cube"></i> Total Services</div>
+                <div class="stat-value">${appData.services.length}</div>
             </div>
-            <button onclick="deleteConversation('${cv.id}')" style="position:absolute;top:8px;right:8px;background:rgba(239,68,68,.2);border:none;color:var(--error);width:28px;height:28px;border-radius:6px;cursor:pointer;transition:all .2s" onmouseover="this.style.background='var(--error)';this.style.color='#fff'" onmouseout="this.style.background='rgba(239,68,68,.2)';this.style.color='var(--error)'"><i class="fas fa-trash"></i></button>
-        </div>`;
-    }).join('');
+            <div class="stat-card" onclick="switchPage('orders')">
+                <div class="stat-label"><i class="fas fa-box-open"></i> Total Orders</div>
+                <div class="stat-value">${appData.orders.length}</div>
+            </div>
+            <div class="stat-card" onclick="switchPage('users')">
+                <div class="stat-label"><i class="fas fa-users"></i> Total Users</div>
+                <div class="stat-value">${appData.users.length}</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label"><i class="fas fa-rupee-sign"></i> Total Revenue</div>
+                <div class="stat-value">${formatCurrency(totalRevenue)}</div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="card-header">
+                <h3><i class="fas fa-clock"></i> Recent Orders</h3>
+                <button class="btn btn-primary btn-sm" onclick="switchPage('orders')">View All →</button>
+            </div>
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr><th>Order ID</th><th>Customer</th><th>Service</th><th>Amount</th><th>Status</th><th>Date</th><th>Actions</th></tr>
+                    </thead>
+                    <tbody>
+                        ${recentOrders.map(order => `
+                            <tr>
+                                <td><span style="color: var(--accent-primary);">#${order.id}</span></td>
+                                <td>${escapeHtml(order.user_name || '—')}</td>
+                                <td>${escapeHtml(order.service_title || '—')}</td>
+                                <td>${formatCurrency(order.price)}</td>
+                                <td><span class="badge badge-${order.status}">${order.status.replace(/_/g, ' ')}</span></td>
+                                <td>${formatDate(order.created_at)}</td>
+                                <td><button class="btn btn-sm btn-info" onclick="viewOrderDetails(${order.id})"><i class="fas fa-eye"></i> View</button></td>
+                            </tr>
+                        `).join('')}
+                        ${recentOrders.length === 0 ? '<tr><td colspan="7" class="empty-row">No orders found</td></tr>' : ''}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px;">
+            <div class="card">
+                <div class="card-header">
+                    <h3><i class="fas fa-bell"></i> Pending Actions</h3>
+                </div>
+                <div class="table-responsive">
+                    <table>
+                        <tbody>
+                            <tr><td><i class="fas fa-shopping-cart"></i> Orders ready to start</td><td><strong>${pendingOrders}</strong></td><td><button class="btn btn-sm btn-primary" onclick="switchPage('orders')">View</button></td></tr>
+                            <tr><td><i class="fas fa-file-signature"></i> Custom requests pending</td><td><strong>${appData.customRequests.filter(r => r.status === 'pending').length}</strong></td><td><button class="btn btn-sm btn-primary" onclick="switchPage('custom-requests')">View</button></td></tr>
+                            <tr><td><i class="fas fa-comment"></i> Unread conversations</td><td><strong>—</strong></td><td><button class="btn btn-sm btn-primary" onclick="switchPage('chat')">View</button></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-header">
+                    <h3><i class="fas fa-chart-line"></i> Quick Stats</h3>
+                </div>
+                <div class="table-responsive">
+                    <table>
+                        <tbody>
+                            <tr><td>Completed Orders</td><td><strong>${appData.orders.filter(o => o.status === 'completed' || o.status === 'delivered').length}</strong></td></tr>
+                            <tr><td>Cancelled Orders</td><td><strong>${appData.orders.filter(o => o.status === 'cancelled').length}</strong></td></tr>
+                            <tr><td>Avg Order Value</td><td><strong>${appData.orders.length ? formatCurrency(totalRevenue / appData.orders.length) : formatCurrency(0)}</strong></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    document.getElementById('content-area').innerHTML = html;
 }
-async function deleteConversation(cid){if(!confirm('Delete this conversation?'))return;try{await fetch(`${CONFIG.API}/conversation/${cid}`,{method:'DELETE',headers:{'Authorization':`Bearer ${adminToken}`}});toast('Deleted','success');if(activeConversation===cid){activeConversation=null;$('#active-conversation-title').innerHTML='<i class="fas fa-comment"></i> Select a conversation';$('#admin-chat-messages').innerHTML='<div style="text-align:center;padding:2rem;color:var(--muted)">Select to chat</div>';}await loadConversations();}catch(e){toast('Error: '+e.message,'error');}}
-async function selectConversation(cid,name){
-    activeConversation=cid;$('#active-conversation-title').innerHTML=`<i class="fas fa-comment"></i> Chat with ${name} (Order #${cid.replace('order_','')})`;
-    try{const res=await fetch(`${CONFIG.API}/conversation/${cid}/messages`,{headers:{'Authorization':`Bearer ${adminToken}`}});const data=await res.json();if(res.ok)displayChatMessages(data.messages||[]);}catch(e){console.error('Messages error:',e);}
-    loadConversations();
+
+// ============================================================
+// ORDERS PAGE
+// ============================================================
+function renderOrders(filter = '') {
+    let filteredOrders = [...appData.orders];
+    if (filter) {
+        const search = filter.toLowerCase();
+        filteredOrders = filteredOrders.filter(o => 
+            o.id?.toString().includes(search) ||
+            o.user_name?.toLowerCase().includes(search) ||
+            o.user_email?.toLowerCase().includes(search) ||
+            o.service_title?.toLowerCase().includes(search)
+        );
+    }
+    
+    const html = `
+        <div class="card">
+            <div class="card-header">
+                <h3><i class="fas fa-list"></i> All Orders</h3>
+                <input type="text" class="search-input" id="order-search" placeholder="Search orders..." onkeyup="filterOrders(this.value)">
+            </div>
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr><th>ID</th><th>Customer</th><th>Email</th><th>Service</th><th>Total</th><th>Paid</th><th>Due</th><th>Status</th><th>Actions</th></tr>
+                    </thead>
+                    <tbody>
+                        ${filteredOrders.map(order => {
+                            const total = parseFloat(order.price) || 0;
+                            const paid = parseFloat(order.total_paid) || parseFloat(order.advance_paid) || 0;
+                            const due = total - paid;
+                            return `
+                                <tr>
+                                    <td><span style="color: var(--accent-primary);">#${order.id}</span></td>
+                                    <td><strong>${escapeHtml(order.user_name || '—')}</strong></td>
+                                    <td><small>${escapeHtml(order.user_email || '—')}</small></td>
+                                    <td>${escapeHtml(order.service_title || '—')}</td>
+                                    <td>${formatCurrency(total)}</td>
+                                    <td style="color: var(--success);">${formatCurrency(paid)}</td>
+                                    <td style="color: var(--warning);">${formatCurrency(due)}</td>
+                                    <td><span class="badge badge-${order.status}">${order.status.replace(/_/g, ' ')}</span></td>
+                                    <td>
+                                        <div style="display: flex; gap: 5px; flex-wrap: wrap;">
+                                            <button class="btn btn-sm btn-info" onclick="viewOrderDetails(${order.id})"><i class="fas fa-eye"></i></button>
+                                            <button class="btn btn-sm btn-primary" onclick="openDeliveryModal(${order.id})"><i class="fas fa-box"></i></button>
+                                            <button class="btn btn-sm btn-success" onclick="chatFromOrder(${order.id})"><i class="fas fa-comment"></i></button>
+                                            ${order.status === 'payment_received' ? `<button class="btn btn-sm btn-success" onclick="updateOrderStatus(${order.id}, 'in_progress')"><i class="fas fa-play"></i></button>` : ''}
+                                            ${order.status === 'in_progress' ? `<button class="btn btn-sm btn-warning" onclick="updateOrderStatus(${order.id}, 'ready_for_balance')"><i class="fas fa-money-bill"></i></button>` : ''}
+                                            ${order.status === 'ready_for_balance' ? `<button class="btn btn-sm btn-primary" onclick="updateOrderStatus(${order.id}, 'completed')"><i class="fas fa-check-circle"></i></button>` : ''}
+                                            ${order.status === 'cancellation_requested' ? `<button class="btn btn-sm btn-danger" onclick="openRefundModal(${order.id}, ${paid})"><i class="fas fa-undo"></i></button>` : ''}
+                                        </div>
+                                    </td>
+                                </tr>
+                            `;
+                        }).join('')}
+                        ${filteredOrders.length === 0 ? '<tr><td colspan="9" class="empty-row">No orders found</td></tr>' : ''}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    `;
+    
+    document.getElementById('content-area').innerHTML = html;
 }
-function displayChatMessages(msgs){
-    const c=$('#admin-chat-messages');
-    if(!msgs.length){c.innerHTML='<div style="text-align:center;padding:2rem;color:var(--muted)">No messages</div>';return;}
-    c.innerHTML=msgs.map(m=>`<div class="message-bubble ${m.sender_role==='admin'?'admin':'user'}"><div class="message-content">${escapeHtml(m.message)}</div><span class="message-time">${new Date(m.created_at).toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'})}</span></div>`).join('');
-    c.scrollTop=c.scrollHeight;
-}
-async function sendAdminReply(){
-    if(!activeConversation){toast('Select conversation first','error');return;}
-    const msg=$('#admin-chat-input').value.trim();if(!msg)return;
-    try{await fetch(`${CONFIG.API}/conversation/${activeConversation}/send`,{method:'POST',headers:{'Content-Type':'application/json','Authorization':`Bearer ${adminToken}`},body:JSON.stringify({message:msg})});$('#admin-chat-input').value='';await selectConversation(activeConversation,'');await loadConversations();toast('Sent','success');}catch(e){toast('Failed to send','error');}}
-function startChatPolling(){if(chatPollInterval)clearInterval(chatPollInterval);chatPollInterval=setInterval(()=>{if($('#panel-chat').classList.contains('active')&&activeConversation){selectConversation(activeConversation,'');loadConversations();}},5000);}
-function stopChatPolling(){if(chatPollInterval){clearInterval(chatPollInterval);chatPollInterval=null;}}
 
-// ===== FILTERS =====
-function filterOrders(v){renderOrders(v);}
-function filterServices(v){renderServices(v);}
-function filterUsers(v){renderUsers(v);}
-
-// ===== CHAT FROM ORDER =====
-async function chatFromOrder(oid){
-    const o=adminData.orders.find(x=>x.id===oid);const name=o?.user_name||'Client';
-    await selectConversation(`order_${oid}`,name);
-    switchPanel('chat',$$('.nav-item')[6]);
-    toast(`Chat with ${name}`,'success');
+function filterOrders(searchTerm) {
+    renderOrders(searchTerm);
 }
 
-// ===== VIEW USER ORDERS =====
-async function viewUserOrders(userId){
-    const user=adminData.users.find(u=>u.id==userId);
-    if(!user){toast('User not found','error');return;}
-    toast(`Showing orders for ${user.name}`,'success');
-    // Filter orders by user and switch to orders panel
-    const userOrders=adminData.orders.filter(o=>o.user_id==userId);
-    renderOrders(''); // Re-render with filter logic if needed
-    switchPanel('orders',$$('.nav-item')[2]);
+async function viewOrderDetails(orderId) {
+    const order = appData.orders.find(o => o.id === orderId);
+    if (!order) return;
+    
+    const total = parseFloat(order.price) || 0;
+    const paid = parseFloat(order.total_paid) || parseFloat(order.advance_paid) || 0;
+    const due = total - paid;
+    const percentPaid = total > 0 ? (paid / total) * 100 : 0;
+    
+    // Load timeline
+    let timelineHtml = '<div class="timeline-item">Loading timeline...</div>';
+    try {
+        const timeline = await apiCall('GET', `/order/${orderId}/timeline`);
+        if (timeline.data && timeline.data.length) {
+            timelineHtml = timeline.data.map(t => `
+                <div class="timeline-item">
+                    <div class="timeline-time">${formatDateTime(t.created_at)}</div>
+                    <div class="timeline-message">${escapeHtml(t.message || `Status: ${t.status}`)}</div>
+                </div>
+            `).join('');
+        } else {
+            timelineHtml = '<div class="timeline-item">No timeline entries</div>';
+        }
+    } catch (err) {
+        timelineHtml = '<div class="timeline-item">Unable to load timeline</div>';
+    }
+    
+    const html = `
+        <div class="order-detail-section">
+            <h4><i class="fas fa-info-circle"></i> Order Information</h4>
+            <div class="info-grid">
+                <div class="info-item"><div class="label">Order ID</div><div class="value">#${order.id}</div></div>
+                <div class="info-item"><div class="label">Status</div><div class="value"><span class="badge badge-${order.status}">${order.status.replace(/_/g, ' ')}</span></div></div>
+                <div class="info-item"><div class="label">Created</div><div class="value">${formatDateTime(order.created_at)}</div></div>
+                <div class="info-item"><div class="label">Service</div><div class="value">${escapeHtml(order.service_title || '—')}</div></div>
+            </div>
+        </div>
+        
+        <div class="order-detail-section">
+            <h4><i class="fas fa-user"></i> Client Information</h4>
+            <div class="info-grid">
+                <div class="info-item"><div class="label">Name</div><div class="value">${escapeHtml(order.user_name || '—')}</div></div>
+                <div class="info-item"><div class="label">Email</div><div class="value"><a href="mailto:${order.user_email}" style="color: var(--accent-primary);">${escapeHtml(order.user_email || '—')}</a></div></div>
+            </div>
+        </div>
+        
+        <div class="order-detail-section">
+            <h4><i class="fas fa-credit-card"></i> Payment Details</h4>
+            <div class="info-grid">
+                <div class="info-item"><div class="label">Total Amount</div><div class="value" style="color: var(--success);">${formatCurrency(total)}</div></div>
+                <div class="info-item"><div class="label">Advance Paid (15%)</div><div class="value">${formatCurrency(order.advance_paid || 0)}</div></div>
+                <div class="info-item"><div class="label">Total Paid</div><div class="value" style="color: var(--success);">${formatCurrency(paid)}</div></div>
+                <div class="info-item"><div class="label">Balance Due</div><div class="value" style="color: var(--warning);">${formatCurrency(due)}</div></div>
+            </div>
+            <div class="progress-bar"><div class="progress-fill" style="width: ${percentPaid}%"></div></div>
+            <div style="text-align: center; font-size: 12px; margin-top: 8px;">${Math.round(percentPaid)}% Paid</div>
+        </div>
+        
+        ${order.customization && Object.keys(order.customization).length ? `
+        <div class="order-detail-section">
+            <h4><i class="fas fa-sliders-h"></i> Customizations</h4>
+            ${Object.entries(order.customization).map(([k, v]) => `<div><strong>${k}:</strong> ${typeof v === 'boolean' ? (v ? 'Yes' : 'No') : v}</div>`).join('')}
+        </div>
+        ` : ''}
+        
+        ${order.requirements ? `
+        <div class="order-detail-section">
+            <h4><i class="fas fa-clipboard-list"></i> Requirements</h4>
+            <div style="background: var(--bg-surface); padding: 12px; border-radius: 8px;">${escapeHtml(order.requirements)}</div>
+        </div>
+        ` : ''}
+        
+        <div class="order-detail-section">
+            <h4><i class="fas fa-link"></i> Deliverables</h4>
+            <div class="info-grid">
+                <div class="info-item"><div class="label">Live URL</div><div class="value">${order.live_url ? `<a href="${order.live_url}" target="_blank" style="color: var(--success);">${order.live_url.substring(0, 40)}...</a>` : '—'}</div></div>
+                <div class="info-item"><div class="label">GitHub</div><div class="value">${order.github_repo ? `<a href="${order.github_repo}" target="_blank" style="color: var(--success);">View Repository</a>` : '—'}</div></div>
+                <div class="info-item"><div class="label">Preview Ready</div><div class="value">${order.preview_ready ? '<i class="fas fa-check-circle" style="color: var(--success);"></i> Yes' : '<i class="fas fa-times-circle" style="color: var(--error);"></i> No'}</div></div>
+                <div class="info-item"><div class="label">Full Access</div><div class="value">${order.full_access_ready ? '<i class="fas fa-check-circle" style="color: var(--success);"></i> Yes' : '<i class="fas fa-times-circle" style="color: var(--error);"></i> No'}</div></div>
+            </div>
+            ${order.delivery_notes ? `<div style="margin-top: 12px;"><strong>Notes:</strong><p style="margin-top: 5px;">${escapeHtml(order.delivery_notes)}</p></div>` : ''}
+        </div>
+        
+        <div class="order-detail-section">
+            <h4><i class="fas fa-history"></i> Timeline</h4>
+            ${timelineHtml}
+        </div>
+        
+        <div class="order-detail-section">
+            <h4><i class="fas fa-cog"></i> Actions</h4>
+            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                <button class="btn btn-primary" onclick="openDeliveryModal(${order.id}); closeModal('order-modal');"><i class="fas fa-box"></i> Update Deliverables</button>
+                ${order.status === 'payment_received' ? `<button class="btn btn-success" onclick="updateOrderStatus(${order.id}, 'in_progress'); closeModal('order-modal');"><i class="fas fa-play"></i> Start Project</button>` : ''}
+                ${order.status === 'in_progress' ? `<button class="btn btn-warning" onclick="updateOrderStatus(${order.id}, 'ready_for_balance'); closeModal('order-modal');"><i class="fas fa-money-bill"></i> Ready for Balance</button>` : ''}
+                ${order.status === 'ready_for_balance' ? `<button class="btn btn-primary" onclick="updateOrderStatus(${order.id}, 'completed'); closeModal('order-modal');"><i class="fas fa-check-circle"></i> Mark Completed</button>` : ''}
+                <button class="btn btn-info" onclick="chatFromOrder(${order.id}); closeModal('order-modal');"><i class="fas fa-comment"></i> Open Chat</button>
+            </div>
+        </div>
+    `;
+    
+    document.getElementById('order-detail-content').innerHTML = html;
+    document.getElementById('order-modal').classList.add('open');
 }
 
-// ===== UTILS =====
-function escapeHtml(t){if(!t)return'';return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#039;');}
+async function updateOrderStatus(orderId, newStatus) {
+    try {
+        await apiCall('PUT', `/admin/order/${orderId}/status`, { status: newStatus });
+        showToast(`Order #${orderId} status updated to ${newStatus}`, 'success');
+        await loadAllData();
+    } catch (err) {
+        showToast('Failed to update status: ' + err.message, 'error');
+    }
+}
 
-// ===== INIT =====
-window.addEventListener('resize',()=>{const sb=$('#sidebar'),main=$('#main'),ov=$('#sidebar-overlay');if(window.innerWidth>992){sb.classList.remove('mobile-open');ov.classList.remove('active');}else{sb.classList.remove('collapsed');main.classList.remove('expanded');}});
-window.onload=()=>{const t=localStorage.getItem('dc_admin_token'),e=localStorage.getItem('dc_admin_email');if(t&&e){adminToken=t;showDashboard(e);}};
+function openDeliveryModal(orderId) {
+    const order = appData.orders.find(o => o.id === orderId);
+    if (!order) return;
+    
+    currentOrderId = orderId;
+    document.getElementById('delivery-github').value = order.github_repo || '';
+    document.getElementById('delivery-live').value = order.live_url || '';
+    document.getElementById('delivery-source').value = order.source_code_url || '';
+    document.getElementById('delivery-docs').value = order.documentation_url || '';
+    document.getElementById('delivery-notes').value = order.delivery_notes || '';
+    document.getElementById('delivery-preview').checked = order.preview_ready || false;
+    document.getElementById('delivery-full').checked = order.full_access_ready || false;
+    document.getElementById('delivery-mark').checked = false;
+    
+    document.getElementById('delivery-modal').classList.add('open');
+}
+
+async function submitDelivery() {
+    if (!currentOrderId) return;
+    
+    const data = {
+        github_repo: document.getElementById('delivery-github').value,
+        live_url: document.getElementById('delivery-live').value,
+        source_code_url: document.getElementById('delivery-source').value,
+        documentation_url: document.getElementById('delivery-docs').value,
+        delivery_notes: document.getElementById('delivery-notes').value,
+        preview_ready: document.getElementById('delivery-preview').checked,
+        full_access_ready: document.getElementById('delivery-full').checked,
+        mark_delivered: document.getElementById('delivery-mark').checked
+    };
+    
+    try {
+        await apiCall('POST', `/admin/order/${currentOrderId}/update-delivery`, data);
+        showToast('Delivery information updated successfully', 'success');
+        closeModal('delivery-modal');
+        await loadAllData();
+    } catch (err) {
+        showToast('Failed to update delivery: ' + err.message, 'error');
+    }
+}
+
+function openRefundModal(orderId, amount) {
+    currentOrderId = orderId;
+    document.getElementById('refund-amount').value = amount;
+    document.getElementById('refund-reason').value = '';
+    document.getElementById('refund-modal').classList.add('open');
+}
+
+async function processRefund() {
+    if (!currentOrderId) return;
+    
+    const amount = parseFloat(document.getElementById('refund-amount').value);
+    const reason = document.getElementById('refund-reason').value;
+    
+    try {
+        await apiCall('POST', `/admin/order/${currentOrderId}/refund`, { amount, reason: reason || 'Admin initiated refund' });
+        showToast('Refund processed successfully', 'success');
+        closeModal('refund-modal');
+        await loadAllData();
+    } catch (err) {
+        showToast('Failed to process refund: ' + err.message, 'error');
+    }
+}
+
+// ============================================================
+// REFUNDS PAGE
+// ============================================================
+function renderRefunds() {
+    const html = `
+        <div class="card">
+            <div class="card-header">
+                <h3><i class="fas fa-money-bill-wave"></i> Refund History</h3>
+            </div>
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr><th>Order ID</th><th>Customer</th><th>Amount</th><th>Reason</th><th>Status</th><th>Date</th></tr>
+                    </thead>
+                    <tbody>
+                        ${appData.refunds.map(refund => `
+                            <tr>
+                                <td><span style="color: var(--accent-primary);">#${refund.order_id}</span></td>
+                                <td><strong>${escapeHtml(refund.user_name || '—')}</strong><br><small>${escapeHtml(refund.user_email || '')}</small></td>
+                                <td style="color: var(--error);">${formatCurrency(refund.amount)}</td>
+                                <td><small>${escapeHtml((refund.reason || '').substring(0, 50))}${(refund.reason || '').length > 50 ? '...' : ''}</small></td>
+                                <td><span class="badge badge-${refund.status === 'completed' ? 'completed' : 'pending'}">${refund.status}</span></td>
+                                <td>${formatDate(refund.processed_at)}</td>
+                            </tr>
+                        `).join('')}
+                        ${appData.refunds.length === 0 ? '<tr><td colspan="6" class="empty-row">No refunds processed yet</td></tr>' : ''}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    `;
+    document.getElementById('content-area').innerHTML = html;
+}
+
+// ============================================================
+// SERVICES PAGE
+// ============================================================
+function renderServices(filter = '') {
+    let filteredServices = [...appData.services];
+    if (filter) {
+        filteredServices = filteredServices.filter(s => 
+            s.title?.toLowerCase().includes(filter.toLowerCase())
+        );
+    }
+    
+    const orderCounts = {};
+    appData.orders.forEach(o => { orderCounts[o.service_id] = (orderCounts[o.service_id] || 0) + 1; });
+    
+    const html = `
+        <div class="card">
+            <div class="card-header">
+                <h3><i class="fas fa-cubes"></i> All Services</h3>
+                <div style="display: flex; gap: 12px;">
+                    <input type="text" class="search-input" id="service-search" placeholder="Search services..." onkeyup="filterServices(this.value)">
+                    <button class="btn btn-primary" onclick="openAddServiceModal()"><i class="fas fa-plus"></i> Add Service</button>
+                </div>
+            </div>
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr><th>Service</th><th>Category</th><th>Price</th><th>Orders</th><th>Actions</th></tr>
+                    </thead>
+                    <tbody>
+                        ${filteredServices.map(service => `
+                            <tr>
+                                <td><strong>${service.emoji || '💻'} ${escapeHtml(service.title)}</strong><br><small style="color: var(--text-muted);">${escapeHtml((service.description || '').substring(0, 60))}${(service.description || '').length > 60 ? '...' : ''}</small></td>
+                                <td><span class="badge badge-payment_received">${service.category}</span></td>
+                                <td style="color: var(--success);">${formatCurrency(service.price)}</td>
+                                <td>${orderCounts[service.id] || 0}</td>
+                                <td>
+                                    <div style="display: flex; gap: 5px;">
+                                        <button class="btn btn-sm btn-info" onclick="editService(${service.id})"><i class="fas fa-edit"></i></button>
+                                        <button class="btn btn-sm btn-danger" onclick="deleteService(${service.id})"><i class="fas fa-trash"></i></button>
+                                    </div>
+                                </td>
+                            </tr>
+                        `).join('')}
+                        ${filteredServices.length === 0 ? '<tr><td colspan="5" class="empty-row">No services found</td></tr>' : ''}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    `;
+    document.getElementById('content-area').innerHTML = html;
+}
+
+function filterServices(searchTerm) {
+    renderServices(searchTerm);
+}
+
+function openAddServiceModal() {
+    editingServiceId = null;
+    document.getElementById('service-modal-title').innerHTML = '<i class="fas fa-plus-circle"></i> Add New Service';
+    document.getElementById('service-title').value = '';
+    document.getElementById('service-desc').value = '';
+    document.getElementById('service-category').value = 'web';
+    document.getElementById('service-tech').value = '';
+    document.getElementById('service-price').value = '';
+    document.getElementById('service-emoji').value = '💻';
+    document.getElementById('service-days').value = '14';
+    document.getElementById('service-revisions').value = '3';
+    document.getElementById('service-modal').classList.add('open');
+}
+
+async function editService(serviceId) {
+    const service = appData.services.find(s => s.id === serviceId);
+    if (!service) return;
+    
+    editingServiceId = serviceId;
+    document.getElementById('service-modal-title').innerHTML = '<i class="fas fa-edit"></i> Edit Service';
+    document.getElementById('service-title').value = service.title || '';
+    document.getElementById('service-desc').value = service.description || '';
+    document.getElementById('service-category').value = service.category || 'web';
+    document.getElementById('service-tech').value = service.technologies || '';
+    document.getElementById('service-price').value = service.price || '';
+    document.getElementById('service-emoji').value = service.emoji || '💻';
+    document.getElementById('service-days').value = service.delivery_days || 14;
+    document.getElementById('service-revisions').value = service.revisions || 3;
+    document.getElementById('service-modal').classList.add('open');
+}
+
+async function saveService() {
+    const title = document.getElementById('service-title').value.trim();
+    const price = parseFloat(document.getElementById('service-price').value);
+    
+    if (!title || !price) {
+        showToast('Title and price are required', 'error');
+        return;
+    }
+    
+    const data = {
+        title: title,
+        description: document.getElementById('service-desc').value.trim(),
+        category: document.getElementById('service-category').value,
+        technologies: document.getElementById('service-tech').value.trim(),
+        price: price,
+        emoji: document.getElementById('service-emoji').value || '💻',
+        delivery_days: parseInt(document.getElementById('service-days').value) || 14,
+        revisions: parseInt(document.getElementById('service-revisions').value) || 3,
+        features: []
+    };
+    
+    try {
+        if (editingServiceId) {
+            data.id = editingServiceId;
+            await apiCall('PUT', '/admin/service/update', data);
+            showToast('Service updated successfully', 'success');
+        } else {
+            await apiCall('POST', '/admin/service/add', data);
+            showToast('Service added successfully', 'success');
+        }
+        closeModal('service-modal');
+        await loadAllData();
+    } catch (err) {
+        showToast('Failed to save service: ' + err.message, 'error');
+    }
+}
+
+async function deleteService(serviceId) {
+    if (!confirm('Are you sure you want to delete this service? This will also remove it from all carts.')) return;
+    
+    try {
+        await apiCall('DELETE', '/admin/service/delete', { id: serviceId });
+        showToast('Service deleted successfully', 'success');
+        await loadAllData();
+    } catch (err) {
+        showToast('Failed to delete service: ' + err.message, 'error');
+    }
+}
+
+// ============================================================
+// USERS PAGE
+// ============================================================
+function renderUsers(filter = '') {
+    let filteredUsers = [...appData.users];
+    if (filter) {
+        const search = filter.toLowerCase();
+        filteredUsers = filteredUsers.filter(u => 
+            u.name?.toLowerCase().includes(search) ||
+            u.email?.toLowerCase().includes(search)
+        );
+    }
+    
+    const orderCounts = {};
+    const totalSpent = {};
+    appData.orders.forEach(o => {
+        orderCounts[o.user_id] = (orderCounts[o.user_id] || 0) + 1;
+        totalSpent[o.user_id] = (totalSpent[o.user_id] || 0) + (parseFloat(o.total_paid) || parseFloat(o.advance_paid) || 0);
+    });
+    
+    const html = `
+        <div class="card">
+            <div class="card-header">
+                <h3><i class="fas fa-users"></i> Registered Users</h3>
+                <input type="text" class="search-input" id="user-search" placeholder="Search users..." onkeyup="filterUsers(this.value)">
+            </div>
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr><th>Name</th><th>Email</th><th>Phone</th><th>Verified</th><th>Orders</th><th>Spent</th><th>Joined</th><th>Actions</th></tr>
+                    </thead>
+                    <tbody>
+                        ${filteredUsers.map(user => `
+                            <tr>
+                                <td><strong>${escapeHtml(user.name || '—')}</strong></td>
+                                <td>${escapeHtml(user.email)}</td>
+                                <td>${user.phone || '—'}</td>
+                                <td>${user.verified ? '<span style="color: var(--success);"><i class="fas fa-check-circle"></i> Yes</span>' : '<span style="color: var(--warning);"><i class="fas fa-clock"></i> No</span>'}</td>
+                                <td>${orderCounts[user.id] || 0}</td>
+                                <td style="color: var(--success);">${formatCurrency(totalSpent[user.id] || 0)}</td>
+                                <td>${formatDate(user.created_at)}</td>
+                                <td><button class="btn btn-sm btn-info" onclick="viewUserOrders(${user.id})"><i class="fas fa-shopping-cart"></i> Orders</button></td>
+                            </tr>
+                        `).join('')}
+                        ${filteredUsers.length === 0 ? '<tr><td colspan="8" class="empty-row">No users found</td>' : ''}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    `;
+    document.getElementById('content-area').innerHTML = html;
+}
+
+function filterUsers(searchTerm) {
+    renderUsers(searchTerm);
+}
+
+function viewUserOrders(userId) {
+    const userOrders = appData.orders.filter(o => o.user_id === userId);
+    const user = appData.users.find(u => u.id === userId);
+    
+    const html = `
+        <div class="card">
+            <div class="card-header">
+                <h3><i class="fas fa-shopping-cart"></i> Orders for ${escapeHtml(user?.name || 'User')}</h3>
+                <button class="btn btn-primary btn-sm" onclick="switchPage('orders')">Back to Orders</button>
+            </div>
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr><th>Order ID</th><th>Service</th><th>Amount</th><th>Paid</th><th>Status</th><th>Date</th><th>Actions</th></tr>
+                    </thead>
+                    <tbody>
+                        ${userOrders.map(order => `
+                            <tr>
+                                <td><span style="color: var(--accent-primary);">#${order.id}</span></td>
+                                <td>${escapeHtml(order.service_title || '—')}</td>
+                                <td>${formatCurrency(order.price)}</td>
+                                <td>${formatCurrency(order.total_paid || order.advance_paid || 0)}</td>
+                                <td><span class="badge badge-${order.status}">${order.status.replace(/_/g, ' ')}</span></td>
+                                <td>${formatDate(order.created_at)}</td>
+                                <td><button class="btn btn-sm btn-info" onclick="viewOrderDetails(${order.id})"><i class="fas fa-eye"></i></button></td>
+                            </tr>
+                        `).join('')}
+                        ${userOrders.length === 0 ? '<tr><td colspan="7" class="empty-row">No orders found</td>' : ''}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    `;
+    document.getElementById('content-area').innerHTML = html;
+}
+
+// ============================================================
+// CUSTOM REQUESTS PAGE
+// ============================================================
+function renderCustomRequests() {
+    const html = `
+        <div class="card">
+            <div class="card-header">
+                <h3><i class="fas fa-file-signature"></i> Custom Project Requests</h3>
+            </div>
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr><th>Date</th><th>Name</th><th>Email</th><th>WhatsApp</th><th>Project</th><th>Budget</th><th>Status</th><th>Actions</th></tr>
+                    </thead>
+                    <tbody>
+                        ${appData.customRequests.map(req => `
+                            <tr>
+                                <td>${formatDate(req.created_at)}</td>
+                                <td><strong>${escapeHtml(req.name)}</strong></td>
+                                <td>${escapeHtml(req.email)}</td>
+                                <td>${req.whatsapp ? `<a href="https://wa.me/${req.whatsapp.replace(/[^0-9]/g, '')}" target="_blank" class="whatsapp-link"><i class="fab fa-whatsapp"></i> Chat</a>` : '—'}</td>
+                                <td><strong>${escapeHtml(req.title)}</strong><br><small>${escapeHtml(req.project_type || '—')}</small></td>
+                                <td><strong style="color: var(--success);">${req.budget || '—'}</strong></td>
+                                <td><span class="badge badge-${req.status}">${req.status}</span></td>
+                                <td>
+                                    <div style="display: flex; gap: 5px; flex-wrap: wrap;">
+                                        <button class="btn btn-sm btn-success" onclick="updateRequestStatus(${req.id}, 'contacted')"><i class="fas fa-phone"></i> Contacted</button>
+                                        <button class="btn btn-sm btn-primary" onclick="updateRequestStatus(${req.id}, 'completed')"><i class="fas fa-check"></i> Complete</button>
+                                        <button class="btn btn-sm btn-danger" onclick="deleteRequest(${req.id})"><i class="fas fa-trash"></i></button>
+                                    </div>
+                                 </td>
+                            </tr>
+                        `).join('')}
+                        ${appData.customRequests.length === 0 ? '<td><td colspan="8" class="empty-row">No custom requests found</td>' : ''}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    `;
+    document.getElementById('content-area').innerHTML = html;
+}
+
+async function updateRequestStatus(requestId, status) {
+    try {
+        await apiCall('PUT', `/custom-request/${requestId}/status`, { status });
+        showToast(`Request status updated to ${status}`, 'success');
+        await loadAllData();
+    } catch (err) {
+        showToast('Failed to update status: ' + err.message, 'error');
+    }
+}
+
+async function deleteRequest(requestId) {
+    if (!confirm('Are you sure you want to delete this request?')) return;
+    try {
+        await apiCall('DELETE', `/custom-request/${requestId}`);
+        showToast('Request deleted successfully', 'success');
+        await loadAllData();
+    } catch (err) {
+        showToast('Failed to delete request: ' + err.message, 'error');
+    }
+}
+
+// ============================================================
+// CHAT PAGE
+// ============================================================
+async function renderChat() {
+    const html = `
+        <div class="chat-container">
+            <div class="conversations-list" id="conversations-list">
+                <div style="text-align: center; padding: 20px; color: var(--text-muted);">Loading conversations...</div>
+            </div>
+            <div class="chat-area">
+                <div class="chat-header">
+                    <h4 id="chat-header-title"><i class="fas fa-comment"></i> Select a conversation</h4>
+                </div>
+                <div class="chat-messages" id="chat-messages">
+                    <div style="text-align: center; padding: 40px; color: var(--text-muted);">Select a conversation to start chatting</div>
+                </div>
+                <div class="chat-input-area">
+                    <textarea id="chat-input" placeholder="Type your message..." rows="2"></textarea>
+                    <button onclick="sendChatMessage()"><i class="fas fa-paper-plane"></i> Send</button>
+                </div>
+            </div>
+        </div>
+    `;
+    document.getElementById('content-area').innerHTML = html;
+    await loadConversations();
+    startChatPolling();
+}
+
+async function loadConversations() {
+    try {
+        const result = await apiCall('GET', '/conversations');
+        const conversations = result.conversations || [];
+        displayConversations(conversations);
+    } catch (err) {
+        console.error('Error loading conversations:', err);
+        document.getElementById('conversations-list').innerHTML = '<div style="text-align: center; padding: 20px; color: var(--error);">Failed to load conversations</div>';
+    }
+}
+
+function displayConversations(conversations) {
+    const container = document.getElementById('conversations-list');
+    if (!conversations.length) {
+        container.innerHTML = '<div style="text-align: center; padding: 20px; color: var(--text-muted);">No conversations yet</div>';
+        return;
+    }
+    
+    container.innerHTML = conversations.map(conv => `
+        <div class="conversation-item ${conv.unread_count > 0 ? 'unread' : ''} ${currentConversation === conv.id ? 'active' : ''}" onclick="selectConversation('${conv.id}', '${escapeHtml(conv.users?.name || 'User')}')">
+            <div class="conversation-name">${escapeHtml(conv.users?.name || 'User')} <span style="font-size: 11px; color: var(--accent-primary);">#${conv.id.replace('order_', '')}</span></div>
+            <div class="conversation-last-msg">${escapeHtml((conv.last_message || 'No messages').substring(0, 50))}${(conv.last_message || '').length > 50 ? '...' : ''}</div>
+            <div class="conversation-time">${conv.last_message_at ? formatDateTime(conv.last_message_at) : ''}</div>
+            <button class="delete-conv" onclick="event.stopPropagation(); deleteConversation('${conv.id}')"><i class="fas fa-trash"></i></button>
+        </div>
+    `).join('');
+}
+
+async function selectConversation(convId, userName) {
+    currentConversation = convId;
+    document.getElementById('chat-header-title').innerHTML = `<i class="fas fa-comment"></i> Chat with ${userName}`;
+    
+    try {
+        const result = await apiCall('GET', `/conversation/${convId}/messages`);
+        displayMessages(result.messages || []);
+        await loadConversations(); // Refresh to mark as read
+    } catch (err) {
+        console.error('Error loading messages:', err);
+        document.getElementById('chat-messages').innerHTML = '<div style="text-align: center; padding: 40px; color: var(--error);">Failed to load messages</div>';
+    }
+}
+
+function displayMessages(messages) {
+    const container = document.getElementById('chat-messages');
+    if (!messages.length) {
+        container.innerHTML = '<div style="text-align: center; padding: 40px; color: var(--text-muted);">No messages yet. Start the conversation!</div>';
+        return;
+    }
+    
+    container.innerHTML = messages.map(msg => `
+        <div class="message ${msg.sender_role === 'admin' ? 'admin' : 'user'}">
+            <div class="message-content">
+                ${escapeHtml(msg.message)}
+                <span class="message-time">${formatDateTime(msg.created_at)}</span>
+            </div>
+        </div>
+    `).join('');
+    container.scrollTop = container.scrollHeight;
+}
+
+async function sendChatMessage() {
+    if (!currentConversation) {
+        showToast('Select a conversation first', 'error');
+        return;
+    }
+    
+    const message = document.getElementById('chat-input').value.trim();
+    if (!message) return;
+    
+    try {
+        await apiCall('POST', `/conversation/${currentConversation}/send`, { message });
+        document.getElementById('chat-input').value = '';
+        await selectConversation(currentConversation, '');
+        showToast('Message sent', 'success');
+    } catch (err) {
+        showToast('Failed to send message: ' + err.message, 'error');
+    }
+}
+
+async function deleteConversation(convId) {
+    if (!confirm('Delete this conversation permanently?')) return;
+    try {
+        await apiCall('DELETE', `/conversation/${convId}`);
+        showToast('Conversation deleted', 'success');
+        if (currentConversation === convId) {
+            currentConversation = null;
+            document.getElementById('chat-header-title').innerHTML = '<i class="fas fa-comment"></i> Select a conversation';
+            document.getElementById('chat-messages').innerHTML = '<div style="text-align: center; padding: 40px; color: var(--text-muted);">Select a conversation to start chatting</div>';
+        }
+        await loadConversations();
+    } catch (err) {
+        showToast('Failed to delete conversation: ' + err.message, 'error');
+    }
+}
+
+function chatFromOrder(orderId) {
+    switchPage('chat');
+    setTimeout(() => {
+        selectConversation(`order_${orderId}`, 'Client');
+    }, 500);
+}
+
+function startChatPolling() {
+    if (chatPollInterval) clearInterval(chatPollInterval);
+    chatPollInterval = setInterval(() => {
+        if (document.querySelector('.nav-item.active')?.getAttribute('data-page') === 'chat' && currentConversation) {
+            loadConversations();
+            selectConversation(currentConversation, '');
+        }
+    }, 5000);
+}
+
+// ============================================================
+// UI HELPERS
+// ============================================================
+function switchPage(page, element = null) {
+    if (element) {
+        document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+        element.classList.add('active');
+    }
+    
+    const titles = {
+        overview: 'Dashboard Overview',
+        orders: 'Order Management',
+        refunds: 'Refund History',
+        services: 'Services Management',
+        users: 'User Management',
+        'custom-requests': 'Custom Project Requests',
+        chat: 'Client Support Chat'
+    };
+    
+    const icons = {
+        overview: 'tachometer-alt',
+        orders: 'shopping-cart',
+        refunds: 'money-bill-wave',
+        services: 'cubes',
+        users: 'users',
+        'custom-requests': 'file-signature',
+        chat: 'comment-dots'
+    };
+    
+    document.getElementById('page-title').innerHTML = `<i class="fas fa-${icons[page]}"></i> <span>${titles[page]}</span>`;
+    
+    if (page !== 'chat' && chatPollInterval) {
+        clearInterval(chatPollInterval);
+        chatPollInterval = null;
+    }
+    
+    renderCurrentPage();
+}
+
+function toggleSidebar() {
+    const sidebar = document.getElementById('sidebar');
+    const main = document.getElementById('main-content');
+    
+    if (window.innerWidth > 768) {
+        sidebar.classList.toggle('collapsed');
+        main.classList.toggle('expanded');
+    } else {
+        sidebar.classList.toggle('mobile-open');
+    }
+}
+
+function closeModal(modalId) {
+    document.getElementById(modalId).classList.remove('open');
+}
+
+// Close modal on overlay click
+document.querySelectorAll('.modal-overlay').forEach(modal => {
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) modal.classList.remove('open');
+    });
+});
+
+// ============================================================
+// INITIALIZATION
+// ============================================================
+window.onload = () => {
+    if (adminToken && adminEmail) {
+        showDashboard();
+    } else {
+        document.getElementById('login-container').style.display = 'flex';
+        document.getElementById('dashboard-container').style.display = 'none';
+    }
+};
 </script>
 </body>
 </html>
