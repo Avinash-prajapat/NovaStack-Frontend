@@ -492,8 +492,7 @@ async function submitRevision(oid){const i=document.getElementById('revisionInpu
 function renderCancelModal(c,oid,f){const o=allOrders.find(x=>x.id===oid);if(!o)return;const paid=o.total_paid||o.advance_paid||0,cr=new Date(o.created_at).getTime(),dl=cr+(CONFIG.CANCELLATION_HOURS*60*60*1000),inW=new Date().getTime()<dl;c.innerHTML=`<div style="margin-bottom:1.5rem"><div style="background:rgba(245,158,11,0.1);border:1px solid var(--warning);border-radius:var(--radius-md);padding:1rem;margin-bottom:1rem"><strong style="color:var(--warning)"><i class="fas fa-exclamation-triangle"></i> Refund Policy</strong><p style="margin:0.5rem 0 0;font-size:0.85rem;color:var(--text-secondary)">${inW?`✅ You're within the 48h window. Full refund of <strong>₹${paid.toLocaleString()}</strong> will be processed.`:`❌ Cancellation window expired. No refund will be processed if you cancel now.`}</p></div><p style="color:var(--text-secondary);margin-bottom:1rem">Please tell us why you want to cancel:</p><textarea id="cancelInput" rows="4" placeholder="Reason for cancellation..." style="width:100%;padding:0.8rem;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-md);color:var(--text-primary);font-family:inherit;font-size:0.9rem;resize:vertical;"></textarea></div>${!inW?`<div style="background:rgba(239,68,68,0.1);border:1px solid var(--error);border-radius:var(--radius-md);padding:1rem;margin-bottom:1rem"><strong style="color:var(--error)"><i class="fas fa-ban"></i> Warning</strong><p style="margin:0.5rem 0 0;font-size:0.85rem;color:var(--text-secondary)">Since the 48h window has passed, cancelling will <strong>not</strong> result in any refund. Your payment of ₹${paid.toLocaleString()} will be retained.</p></div>`:''}`;f.innerHTML=`<button class="btn-action" onclick="closeModal()">Keep Order</button><button class="btn-action btn-cancel" onclick="submitCancel(${oid})">${inW?'Confirm Cancel & Refund':'Confirm Cancel (No Refund)'}</button>`;setTimeout(()=>document.getElementById('cancelInput')?.focus(),100)}
 async function submitCancel(oid){const i=document.getElementById('cancelInput'),r=i?.value?.trim();if(!r){showToast('Please provide a reason','warning');return}const t=Auth.getToken(),btn=event?.target;if(btn){btn.disabled=true;btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> Processing...'}try{const res=await fetch(`${CONFIG.API}/order/${oid}/cancel`,{method:'POST',headers:{'Content-Type':'application/json','Authorization':`Bearer ${t}`},body:JSON.stringify({reason:r})});const d=await res.json();if(!res.ok)throw new Error(d.error||'Cancellation failed');showToast('✅ Cancellation requested! Admin will review within 24h.');closeModal();loadOrders()}catch(e){showToast(e.message,'error');if(btn){btn.disabled=false;btn.innerHTML='Confirm Cancel'}}}
 
-// ===== 💳 Payment History Modal (UPDATED WITH REFUND) =====
-// ===== 💳 Payment History Modal - FIXED VERSION =====
+// ===== 💳 Payment History Modal - FIXED REFUND DISPLAY =====
 async function renderPaymentModal(container, orderId) {
     const token = Auth.getToken();
     
@@ -509,7 +508,7 @@ async function renderPaymentModal(container, orderId) {
             return;
         }
         
-        // 🔥 Sab variables alag se declare karo
+        // Variables
         const total = order.price || 0;
         const advancePaid = order.advance_paid || 0;
         const balancePaid = order.balance_paid || 0;
@@ -517,7 +516,13 @@ async function renderPaymentModal(container, orderId) {
         const due = Math.max(0, total - totalPaid);
         const paidPercent = total > 0 ? Math.round((totalPaid / total) * 100) : 0;
         
-        // 🔥 Ab innerHTML alag se set karo (const chain ke bahar)
+        // 🔥 REFUND CHECK - FIXED CONDITION
+        const hasRefund = order.refund_amount != null && order.refund_amount > 0;
+        const refundStatus = order.refund_status || 'pending';
+        const refundAmount = order.refund_amount || 0;
+        const refundReason = order.refund_reason || '';
+        const refundDate = order.refund_processed_at || order.refund_created_at;
+        
         container.innerHTML = `
             <div class="payment-summary-grid">
                 <div class="payment-stat-card">
@@ -536,41 +541,39 @@ async function renderPaymentModal(container, orderId) {
                     <div class="payment-stat-label">${due > 0 ? 'Balance Due' : 'Balance Paid'}</div>
                     <div class="payment-stat-value ${due > 0 ? 'orange' : 'green'}">₹${due > 0 ? due.toLocaleString() : '0'}</div>
                 </div>
+                ${hasRefund ? `
+                <div class="payment-stat-card" style="border-color: var(--error);">
+                    <div class="payment-stat-label">Refunded</div>
+                    <div class="payment-stat-value" style="color: var(--error);">-₹${refundAmount.toLocaleString()}</div>
+                </div>` : ''}
             </div>
             
-            <div style="margin-bottom:1.5rem;">
-                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.8rem;">
-                    <strong style="color:var(--text-primary);">Payment Progress</strong>
-                    <span style="color:var(--accent);font-weight:600;">${paidPercent}%</span>
+            <div style="margin-bottom:1.5rem">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.8rem">
+                    <strong style="color:var(--text-primary)">Payment Progress</strong>
+                    <span style="color:var(--accent);font-weight:600">${paidPercent}%</span>
                 </div>
-                <div style="height:8px;background:var(--surface);border-radius:var(--radius-full);overflow:hidden;">
-                    <div style="height:100%;width:${paidPercent}%;background:var(--gradient-accent);border-radius:var(--radius-full);transition:width 0.5s;"></div>
+                <div style="height:8px;background:var(--surface);border-radius:var(--radius-full);overflow:hidden">
+                    <div style="height:100%;width:${paidPercent}%;background:var(--gradient-accent);border-radius:var(--radius-full);transition:width 0.5s"></div>
                 </div>
             </div>
             
             <div class="payment-timeline">
-                <strong style="display:block;margin-bottom:0.8rem;color:var(--text-primary);">
+                <strong style="display:block;margin-bottom:0.8rem;color:var(--text-primary)">
                     <i class="fas fa-clock"></i> Payment Timeline
                 </strong>
                 
                 ${order.advance_paid_at ? `
                 <div class="payment-timeline-item advance">
-                    <div class="payment-timeline-icon advance">
-                        <i class="fas fa-arrow-down"></i>
-                    </div>
+                    <div class="payment-timeline-icon advance"><i class="fas fa-arrow-down"></i></div>
                     <div class="payment-timeline-content">
                         <div class="payment-timeline-title">Advance Payment</div>
-                        <div class="payment-timeline-detail">
-                            ₹${advancePaid.toLocaleString()} • ${new Date(order.advance_paid_at).toLocaleString()}
-                        </div>
-                        ${order.advance_payment_id ? `
-                        <div class="payment-timeline-id">TXN: ${order.advance_payment_id}</div>` : ''}
+                        <div class="payment-timeline-detail">₹${advancePaid.toLocaleString()} • ${new Date(order.advance_paid_at).toLocaleString()}</div>
+                        ${order.advance_payment_id ? `<div class="payment-timeline-id">TXN: ${order.advance_payment_id}</div>` : ''}
                     </div>
                 </div>` : `
                 <div class="payment-timeline-item pending">
-                    <div class="payment-timeline-icon pending">
-                        <i class="fas fa-clock"></i>
-                    </div>
+                    <div class="payment-timeline-icon pending"><i class="fas fa-clock"></i></div>
                     <div class="payment-timeline-content">
                         <div class="payment-timeline-title">Advance Payment</div>
                         <div class="payment-timeline-detail">Pending</div>
@@ -579,74 +582,64 @@ async function renderPaymentModal(container, orderId) {
                 
                 ${order.balance_paid_at ? `
                 <div class="payment-timeline-item balance">
-                    <div class="payment-timeline-icon balance">
-                        <i class="fas fa-check"></i>
-                    </div>
+                    <div class="payment-timeline-icon balance"><i class="fas fa-check"></i></div>
                     <div class="payment-timeline-content">
                         <div class="payment-timeline-title">Balance Payment</div>
-                        <div class="payment-timeline-detail">
-                            ₹${balancePaid.toLocaleString()} • ${new Date(order.balance_paid_at).toLocaleString()}
-                        </div>
-                        ${order.balance_payment_id ? `
-                        <div class="payment-timeline-id">TXN: ${order.balance_payment_id}</div>` : ''}
+                        <div class="payment-timeline-detail">₹${balancePaid.toLocaleString()} • ${new Date(order.balance_paid_at).toLocaleString()}</div>
+                        ${order.balance_payment_id ? `<div class="payment-timeline-id">TXN: ${order.balance_payment_id}</div>` : ''}
                     </div>
                 </div>` : due > 0 ? `
                 <div class="payment-timeline-item pending">
-                    <div class="payment-timeline-icon pending">
-                        <i class="fas fa-clock"></i>
-                    </div>
+                    <div class="payment-timeline-icon pending"><i class="fas fa-clock"></i></div>
                     <div class="payment-timeline-content">
                         <div class="payment-timeline-title">Balance Payment</div>
                         <div class="payment-timeline-detail">₹${due.toLocaleString()} Due</div>
                     </div>
                 </div>` : `
                 <div class="payment-timeline-item balance">
-                    <div class="payment-timeline-icon balance">
-                        <i class="fas fa-check"></i>
-                    </div>
+                    <div class="payment-timeline-icon balance"><i class="fas fa-check"></i></div>
                     <div class="payment-timeline-content">
                         <div class="payment-timeline-title">Balance Payment</div>
                         <div class="payment-timeline-detail">Not Required (Fully Paid)</div>
                     </div>
                 </div>`}
                 
-                ${order.refund_amount ? `
+                ${hasRefund ? `
                 <div class="payment-timeline-item refund">
-                    <div class="payment-timeline-icon refund">
-                        <i class="fas fa-undo"></i>
-                    </div>
+                    <div class="payment-timeline-icon refund"><i class="fas fa-undo"></i></div>
                     <div class="payment-timeline-content">
-                        <div class="payment-timeline-title">Refund ${order.refund_status ? `(${order.refund_status})` : ''}</div>
+                        <div class="payment-timeline-title">Refund ${refundStatus ? `(${refundStatus})` : ''}</div>
                         <div class="payment-timeline-detail">
-                            ₹${order.refund_amount.toLocaleString()} • ${order.refund_processed_at ? new Date(order.refund_processed_at).toLocaleString() : 'Pending'}
+                            ₹${refundAmount.toLocaleString()} • ${refundDate ? new Date(refundDate).toLocaleString() : 'Pending'}
                         </div>
-                        ${order.refund_reason ? `<div style="font-size:0.75rem;margin-top:0.3rem;color:var(--text-muted)">Reason: ${escapeHtml(order.refund_reason)}</div>` : ''}
+                        ${refundReason ? `<div style="font-size:0.75rem;margin-top:0.3rem;color:var(--text-muted)">Reason: ${escapeHtml(refundReason)}</div>` : ''}
                     </div>
                 </div>` : ''}
             </div>
             
             ${order.payment_history && order.payment_history.length > 0 ? `
-            <div style="margin-top:1.5rem;">
-                <strong style="display:block;margin-bottom:0.8rem;color:var(--text-primary);">
+            <div style="margin-top:1.5rem">
+                <strong style="display:block;margin-bottom:0.8rem;color:var(--text-primary)">
                     <i class="fas fa-list"></i> All Transactions
                 </strong>
-                <div style="max-height:200px;overflow-y:auto;">
-                    ${order.payment_history.map(txn => `
-                    <div style="display:flex;justify-content:space-between;align-items:center;padding:0.6rem 0.8rem;background:var(--surface);border-radius:var(--radius-sm);margin-bottom:0.4rem;font-size:0.85rem;">
-                        <div style="display:flex;align-items:center;gap:0.5rem;">
-                            <i class="fas ${txn.type === 'credit' ? 'fa-arrow-down' : txn.type === 'refund' ? 'fa-undo' : 'fa-arrow-up'}" style="color:${txn.type === 'credit' ? '#10b981' : txn.type === 'refund' ? '#ef4444' : '#ff6b35'};"></i>
-                            <span style="color:var(--text-secondary);">${txn.type === 'credit' ? 'Payment' : txn.type === 'refund' ? 'Refund' : 'Advance'}</span>
-                        </div>
-                        <div style="text-align:right;">
-                            <div style="font-weight:600;color:${txn.type === 'credit' ? '#10b981' : txn.type === 'refund' ? '#ef4444' : '#ff6b35'};">
-                                ${txn.type === 'credit' ? '+' : txn.type === 'refund' ? '-' : '+'}₹${txn.amount?.toLocaleString()}
+                <div style="max-height:200px;overflow-y:auto">
+                    ${order.payment_history.map(txn => {
+                        const isRefund = txn.type === 'refund';
+                        const color = isRefund ? 'var(--error)' : txn.type === 'advance' ? 'var(--warning)' : 'var(--success)';
+                        const icon = isRefund ? 'fa-undo' : 'fa-arrow-down';
+                        const sign = isRefund ? '-' : '+';
+                        return `
+                        <div style="display:flex;justify-content:space-between;align-items:center;padding:0.6rem 0.8rem;background:var(--surface);border-radius:var(--radius-sm);margin-bottom:0.4rem;font-size:0.85rem">
+                            <div style="display:flex;align-items:center;gap:0.5rem">
+                                <i class="fas ${icon}" style="color:${color}"></i>
+                                <span style="color:var(--text-secondary)">${isRefund ? 'Refund' : txn.type === 'advance' ? 'Advance' : 'Balance'}</span>
                             </div>
-                            <div style="font-size:0.7rem;color:var(--text-muted);">
-                                ${new Date(txn.created_at).toLocaleDateString()}
+                            <div style="text-align:right">
+                                <div style="font-weight:600;color:${color}">${sign}₹${Math.abs(txn.amount).toLocaleString()}</div>
+                                <div style="font-size:0.7rem;color:var(--text-muted)">${new Date(txn.created_at).toLocaleDateString()}</div>
                             </div>
-                        </div>
-                    </div>
-                    `).join('')}
+                        </div>`;
+                    }).join('')}
                 </div>
             </div>` : ''}
         `;
@@ -657,7 +650,7 @@ async function renderPaymentModal(container, orderId) {
             <div class="modal-error">
                 <i class="fas fa-exclamation-triangle"></i>
                 <p>Failed to load payment details</p>
-                <p style="font-size:0.8rem;margin-top:0.5rem;">${error.message}</p>
+                <p style="font-size:0.8rem;margin-top:0.5rem">${error.message}</p>
             </div>
         `;
     }
