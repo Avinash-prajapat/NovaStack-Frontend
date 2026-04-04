@@ -991,6 +991,28 @@ tr:hover td {
     to { transform: rotate(360deg); }
 }
 
+/* Revenue Chart */
+.chart-container {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    margin-bottom: 24px;
+}
+
+.chart-container h3 {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+canvas {
+    max-height: 300px;
+}
+
 /* Responsive */
 @media (max-width: 1024px) {
     .stats-grid { grid-template-columns: repeat(2, 1fr); }
@@ -1022,23 +1044,18 @@ tr:hover td {
 <!-- LOGIN SECTION -->
 <div id="login-container">
     <div class="login-box">
-        <div class="login-icon">
-            <i class="fas fa-shield-alt"></i>
-        </div>
+        <div class="login-icon"><i class="fas fa-shield-alt"></i></div>
         <h2>NovaStack Admin</h2>
         <p>Enter credentials to access dashboard</p>
         <input type="email" id="login-email" class="login-input" placeholder="Admin Email" autocomplete="email">
         <input type="password" id="login-password" class="login-input" placeholder="Password" onkeypress="if(event.key==='Enter') handleLogin()">
-        <button class="login-btn" onclick="handleLogin()">
-            <i class="fas fa-sign-in-alt"></i> Login
-        </button>
+        <button class="login-btn" onclick="handleLogin()"><i class="fas fa-sign-in-alt"></i> Login</button>
         <div id="login-error" class="login-error"></div>
     </div>
 </div>
 
 <!-- DASHBOARD SECTION -->
 <div id="dashboard-container">
-    <!-- Sidebar -->
     <aside class="sidebar" id="sidebar">
         <div class="sidebar-logo">
             <a href="#"><i class="fas fa-code"></i> <span>Nova<span style="color:var(--accent-primary)">Stack</span></span></a>
@@ -1086,179 +1103,35 @@ tr:hover td {
                     <div class="admin-name" id="admin-name">Admin</div>
                     <div class="admin-role">Super Administrator</div>
                 </div>
-                <button class="logout-btn" onclick="handleLogout()" title="Logout">
-                    <i class="fas fa-sign-out-alt"></i>
-                </button>
+                <button class="logout-btn" onclick="handleLogout()" title="Logout"><i class="fas fa-sign-out-alt"></i></button>
             </div>
         </div>
     </aside>
 
-    <!-- Main Content -->
     <div class="main-content" id="main-content">
         <div class="top-bar">
             <div style="display: flex; align-items: center;">
-                <button class="toggle-sidebar" onclick="toggleSidebar()">
-                    <i class="fas fa-bars"></i>
-                </button>
-                <h1 class="page-title" id="page-title">
-                    <i class="fas fa-tachometer-alt"></i> <span>Dashboard Overview</span>
-                </h1>
+                <button class="toggle-sidebar" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+                <h1 class="page-title" id="page-title"><i class="fas fa-tachometer-alt"></i> <span>Dashboard Overview</span></h1>
             </div>
             <div class="date-display" id="date-display"></div>
         </div>
         <div class="content-area" id="content-area">
-            <div style="text-align: center; padding: 40px;">
-                <div class="loading-spinner"></div> Loading dashboard...
-            </div>
+            <div style="text-align: center; padding: 40px;"><div class="loading-spinner"></div> Loading dashboard...</div>
         </div>
     </div>
 </div>
 
-<!-- Toast Container -->
 <div class="toast-container" id="toast-container"></div>
 
 <!-- Modals -->
-<div id="service-modal" class="modal-overlay">
-    <div class="modal">
-        <div class="modal-header">
-            <h3 id="service-modal-title"><i class="fas fa-plus-circle"></i> Add New Service</h3>
-            <button class="close-modal" onclick="closeModal('service-modal')"><i class="fas fa-times"></i></button>
-        </div>
-        <div class="modal-body">
-            <div class="form-group">
-                <label><i class="fas fa-heading"></i> Service Title *</label>
-                <input type="text" id="service-title" placeholder="e.g., Full Stack Web Application">
-            </div>
-            <div class="form-group">
-                <label><i class="fas fa-align-left"></i> Description</label>
-                <textarea id="service-desc" placeholder="Describe the service..."></textarea>
-            </div>
-            <div class="form-group">
-                <label><i class="fas fa-folder"></i> Category</label>
-                <select id="service-category">
-                    <option value="web">🌐 Web Development</option>
-                    <option value="mobile">📱 Mobile App</option>
-                    <option value="ai">🤖 AI/ML</option>
-                    <option value="ecom">🛒 E-Commerce</option>
-                    <option value="design">🎨 UI/UX Design</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label><i class="fas fa-code"></i> Technologies</label>
-                <input type="text" id="service-tech" placeholder="React, Node.js, MongoDB">
-            </div>
-            <div class="form-group">
-                <label><i class="fas fa-tag"></i> Price (₹) *</label>
-                <input type="number" id="service-price" placeholder="29999" step="0.01">
-            </div>
-            <div class="form-group">
-                <label><i class="fas fa-emoji"></i> Emoji</label>
-                <input type="text" id="service-emoji" placeholder="💻" maxlength="2">
-            </div>
-            <div class="form-group">
-                <label><i class="fas fa-clock"></i> Delivery Days</label>
-                <input type="number" id="service-days" value="14">
-            </div>
-            <div class="form-group">
-                <label><i class="fas fa-sync"></i> Revisions</label>
-                <input type="number" id="service-revisions" value="3">
-            </div>
-        </div>
-        <div class="modal-footer">
-            <button class="btn btn-danger" onclick="closeModal('service-modal')">Cancel</button>
-            <button class="btn btn-primary" onclick="saveService()">Save Service</button>
-        </div>
-    </div>
-</div>
+<div id="service-modal" class="modal-overlay"><div class="modal"><div class="modal-header"><h3 id="service-modal-title"><i class="fas fa-plus-circle"></i> Add New Service</h3><button class="close-modal" onclick="closeModal('service-modal')"><i class="fas fa-times"></i></button></div><div class="modal-body"><div class="form-group"><label><i class="fas fa-heading"></i> Service Title *</label><input type="text" id="service-title" placeholder="e.g., Full Stack Web Application"></div><div class="form-group"><label><i class="fas fa-align-left"></i> Description</label><textarea id="service-desc" placeholder="Describe the service..."></textarea></div><div class="form-group"><label><i class="fas fa-folder"></i> Category</label><select id="service-category"><option value="web">🌐 Web Development</option><option value="mobile">📱 Mobile App</option><option value="ai">🤖 AI/ML</option><option value="ecom">🛒 E-Commerce</option><option value="design">🎨 UI/UX Design</option></select></div><div class="form-group"><label><i class="fas fa-code"></i> Technologies</label><input type="text" id="service-tech" placeholder="React, Node.js, MongoDB"></div><div class="form-group"><label><i class="fas fa-tag"></i> Price (₹) *</label><input type="number" id="service-price" placeholder="29999" step="0.01"></div><div class="form-group"><label><i class="fas fa-emoji"></i> Emoji</label><input type="text" id="service-emoji" placeholder="💻" maxlength="2"></div><div class="form-group"><label><i class="fas fa-clock"></i> Delivery Days</label><input type="number" id="service-days" value="14"></div><div class="form-group"><label><i class="fas fa-sync"></i> Revisions</label><input type="number" id="service-revisions" value="3"></div></div><div class="modal-footer"><button class="btn btn-danger" onclick="closeModal('service-modal')">Cancel</button><button class="btn btn-primary" onclick="saveService()">Save Service</button></div></div></div>
 
-<div id="order-modal" class="modal-overlay">
-    <div class="modal" style="max-width: 850px;">
-        <div class="modal-header">
-            <h3><i class="fas fa-info-circle"></i> Order Details</h3>
-            <button class="close-modal" onclick="closeModal('order-modal')"><i class="fas fa-times"></i></button>
-        </div>
-        <div class="modal-body" id="order-detail-content">
-            <!-- Dynamic order details -->
-        </div>
-    </div>
-</div>
+<div id="order-modal" class="modal-overlay"><div class="modal" style="max-width: 850px;"><div class="modal-header"><h3><i class="fas fa-info-circle"></i> Order Details</h3><button class="close-modal" onclick="closeModal('order-modal')"><i class="fas fa-times"></i></button></div><div class="modal-body" id="order-detail-content"></div></div></div>
 
-<div id="delivery-modal" class="modal-overlay">
-    <div class="modal">
-        <div class="modal-header">
-            <h3><i class="fas fa-box"></i> Update Deliverables</h3>
-            <button class="close-modal" onclick="closeModal('delivery-modal')"><i class="fas fa-times"></i></button>
-        </div>
-        <div class="modal-body">
-            <div class="form-group">
-                <label><i class="fab fa-github"></i> GitHub Repository URL</label>
-                <input type="text" id="delivery-github" placeholder="https://github.com/...">
-            </div>
-            <div class="form-group">
-                <label><i class="fas fa-globe"></i> Live URL</label>
-                <input type="text" id="delivery-live" placeholder="https://example.com">
-            </div>
-            <div class="form-group">
-                <label><i class="fas fa-code"></i> Source Code URL</label>
-                <input type="text" id="delivery-source" placeholder="https://drive.google.com/...">
-            </div>
-            <div class="form-group">
-                <label><i class="fas fa-book"></i> Documentation URL</label>
-                <input type="text" id="delivery-docs" placeholder="https://docs.example.com">
-            </div>
-            <div class="form-group">
-                <label><i class="fas fa-sticky-note"></i> Delivery Notes</label>
-                <textarea id="delivery-notes" rows="3" placeholder="Add delivery notes..."></textarea>
-            </div>
-            <div class="form-group">
-                <label>
-                    <input type="checkbox" id="delivery-preview"> Preview Ready (For 15% paid clients)
-                </label>
-            </div>
-            <div class="form-group">
-                <label>
-                    <input type="checkbox" id="delivery-full"> Full Access Ready (For fully paid clients)
-                </label>
-            </div>
-            <div class="form-group">
-                <label>
-                    <input type="checkbox" id="delivery-mark"> Mark as Delivered
-                </label>
-            </div>
-        </div>
-        <div class="modal-footer">
-            <button class="btn btn-danger" onclick="closeModal('delivery-modal')">Cancel</button>
-            <button class="btn btn-primary" onclick="submitDelivery()">Save Changes</button>
-        </div>
-    </div>
-</div>
+<div id="delivery-modal" class="modal-overlay"><div class="modal"><div class="modal-header"><h3><i class="fas fa-box"></i> Update Deliverables</h3><button class="close-modal" onclick="closeModal('delivery-modal')"><i class="fas fa-times"></i></button></div><div class="modal-body"><div class="form-group"><label><i class="fab fa-github"></i> GitHub Repository URL</label><input type="text" id="delivery-github" placeholder="https://github.com/..."></div><div class="form-group"><label><i class="fas fa-globe"></i> Live URL</label><input type="text" id="delivery-live" placeholder="https://example.com"></div><div class="form-group"><label><i class="fas fa-code"></i> Source Code URL</label><input type="text" id="delivery-source" placeholder="https://drive.google.com/..."></div><div class="form-group"><label><i class="fas fa-book"></i> Documentation URL</label><input type="text" id="delivery-docs" placeholder="https://docs.example.com"></div><div class="form-group"><label><i class="fas fa-sticky-note"></i> Delivery Notes</label><textarea id="delivery-notes" rows="3" placeholder="Add delivery notes..."></textarea></div><div class="form-group"><label><input type="checkbox" id="delivery-preview"> Preview Ready (For 15% paid clients)</label></div><div class="form-group"><label><input type="checkbox" id="delivery-full"> Full Access Ready (For fully paid clients)</label></div><div class="form-group"><label><input type="checkbox" id="delivery-mark"> Mark as Delivered</label></div></div><div class="modal-footer"><button class="btn btn-danger" onclick="closeModal('delivery-modal')">Cancel</button><button class="btn btn-primary" onclick="submitDelivery()">Save Changes</button></div></div></div>
 
-<div id="refund-modal" class="modal-overlay">
-    <div class="modal">
-        <div class="modal-header">
-            <h3><i class="fas fa-money-bill-wave"></i> Process Refund</h3>
-            <button class="close-modal" onclick="closeModal('refund-modal')"><i class="fas fa-times"></i></button>
-        </div>
-        <div class="modal-body">
-            <div class="form-group">
-                <label><i class="fas fa-dollar-sign"></i> Refund Amount (₹)</label>
-                <input type="number" id="refund-amount" readonly style="background: rgba(255,255,255,0.05);">
-            </div>
-            <div class="form-group">
-                <label><i class="fas fa-comment"></i> Reason for Refund</label>
-                <textarea id="refund-reason" rows="3" placeholder="Enter refund reason..."></textarea>
-            </div>
-            <div class="form-group">
-                <label><i class="fas fa-exclamation-triangle"></i> Warning</label>
-                <p style="font-size: 12px; color: var(--warning);">This will refund the amount to customer's original payment method. This action cannot be undone!</p>
-            </div>
-        </div>
-        <div class="modal-footer">
-            <button class="btn btn-danger" onclick="closeModal('refund-modal')">Cancel</button>
-            <button class="btn btn-primary" onclick="processRefund()">Process Refund</button>
-        </div>
-    </div>
-</div>
+<div id="refund-modal" class="modal-overlay"><div class="modal"><div class="modal-header"><h3><i class="fas fa-money-bill-wave"></i> Process Refund</h3><button class="close-modal" onclick="closeModal('refund-modal')"><i class="fas fa-times"></i></button></div><div class="modal-body"><div class="form-group"><label><i class="fas fa-dollar-sign"></i> Refund Amount (₹)</label><input type="number" id="refund-amount" readonly style="background: rgba(255,255,255,0.05);"></div><div class="form-group"><label><i class="fas fa-comment"></i> Reason for Refund</label><textarea id="refund-reason" rows="3" placeholder="Enter refund reason..."></textarea></div><div class="form-group"><label><i class="fas fa-exclamation-triangle"></i> Warning</label><p style="font-size: 12px; color: var(--warning);">This will refund the amount to customer's original payment method. This action cannot be undone!</p></div></div><div class="modal-footer"><button class="btn btn-danger" onclick="closeModal('refund-modal')">Cancel</button><button class="btn btn-primary" onclick="processRefund()">Process Refund</button></div></div></div>
 
 <script>
 // ============================================================
@@ -1329,29 +1202,16 @@ function escapeHtml(text) {
 // API CALLS
 // ============================================================
 async function apiCall(method, endpoint, body = null) {
-    const headers = {
-        'Content-Type': 'application/json'
-    };
-    if (adminToken) {
-        headers['Authorization'] = `Bearer ${adminToken}`;
-    }
+    const headers = { 'Content-Type': 'application/json' };
+    if (adminToken) headers['Authorization'] = `Bearer ${adminToken}`;
     
     const options = { method, headers };
     if (body) options.body = JSON.stringify(body);
     
     try {
         const response = await fetch(`${CONFIG.API}${endpoint}`, options);
-        
-        if (!response.ok && response.status === 0) {
-            throw new Error('Network error - CORS issue. Check backend CORS configuration.');
-        }
-        
         const data = await response.json();
-        
-        if (!response.ok) {
-            throw new Error(data.error || `HTTP ${response.status}`);
-        }
-        
+        if (!response.ok) throw new Error(data.error || `HTTP ${response.status}`);
         return data;
     } catch (err) {
         console.error('API Error:', err);
@@ -1372,11 +1232,10 @@ async function handleLogin() {
         errorDiv.style.display = 'block';
         return;
     }
-    
     errorDiv.style.display = 'none';
     
     try {
-        const result = await apiCall('POST', '/admin/login', { email, password: password });
+        const result = await apiCall('POST', '/admin/login', { email, password });
         if (result.success && result.token) {
             adminToken = result.token;
             adminEmail = email;
@@ -1399,13 +1258,9 @@ function handleLogout() {
     localStorage.removeItem(CONFIG.EMAIL_KEY);
     adminToken = null;
     adminEmail = null;
-    
     if (chatPollInterval) clearInterval(chatPollInterval);
-    
     document.getElementById('dashboard-container').style.display = 'none';
     document.getElementById('login-container').style.display = 'flex';
-    document.getElementById('login-email').value = '';
-    document.getElementById('login-password').value = '';
     showToast('Logged out successfully', 'success');
 }
 
@@ -1415,7 +1270,6 @@ function showDashboard() {
     document.getElementById('admin-name').textContent = adminEmail.split('@')[0];
     document.getElementById('admin-avatar').textContent = adminEmail[0].toUpperCase();
     document.getElementById('date-display').textContent = new Date().toLocaleDateString('en-IN', { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' });
-    
     loadAllData();
 }
 
@@ -1463,108 +1317,82 @@ function renderCurrentPage() {
 }
 
 // ============================================================
-// OVERVIEW PAGE
+// OVERVIEW PAGE WITH REVENUE CHART
 // ============================================================
 function renderOverview() {
-    const totalRevenue = appData.payments
-        .filter(p => p.amount > 0 && p.status === 'completed')
-        .reduce((sum, p) => sum + parseFloat(p.amount || 0), 0);
+    const totalRevenue = appData.payments.filter(p => p.amount > 0 && p.status === 'completed').reduce((s, p) => s + parseFloat(p.amount || 0), 0);
     const pendingOrders = appData.orders.filter(o => o.status === 'payment_received').length;
     const cancellationRequests = appData.orders.filter(o => o.status === 'cancellation_requested').length;
     const recentOrders = appData.orders.slice(0, 5);
     
+    // Prepare chart data
+    const monthlyRevenue = {};
+    appData.payments.forEach(p => {
+        if (p.amount > 0 && p.status === 'completed') {
+            const month = new Date(p.created_at).toLocaleString('default', { month: 'short' });
+            monthlyRevenue[month] = (monthlyRevenue[month] || 0) + p.amount;
+        }
+    });
+    const chartLabels = Object.keys(monthlyRevenue);
+    const chartValues = Object.values(monthlyRevenue);
+    
     const html = `
         <div class="stats-grid">
-            <div class="stat-card" onclick="switchPage('services')">
-                <div class="stat-label"><i class="fas fa-cube"></i> Total Services</div>
-                <div class="stat-value">${appData.services.length}</div>
-            </div>
-            <div class="stat-card" onclick="switchPage('orders')">
-                <div class="stat-label"><i class="fas fa-box-open"></i> Total Orders</div>
-                <div class="stat-value">${appData.orders.length}</div>
-            </div>
-            <div class="stat-card" onclick="switchPage('users')">
-                <div class="stat-label"><i class="fas fa-users"></i> Total Users</div>
-                <div class="stat-value">${appData.users.length}</div>
-            </div>
-            <div class="stat-card" onclick="switchPage('payments')">
-                <div class="stat-label"><i class="fas fa-rupee-sign"></i> Total Revenue</div>
-                <div class="stat-value">${formatCurrency(totalRevenue)}</div>
-            </div>
+            <div class="stat-card" onclick="switchPage('services')"><div class="stat-label"><i class="fas fa-cube"></i> Total Services</div><div class="stat-value">${appData.services.length}</div></div>
+            <div class="stat-card" onclick="switchPage('orders')"><div class="stat-label"><i class="fas fa-box-open"></i> Total Orders</div><div class="stat-value">${appData.orders.length}</div></div>
+            <div class="stat-card" onclick="switchPage('users')"><div class="stat-label"><i class="fas fa-users"></i> Total Users</div><div class="stat-value">${appData.users.length}</div></div>
+            <div class="stat-card" onclick="switchPage('payments')"><div class="stat-label"><i class="fas fa-rupee-sign"></i> Total Revenue</div><div class="stat-value">${formatCurrency(totalRevenue)}</div></div>
         </div>
         
         <div class="stats-grid">
-            <div class="stat-card" onclick="switchPage('orders')">
-                <div class="stat-label"><i class="fas fa-clock"></i> Pending Orders</div>
-                <div class="stat-value">${pendingOrders}</div>
-            </div>
-            <div class="stat-card" onclick="switchPage('refunds')">
-                <div class="stat-label"><i class="fas fa-undo-alt"></i> Cancellation Requests</div>
-                <div class="stat-value" style="color: var(--error);">${cancellationRequests}</div>
-            </div>
+            <div class="stat-card" onclick="switchPage('orders')"><div class="stat-label"><i class="fas fa-clock"></i> Pending Orders</div><div class="stat-value">${pendingOrders}</div></div>
+            <div class="stat-card" onclick="switchPage('refunds')"><div class="stat-label"><i class="fas fa-undo-alt"></i> Cancellation Requests</div><div class="stat-value" style="color: var(--error);">${cancellationRequests}</div></div>
+        </div>
+        
+        <div class="chart-container">
+            <h3><i class="fas fa-chart-line"></i> Revenue Overview (Monthly)</h3>
+            <canvas id="revenueChart"></canvas>
         </div>
         
         <div class="card">
-            <div class="card-header">
-                <h3><i class="fas fa-clock"></i> Recent Orders</h3>
-                <button class="btn btn-primary btn-sm" onclick="switchPage('orders')">View All →</button>
-            </div>
+            <div class="card-header"><h3><i class="fas fa-clock"></i> Recent Orders</h3><button class="btn btn-primary btn-sm" onclick="switchPage('orders')">View All →</button></div>
             <div class="table-responsive">
-                <table>
-                    <thead>
-                        <tr><th>Order ID</th><th>Customer</th><th>Service</th><th>Amount</th><th>Status</th><th>Date</th><th>Actions</th></tr>
-                    </thead>
-                    <tbody>
-                        ${recentOrders.map(order => `
-                            <tr>
-                                <td><span style="color: var(--accent-primary);">#${order.id}</span></td>
-                                <td><strong>${escapeHtml(order.user_name || '—')}</strong></td>
-                                <td>${escapeHtml(order.service_title || '—')}</td>
-                                <td>${formatCurrency(order.price)}</td>
-                                <td><span class="badge badge-${order.status}">${order.status.replace(/_/g, ' ')}</span></td>
-                                <td>${formatDate(order.created_at)}</td>
-                                <td><button class="btn btn-sm btn-info" onclick="viewOrderDetails(${order.id})"><i class="fas fa-eye"></i> View</button></td>
-                            </tr>
-                        `).join('')}
-                        ${recentOrders.length === 0 ? '<tr><td colspan="7" class="empty-row">No orders found</td></tr>' : ''}
-                    </tbody>
+                <table><thead><tr><th>Order ID</th><th>Customer</th><th>Service</th><th>Amount</th><th>Status</th><th>Date</th><th>Actions</th></tr></thead>
+                <tbody>${recentOrders.map(order => `<tr><td><span style="color: var(--accent-primary);">#${order.id}</span></td><td><strong>${escapeHtml(order.user_name || '—')}</strong></td><td>${escapeHtml(order.service_title || '—')}</td><td>${formatCurrency(order.price)}</td><td><span class="badge badge-${order.status}">${order.status.replace(/_/g, ' ')}</span></td><td>${formatDate(order.created_at)}</td><td><button class="btn btn-sm btn-info" onclick="viewOrderDetails(${order.id})"><i class="fas fa-eye"></i> View</button></td></tr>`).join('')}${recentOrders.length === 0 ? '<tr><td colspan="7" class="empty-row">No orders found</td></tr>' : ''}</tbody>
                 </table>
             </div>
         </div>
         
         <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px;">
-            <div class="card">
-                <div class="card-header">
-                    <h3><i class="fas fa-bell"></i> Pending Actions</h3>
-                </div>
-                <div class="table-responsive">
-                    <table>
-                        <tbody>
-                            <tr><td><i class="fas fa-shopping-cart"></i> Orders ready to start</td><td><strong>${pendingOrders}</strong></td><td><button class="btn btn-sm btn-primary" onclick="switchPage('orders')">View</button></td></tr>
-                            <tr><td><i class="fas fa-file-signature"></i> Custom requests pending</td><td><strong>${appData.customRequests.filter(r => r.status === 'pending').length}</strong></td><td><button class="btn btn-sm btn-primary" onclick="switchPage('custom-requests')">View</button></td></tr>
-                            <tr><td><i class="fas fa-undo-alt"></i> Cancellation requests</td><td><strong>${cancellationRequests}</strong></td><td><button class="btn btn-sm btn-danger" onclick="switchPage('orders')">Process</button></td></tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            <div class="card">
-                <div class="card-header">
-                    <h3><i class="fas fa-chart-line"></i> Quick Stats</h3>
-                </div>
-                <div class="table-responsive">
-                    <table>
-                        <tbody>
-                            <tr><td>Completed Orders</td><td><strong>${appData.orders.filter(o => o.status === 'completed' || o.status === 'delivered').length}</strong></td></tr>
-                            <tr><td>Cancelled Orders</td><td><strong>${appData.orders.filter(o => o.status === 'cancelled').length}</strong></td></tr>
-                            <tr><td>Total Refunds Processed</td><td><strong>${formatCurrency(appData.refunds.reduce((s, r) => s + parseFloat(r.amount || 0), 0))}</strong></td></tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+            <div class="card"><div class="card-header"><h3><i class="fas fa-bell"></i> Pending Actions</h3></div>
+            <div class="table-responsive"><table><tbody>
+                <tr><td><i class="fas fa-shopping-cart"></i> Orders ready to start</td><td><strong>${pendingOrders}</strong></td><td><button class="btn btn-sm btn-primary" onclick="switchPage('orders')">View</button></td></tr>
+                <tr><td><i class="fas fa-file-signature"></i> Custom requests pending</td><td><strong>${appData.customRequests.filter(r => r.status === 'pending').length}</strong></td><td><button class="btn btn-sm btn-primary" onclick="switchPage('custom-requests')">View</button></td></tr>
+                <tr><td><i class="fas fa-undo-alt"></i> Cancellation requests</td><td><strong>${cancellationRequests}</strong></td><td><button class="btn btn-sm btn-danger" onclick="switchPage('orders')">Process</button></td></tr>
+            </tbody></table></div></div>
+            
+            <div class="card"><div class="card-header"><h3><i class="fas fa-chart-line"></i> Quick Stats</h3></div>
+            <div class="table-responsive"><table><tbody>
+                <tr><td>Completed Orders</td><td><strong>${appData.orders.filter(o => o.status === 'completed' || o.status === 'delivered').length}</strong></td></tr>
+                <tr><td>Cancelled Orders</td><td><strong>${appData.orders.filter(o => o.status === 'cancelled').length}</strong></td></tr>
+                <tr><td>Total Refunds Processed</td><td><strong>${formatCurrency(appData.refunds.reduce((s, r) => s + parseFloat(r.amount || 0), 0))}</strong></td></tr>
+            </tbody></table></div></div>
         </div>
     `;
     
     document.getElementById('content-area').innerHTML = html;
+    
+    // Render chart
+    if (chartLabels.length > 0) {
+        const ctx = document.getElementById('revenueChart')?.getContext('2d');
+        if (ctx) {
+            new Chart(ctx, {
+                type: 'line',
+                data: { labels: chartLabels, datasets: [{ label: 'Revenue (₹)', data: chartValues, borderColor: '#ff6b35', backgroundColor: 'rgba(255,107,53,0.1)', tension: 0.4, fill: true }] },
+                options: { responsive: true, maintainAspectRatio: true, plugins: { legend: { labels: { color: 'white' } } }, scales: { x: { ticks: { color: 'white' } }, y: { ticks: { color: 'white' } } } }
+            });
+        }
+    }
 }
 
 // ============================================================
@@ -1574,192 +1402,14 @@ function renderOrders(filter = '') {
     let filteredOrders = [...appData.orders];
     if (filter) {
         const search = filter.toLowerCase();
-        filteredOrders = filteredOrders.filter(o => 
-            o.id?.toString().includes(search) ||
-            o.user_name?.toLowerCase().includes(search) ||
-            o.user_email?.toLowerCase().includes(search) ||
-            o.service_title?.toLowerCase().includes(search)
-        );
+        filteredOrders = filteredOrders.filter(o => o.id?.toString().includes(search) || o.user_name?.toLowerCase().includes(search) || o.user_email?.toLowerCase().includes(search) || o.service_title?.toLowerCase().includes(search));
     }
     
-    const html = `
-        <div class="card">
-            <div class="card-header">
-                <h3><i class="fas fa-list"></i> All Orders</h3>
-                <input type="text" class="search-input" id="order-search" placeholder="Search orders..." onkeyup="filterOrders(this.value)">
-            </div>
-            <div class="table-responsive">
-                <table>
-                    <thead>
-                        <tr><th>ID</th><th>Customer</th><th>Email</th><th>Service</th><th>Total</th><th>Paid</th><th>Due</th><th>Status</th><th>Actions</th></tr>
-                    </thead>
-                    <tbody>
-                        ${filteredOrders.map(order => {
-                            const total = parseFloat(order.price) || 0;
-                            const paid = parseFloat(order.total_paid) || parseFloat(order.advance_paid) || 0;
-                            const due = total - paid;
-                            return `
-                                <tr>
-                                    <td><span style="color: var(--accent-primary);">#${order.id}</span></td>
-                                    <td><strong>${escapeHtml(order.user_name || '—')}</strong></td>
-                                    <td><small>${escapeHtml(order.user_email || '—')}</small></td>
-                                    <td>${escapeHtml(order.service_title || '—')}</td>
-                                    <td>${formatCurrency(total)}</td>
-                                    <td style="color: var(--success);">${formatCurrency(paid)}</td>
-                                    <td style="color: var(--warning);">${formatCurrency(due)}</td>
-                                    <td><span class="badge badge-${order.status}">${order.status.replace(/_/g, ' ')}</span></td>
-                                    <td>
-                                        <div style="display: flex; gap: 5px; flex-wrap: wrap;">
-                                            <button class="btn btn-sm btn-info" onclick="viewOrderDetails(${order.id})"><i class="fas fa-eye"></i></button>
-                                            <button class="btn btn-sm btn-primary" onclick="openDeliveryModal(${order.id})"><i class="fas fa-box"></i></button>
-                                            <button class="btn btn-sm btn-success" onclick="chatFromOrder(${order.id})"><i class="fas fa-comment"></i></button>
-                                            ${order.status === 'payment_received' ? `<button class="btn btn-sm btn-success" onclick="updateOrderStatus(${order.id}, 'in_progress')"><i class="fas fa-play"></i> Start</button>` : ''}
-                                            ${order.status === 'in_progress' ? `<button class="btn btn-sm btn-warning" onclick="updateOrderStatus(${order.id}, 'ready_for_balance')"><i class="fas fa-money-bill"></i> Balance</button>` : ''}
-                                            ${order.status === 'ready_for_balance' ? `<button class="btn btn-sm btn-primary" onclick="updateOrderStatus(${order.id}, 'completed')"><i class="fas fa-check-circle"></i> Complete</button>` : ''}
-                                            ${order.status === 'cancellation_requested' ? `<button class="btn btn-sm btn-danger" onclick="openRefundModal(${order.id}, ${paid})"><i class="fas fa-undo"></i> Refund</button>` : ''}
-                                        </div>
-                                    </td>
-                                </tr>
-                            `;
-                        }).join('')}
-                        ${filteredOrders.length === 0 ? '<tr><td colspan="9" class="empty-row">No orders found</td></tr>' : ''}
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    `;
-    
+    const html = `<div class="card"><div class="card-header"><h3><i class="fas fa-list"></i> All Orders</h3><input type="text" class="search-input" id="order-search" placeholder="Search orders..." onkeyup="filterOrders(this.value)"></div><div class="table-responsive"><table><thead><tr><th>ID</th><th>Customer</th><th>Email</th><th>Service</th><th>Total</th><th>Paid</th><th>Due</th><th>Status</th><th>Actions</th></tr></thead><tbody>${filteredOrders.map(order => { const total = parseFloat(order.price) || 0; const paid = parseFloat(order.total_paid) || parseFloat(order.advance_paid) || 0; const due = total - paid; return `<tr><td><span style="color: var(--accent-primary);">#${order.id}</span></td><td><strong>${escapeHtml(order.user_name || '—')}</strong></td><td><small>${escapeHtml(order.user_email || '—')}</small></td><td>${escapeHtml(order.service_title || '—')}</td><td>${formatCurrency(total)}</td><td style="color: var(--success);">${formatCurrency(paid)}</td><td style="color: var(--warning);">${formatCurrency(due)}</td><td><span class="badge badge-${order.status}">${order.status.replace(/_/g, ' ')}</span></td><td><div style="display: flex; gap: 5px; flex-wrap: wrap;"><button class="btn btn-sm btn-info" onclick="viewOrderDetails(${order.id})"><i class="fas fa-eye"></i></button><button class="btn btn-sm btn-primary" onclick="openDeliveryModal(${order.id})"><i class="fas fa-box"></i></button><button class="btn btn-sm btn-success" onclick="chatFromOrder(${order.id})"><i class="fas fa-comment"></i></button>${order.status === 'payment_received' ? `<button class="btn btn-sm btn-success" onclick="updateOrderStatus(${order.id}, 'in_progress')"><i class="fas fa-play"></i> Start</button>` : ''}${order.status === 'in_progress' ? `<button class="btn btn-sm btn-warning" onclick="updateOrderStatus(${order.id}, 'ready_for_balance')"><i class="fas fa-money-bill"></i> Balance</button>` : ''}${order.status === 'ready_for_balance' ? `<button class="btn btn-sm btn-primary" onclick="updateOrderStatus(${order.id}, 'completed')"><i class="fas fa-check-circle"></i> Complete</button>` : ''}${order.status === 'cancellation_requested' ? `<button class="btn btn-sm btn-danger" onclick="openRefundModal(${order.id}, ${paid})"><i class="fas fa-undo"></i> Refund</button>` : ''}</div></td></tr>`; }).join('')}${filteredOrders.length === 0 ? '<tr><td colspan="9" class="empty-row">No orders found</td></tr>' : ''}</tbody></table></div></div>`;
     document.getElementById('content-area').innerHTML = html;
 }
 
-function filterOrders(searchTerm) {
-    renderOrders(searchTerm);
-}
-
-async function viewOrderDetails(orderId) {
-    const order = appData.orders.find(o => o.id === orderId);
-    if (!order) return;
-    
-    const total = parseFloat(order.price) || 0;
-    const paid = parseFloat(order.total_paid) || parseFloat(order.advance_paid) || 0;
-    const due = total - paid;
-    const percentPaid = total > 0 ? (paid / total) * 100 : 0;
-    
-    // Get user details for client info
-    const user = appData.users.find(u => u.email === order.user_email);
-    
-    // Load timeline
-    let timelineHtml = '<div class="timeline-item"><div class="loading-spinner"></div> Loading timeline...</div>';
-    try {
-        const timeline = await apiCall('GET', `/order/${orderId}/timeline`);
-        if (timeline.data && timeline.data.length) {
-            timelineHtml = timeline.data.map(t => `
-                <div class="timeline-item">
-                    <div class="timeline-time">${formatDateTime(t.created_at)}</div>
-                    <div class="timeline-message">${escapeHtml(t.message || `Status: ${t.status}`)}</div>
-                </div>
-            `).join('');
-        } else {
-            timelineHtml = '<div class="timeline-item">No timeline entries</div>';
-        }
-    } catch (err) {
-        timelineHtml = '<div class="timeline-item">Unable to load timeline</div>';
-    }
-    
-    const html = `
-        <!-- Client Information Card - COMPLETE -->
-        <div class="client-info-card">
-            <h4><i class="fas fa-user-circle"></i> Client Information</h4>
-            <div class="client-detail-row">
-                <span class="client-detail-label"><i class="fas fa-user"></i> Full Name</span>
-                <span class="client-detail-value">${escapeHtml(order.user_name || '—')}</span>
-            </div>
-            <div class="client-detail-row">
-                <span class="client-detail-label"><i class="fas fa-envelope"></i> Email Address</span>
-                <span class="client-detail-value"><a href="mailto:${order.user_email}" style="color: var(--accent-primary);">${escapeHtml(order.user_email || '—')}</a></span>
-            </div>
-            <div class="client-detail-row">
-                <span class="client-detail-label"><i class="fas fa-phone"></i> Phone Number</span>
-                <span class="client-detail-value">${user?.phone || '—'}</span>
-            </div>
-            <div class="client-detail-row">
-                <span class="client-detail-label"><i class="fas fa-calendar-alt"></i> Member Since</span>
-                <span class="client-detail-value">${user?.created_at ? formatDate(user.created_at) : '—'}</span>
-            </div>
-            <div class="client-detail-row">
-                <span class="client-detail-label"><i class="fas fa-check-circle"></i> Email Verified</span>
-                <span class="client-detail-value">${user?.verified ? '<span style="color: var(--success);"><i class="fas fa-check"></i> Yes</span>' : '<span style="color: var(--warning);"><i class="fas fa-clock"></i> No</span>'}</span>
-            </div>
-        </div>
-        
-        <div class="order-detail-section">
-            <h4><i class="fas fa-info-circle"></i> Order Information</h4>
-            <div class="info-grid">
-                <div class="info-item"><div class="label">Order ID</div><div class="value">#${order.id}</div></div>
-                <div class="info-item"><div class="label">Status</div><div class="value"><span class="badge badge-${order.status}">${order.status.replace(/_/g, ' ')}</span></div></div>
-                <div class="info-item"><div class="label">Created</div><div class="value">${formatDateTime(order.created_at)}</div></div>
-                <div class="info-item"><div class="label">Service</div><div class="value">${escapeHtml(order.service_title || '—')}</div></div>
-            </div>
-        </div>
-        
-        <div class="order-detail-section">
-            <h4><i class="fas fa-credit-card"></i> Payment Details</h4>
-            <div class="info-grid">
-                <div class="info-item"><div class="label">Total Amount</div><div class="value" style="color: var(--success);">${formatCurrency(total)}</div></div>
-                <div class="info-item"><div class="label">Advance Paid (15%)</div><div class="value">${formatCurrency(order.advance_paid || 0)}</div></div>
-                <div class="info-item"><div class="label">Total Paid</div><div class="value" style="color: var(--success);">${formatCurrency(paid)}</div></div>
-                <div class="info-item"><div class="label">Balance Due</div><div class="value" style="color: var(--warning);">${formatCurrency(due)}</div></div>
-            </div>
-            <div class="progress-bar"><div class="progress-fill" style="width: ${percentPaid}%"></div></div>
-            <div style="text-align: center; font-size: 12px; margin-top: 8px;">${Math.round(percentPaid)}% Paid</div>
-        </div>
-        
-        ${order.customization && Object.keys(order.customization).length ? `
-        <div class="order-detail-section">
-            <h4><i class="fas fa-sliders-h"></i> Customizations</h4>
-            ${Object.entries(order.customization).map(([k, v]) => `<div style="margin-bottom: 8px;"><strong>${k}:</strong> ${typeof v === 'boolean' ? (v ? 'Yes' : 'No') : v}</div>`).join('')}
-        </div>
-        ` : ''}
-        
-        ${order.requirements ? `
-        <div class="order-detail-section">
-            <h4><i class="fas fa-clipboard-list"></i> Requirements</h4>
-            <div style="background: var(--bg-surface); padding: 12px; border-radius: 8px; white-space: pre-wrap;">${escapeHtml(order.requirements)}</div>
-        </div>
-        ` : ''}
-        
-        <div class="order-detail-section">
-            <h4><i class="fas fa-link"></i> Deliverables</h4>
-            <div class="info-grid">
-                <div class="info-item"><div class="label">Live URL</div><div class="value">${order.live_url ? `<a href="${order.live_url}" target="_blank" style="color: var(--success);">${order.live_url.substring(0, 40)}...</a>` : '—'}</div></div>
-                <div class="info-item"><div class="label">GitHub</div><div class="value">${order.github_repo ? `<a href="${order.github_repo}" target="_blank" style="color: var(--success);">View Repository</a>` : '—'}</div></div>
-                <div class="info-item"><div class="label">Preview Ready</div><div class="value">${order.preview_ready ? '<i class="fas fa-check-circle" style="color: var(--success);"></i> Yes' : '<i class="fas fa-times-circle" style="color: var(--error);"></i> No'}</div></div>
-                <div class="info-item"><div class="label">Full Access</div><div class="value">${order.full_access_ready ? '<i class="fas fa-check-circle" style="color: var(--success);"></i> Yes' : '<i class="fas fa-times-circle" style="color: var(--error);"></i> No'}</div></div>
-            </div>
-            ${order.delivery_notes ? `<div style="margin-top: 12px;"><strong>Notes:</strong><p style="margin-top: 5px;">${escapeHtml(order.delivery_notes)}</p></div>` : ''}
-        </div>
-        
-        <div class="order-detail-section">
-            <h4><i class="fas fa-history"></i> Timeline</h4>
-            ${timelineHtml}
-        </div>
-        
-        <div class="order-detail-section">
-            <h4><i class="fas fa-cog"></i> Actions</h4>
-            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-                <button class="btn btn-primary" onclick="openDeliveryModal(${order.id}); closeModal('order-modal');"><i class="fas fa-box"></i> Update Deliverables</button>
-                ${order.status === 'payment_received' ? `<button class="btn btn-success" onclick="updateOrderStatus(${order.id}, 'in_progress'); closeModal('order-modal');"><i class="fas fa-play"></i> Start Project</button>` : ''}
-                ${order.status === 'in_progress' ? `<button class="btn btn-warning" onclick="updateOrderStatus(${order.id}, 'ready_for_balance'); closeModal('order-modal');"><i class="fas fa-money-bill"></i> Ready for Balance</button>` : ''}
-                ${order.status === 'ready_for_balance' ? `<button class="btn btn-primary" onclick="updateOrderStatus(${order.id}, 'completed'); closeModal('order-modal');"><i class="fas fa-check-circle"></i> Mark Completed</button>` : ''}
-                ${order.status === 'cancellation_requested' ? `<button class="btn btn-danger" onclick="openRefundModal(${order.id}, ${paid}); closeModal('order-modal');"><i class="fas fa-undo"></i> Process Refund</button>` : ''}
-                <button class="btn btn-info" onclick="chatFromOrder(${order.id}); closeModal('order-modal');"><i class="fas fa-comment"></i> Open Chat</button>
-            </div>
-        </div>
-    `;
-    
-    document.getElementById('order-detail-content').innerHTML = html;
-    document.getElementById('order-modal').classList.add('open');
-}
+function filterOrders(searchTerm) { renderOrders(searchTerm); }
 
 async function updateOrderStatus(orderId, newStatus) {
     try {
@@ -1767,15 +1417,41 @@ async function updateOrderStatus(orderId, newStatus) {
         showToast(`Order #${orderId} status updated to ${newStatus}`, 'success');
         await loadAllData();
         closeModal('order-modal');
-    } catch (err) {
-        showToast('Failed to update status: ' + err.message, 'error');
-    }
+    } catch (err) { showToast('Failed to update status: ' + err.message, 'error'); }
+}
+
+async function viewOrderDetails(orderId) {
+    const order = appData.orders.find(o => o.id === orderId);
+    if (!order) return;
+    const total = parseFloat(order.price) || 0;
+    const paid = parseFloat(order.total_paid) || parseFloat(order.advance_paid) || 0;
+    const due = total - paid;
+    const percentPaid = total > 0 ? (paid / total) * 100 : 0;
+    const user = appData.users.find(u => u.email === order.user_email);
+    
+    let timelineHtml = '<div class="timeline-item">Loading timeline...</div>';
+    try {
+        const timeline = await apiCall('GET', `/order/${orderId}/timeline`);
+        if (timeline.data && timeline.data.length) {
+            timelineHtml = timeline.data.map(t => `<div class="timeline-item"><div class="timeline-time">${formatDateTime(t.created_at)}</div><div class="timeline-message">${escapeHtml(t.message || `Status: ${t.status}`)}</div></div>`).join('');
+        } else { timelineHtml = '<div class="timeline-item">No timeline entries</div>'; }
+    } catch (err) { timelineHtml = '<div class="timeline-item">Unable to load timeline</div>'; }
+    
+    const html = `<div class="client-info-card"><h4><i class="fas fa-user-circle"></i> Client Information</h4><div class="client-detail-row"><span class="client-detail-label"><i class="fas fa-user"></i> Full Name</span><span class="client-detail-value">${escapeHtml(order.user_name || '—')}</span></div><div class="client-detail-row"><span class="client-detail-label"><i class="fas fa-envelope"></i> Email Address</span><span class="client-detail-value"><a href="mailto:${order.user_email}" style="color: var(--accent-primary);">${escapeHtml(order.user_email || '—')}</a></span></div><div class="client-detail-row"><span class="client-detail-label"><i class="fas fa-phone"></i> Phone Number</span><span class="client-detail-value">${user?.phone || '—'}</span></div><div class="client-detail-row"><span class="client-detail-label"><i class="fas fa-calendar-alt"></i> Member Since</span><span class="client-detail-value">${user?.created_at ? formatDate(user.created_at) : '—'}</span></div><div class="client-detail-row"><span class="client-detail-label"><i class="fas fa-check-circle"></i> Email Verified</span><span class="client-detail-value">${user?.verified ? '<span style="color: var(--success);"><i class="fas fa-check"></i> Yes</span>' : '<span style="color: var(--warning);"><i class="fas fa-clock"></i> No</span>'}</span></div></div>
+    <div class="order-detail-section"><h4><i class="fas fa-info-circle"></i> Order Information</h4><div class="info-grid"><div class="info-item"><div class="label">Order ID</div><div class="value">#${order.id}</div></div><div class="info-item"><div class="label">Status</div><div class="value"><span class="badge badge-${order.status}">${order.status.replace(/_/g, ' ')}</span></div></div><div class="info-item"><div class="label">Created</div><div class="value">${formatDateTime(order.created_at)}</div></div><div class="info-item"><div class="label">Service</div><div class="value">${escapeHtml(order.service_title || '—')}</div></div></div></div>
+    <div class="order-detail-section"><h4><i class="fas fa-credit-card"></i> Payment Details</h4><div class="info-grid"><div class="info-item"><div class="label">Total Amount</div><div class="value" style="color: var(--success);">${formatCurrency(total)}</div></div><div class="info-item"><div class="label">Advance Paid (15%)</div><div class="value">${formatCurrency(order.advance_paid || 0)}</div></div><div class="info-item"><div class="label">Total Paid</div><div class="value" style="color: var(--success);">${formatCurrency(paid)}</div></div><div class="info-item"><div class="label">Balance Due</div><div class="value" style="color: var(--warning);">${formatCurrency(due)}</div></div></div><div class="progress-bar"><div class="progress-fill" style="width: ${percentPaid}%"></div></div><div style="text-align: center; font-size: 12px; margin-top: 8px;">${Math.round(percentPaid)}% Paid</div></div>
+    ${order.customization && Object.keys(order.customization).length ? `<div class="order-detail-section"><h4><i class="fas fa-sliders-h"></i> Customizations</h4>${Object.entries(order.customization).map(([k, v]) => `<div style="margin-bottom: 8px;"><strong>${k}:</strong> ${typeof v === 'boolean' ? (v ? 'Yes' : 'No') : v}</div>`).join('')}</div>` : ''}
+    ${order.requirements ? `<div class="order-detail-section"><h4><i class="fas fa-clipboard-list"></i> Requirements</h4><div style="background: var(--bg-surface); padding: 12px; border-radius: 8px; white-space: pre-wrap;">${escapeHtml(order.requirements)}</div></div>` : ''}
+    <div class="order-detail-section"><h4><i class="fas fa-link"></i> Deliverables</h4><div class="info-grid"><div class="info-item"><div class="label">Live URL</div><div class="value">${order.live_url ? `<a href="${order.live_url}" target="_blank" style="color: var(--success);">${order.live_url.substring(0, 40)}...</a>` : '—'}</div></div><div class="info-item"><div class="label">GitHub</div><div class="value">${order.github_repo ? `<a href="${order.github_repo}" target="_blank" style="color: var(--success);">View Repository</a>` : '—'}</div></div><div class="info-item"><div class="label">Preview Ready</div><div class="value">${order.preview_ready ? '<i class="fas fa-check-circle" style="color: var(--success);"></i> Yes' : '<i class="fas fa-times-circle" style="color: var(--error);"></i> No'}</div></div><div class="info-item"><div class="label">Full Access</div><div class="value">${order.full_access_ready ? '<i class="fas fa-check-circle" style="color: var(--success);"></i> Yes' : '<i class="fas fa-times-circle" style="color: var(--error);"></i> No'}</div></div></div>${order.delivery_notes ? `<div style="margin-top: 12px;"><strong>Notes:</strong><p style="margin-top: 5px;">${escapeHtml(order.delivery_notes)}</p></div>` : ''}</div>
+    <div class="order-detail-section"><h4><i class="fas fa-history"></i> Timeline</h4>${timelineHtml}</div>
+    <div class="order-detail-section"><h4><i class="fas fa-cog"></i> Actions</h4><div style="display: flex; gap: 10px; flex-wrap: wrap;"><button class="btn btn-primary" onclick="openDeliveryModal(${order.id}); closeModal('order-modal');"><i class="fas fa-box"></i> Update Deliverables</button>${order.status === 'payment_received' ? `<button class="btn btn-success" onclick="updateOrderStatus(${order.id}, 'in_progress'); closeModal('order-modal');"><i class="fas fa-play"></i> Start Project</button>` : ''}${order.status === 'in_progress' ? `<button class="btn btn-warning" onclick="updateOrderStatus(${order.id}, 'ready_for_balance'); closeModal('order-modal');"><i class="fas fa-money-bill"></i> Ready for Balance</button>` : ''}${order.status === 'ready_for_balance' ? `<button class="btn btn-primary" onclick="updateOrderStatus(${order.id}, 'completed'); closeModal('order-modal');"><i class="fas fa-check-circle"></i> Mark Completed</button>` : ''}${order.status === 'cancellation_requested' ? `<button class="btn btn-danger" onclick="openRefundModal(${order.id}, ${paid}); closeModal('order-modal');"><i class="fas fa-undo"></i> Process Refund</button>` : ''}<button class="btn btn-info" onclick="chatFromOrder(${order.id}); closeModal('order-modal');"><i class="fas fa-comment"></i> Open Chat</button></div></div>`;
+    document.getElementById('order-detail-content').innerHTML = html;
+    document.getElementById('order-modal').classList.add('open');
 }
 
 function openDeliveryModal(orderId) {
     const order = appData.orders.find(o => o.id === orderId);
     if (!order) return;
-    
     currentOrderId = orderId;
     document.getElementById('delivery-github').value = order.github_repo || '';
     document.getElementById('delivery-live').value = order.live_url || '';
@@ -1785,13 +1461,11 @@ function openDeliveryModal(orderId) {
     document.getElementById('delivery-preview').checked = order.preview_ready || false;
     document.getElementById('delivery-full').checked = order.full_access_ready || false;
     document.getElementById('delivery-mark').checked = false;
-    
     document.getElementById('delivery-modal').classList.add('open');
 }
 
 async function submitDelivery() {
     if (!currentOrderId) return;
-    
     const data = {
         github_repo: document.getElementById('delivery-github').value,
         live_url: document.getElementById('delivery-live').value,
@@ -1802,15 +1476,12 @@ async function submitDelivery() {
         full_access_ready: document.getElementById('delivery-full').checked,
         mark_delivered: document.getElementById('delivery-mark').checked
     };
-    
     try {
         await apiCall('POST', `/admin/order/${currentOrderId}/update-delivery`, data);
         showToast('Delivery information updated successfully', 'success');
         closeModal('delivery-modal');
         await loadAllData();
-    } catch (err) {
-        showToast('Failed to update delivery: ' + err.message, 'error');
-    }
+    } catch (err) { showToast('Failed to update delivery: ' + err.message, 'error'); }
 }
 
 function openRefundModal(orderId, amount) {
@@ -1822,22 +1493,15 @@ function openRefundModal(orderId, amount) {
 
 async function processRefund() {
     if (!currentOrderId) return;
-    
     const amount = parseFloat(document.getElementById('refund-amount').value);
     const reason = document.getElementById('refund-reason').value;
-    
-    if (!confirm(`Are you sure you want to refund ₹${amount}? This action cannot be undone!`)) {
-        return;
-    }
-    
+    if (!confirm(`Are you sure you want to refund ₹${amount}? This action cannot be undone!`)) return;
     try {
         await apiCall('POST', `/admin/order/${currentOrderId}/refund`, { amount, reason: reason || 'Admin initiated refund' });
         showToast('Refund processed successfully', 'success');
         closeModal('refund-modal');
         await loadAllData();
-    } catch (err) {
-        showToast('Failed to process refund: ' + err.message, 'error');
-    }
+    } catch (err) { showToast('Failed to process refund: ' + err.message, 'error'); }
 }
 
 // ============================================================
@@ -1847,106 +1511,23 @@ function renderPaymentHistory(filter = '') {
     let filteredPayments = [...appData.payments];
     if (filter) {
         const search = filter.toLowerCase();
-        filteredPayments = filteredPayments.filter(p => 
-            p.order_id?.toString().includes(search) ||
-            p.user_name?.toLowerCase().includes(search) ||
-            p.user_email?.toLowerCase().includes(search)
-        );
+        filteredPayments = filteredPayments.filter(p => p.order_id?.toString().includes(search) || p.user_name?.toLowerCase().includes(search) || p.user_email?.toLowerCase().includes(search));
     }
-    
     const totalAdvance = filteredPayments.filter(p => p.payment_type === 'advance' && p.status === 'completed').reduce((s, p) => s + parseFloat(p.amount || 0), 0);
     const totalBalance = filteredPayments.filter(p => p.payment_type === 'balance' && p.status === 'completed').reduce((s, p) => s + parseFloat(p.amount || 0), 0);
     const totalRefund = filteredPayments.filter(p => p.payment_type === 'refund').reduce((s, p) => s + Math.abs(parseFloat(p.amount || 0)), 0);
     
-    const html = `
-        <div class="stats-grid">
-            <div class="stat-card">
-                <div class="stat-label"><i class="fas fa-hand-holding-usd"></i> Total Advance</div>
-                <div class="stat-value">${formatCurrency(totalAdvance)}</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-label"><i class="fas fa-wallet"></i> Total Balance</div>
-                <div class="stat-value">${formatCurrency(totalBalance)}</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-label"><i class="fas fa-undo-alt"></i> Total Refunds</div>
-                <div class="stat-value">${formatCurrency(totalRefund)}</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-label"><i class="fas fa-chart-line"></i> Net Revenue</div>
-                <div class="stat-value">${formatCurrency(totalAdvance + totalBalance - totalRefund)}</div>
-            </div>
-        </div>
-        
-        <div class="card">
-            <div class="card-header">
-                <h3><i class="fas fa-credit-card"></i> Payment Transactions</h3>
-                <input type="text" class="search-input" id="payment-search" placeholder="Search payments..." onkeyup="filterPayments(this.value)">
-            </div>
-            <div class="table-responsive">
-                <table>
-                    <thead>
-                        <tr><th>ID</th><th>Order</th><th>Customer</th><th>Amount</th><th>Type</th><th>Status</th><th>Transaction ID</th><th>Date</th><tr>
-                    </thead>
-                    <tbody>
-                        ${filteredPayments.map(payment => `
-                            <tr>
-                                <td>#${payment.id}</td>
-                                <td><span style="color: var(--accent-primary);">#${payment.order_id}</span></td>
-                                <td><strong>${escapeHtml(payment.user_name || '—')}</strong><br><small>${escapeHtml(payment.user_email || '')}</small></td>
-                                <td style="color: ${payment.amount < 0 ? 'var(--error)' : 'var(--success)'};">${formatCurrency(Math.abs(payment.amount))}${payment.amount < 0 ? ' (Refund)' : ''}</td>
-                                <td><span class="${payment.payment_type === 'advance' ? 'payment-advance' : payment.payment_type === 'balance' ? 'payment-balance' : 'payment-refund'}">${payment.payment_type || '—'}</span></td>
-                                <td><span class="badge badge-${payment.status === 'completed' ? 'completed' : 'pending'}">${payment.status}</span></td>
-                                <td><small>${payment.razorpay_payment_id ? payment.razorpay_payment_id.substring(0, 15) + '...' : '—'}</small></td>
-                                <td>${formatDateTime(payment.created_at)}</td>
-                            </tr>
-                        `).join('')}
-                        ${filteredPayments.length === 0 ? '<tr><td colspan="8" class="empty-row">No payment records found</td>' : ''}
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    `;
-    
+    const html = `<div class="stats-grid"><div class="stat-card"><div class="stat-label"><i class="fas fa-hand-holding-usd"></i> Total Advance</div><div class="stat-value">${formatCurrency(totalAdvance)}</div></div><div class="stat-card"><div class="stat-label"><i class="fas fa-wallet"></i> Total Balance</div><div class="stat-value">${formatCurrency(totalBalance)}</div></div><div class="stat-card"><div class="stat-label"><i class="fas fa-undo-alt"></i> Total Refunds</div><div class="stat-value">${formatCurrency(totalRefund)}</div></div><div class="stat-card"><div class="stat-label"><i class="fas fa-chart-line"></i> Net Revenue</div><div class="stat-value">${formatCurrency(totalAdvance + totalBalance - totalRefund)}</div></div></div>
+    <div class="card"><div class="card-header"><h3><i class="fas fa-credit-card"></i> Payment Transactions</h3><input type="text" class="search-input" id="payment-search" placeholder="Search payments..." onkeyup="filterPayments(this.value)"></div><div class="table-responsive"></table><thead><tr><th>ID</th><th>Order</th><th>Customer</th><th>Amount</th><th>Type</th><th>Status</th><th>Transaction ID</th><th>Date</th></tr></thead><tbody>${filteredPayments.map(payment => `<tr><td>#${payment.id}</td><td><span style="color: var(--accent-primary);">#${payment.order_id}</span></td><td><strong>${escapeHtml(payment.user_name || '—')}</strong><br><small>${escapeHtml(payment.user_email || '')}</small></td><td style="color: ${payment.amount < 0 ? 'var(--error)' : 'var(--success)'};">${formatCurrency(Math.abs(payment.amount))}${payment.amount < 0 ? ' (Refund)' : ''}</td><td><span class="${payment.payment_type === 'advance' ? 'payment-advance' : payment.payment_type === 'balance' ? 'payment-balance' : 'payment-refund'}">${payment.payment_type || '—'}</span></td><td><span class="badge badge-${payment.status === 'completed' ? 'completed' : 'pending'}">${payment.status}</span></td><td><small>${payment.razorpay_payment_id ? payment.razorpay_payment_id.substring(0, 15) + '...' : '—'}</small></td><td>${formatDateTime(payment.created_at)}</td></tr>`).join('')}${filteredPayments.length === 0 ? '<tr><td colspan="8" class="empty-row">No payment records found</td></tr>' : ''}</tbody></table></div></div>`;
     document.getElementById('content-area').innerHTML = html;
 }
-
-function filterPayments(searchTerm) {
-    renderPaymentHistory(searchTerm);
-}
+function filterPayments(searchTerm) { renderPaymentHistory(searchTerm); }
 
 // ============================================================
 // REFUNDS PAGE
 // ============================================================
 function renderRefunds() {
-    const html = `
-        <div class="card">
-            <div class="card-header">
-                <h3><i class="fas fa-money-bill-wave"></i> Refund History</h3>
-            </div>
-            <div class="table-responsive">
-                <table>
-                    <thead>
-                        <tr><th>Order ID</th><th>Customer</th><th>Amount</th><th>Reason</th><th>Status</th><th>Processed By</th><th>Date</th></tr>
-                    </thead>
-                    <tbody>
-                        ${appData.refunds.map(refund => `
-                            <tr>
-                                <td><span style="color: var(--accent-primary);">#${refund.order_id}</span></td>
-                                <td><strong>${escapeHtml(refund.user_name || '—')}</strong><br><small>${escapeHtml(refund.user_email || '')}</small></td>
-                                <td style="color: var(--error);">${formatCurrency(refund.amount)}</td>
-                                <td><small>${escapeHtml((refund.reason || '').substring(0, 50))}${(refund.reason || '').length > 50 ? '...' : ''}</small></td>
-                                <td><span class="badge badge-${refund.status === 'completed' ? 'completed' : 'pending'}">${refund.status}</span></td>
-                                <td>${refund.processed_by || 'Admin'}</td>
-                                <td>${formatDateTime(refund.processed_at)}</td>
-                            </tr>
-                        `).join('')}
-                        ${appData.refunds.length === 0 ? '<tr><td colspan="7" class="empty-row">No refunds processed yet</td>' : ''}
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    `;
+    const html = `<div class="card"><div class="card-header"><h3><i class="fas fa-money-bill-wave"></i> Refund History</h3></div><div class="table-responsive"><table><thead><tr><th>Order ID</th><th>Customer</th><th>Amount</th><th>Reason</th><th>Status</th><th>Processed By</th><th>Date</th></tr></thead><tbody>${appData.refunds.map(refund => `<tr><td><span style="color: var(--accent-primary);">#${refund.order_id}</span></td><td><strong>${escapeHtml(refund.user_name || '—')}</strong><br><small>${escapeHtml(refund.user_email || '')}</small></td><td style="color: var(--error);">${formatCurrency(refund.amount)}</td><td><small>${escapeHtml((refund.reason || '').substring(0, 50))}${(refund.reason || '').length > 50 ? '...' : ''}</small></td><td><span class="badge badge-${refund.status === 'completed' ? 'completed' : 'pending'}">${refund.status}</span></td><td>${refund.processed_by || 'Admin'}</td><td>${formatDateTime(refund.processed_at)}</td></tr>`).join('')}${appData.refunds.length === 0 ? '<tr><td colspan="7" class="empty-row">No refunds processed yet</td></tr>' : ''}</tbody></table></div></div>`;
     document.getElementById('content-area').innerHTML = html;
 }
 
@@ -1955,527 +1536,83 @@ function renderRefunds() {
 // ============================================================
 function renderServices(filter = '') {
     let filteredServices = [...appData.services];
-    if (filter) {
-        filteredServices = filteredServices.filter(s => 
-            s.title?.toLowerCase().includes(filter.toLowerCase())
-        );
-    }
-    
+    if (filter) filteredServices = filteredServices.filter(s => s.title?.toLowerCase().includes(filter.toLowerCase()));
     const orderCounts = {};
     appData.orders.forEach(o => { orderCounts[o.service_id] = (orderCounts[o.service_id] || 0) + 1; });
-    
-    const html = `
-        <div class="card">
-            <div class="card-header">
-                <h3><i class="fas fa-cubes"></i> All Services</h3>
-                <div style="display: flex; gap: 12px;">
-                    <input type="text" class="search-input" id="service-search" placeholder="Search services..." onkeyup="filterServices(this.value)">
-                    <button class="btn btn-primary" onclick="openAddServiceModal()"><i class="fas fa-plus"></i> Add Service</button>
-                </div>
-            </div>
-            <div class="table-responsive">
-                <table>
-                    <thead>
-                        <tr><th>Service</th><th>Category</th><th>Price</th><th>Orders</th><th>Actions</th></tr>
-                    </thead>
-                    <tbody>
-                        ${filteredServices.map(service => `
-                            <tr>
-                                <td><strong>${service.emoji || '💻'} ${escapeHtml(service.title)}</strong><br><small style="color: var(--text-muted);">${escapeHtml((service.description || '').substring(0, 60))}${(service.description || '').length > 60 ? '...' : ''}</small></td>
-                                <td><span class="badge badge-payment_received">${service.category}</span></td>
-                                <td style="color: var(--success);">${formatCurrency(service.price)}</td>
-                                <td>${orderCounts[service.id] || 0}</td>
-                                <td>
-                                    <div style="display: flex; gap: 5px;">
-                                        <button class="btn btn-sm btn-info" onclick="editService(${service.id})"><i class="fas fa-edit"></i></button>
-                                        <button class="btn btn-sm btn-danger" onclick="deleteService(${service.id})"><i class="fas fa-trash"></i></button>
-                                    </div>
-                                 </td>
-                            </tr>
-                        `).join('')}
-                        ${filteredServices.length === 0 ? '<tr><td colspan="5" class="empty-row">No services found</td>' : ''}
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    `;
+    const html = `<div class="card"><div class="card-header"><h3><i class="fas fa-cubes"></i> All Services</h3><div style="display: flex; gap: 12px;"><input type="text" class="search-input" id="service-search" placeholder="Search services..." onkeyup="filterServices(this.value)"><button class="btn btn-primary" onclick="openAddServiceModal()"><i class="fas fa-plus"></i> Add Service</button></div></div><div class="table-responsive"><table><thead><tr><th>Service</th><th>Category</th><th>Price</th><th>Orders</th><th>Actions</th></tr></thead><tbody>${filteredServices.map(service => `<tr><td><strong>${service.emoji || '💻'} ${escapeHtml(service.title)}</strong><br><small style="color: var(--text-muted);">${escapeHtml((service.description || '').substring(0, 60))}${(service.description || '').length > 60 ? '...' : ''}</small></td><td><span class="badge badge-payment_received">${service.category}</span></td><td style="color: var(--success);">${formatCurrency(service.price)}</td><td>${orderCounts[service.id] || 0}</td><td><div style="display: flex; gap: 5px;"><button class="btn btn-sm btn-info" onclick="editService(${service.id})"><i class="fas fa-edit"></i></button><button class="btn btn-sm btn-danger" onclick="deleteService(${service.id})"><i class="fas fa-trash"></i></button></div></td></tr>`).join('')}${filteredServices.length === 0 ? '<tr><td colspan="5" class="empty-row">No services found</td></tr>' : ''}</tbody></table></div></div>`;
     document.getElementById('content-area').innerHTML = html;
 }
-
-function filterServices(searchTerm) {
-    renderServices(searchTerm);
-}
-
-function openAddServiceModal() {
-    editingServiceId = null;
-    document.getElementById('service-modal-title').innerHTML = '<i class="fas fa-plus-circle"></i> Add New Service';
-    document.getElementById('service-title').value = '';
-    document.getElementById('service-desc').value = '';
-    document.getElementById('service-category').value = 'web';
-    document.getElementById('service-tech').value = '';
-    document.getElementById('service-price').value = '';
-    document.getElementById('service-emoji').value = '💻';
-    document.getElementById('service-days').value = '14';
-    document.getElementById('service-revisions').value = '3';
-    document.getElementById('service-modal').classList.add('open');
-}
-
-async function editService(serviceId) {
-    const service = appData.services.find(s => s.id === serviceId);
-    if (!service) return;
-    
-    editingServiceId = serviceId;
-    document.getElementById('service-modal-title').innerHTML = '<i class="fas fa-edit"></i> Edit Service';
-    document.getElementById('service-title').value = service.title || '';
-    document.getElementById('service-desc').value = service.description || '';
-    document.getElementById('service-category').value = service.category || 'web';
-    document.getElementById('service-tech').value = service.technologies || '';
-    document.getElementById('service-price').value = service.price || '';
-    document.getElementById('service-emoji').value = service.emoji || '💻';
-    document.getElementById('service-days').value = service.delivery_days || 14;
-    document.getElementById('service-revisions').value = service.revisions || 3;
-    document.getElementById('service-modal').classList.add('open');
-}
-
-async function saveService() {
-    const title = document.getElementById('service-title').value.trim();
-    const price = parseFloat(document.getElementById('service-price').value);
-    
-    if (!title || !price) {
-        showToast('Title and price are required', 'error');
-        return;
-    }
-    
-    const data = {
-        title: title,
-        description: document.getElementById('service-desc').value.trim(),
-        category: document.getElementById('service-category').value,
-        technologies: document.getElementById('service-tech').value.trim(),
-        price: price,
-        emoji: document.getElementById('service-emoji').value || '💻',
-        delivery_days: parseInt(document.getElementById('service-days').value) || 14,
-        revisions: parseInt(document.getElementById('service-revisions').value) || 3,
-        features: []
-    };
-    
-    try {
-        if (editingServiceId) {
-            data.id = editingServiceId;
-            await apiCall('PUT', '/admin/service/update', data);
-            showToast('Service updated successfully', 'success');
-        } else {
-            await apiCall('POST', '/admin/service/add', data);
-            showToast('Service added successfully', 'success');
-        }
-        closeModal('service-modal');
-        await loadAllData();
-    } catch (err) {
-        showToast('Failed to save service: ' + err.message, 'error');
-    }
-}
-
-async function deleteService(serviceId) {
-    if (!confirm('Are you sure you want to delete this service? This will also remove it from all carts.')) return;
-    
-    try {
-        await apiCall('DELETE', '/admin/service/delete', { id: serviceId });
-        showToast('Service deleted successfully', 'success');
-        await loadAllData();
-    } catch (err) {
-        showToast('Failed to delete service: ' + err.message, 'error');
-    }
-}
+function filterServices(searchTerm) { renderServices(searchTerm); }
+function openAddServiceModal() { editingServiceId = null; document.getElementById('service-modal-title').innerHTML = '<i class="fas fa-plus-circle"></i> Add New Service'; document.getElementById('service-title').value = ''; document.getElementById('service-desc').value = ''; document.getElementById('service-category').value = 'web'; document.getElementById('service-tech').value = ''; document.getElementById('service-price').value = ''; document.getElementById('service-emoji').value = '💻'; document.getElementById('service-days').value = '14'; document.getElementById('service-revisions').value = '3'; document.getElementById('service-modal').classList.add('open'); }
+async function editService(serviceId) { const service = appData.services.find(s => s.id === serviceId); if (!service) return; editingServiceId = serviceId; document.getElementById('service-modal-title').innerHTML = '<i class="fas fa-edit"></i> Edit Service'; document.getElementById('service-title').value = service.title || ''; document.getElementById('service-desc').value = service.description || ''; document.getElementById('service-category').value = service.category || 'web'; document.getElementById('service-tech').value = service.technologies || ''; document.getElementById('service-price').value = service.price || ''; document.getElementById('service-emoji').value = service.emoji || '💻'; document.getElementById('service-days').value = service.delivery_days || 14; document.getElementById('service-revisions').value = service.revisions || 3; document.getElementById('service-modal').classList.add('open'); }
+async function saveService() { const title = document.getElementById('service-title').value.trim(); const price = parseFloat(document.getElementById('service-price').value); if (!title || !price) { showToast('Title and price are required', 'error'); return; } const data = { title, price, description: document.getElementById('service-desc').value.trim(), category: document.getElementById('service-category').value, technologies: document.getElementById('service-tech').value.trim(), emoji: document.getElementById('service-emoji').value || '💻', delivery_days: parseInt(document.getElementById('service-days').value) || 14, revisions: parseInt(document.getElementById('service-revisions').value) || 3, features: [] }; try { if (editingServiceId) { data.id = editingServiceId; await apiCall('PUT', '/admin/service/update', data); showToast('Service updated successfully', 'success'); } else { await apiCall('POST', '/admin/service/add', data); showToast('Service added successfully', 'success'); } closeModal('service-modal'); await loadAllData(); } catch (err) { showToast('Failed to save service: ' + err.message, 'error'); } }
+async function deleteService(serviceId) { if (!confirm('Are you sure you want to delete this service? This will also remove it from all carts.')) return; try { await apiCall('DELETE', '/admin/service/delete', { id: serviceId }); showToast('Service deleted successfully', 'success'); await loadAllData(); } catch (err) { showToast('Failed to delete service: ' + err.message, 'error'); } }
 
 // ============================================================
 // USERS PAGE
 // ============================================================
 function renderUsers(filter = '') {
     let filteredUsers = [...appData.users];
-    if (filter) {
-        const search = filter.toLowerCase();
-        filteredUsers = filteredUsers.filter(u => 
-            u.name?.toLowerCase().includes(search) ||
-            u.email?.toLowerCase().includes(search)
-        );
-    }
-    
-    const orderCounts = {};
-    const totalSpent = {};
-    appData.orders.forEach(o => {
-        orderCounts[o.user_id] = (orderCounts[o.user_id] || 0) + 1;
-        totalSpent[o.user_id] = (totalSpent[o.user_id] || 0) + (parseFloat(o.total_paid) || parseFloat(o.advance_paid) || 0);
-    });
-    
-    const html = `
-        <div class="card">
-            <div class="card-header">
-                <h3><i class="fas fa-users"></i> Registered Users</h3>
-                <input type="text" class="search-input" id="user-search" placeholder="Search users..." onkeyup="filterUsers(this.value)">
-            </div>
-            <div class="table-responsive">
-                <table>
-                    <thead>
-                        <tr><th>Name</th><th>Email</th><th>Phone</th><th>Verified</th><th>Orders</th><th>Spent</th><th>Joined</th><th>Actions</th></tr>
-                    </thead>
-                    <tbody>
-                        ${filteredUsers.map(user => `
-                            <tr>
-                                <td><strong>${escapeHtml(user.name || '—')}</strong></td>
-                                <td>${escapeHtml(user.email)}</td>
-                                <td>${user.phone || '—'}</td>
-                                <td>${user.verified ? '<span style="color: var(--success);"><i class="fas fa-check-circle"></i> Yes</span>' : '<span style="color: var(--warning);"><i class="fas fa-clock"></i> No</span>'}</td>
-                                <td>${orderCounts[user.id] || 0}</td>
-                                <td style="color: var(--success);">${formatCurrency(totalSpent[user.id] || 0)}</td>
-                                <td>${formatDate(user.created_at)}</td>
-                                <td><button class="btn btn-sm btn-info" onclick="viewUserOrders(${user.id})"><i class="fas fa-shopping-cart"></i> Orders</button></td>
-                            </tr>
-                        `).join('')}
-                        ${filteredUsers.length === 0 ? '<tr><td colspan="8" class="empty-row">No users found</td>' : ''}
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    `;
+    if (filter) filteredUsers = filteredUsers.filter(u => u.name?.toLowerCase().includes(filter.toLowerCase()) || u.email?.toLowerCase().includes(filter.toLowerCase()));
+    const orderCounts = {}; const totalSpent = {};
+    appData.orders.forEach(o => { orderCounts[o.user_id] = (orderCounts[o.user_id] || 0) + 1; totalSpent[o.user_id] = (totalSpent[o.user_id] || 0) + (parseFloat(o.total_paid) || parseFloat(o.advance_paid) || 0); });
+    const html = `<div class="card"><div class="card-header"><h3><i class="fas fa-users"></i> Registered Users</h3><input type="text" class="search-input" id="user-search" placeholder="Search users..." onkeyup="filterUsers(this.value)"></div><div class="table-responsive"><tr><thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Verified</th><th>Orders</th><th>Spent</th><th>Joined</th><th>Actions</th></tr></thead><tbody>${filteredUsers.map(user => `<tr><td><strong>${escapeHtml(user.name || '—')}</strong></td><td>${escapeHtml(user.email)}</td><td>${user.phone || '—'}</td><td>${user.verified ? '<span style="color: var(--success);"><i class="fas fa-check-circle"></i> Yes</span>' : '<span style="color: var(--warning);"><i class="fas fa-clock"></i> No</span>'}</td><td>${orderCounts[user.id] || 0}</td><td style="color: var(--success);">${formatCurrency(totalSpent[user.id] || 0)}</td><td>${formatDate(user.created_at)}</td><td><button class="btn btn-sm btn-info" onclick="viewUserOrders(${user.id})"><i class="fas fa-shopping-cart"></i> Orders</button></td></tr>`).join('')}${filteredUsers.length === 0 ? '<tr><td colspan="8" class="empty-row">No users found</td></tr>' : ''}</tbody></table></div></div>`;
     document.getElementById('content-area').innerHTML = html;
 }
-
-function filterUsers(searchTerm) {
-    renderUsers(searchTerm);
-}
-
-function viewUserOrders(userId) {
-    const userOrders = appData.orders.filter(o => o.user_id === userId);
-    const user = appData.users.find(u => u.id === userId);
-    
-    const html = `
-        <div class="card">
-            <div class="card-header">
-                <h3><i class="fas fa-shopping-cart"></i> Orders for ${escapeHtml(user?.name || 'User')}</h3>
-                <button class="btn btn-primary btn-sm" onclick="switchPage('users')">Back to Users</button>
-            </div>
-            <div class="table-responsive">
-                <table>
-                    <thead>
-                        <tr><th>Order ID</th><th>Service</th><th>Amount</th><th>Paid</th><th>Status</th><th>Date</th><th>Actions</th></tr>
-                    </thead>
-                    <tbody>
-                        ${userOrders.map(order => `
-                            <tr>
-                                <td><span style="color: var(--accent-primary);">#${order.id}</span></td>
-                                <td>${escapeHtml(order.service_title || '—')}</td>
-                                <td>${formatCurrency(order.price)}</td>
-                                <td>${formatCurrency(order.total_paid || order.advance_paid || 0)}</td>
-                                <td><span class="badge badge-${order.status}">${order.status.replace(/_/g, ' ')}</span></td>
-                                <td>${formatDate(order.created_at)}</td>
-                                <td><button class="btn btn-sm btn-info" onclick="viewOrderDetails(${order.id})"><i class="fas fa-eye"></i></button></td>
-                            </tr>
-                        `).join('')}
-                        ${userOrders.length === 0 ? '<tr><td colspan="7" class="empty-row">No orders found</td>' : ''}
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    `;
-    document.getElementById('content-area').innerHTML = html;
-}
+function filterUsers(searchTerm) { renderUsers(searchTerm); }
+function viewUserOrders(userId) { const userOrders = appData.orders.filter(o => o.user_id === userId); const user = appData.users.find(u => u.id === userId); const html = `<div class="card"><div class="card-header"><h3><i class="fas fa-shopping-cart"></i> Orders for ${escapeHtml(user?.name || 'User')}</h3><button class="btn btn-primary btn-sm" onclick="switchPage('users')">Back to Users</button></div><div class="table-responsive"><table><thead><tr><th>Order ID</th><th>Service</th><th>Amount</th><th>Paid</th><th>Status</th><th>Date</th><th>Actions</th></tr></thead><tbody>${userOrders.map(order => `<tr><td><span style="color: var(--accent-primary);">#${order.id}</span></td><td>${escapeHtml(order.service_title || '—')}</td><td>${formatCurrency(order.price)}</td><td>${formatCurrency(order.total_paid || order.advance_paid || 0)}</td><td><span class="badge badge-${order.status}">${order.status.replace(/_/g, ' ')}</span></td><td>${formatDate(order.created_at)}</td><td><button class="btn btn-sm btn-info" onclick="viewOrderDetails(${order.id})"><i class="fas fa-eye"></i></button></td></tr>`).join('')}${userOrders.length === 0 ? '<tr><td colspan="7" class="empty-row">No orders found</td></tr>' : ''}</tbody></table></div></div>`; document.getElementById('content-area').innerHTML = html; }
 
 // ============================================================
 // CUSTOM REQUESTS PAGE
 // ============================================================
 function renderCustomRequests() {
-    const html = `
-        <div class="card">
-            <div class="card-header">
-                <h3><i class="fas fa-file-signature"></i> Custom Project Requests</h3>
-            </div>
-            <div class="table-responsive">
-                </table>
-                    <thead>
-                        <tr><th>Date</th><th>Name</th><th>Email</th><th>WhatsApp</th><th>Project</th><th>Budget</th><th>Status</th><th>Actions</th></tr>
-                    </thead>
-                    <tbody>
-                        ${appData.customRequests.map(req => `
-                            <tr>
-                                <td>${formatDate(req.created_at)}</td>
-                                <td><strong>${escapeHtml(req.name)}</strong></td>
-                                <td>${escapeHtml(req.email)}</td>
-                                <td>${req.whatsapp ? `<a href="https://wa.me/${req.whatsapp.replace(/[^0-9]/g, '')}" target="_blank" style="background:#25D366;color:white;padding:4px 10px;border-radius:6px;text-decoration:none;font-size:11px;"><i class="fab fa-whatsapp"></i> Chat</a>` : '—'}</td>
-                                <td><strong>${escapeHtml(req.title)}</strong><br><small>${escapeHtml(req.project_type || '—')}</small></td>
-                                <td><strong style="color: var(--success);">${req.budget || '—'}</strong></td>
-                                <td><span class="badge badge-${req.status}">${req.status}</span></td>
-                                <td>
-                                    <div style="display: flex; gap: 5px; flex-wrap: wrap;">
-                                        <button class="btn btn-sm btn-success" onclick="updateRequestStatus(${req.id}, 'contacted')"><i class="fas fa-phone"></i> Contacted</button>
-                                        <button class="btn btn-sm btn-primary" onclick="updateRequestStatus(${req.id}, 'completed')"><i class="fas fa-check"></i> Complete</button>
-                                        <button class="btn btn-sm btn-danger" onclick="deleteRequest(${req.id})"><i class="fas fa-trash"></i></button>
-                                    </div>
-                                 </td>
-                            </tr>
-                        `).join('')}
-                        ${appData.customRequests.length === 0 ? '<td><td colspan="8" class="empty-row">No custom requests found</td>' : ''}
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    `;
+    const html = `<div class="card"><div class="card-header"><h3><i class="fas fa-file-signature"></i> Custom Project Requests</h3></div><div class="table-responsive"></table><thead><tr><th>Date</th><th>Name</th><th>Email</th><th>WhatsApp</th><th>Project</th><th>Budget</th><th>Status</th><th>Actions</th></tr></thead><tbody>${appData.customRequests.map(req => `<tr><td>${formatDate(req.created_at)}</td><td><strong>${escapeHtml(req.name)}</strong></td><td>${escapeHtml(req.email)}</td><td>${req.whatsapp ? `<a href="https://wa.me/${req.whatsapp.replace(/[^0-9]/g, '')}" target="_blank" style="background:#25D366;color:white;padding:4px 10px;border-radius:6px;text-decoration:none;font-size:11px;"><i class="fab fa-whatsapp"></i> Chat</a>` : '—'}</td><td><strong>${escapeHtml(req.title)}</strong><br><small>${escapeHtml(req.project_type || '—')}</small></td><td><strong style="color: var(--success);">${req.budget || '—'}</strong></td><td><span class="badge badge-${req.status}">${req.status}</span></td><td><div style="display: flex; gap: 5px; flex-wrap: wrap;"><button class="btn btn-sm btn-success" onclick="updateRequestStatus(${req.id}, 'contacted')"><i class="fas fa-phone"></i> Contacted</button><button class="btn btn-sm btn-primary" onclick="updateRequestStatus(${req.id}, 'completed')"><i class="fas fa-check"></i> Complete</button><button class="btn btn-sm btn-danger" onclick="deleteRequest(${req.id})"><i class="fas fa-trash"></i></button></div></td></tr>`).join('')}${appData.customRequests.length === 0 ? '<tr><td colspan="8" class="empty-row">No custom requests found</td></tr>' : ''}</tbody></table></div></div>`;
     document.getElementById('content-area').innerHTML = html;
 }
-
-async function updateRequestStatus(requestId, status) {
-    try {
-        await apiCall('PUT', `/custom-request/${requestId}/status`, { status });
-        showToast(`Request status updated to ${status}`, 'success');
-        await loadAllData();
-    } catch (err) {
-        showToast('Failed to update status: ' + err.message, 'error');
-    }
-}
-
-async function deleteRequest(requestId) {
-    if (!confirm('Are you sure you want to delete this request?')) return;
-    try {
-        await apiCall('DELETE', `/custom-request/${requestId}`);
-        showToast('Request deleted successfully', 'success');
-        await loadAllData();
-    } catch (err) {
-        showToast('Failed to delete request: ' + err.message, 'error');
-    }
-}
+async function updateRequestStatus(requestId, status) { try { await apiCall('PUT', `/custom-request/${requestId}/status`, { status }); showToast(`Request status updated to ${status}`, 'success'); await loadAllData(); } catch (err) { showToast('Failed to update status: ' + err.message, 'error'); } }
+async function deleteRequest(requestId) { if (!confirm('Are you sure you want to delete this request?')) return; try { await apiCall('DELETE', `/custom-request/${requestId}`); showToast('Request deleted successfully', 'success'); await loadAllData(); } catch (err) { showToast('Failed to delete request: ' + err.message, 'error'); } }
 
 // ============================================================
 // CHAT PAGE
 // ============================================================
 async function renderChat() {
-    const html = `
-        <div class="chat-container">
-            <div class="conversations-list" id="conversations-list">
-                <div style="text-align: center; padding: 20px; color: var(--text-muted);">Loading conversations...</div>
-            </div>
-            <div class="chat-area">
-                <div class="chat-header">
-                    <h4 id="chat-header-title"><i class="fas fa-comment"></i> Select a conversation</h4>
-                </div>
-                <div class="chat-messages" id="chat-messages">
-                    <div style="text-align: center; padding: 40px; color: var(--text-muted);">Select a conversation to start chatting</div>
-                </div>
-                <div class="chat-input-area">
-                    <textarea id="chat-input" placeholder="Type your message..." rows="2"></textarea>
-                    <button onclick="sendChatMessage()"><i class="fas fa-paper-plane"></i> Send</button>
-                </div>
-            </div>
-        </div>
-    `;
+    const html = `<div class="chat-container"><div class="conversations-list" id="conversations-list"><div style="text-align: center; padding: 20px; color: var(--text-muted);">Loading conversations...</div></div><div class="chat-area"><div class="chat-header"><h4 id="chat-header-title"><i class="fas fa-comment"></i> Select a conversation</h4></div><div class="chat-messages" id="chat-messages"><div style="text-align: center; padding: 40px; color: var(--text-muted);">Select a conversation to start chatting</div></div><div class="chat-input-area"><textarea id="chat-input" placeholder="Type your message..." rows="2"></textarea><button onclick="sendChatMessage()"><i class="fas fa-paper-plane"></i> Send</button></div></div></div>`;
     document.getElementById('content-area').innerHTML = html;
     await loadConversations();
     startChatPolling();
 }
-
-async function loadConversations() {
-    try {
-        const result = await apiCall('GET', '/conversations');
-        const conversations = result.conversations || [];
-        displayConversations(conversations);
-    } catch (err) {
-        console.error('Error loading conversations:', err);
-        const container = document.getElementById('conversations-list');
-        if (container) {
-            container.innerHTML = '<div style="text-align: center; padding: 20px; color: var(--error);">Failed to load conversations</div>';
-        }
-    }
-}
-
-function displayConversations(conversations) {
-    const container = document.getElementById('conversations-list');
-    if (!container) return;
-    
-    if (!conversations.length) {
-        container.innerHTML = '<div style="text-align: center; padding: 20px; color: var(--text-muted);">No conversations yet</div>';
-        return;
-    }
-    
-    container.innerHTML = conversations.map(conv => `
-        <div class="conversation-item ${conv.unread_count > 0 ? 'unread' : ''} ${currentConversation === conv.id ? 'active' : ''}" onclick="selectConversation('${conv.id}', '${escapeHtml(conv.users?.name || 'User')}')">
-            <div class="conversation-name">${escapeHtml(conv.users?.name || 'User')} <span style="font-size: 11px; color: var(--accent-primary);">#${conv.id.replace('order_', '')}</span></div>
-            <div class="conversation-last-msg">${escapeHtml((conv.last_message || 'No messages').substring(0, 50))}${(conv.last_message || '').length > 50 ? '...' : ''}</div>
-            <div class="conversation-time">${conv.last_message_at ? formatDateTime(conv.last_message_at) : ''}</div>
-            <button class="delete-conv" onclick="event.stopPropagation(); deleteConversation('${conv.id}')"><i class="fas fa-trash"></i></button>
-        </div>
-    `).join('');
-}
-
-async function selectConversation(convId, userName) {
-    currentConversation = convId;
-    const header = document.getElementById('chat-header-title');
-    if (header) {
-        header.innerHTML = `<i class="fas fa-comment"></i> Chat with ${userName}`;
-    }
-    
-    try {
-        const result = await apiCall('GET', `/conversation/${convId}/messages`);
-        displayMessages(result.messages || []);
-        await loadConversations();
-    } catch (err) {
-        console.error('Error loading messages:', err);
-        const messagesDiv = document.getElementById('chat-messages');
-        if (messagesDiv) {
-            messagesDiv.innerHTML = '<div style="text-align: center; padding: 40px; color: var(--error);">Failed to load messages</div>';
-        }
-    }
-}
-
-function displayMessages(messages) {
-    const container = document.getElementById('chat-messages');
-    if (!container) return;
-    
-    if (!messages.length) {
-        container.innerHTML = '<div style="text-align: center; padding: 40px; color: var(--text-muted);">No messages yet. Start the conversation!</div>';
-        return;
-    }
-    
-    container.innerHTML = messages.map(msg => `
-        <div class="message ${msg.sender_role === 'admin' ? 'admin' : 'user'}">
-            <div class="message-content">
-                ${escapeHtml(msg.message)}
-                <span class="message-time">${formatDateTime(msg.created_at)}</span>
-            </div>
-        </div>
-    `).join('');
-    container.scrollTop = container.scrollHeight;
-}
-
-async function sendChatMessage() {
-    if (!currentConversation) {
-        showToast('Select a conversation first', 'error');
-        return;
-    }
-    
-    const message = document.getElementById('chat-input').value.trim();
-    if (!message) return;
-    
-    try {
-        await apiCall('POST', `/conversation/${currentConversation}/send`, { message });
-        document.getElementById('chat-input').value = '';
-        await selectConversation(currentConversation, '');
-        showToast('Message sent', 'success');
-    } catch (err) {
-        showToast('Failed to send message: ' + err.message, 'error');
-    }
-}
-
-async function deleteConversation(convId) {
-    if (!confirm('Delete this conversation permanently?')) return;
-    try {
-        await apiCall('DELETE', `/conversation/${convId}`);
-        showToast('Conversation deleted', 'success');
-        if (currentConversation === convId) {
-            currentConversation = null;
-            const header = document.getElementById('chat-header-title');
-            const messagesDiv = document.getElementById('chat-messages');
-            if (header) header.innerHTML = '<i class="fas fa-comment"></i> Select a conversation';
-            if (messagesDiv) messagesDiv.innerHTML = '<div style="text-align: center; padding: 40px; color: var(--text-muted);">Select a conversation to start chatting</div>';
-        }
-        await loadConversations();
-    } catch (err) {
-        showToast('Failed to delete conversation: ' + err.message, 'error');
-    }
-}
-
-function chatFromOrder(orderId) {
-    switchPage('chat');
-    setTimeout(() => {
-        selectConversation(`order_${orderId}`, 'Client');
-    }, 500);
-}
-
-function startChatPolling() {
-    if (chatPollInterval) clearInterval(chatPollInterval);
-    chatPollInterval = setInterval(() => {
-        const activePage = document.querySelector('.nav-item.active')?.getAttribute('data-page');
-        if (activePage === 'chat' && currentConversation) {
-            loadConversations();
-            selectConversation(currentConversation, '');
-        }
-    }, 5000);
-}
+async function loadConversations() { try { const result = await apiCall('GET', '/conversations'); displayConversations(result.conversations || []); } catch (err) { console.error('Error loading conversations:', err); const container = document.getElementById('conversations-list'); if (container) container.innerHTML = '<div style="text-align: center; padding: 20px; color: var(--error);">Failed to load conversations</div>'; } }
+function displayConversations(conversations) { const container = document.getElementById('conversations-list'); if (!container) return; if (!conversations.length) { container.innerHTML = '<div style="text-align: center; padding: 20px; color: var(--text-muted);">No conversations yet</div>'; return; } container.innerHTML = conversations.map(conv => `<div class="conversation-item ${conv.unread_count > 0 ? 'unread' : ''} ${currentConversation === conv.id ? 'active' : ''}" onclick="selectConversation('${conv.id}', '${escapeHtml(conv.users?.name || 'User')}')"><div class="conversation-name">${escapeHtml(conv.users?.name || 'User')} <span style="font-size: 11px; color: var(--accent-primary);">#${conv.id.replace('order_', '')}</span></div><div class="conversation-last-msg">${escapeHtml((conv.last_message || 'No messages').substring(0, 50))}${(conv.last_message || '').length > 50 ? '...' : ''}</div><div class="conversation-time">${conv.last_message_at ? formatDateTime(conv.last_message_at) : ''}</div><button class="delete-conv" onclick="event.stopPropagation(); deleteConversation('${conv.id}')"><i class="fas fa-trash"></i></button></div>`).join(''); }
+async function selectConversation(convId, userName) { currentConversation = convId; const header = document.getElementById('chat-header-title'); if (header) header.innerHTML = `<i class="fas fa-comment"></i> Chat with ${userName}`; try { const result = await apiCall('GET', `/conversation/${convId}/messages`); displayMessages(result.messages || []); await loadConversations(); } catch (err) { console.error('Error loading messages:', err); const messagesDiv = document.getElementById('chat-messages'); if (messagesDiv) messagesDiv.innerHTML = '<div style="text-align: center; padding: 40px; color: var(--error);">Failed to load messages</div>'; } }
+function displayMessages(messages) { const container = document.getElementById('chat-messages'); if (!container) return; if (!messages.length) { container.innerHTML = '<div style="text-align: center; padding: 40px; color: var(--text-muted);">No messages yet. Start the conversation!</div>'; return; } container.innerHTML = messages.map(msg => `<div class="message ${msg.sender_role === 'admin' ? 'admin' : 'user'}"><div class="message-content">${escapeHtml(msg.message)}<span class="message-time">${formatDateTime(msg.created_at)}</span></div></div>`).join(''); container.scrollTop = container.scrollHeight; }
+async function sendChatMessage() { if (!currentConversation) { showToast('Select a conversation first', 'error'); return; } const message = document.getElementById('chat-input').value.trim(); if (!message) return; try { await apiCall('POST', `/conversation/${currentConversation}/send`, { message }); document.getElementById('chat-input').value = ''; await selectConversation(currentConversation, ''); showToast('Message sent', 'success'); } catch (err) { showToast('Failed to send message: ' + err.message, 'error'); } }
+async function deleteConversation(convId) { if (!confirm('Delete this conversation permanently?')) return; try { await apiCall('DELETE', `/conversation/${convId}`); showToast('Conversation deleted', 'success'); if (currentConversation === convId) { currentConversation = null; const header = document.getElementById('chat-header-title'); const messagesDiv = document.getElementById('chat-messages'); if (header) header.innerHTML = '<i class="fas fa-comment"></i> Select a conversation'; if (messagesDiv) messagesDiv.innerHTML = '<div style="text-align: center; padding: 40px; color: var(--text-muted);">Select a conversation to start chatting</div>'; } await loadConversations(); } catch (err) { showToast('Failed to delete conversation: ' + err.message, 'error'); } }
+function chatFromOrder(orderId) { switchPage('chat'); setTimeout(() => { selectConversation(`order_${orderId}`, 'Client'); }, 500); }
+function startChatPolling() { if (chatPollInterval) clearInterval(chatPollInterval); chatPollInterval = setInterval(() => { const activePage = document.querySelector('.nav-item.active')?.getAttribute('data-page'); if (activePage === 'chat' && currentConversation) { loadConversations(); selectConversation(currentConversation, ''); } }, 5000); }
 
 // ============================================================
 // UI HELPERS
 // ============================================================
 function switchPage(page, element = null) {
-    if (element) {
-        document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
-        element.classList.add('active');
-    }
-    
-    const titles = {
-        overview: 'Dashboard Overview',
-        orders: 'Order Management',
-        payments: 'Payment History',
-        refunds: 'Refund History',
-        services: 'Services Management',
-        users: 'User Management',
-        'custom-requests': 'Custom Project Requests',
-        chat: 'Client Support Chat'
-    };
-    
-    const icons = {
-        overview: 'tachometer-alt',
-        orders: 'shopping-cart',
-        payments: 'credit-card',
-        refunds: 'money-bill-wave',
-        services: 'cubes',
-        users: 'users',
-        'custom-requests': 'file-signature',
-        chat: 'comment-dots'
-    };
-    
-    const titleSpan = document.querySelector('#page-title span');
-    const titleIcon = document.querySelector('#page-title i');
+    if (element) { document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active')); element.classList.add('active'); }
+    const titles = { overview: 'Dashboard Overview', orders: 'Order Management', payments: 'Payment History', refunds: 'Refund History', services: 'Services Management', users: 'User Management', 'custom-requests': 'Custom Project Requests', chat: 'Client Support Chat' };
+    const icons = { overview: 'tachometer-alt', orders: 'shopping-cart', payments: 'credit-card', refunds: 'money-bill-wave', services: 'cubes', users: 'users', 'custom-requests': 'file-signature', chat: 'comment-dots' };
+    const titleSpan = document.querySelector('#page-title span'); const titleIcon = document.querySelector('#page-title i');
     if (titleSpan) titleSpan.textContent = titles[page] || 'Dashboard';
     if (titleIcon) titleIcon.className = `fas fa-${icons[page] || 'tachometer-alt'}`;
-    
-    if (page !== 'chat' && chatPollInterval) {
-        clearInterval(chatPollInterval);
-        chatPollInterval = null;
-    }
-    
+    if (page !== 'chat' && chatPollInterval) { clearInterval(chatPollInterval); chatPollInterval = null; }
     renderCurrentPage();
 }
-
-function toggleSidebar() {
-    const sidebar = document.getElementById('sidebar');
-    const main = document.getElementById('main-content');
-    
-    if (window.innerWidth > 768) {
-        sidebar.classList.toggle('collapsed');
-        main.classList.toggle('expanded');
-    } else {
-        sidebar.classList.toggle('mobile-open');
-    }
-}
-
-function closeModal(modalId) {
-    const modal = document.getElementById(modalId);
-    if (modal) modal.classList.remove('open');
-}
-
-// Close modal on overlay click
-document.querySelectorAll('.modal-overlay').forEach(modal => {
-    modal.addEventListener('click', (e) => {
-        if (e.target === modal) modal.classList.remove('open');
-    });
-});
+function toggleSidebar() { const sidebar = document.getElementById('sidebar'); const main = document.getElementById('main-content'); if (window.innerWidth > 768) { sidebar.classList.toggle('collapsed'); main.classList.toggle('expanded'); } else { sidebar.classList.toggle('mobile-open'); } }
+function closeModal(modalId) { const modal = document.getElementById(modalId); if (modal) modal.classList.remove('open'); }
+document.querySelectorAll('.modal-overlay').forEach(modal => { modal.addEventListener('click', (e) => { if (e.target === modal) modal.classList.remove('open'); }); });
 
 // ============================================================
 // INITIALIZATION
 // ============================================================
 window.onload = () => {
-    if (adminToken && adminEmail) {
-        showDashboard();
-    } else {
-        document.getElementById('login-container').style.display = 'flex';
-        document.getElementById('dashboard-container').style.display = 'none';
-    }
+    if (adminToken && adminEmail) { showDashboard(); } 
+    else { document.getElementById('login-container').style.display = 'flex'; document.getElementById('dashboard-container').style.display = 'none'; }
 };
 </script>
 </body>
