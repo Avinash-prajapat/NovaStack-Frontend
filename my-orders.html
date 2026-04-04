@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>My Orders - NovaStack</title>
-    <meta name="description" content="Track your NovaStack orders, manage payments, and access deliverables.">
+    <meta name="description" content="Track your NovaStack orders, manage payments, refunds, and access deliverables.">
     
     <!-- Fonts & Icons -->
     <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -31,7 +31,7 @@
         body { font-family: 'DM Sans', sans-serif; background: var(--bg-primary); color: var(--text-primary); line-height: 1.6; min-height: 100vh; overflow-x: hidden; }
         body.menu-open { overflow: hidden; position: fixed; width: 100%; }
 
-        /* Nav & Dropdown (Same as before) */
+        /* Nav & Dropdown */
         nav { position: fixed; top: 0; left: 0; right: 0; z-index: 1000; background: rgba(15, 12, 26, 0.95); backdrop-filter: blur(20px); border-bottom: 1px solid var(--border); padding: 0 5%; display: flex; align-items: center; justify-content: space-between; height: 72px; transition: all var(--transition-normal); }
         nav.scrolled { height: 64px; box-shadow: var(--shadow-md); }
         .logo { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.6rem; color: var(--text-primary); text-decoration: none; display: flex; align-items: center; gap: 0.3rem; }
@@ -247,7 +247,7 @@
 </head>
 <body>
 
-<!-- Nav (Same as before) -->
+<!-- Nav -->
 <nav id="navbar">
     <a href="index.html" class="logo"><i class="fas fa-code"></i> Nova<span>Stack</span></a>
     <div class="nav-links" id="navLinks">
@@ -278,7 +278,7 @@
     <button class="menu-toggle" id="menuToggle" aria-label="Toggle menu" aria-expanded="false"><i class="fas fa-bars"></i></button>
 </nav>
 
-<!-- Mobile Menu (Same) -->
+<!-- Mobile Menu -->
 <div class="mobile-menu" id="mobileMenu">
     <div class="mobile-menu-inner">
         <a href="index.html" class="mobile-nav-link"><i class="fas fa-home"></i> Home</a>
