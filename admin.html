@@ -4,182 +4,216 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>NovaStack Admin Panel 🛡️</title>
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='50' fill='%23ff6b35'/%3E%3Ctext x='50' y='67' text-anchor='middle' fill='white' font-size='50' font-weight='bold'%3ENS%3C/text%3E%3C/svg%3E">
+<link rel="icon" type="logo/jpeg" href="logo.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
-* { margin: 0; padding: 0; box-sizing: border-box; }
-:root {
-  --bg-primary: #0a0a0f; --bg-secondary: #12121a; --bg-card: #1a1a2a;
-  --bg-surface: rgba(255,255,255,0.05); --border: rgba(255,255,255,0.1);
-  --text-primary: #ffffff; --text-secondary: rgba(255,255,255,0.7); --text-muted: rgba(255,255,255,0.5);
-  --accent: #ff6b35; --accent-glow: rgba(255,107,53,0.3);
-  --success: #10b981; --warning: #f59e0b; --error: #ef4444; --info: #3b82f6;
-  --gradient: linear-gradient(135deg, #ff6b35, #f7c531);
-  --radius: 16px; --shadow: 0 8px 32px rgba(0,0,0,0.4);
-  --sidebar-w: 280px; --sidebar-c: 80px; --trans: all 0.3s cubic-bezier(0.4,0,0.2,1);
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+--bg-primary:#0a0a0f;--bg-secondary:#12121a;--bg-card:#1a1a2a;
+--bg-surface:rgba(255,255,255,0.05);--border:rgba(255,255,255,0.1);
+--text-primary:#fff;--text-secondary:rgba(255,255,255,0.7);--text-muted:rgba(255,255,255,0.5);
+--accent:#ff6b35;--accent-glow:rgba(255,107,53,0.3);
+--success:#10b981;--warning:#f59e0b;--error:#ef4444;--info:#3b82f6;
+--gradient:linear-gradient(135deg,#ff6b35,#f7c531);
+--radius:16px;--shadow:0 8px 32px rgba(0,0,0,0.4);
+--sidebar-w:280px;--sidebar-c:80px;--trans:all 0.3s cubic-bezier(0.4,0,0.2,1)
 }
-body { font-family: 'Inter', sans-serif; background: var(--bg-primary); color: var(--text-primary); overflow-x: hidden; min-height: 100vh; }
-#login-container { position: fixed; inset: 0; background: linear-gradient(135deg, #0a0a0f, #1a1a2a); display: flex; align-items: center; justify-content: center; z-index: 2000; transition: var(--trans); }
-.login-box { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 40px; width: 90%; max-width: 420px; backdrop-filter: blur(20px); box-shadow: var(--shadow); animation: slideUp 0.5s ease; }
-@keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
-.login-icon { text-align: center; font-size: 48px; background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 20px; }
-.login-box h2 { text-align: center; font-size: 28px; font-weight: 800; margin-bottom: 8px; }
-.login-box p { text-align: center; color: var(--text-secondary); margin-bottom: 32px; }
-.login-input { width: 100%; padding: 14px 18px; background: var(--bg-surface); border: 1px solid var(--border); border-radius: 12px; color: var(--text-primary); font-size: 14px; margin-bottom: 16px; transition: var(--trans); }
-.login-input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-glow); }
-.login-btn { width: 100%; padding: 14px; background: var(--gradient); border: none; border-radius: 12px; color: white; font-weight: 700; font-size: 16px; cursor: pointer; transition: var(--trans); }
-.login-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px var(--accent-glow); }
-.login-error { background: rgba(239,68,68,0.15); color: var(--error); padding: 12px; border-radius: 10px; margin-top: 16px; display: none; font-size: 14px; text-align: center; }
-#dashboard-container { display: none; min-height: 100vh; }
-.sidebar { position: fixed; left: 0; top: 0; width: var(--sidebar-w); height: 100vh; background: var(--bg-card); border-right: 1px solid var(--border); z-index: 100; transition: var(--trans); overflow-y: auto; }
-.sidebar.collapsed { width: var(--sidebar-c); }
-.sidebar.collapsed .sidebar-logo span, .sidebar.collapsed .nav-item span:not(.nav-icon), .sidebar.collapsed .nav-section span, .sidebar.collapsed .admin-info-details { display: none; }
-.sidebar-logo { padding: 24px 20px; border-bottom: 1px solid var(--border); }
-.sidebar-logo a { font-size: 24px; font-weight: 800; text-decoration: none; background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; display: flex; align-items: center; gap: 8px; }
-.sidebar-logo small { font-size: 11px; color: var(--text-muted); display: block; margin-top: 6px; }
-.sidebar-nav { padding: 20px 12px; display: flex; flex-direction: column; gap: 4px; }
-.nav-section { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); padding: 16px 16px 8px; font-weight: 600; }
-.nav-item { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-radius: 12px; cursor: pointer; color: var(--text-secondary); transition: var(--trans); background: none; border: none; width: 100%; text-align: left; font-size: 14px; font-weight: 500; }
-.nav-item:hover { background: var(--bg-surface); color: var(--text-primary); transform: translateX(4px); }
-.nav-item.active { background: var(--gradient); color: white; box-shadow: 0 4px 12px var(--accent-glow); }
-.nav-icon { width: 20px; text-align: center; }
-.sidebar-footer { padding: 20px; border-top: 1px solid var(--border); margin-top: auto; }
-.admin-info { display: flex; align-items: center; gap: 12px; }
-.admin-avatar { width: 40px; height: 40px; background: var(--gradient); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-weight: bold; }
-.admin-info-details { flex: 1; }
-.admin-name { font-weight: 600; font-size: 14px; }
-.admin-role { font-size: 11px; color: var(--text-muted); }
-.logout-btn { background: rgba(239,68,68,0.2); border: none; width: 36px; height: 36px; border-radius: 10px; color: var(--error); cursor: pointer; transition: var(--trans); }
-.logout-btn:hover { background: var(--error); color: white; }
-.main-content { margin-left: var(--sidebar-w); transition: var(--trans); min-height: 100vh; }
-.main-content.expanded { margin-left: var(--sidebar-c); }
-.top-bar { background: var(--bg-card); border-bottom: 1px solid var(--border); padding: 0 24px; height: 70px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 99; backdrop-filter: blur(20px); }
-.toggle-sidebar { background: var(--bg-surface); border: 1px solid var(--border); padding: 8px 12px; border-radius: 10px; cursor: pointer; color: var(--text-primary); margin-right: 16px; display: none; }
-.page-title { font-size: 20px; font-weight: 700; display: flex; align-items: center; gap: 10px; }
-.date-display { font-size: 13px; color: var(--text-muted); }
-.content-area { padding: 24px; }
-.stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom: 28px; }
-.stat-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; transition: var(--trans); cursor: pointer; }
-.stat-card:hover { transform: translateY(-4px); border-color: var(--accent); box-shadow: var(--shadow); }
-.stat-label { font-size: 13px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
-.stat-value { font-size: 32px; font-weight: 800; background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-.card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; margin-bottom: 24px; }
-.card-header { padding: 18px 24px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
-.card-header h3 { font-size: 18px; font-weight: 600; display: flex; align-items: center; gap: 8px; }
-.search-input { padding: 8px 16px 8px 36px; background: var(--bg-surface); border: 1px solid var(--border); border-radius: 30px; color: var(--text-primary); font-size: 13px; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='rgba(255,255,255,0.5)'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z'%3E%3C/path%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: 12px center; background-size: 16px; width: 240px; }
-.search-input:focus { outline: none; border-color: var(--accent); }
-.table-responsive { overflow-x: auto; }
-table { width: 100%; border-collapse: collapse; }
-th { text-align: left; padding: 14px 16px; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-muted); background: var(--bg-surface); border-bottom: 1px solid var(--border); }
-td { padding: 14px 16px; font-size: 13px; color: var(--text-secondary); border-bottom: 1px solid var(--border); }
-tr:hover td { background: var(--bg-surface); }
-.empty-row { text-align: center; padding: 40px !important; color: var(--text-muted); }
-.badge { display: inline-flex; align-items: center; gap: 5px; padding: 4px 12px; border-radius: 30px; font-size: 11px; font-weight: 600; text-transform: capitalize; }
-.badge-pending { background: rgba(245,158,11,0.15); color: var(--warning); }
-.badge-payment_received { background: rgba(16,185,129,0.15); color: var(--success); }
-.badge-in_progress { background: rgba(59,130,246,0.15); color: var(--info); }
-.badge-ready_for_balance { background: rgba(255,107,53,0.15); color: var(--accent); }
-.badge-completed, .badge-delivered { background: rgba(16,185,129,0.15); color: var(--success); }
-.badge-cancelled, .badge-cancellation_requested { background: rgba(239,68,68,0.15); color: var(--error); }
-.btn { padding: 6px 14px; border-radius: 8px; font-size: 12px; font-weight: 500; cursor: pointer; transition: var(--trans); border: none; display: inline-flex; align-items: center; gap: 6px; }
-.btn-sm { padding: 5px 10px; font-size: 11px; }
-.btn-primary { background: var(--gradient); color: white; }
-.btn-primary:hover { transform: translateY(-1px); box-shadow: 0 4px 12px var(--accent-glow); }
-.btn-success { background: rgba(16,185,129,0.2); color: var(--success); border: 1px solid rgba(16,185,129,0.3); }
-.btn-success:hover { background: var(--success); color: white; }
-.btn-warning { background: rgba(245,158,11,0.2); color: var(--warning); border: 1px solid rgba(245,158,11,0.3); }
-.btn-warning:hover { background: var(--warning); color: white; }
-.btn-danger { background: rgba(239,68,68,0.2); color: var(--error); border: 1px solid rgba(239,68,68,0.3); }
-.btn-danger:hover { background: var(--error); color: white; }
-.btn-info { background: rgba(59,130,246,0.2); color: var(--info); border: 1px solid rgba(59,130,246,0.3); }
-.btn-info:hover { background: var(--info); color: white; }
-.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(8px); z-index: 1000; display: none; align-items: center; justify-content: center; padding: 20px; }
-.modal-overlay.open { display: flex; }
-.modal { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); width: 100%; max-width: 850px; max-height: 90vh; overflow-y: auto; animation: modalSlide 0.3s ease; }
-@keyframes modalSlide { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
-.modal-header { padding: 20px 24px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; background: var(--bg-card); z-index: 10; }
-.modal-header h3 { font-size: 20px; font-weight: 700; }
-.close-modal { background: var(--bg-surface); border: none; width: 36px; height: 36px; border-radius: 10px; cursor: pointer; color: var(--text-secondary); transition: var(--trans); }
-.close-modal:hover { background: var(--error); color: white; }
-.modal-body { padding: 24px; }
-.form-group { margin-bottom: 18px; }
-.form-group label { display: block; margin-bottom: 8px; font-size: 13px; font-weight: 500; color: var(--text-secondary); }
-.form-group input, .form-group textarea, .form-group select { width: 100%; padding: 12px 14px; background: var(--bg-surface); border: 1px solid var(--border); border-radius: 10px; color: var(--text-primary); font-size: 14px; font-family: inherit; transition: var(--trans); }
-.form-group input:focus, .form-group textarea:focus, .form-group select:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-glow); }
-.modal-footer { padding: 16px 24px; border-top: 1px solid var(--border); display: flex; justify-content: flex-end; gap: 12px; position: sticky; bottom: 0; background: var(--bg-card); }
-.order-detail-section { margin-bottom: 20px; padding: 16px; background: var(--bg-surface); border-radius: 12px; }
-.order-detail-section h4 { font-size: 14px; font-weight: 600; margin-bottom: 12px; color: var(--accent); display: flex; align-items: center; gap: 8px; }
-.info-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
-.info-item .label { font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
-.info-item .value { font-size: 14px; font-weight: 500; margin-top: 4px; word-break: break-word; }
-.progress-bar { height: 6px; background: var(--bg-surface); border-radius: 10px; overflow: hidden; margin: 12px 0; }
-.progress-fill { height: 100%; background: var(--gradient); border-radius: 10px; transition: width 0.5s ease; }
-.timeline-item { position: relative; padding-left: 24px; padding-bottom: 16px; border-left: 2px solid var(--border); }
-.timeline-item::before { content: ''; position: absolute; left: -6px; top: 0; width: 10px; height: 10px; border-radius: 50%; background: var(--accent); }
-.timeline-time { font-size: 11px; color: var(--text-muted); }
-.timeline-message { font-size: 13px; margin-top: 4px; }
-.chat-container { display: grid; grid-template-columns: 320px 1fr; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; min-height: 550px; }
-.conversations-list { border-right: 1px solid var(--border); overflow-y: auto; max-height: 550px; }
-.conversation-item { padding: 14px 16px; border-bottom: 1px solid var(--border); cursor: pointer; transition: var(--trans); position: relative; }
-.conversation-item:hover { background: var(--bg-surface); }
-.conversation-item.unread { background: rgba(255,107,53,0.1); }
-.conversation-item.active { background: var(--gradient); }
-.conversation-name { font-weight: 600; font-size: 14px; margin-bottom: 4px; }
-.conversation-last-msg { font-size: 12px; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.conversation-time { font-size: 10px; color: var(--text-muted); margin-top: 4px; }
-.delete-conv { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: none; border: none; color: var(--error); cursor: pointer; opacity: 0; transition: var(--trans); }
-.conversation-item:hover .delete-conv { opacity: 1; }
-.chat-area { display: flex; flex-direction: column; }
-.chat-header { padding: 16px 20px; border-bottom: 1px solid var(--border); background: var(--bg-surface); }
-.chat-messages { flex: 1; padding: 20px; overflow-y: auto; max-height: 450px; min-height: 400px; }
-.message { margin-bottom: 16px; display: flex; }
-.message.admin { justify-content: flex-end; }
-.message.user { justify-content: flex-start; }
-.message-content { max-width: 70%; padding: 10px 16px; border-radius: 18px; font-size: 13px; }
-.message.admin .message-content { background: var(--gradient); color: white; }
-.message.user .message-content { background: var(--bg-surface); color: var(--text-primary); }
-.message-time { font-size: 10px; color: var(--text-muted); margin-top: 4px; display: block; }
-.chat-input-area { padding: 16px; border-top: 1px solid var(--border); display: flex; gap: 12px; background: var(--bg-surface); }
-.chat-input-area textarea { flex: 1; padding: 12px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; color: var(--text-primary); resize: none; font-family: inherit; }
-.chat-input-area button { padding: 0 20px; background: var(--gradient); border: none; border-radius: 12px; color: white; cursor: pointer; font-weight: 600; }
-.payment-advance { background: rgba(245,158,11,0.15); color: var(--warning); padding: 4px 8px; border-radius: 6px; font-size: 11px; }
-.payment-balance { background: rgba(59,130,246,0.15); color: var(--info); padding: 4px 8px; border-radius: 6px; font-size: 11px; }
-.payment-refund { background: rgba(239,68,68,0.15); color: var(--error); padding: 4px 8px; border-radius: 6px; font-size: 11px; }
-.toast-container { position: fixed; bottom: 20px; right: 20px; z-index: 1100; display: flex; flex-direction: column; gap: 10px; }
-.toast { padding: 12px 20px; border-radius: 10px; font-size: 13px; font-weight: 500; display: flex; align-items: center; gap: 10px; animation: slideIn 0.3s ease; background: var(--bg-card); border: 1px solid var(--border); }
-.toast-success { border-left: 3px solid var(--success); color: var(--success); }
-.toast-error { border-left: 3px solid var(--error); color: var(--error); }
-.toast-info { border-left: 3px solid var(--info); color: var(--info); }
-@keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
-.client-info-card { background: linear-gradient(135deg, rgba(255,107,53,0.1), rgba(247,197,49,0.05)); border: 1px solid var(--border); border-radius: 12px; padding: 16px; margin-bottom: 16px; }
-.client-info-card h4 { color: var(--accent); margin-bottom: 12px; font-size: 14px; }
-.client-detail-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--border); }
-.client-detail-row:last-child { border-bottom: none; }
-.client-detail-label { color: var(--text-muted); font-size: 12px; }
-.client-detail-value { font-weight: 500; font-size: 13px; }
-.loading-spinner { display: inline-block; width: 20px; height: 20px; border: 2px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; }
-@keyframes spin { to { transform: rotate(360deg); } }
-@media (max-width: 1024px) { .stats-grid { grid-template-columns: repeat(2, 1fr); } .chat-container { grid-template-columns: 1fr; } .conversations-list { display: none; } .conversations-list.mobile-show { display: block; } }
-@media (max-width: 768px) { .sidebar { transform: translateX(-100%); } .sidebar.mobile-open { transform: translateX(0); } .main-content { margin-left: 0; } .toggle-sidebar { display: flex; } .stats-grid { grid-template-columns: 1fr; } .info-grid { grid-template-columns: 1fr; } .modal { max-width: 95%; } .card-header { flex-direction: column; align-items: flex-start; } .search-input { width: 100%; } }
-::-webkit-scrollbar { width: 6px; height: 6px; }
-::-webkit-scrollbar-track { background: var(--bg-surface); }
-::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 10px; }
+body{font-family:'Inter',sans-serif;background:var(--bg-primary);color:var(--text-primary);overflow-x:hidden;min-height:100vh}
+
+/* Login */
+#login-container{position:fixed;inset:0;background:linear-gradient(135deg,#0a0a0f,#1a1a2a);display:flex;align-items:center;justify-content:center;z-index:2000;transition:var(--trans)}
+.login-box{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:40px;width:90%;max-width:420px;backdrop-filter:blur(20px);box-shadow:var(--shadow);animation:slideUp 0.5s ease}
+@keyframes slideUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+.login-icon{text-align:center;font-size:48px;background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:20px}
+.login-box h2{text-align:center;font-size:28px;font-weight:800;margin-bottom:8px}
+.login-box p{text-align:center;color:var(--text-secondary);margin-bottom:32px}
+.login-input{width:100%;padding:14px 18px;background:var(--bg-surface);border:1px solid var(--border);border-radius:12px;color:var(--text-primary);font-size:14px;margin-bottom:16px;transition:var(--trans)}
+.login-input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-glow)}
+.login-btn{width:100%;padding:14px;background:var(--gradient);border:none;border-radius:12px;color:#fff;font-weight:700;font-size:16px;cursor:pointer;transition:var(--trans)}
+.login-btn:hover{transform:translateY(-2px);box-shadow:0 8px 24px var(--accent-glow)}
+.login-error{background:rgba(239,68,68,0.15);color:var(--error);padding:12px;border-radius:10px;margin-top:16px;display:none;font-size:14px;text-align:center}
+
+/* Dashboard */
+#dashboard-container{display:none;min-height:100vh}
+.sidebar{position:fixed;left:0;top:0;width:var(--sidebar-w);height:100vh;background:var(--bg-card);border-right:1px solid var(--border);z-index:100;transition:var(--trans);overflow-y:auto}
+.sidebar.collapsed{width:var(--sidebar-c)}
+.sidebar.collapsed .sidebar-logo span,.sidebar.collapsed .nav-item span:not(.nav-icon),.sidebar.collapsed .nav-section span,.sidebar.collapsed .admin-info-details{display:none}
+.sidebar-logo{padding:24px 20px;border-bottom:1px solid var(--border)}
+.sidebar-logo a{font-size:24px;font-weight:800;text-decoration:none;background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;display:flex;align-items:center;gap:8px}
+.sidebar-logo small{font-size:11px;color:var(--text-muted);display:block;margin-top:6px}
+.sidebar-nav{padding:20px 12px;display:flex;flex-direction:column;gap:4px}
+.nav-section{font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);padding:16px 16px 8px;font-weight:600}
+.nav-item{display:flex;align-items:center;gap:12px;padding:12px 16px;border-radius:12px;cursor:pointer;color:var(--text-secondary);transition:var(--trans);background:none;border:none;width:100%;text-align:left;font-size:14px;font-weight:500}
+.nav-item:hover{background:var(--bg-surface);color:var(--text-primary);transform:translateX(4px)}
+.nav-item.active{background:var(--gradient);color:#fff;box-shadow:0 4px 12px var(--accent-glow)}
+.nav-icon{width:20px;text-align:center}
+.sidebar-footer{padding:20px;border-top:1px solid var(--border);margin-top:auto}
+.admin-info{display:flex;align-items:center;gap:12px}
+.admin-avatar{width:40px;height:40px;background:var(--gradient);border-radius:12px;display:flex;align-items:center;justify-content:center;font-weight:bold}
+.admin-info-details{flex:1}
+.admin-name{font-weight:600;font-size:14px}
+.admin-role{font-size:11px;color:var(--text-muted)}
+.logout-btn{background:rgba(239,68,68,0.2);border:none;width:36px;height:36px;border-radius:10px;color:var(--error);cursor:pointer;transition:var(--trans)}
+.logout-btn:hover{background:var(--error);color:#fff}
+
+/* Main */
+.main-content{margin-left:var(--sidebar-w);transition:var(--trans);min-height:100vh}
+.main-content.expanded{margin-left:var(--sidebar-c)}
+.top-bar{background:var(--bg-card);border-bottom:1px solid var(--border);padding:0 24px;height:70px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:99;backdrop-filter:blur(20px)}
+.toggle-sidebar{background:var(--bg-surface);border:1px solid var(--border);padding:8px 12px;border-radius:10px;cursor:pointer;color:var(--text-primary);margin-right:16px;display:none}
+.page-title{font-size:20px;font-weight:700;display:flex;align-items:center;gap:10px}
+.date-display{font-size:13px;color:var(--text-muted)}
+.content-area{padding:24px}
+
+/* Stats */
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;margin-bottom:28px}
+.stat-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:20px;transition:var(--trans);cursor:pointer}
+.stat-card:hover{transform:translateY(-4px);border-color:var(--accent);box-shadow:var(--shadow)}
+.stat-label{font-size:13px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.stat-value{font-size:32px;font-weight:800;background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+
+/* Cards & Tables */
+.card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:24px}
+.card-header{padding:18px 24px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
+.card-header h3{font-size:18px;font-weight:600;display:flex;align-items:center;gap:8px}
+.search-input{padding:8px 16px 8px 36px;background:var(--bg-surface);border:1px solid var(--border);border-radius:30px;color:var(--text-primary);font-size:13px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='rgba(255,255,255,0.5)'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z'%3E%3C/path%3E%3C/svg%3E");background-repeat:no-repeat;background-position:12px center;background-size:16px;width:240px}
+.search-input:focus{outline:none;border-color:var(--accent)}
+.table-responsive{overflow-x:auto}
+table{width:100%;border-collapse:collapse}
+th{text-align:left;padding:14px 16px;font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;color:var(--text-muted);background:var(--bg-surface);border-bottom:1px solid var(--border)}
+td{padding:14px 16px;font-size:13px;color:var(--text-secondary);border-bottom:1px solid var(--border)}
+tr:hover td{background:var(--bg-surface)}
+.empty-row{text-align:center;padding:40px!important;color:var(--text-muted)}
+
+/* Badges */
+.badge{display:inline-flex;align-items:center;gap:5px;padding:4px 12px;border-radius:30px;font-size:11px;font-weight:600;text-transform:capitalize}
+.badge-pending{background:rgba(245,158,11,0.15);color:var(--warning)}
+.badge-payment_received{background:rgba(16,185,129,0.15);color:var(--success)}
+.badge-in_progress{background:rgba(59,130,246,0.15);color:var(--info)}
+.badge-ready_for_balance{background:rgba(255,107,53,0.15);color:var(--accent)}
+.badge-completed,.badge-delivered{background:rgba(16,185,129,0.15);color:var(--success)}
+.badge-cancelled,.badge-cancellation_requested{background:rgba(239,68,68,0.15);color:var(--error)}
+
+/* Buttons */
+.btn{padding:6px 14px;border-radius:8px;font-size:12px;font-weight:500;cursor:pointer;transition:var(--trans);border:none;display:inline-flex;align-items:center;gap:6px}
+.btn-sm{padding:5px 10px;font-size:11px}
+.btn-primary{background:var(--gradient);color:#fff}
+.btn-primary:hover{transform:translateY(-1px);box-shadow:0 4px 12px var(--accent-glow)}
+.btn-success{background:rgba(16,185,129,0.2);color:var(--success);border:1px solid rgba(16,185,129,0.3)}
+.btn-success:hover{background:var(--success);color:#fff}
+.btn-warning{background:rgba(245,158,11,0.2);color:var(--warning);border:1px solid rgba(245,158,11,0.3)}
+.btn-warning:hover{background:var(--warning);color:#fff}
+.btn-danger{background:rgba(239,68,68,0.2);color:var(--error);border:1px solid rgba(239,68,68,0.3)}
+.btn-danger:hover{background:var(--error);color:#fff}
+.btn-info{background:rgba(59,130,246,0.2);color:var(--info);border:1px solid rgba(59,130,246,0.3)}
+.btn-info:hover{background:var(--info);color:#fff}
+
+/* Modal */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.8);backdrop-filter:blur(8px);z-index:1000;display:none;align-items:center;justify-content:center;padding:20px}
+.modal-overlay.open{display:flex}
+.modal{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);width:100%;max-width:850px;max-height:90vh;overflow-y:auto;animation:modalSlide 0.3s ease}
+@keyframes modalSlide{from{opacity:0;transform:scale(0.95)}to{opacity:1;transform:scale(1)}}
+.modal-header{padding:20px 24px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;background:var(--bg-card);z-index:10}
+.modal-header h3{font-size:20px;font-weight:700}
+.close-modal{background:var(--bg-surface);border:none;width:36px;height:36px;border-radius:10px;cursor:pointer;color:var(--text-secondary);transition:var(--trans)}
+.close-modal:hover{background:var(--error);color:#fff}
+.modal-body{padding:24px}
+.form-group{margin-bottom:18px}
+.form-group label{display:block;margin-bottom:8px;font-size:13px;font-weight:500;color:var(--text-secondary)}
+.form-group input,.form-group textarea,.form-group select{width:100%;padding:12px 14px;background:var(--bg-surface);border:1px solid var(--border);border-radius:10px;color:var(--text-primary);font-size:14px;font-family:inherit;transition:var(--trans)}
+.form-group input:focus,.form-group textarea:focus,.form-group select:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-glow)}
+.modal-footer{padding:16px 24px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:12px;position:sticky;bottom:0;background:var(--bg-card)}
+
+/* Order Detail */
+.order-detail-section{margin-bottom:20px;padding:16px;background:var(--bg-surface);border-radius:12px}
+.order-detail-section h4{font-size:14px;font-weight:600;margin-bottom:12px;color:var(--accent);display:flex;align-items:center;gap:8px}
+.info-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.info-item .label{font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px}
+.info-item .value{font-size:14px;font-weight:500;margin-top:4px;word-break:break-word}
+.progress-bar{height:6px;background:var(--bg-surface);border-radius:10px;overflow:hidden;margin:12px 0}
+.progress-fill{height:100%;background:var(--gradient);border-radius:10px;transition:width 0.5s ease}
+.timeline-item{position:relative;padding-left:24px;padding-bottom:16px;border-left:2px solid var(--border)}
+.timeline-item::before{content:'';position:absolute;left:-6px;top:0;width:10px;height:10px;border-radius:50%;background:var(--accent)}
+.timeline-time{font-size:11px;color:var(--text-muted)}
+.timeline-message{font-size:13px;margin-top:4px}
+
+/* Chat */
+.chat-container{display:grid;grid-template-columns:320px 1fr;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;min-height:550px}
+.conversations-list{border-right:1px solid var(--border);overflow-y:auto;max-height:550px}
+.conversation-item{padding:14px 16px;border-bottom:1px solid var(--border);cursor:pointer;transition:var(--trans);position:relative}
+.conversation-item:hover{background:var(--bg-surface)}
+.conversation-item.unread{background:rgba(255,107,53,0.1)}
+.conversation-item.active{background:var(--gradient)}
+.conversation-name{font-weight:600;font-size:14px;margin-bottom:4px}
+.conversation-last-msg{font-size:12px;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.conversation-time{font-size:10px;color:var(--text-muted);margin-top:4px}
+.delete-conv{position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--error);cursor:pointer;opacity:0;transition:var(--trans)}
+.conversation-item:hover .delete-conv{opacity:1}
+.chat-area{display:flex;flex-direction:column}
+.chat-header{padding:16px 20px;border-bottom:1px solid var(--border);background:var(--bg-surface)}
+.chat-messages{flex:1;padding:20px;overflow-y:auto;max-height:450px;min-height:400px}
+.message{margin-bottom:16px;display:flex}
+.message.admin{justify-content:flex-end}
+.message.user{justify-content:flex-start}
+.message-content{max-width:70%;padding:10px 16px;border-radius:18px;font-size:13px}
+.message.admin .message-content{background:var(--gradient);color:#fff}
+.message.user .message-content{background:var(--bg-surface);color:var(--text-primary)}
+.message-time{font-size:10px;color:var(--text-muted);margin-top:4px;display:block}
+.chat-input-area{padding:16px;border-top:1px solid var(--border);display:flex;gap:12px;background:var(--bg-surface)}
+.chat-input-area textarea{flex:1;padding:12px;background:var(--bg-card);border:1px solid var(--border);border-radius:12px;color:var(--text-primary);resize:none;font-family:inherit}
+.chat-input-area button{padding:0 20px;background:var(--gradient);border:none;border-radius:12px;color:#fff;cursor:pointer;font-weight:600}
+
+/* Payment History */
+.payment-advance{background:rgba(245,158,11,0.15);color:var(--warning);padding:4px 8px;border-radius:6px;font-size:11px}
+.payment-balance{background:rgba(59,130,246,0.15);color:var(--info);padding:4px 8px;border-radius:6px;font-size:11px}
+.payment-refund{background:rgba(239,68,68,0.15);color:var(--error);padding:4px 8px;border-radius:6px;font-size:11px}
+
+/* Toast */
+.toast-container{position:fixed;bottom:20px;right:20px;z-index:1100;display:flex;flex-direction:column;gap:10px}
+.toast{padding:12px 20px;border-radius:10px;font-size:13px;font-weight:500;display:flex;align-items:center;gap:10px;animation:slideIn 0.3s ease;background:var(--bg-card);border:1px solid var(--border)}
+.toast-success{border-left:3px solid var(--success);color:var(--success)}
+.toast-error{border-left:3px solid var(--error);color:var(--error)}
+.toast-info{border-left:3px solid var(--info);color:var(--info)}
+@keyframes slideIn{from{transform:translateX(100%);opacity:0}to{transform:translateX(0);opacity:1}}
+
+/* Client Info */
+.client-info-card{background:linear-gradient(135deg,rgba(255,107,53,0.1),rgba(247,197,49,0.05));border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:16px}
+.client-info-card h4{color:var(--accent);margin-bottom:12px;font-size:14px}
+.client-detail-row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border)}
+.client-detail-row:last-child{border-bottom:none}
+.client-detail-label{color:var(--text-muted);font-size:12px}
+.client-detail-value{font-weight:500;font-size:13px}
+
+/* Loading */
+.loading-spinner{display:inline-block;width:20px;height:20px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin 0.8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* Responsive */
+@media(max-width:1024px){.stats-grid{grid-template-columns:repeat(2,1fr)}.chat-container{grid-template-columns:1fr}.conversations-list{display:none}.conversations-list.mobile-show{display:block}}
+@media(max-width:768px){.sidebar{transform:translateX(-100%)}.sidebar.mobile-open{transform:translateX(0)}.main-content{margin-left:0}.toggle-sidebar{display:flex}.stats-grid{grid-template-columns:1fr}.info-grid{grid-template-columns:1fr}.modal{max-width:95%}.card-header{flex-direction:column;align-items:flex-start}.search-input{width:100%}}
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-track{background:var(--bg-surface)}
+::-webkit-scrollbar-thumb{background:var(--accent);border-radius:10px}
 </style>
 </head>
 <body>
+
+<!-- LOGIN -->
 <div id="login-container">
   <div class="login-box">
     <div class="login-icon"><i class="fas fa-shield-alt"></i></div>
     <h2>NovaStack Admin</h2>
     <p>Enter credentials to access dashboard</p>
     <input type="email" id="login-email" class="login-input" placeholder="Admin Email" autocomplete="email">
-    <input type="password" id="login-password" class="login-input" placeholder="Password" onkeypress="if(event.key==='Enter') handleLogin()">
+    <input type="password" id="login-password" class="login-input" placeholder="Password" onkeypress="if(event.key==='Enter')handleLogin()">
     <button class="login-btn" onclick="handleLogin()"><i class="fas fa-sign-in-alt"></i> Login</button>
     <div id="login-error" class="login-error"></div>
   </div>
 </div>
+
+<!-- DASHBOARD -->
 <div id="dashboard-container">
   <aside class="sidebar" id="sidebar">
     <div class="sidebar-logo">
@@ -188,18 +222,18 @@ tr:hover td { background: var(--bg-surface); }
     </div>
     <nav class="sidebar-nav">
       <div class="nav-section"><i class="fas fa-chart-line"></i> <span>MAIN</span></div>
-      <button class="nav-item active" data-page="overview" onclick="switchPage('overview', this)"><i class="fas fa-tachometer-alt nav-icon"></i> <span>Dashboard</span></button>
+      <button class="nav-item active" data-page="overview" onclick="switchPage('overview',this)"><i class="fas fa-tachometer-alt nav-icon"></i> <span>Dashboard</span></button>
       <div class="nav-section"><i class="fas fa-shopping-cart"></i> <span>ORDERS</span></div>
-      <button class="nav-item" data-page="orders" onclick="switchPage('orders', this)"><i class="fas fa-box-open nav-icon"></i> <span>All Orders</span></button>
-      <button class="nav-item" data-page="payments" onclick="switchPage('payments', this)"><i class="fas fa-credit-card nav-icon"></i> <span>Payment History</span></button>
-      <button class="nav-item" data-page="refunds" onclick="switchPage('refunds', this)"><i class="fas fa-money-bill-wave nav-icon"></i> <span>Refunds</span></button>
+      <button class="nav-item" data-page="orders" onclick="switchPage('orders',this)"><i class="fas fa-box-open nav-icon"></i> <span>All Orders</span></button>
+      <button class="nav-item" data-page="payments" onclick="switchPage('payments',this)"><i class="fas fa-credit-card nav-icon"></i> <span>Payment History</span></button>
+      <button class="nav-item" data-page="refunds" onclick="switchPage('refunds',this)"><i class="fas fa-money-bill-wave nav-icon"></i> <span>Refunds</span></button>
       <div class="nav-section"><i class="fas fa-cube"></i> <span>SERVICES</span></div>
-      <button class="nav-item" data-page="services" onclick="switchPage('services', this)"><i class="fas fa-cubes nav-icon"></i> <span>Manage Services</span></button>
+      <button class="nav-item" data-page="services" onclick="switchPage('services',this)"><i class="fas fa-cubes nav-icon"></i> <span>Manage Services</span></button>
       <div class="nav-section"><i class="fas fa-users"></i> <span>USERS</span></div>
-      <button class="nav-item" data-page="users" onclick="switchPage('users', this)"><i class="fas fa-user-friends nav-icon"></i> <span>All Users</span></button>
-      <button class="nav-item" data-page="custom-requests" onclick="switchPage('custom-requests', this)"><i class="fas fa-file-signature nav-icon"></i> <span>Custom Requests</span></button>
+      <button class="nav-item" data-page="users" onclick="switchPage('users',this)"><i class="fas fa-user-friends nav-icon"></i> <span>All Users</span></button>
+      <button class="nav-item" data-page="custom-requests" onclick="switchPage('custom-requests',this)"><i class="fas fa-file-signature nav-icon"></i> <span>Custom Requests</span></button>
       <div class="nav-section"><i class="fas fa-comments"></i> <span>SUPPORT</span></div>
-      <button class="nav-item" data-page="chat" onclick="switchPage('chat', this)"><i class="fas fa-comment-dots nav-icon"></i> <span>Conversations</span></button>
+      <button class="nav-item" data-page="chat" onclick="switchPage('chat',this)"><i class="fas fa-comment-dots nav-icon"></i> <span>Conversations</span></button>
     </nav>
     <div class="sidebar-footer">
       <div class="admin-info">
@@ -214,18 +248,20 @@ tr:hover td { background: var(--bg-surface); }
   </aside>
   <div class="main-content" id="main-content">
     <div class="top-bar">
-      <div style="display: flex; align-items: center;">
+      <div style="display:flex;align-items:center">
         <button class="toggle-sidebar" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
         <h1 class="page-title" id="page-title"><i class="fas fa-tachometer-alt"></i> <span>Dashboard Overview</span></h1>
       </div>
       <div class="date-display" id="date-display"></div>
     </div>
     <div class="content-area" id="content-area">
-      <div style="text-align: center; padding: 40px;"><div class="loading-spinner"></div> Loading dashboard...</div>
+      <div style="text-align:center;padding:40px"><div class="loading-spinner"></div> Loading dashboard...</div>
     </div>
   </div>
 </div>
+
 <div class="toast-container" id="toast-container"></div>
+
 <!-- Modals -->
 <div id="service-modal" class="modal-overlay">
   <div class="modal">
@@ -249,8 +285,9 @@ tr:hover td { background: var(--bg-surface); }
     </div>
   </div>
 </div>
+
 <div id="order-modal" class="modal-overlay">
-  <div class="modal" style="max-width: 850px;">
+  <div class="modal" style="max-width:850px">
     <div class="modal-header">
       <h3><i class="fas fa-info-circle"></i> Order Details</h3>
       <button class="close-modal" onclick="closeModal('order-modal')"><i class="fas fa-times"></i></button>
@@ -258,6 +295,7 @@ tr:hover td { background: var(--bg-surface); }
     <div class="modal-body" id="order-detail-content"></div>
   </div>
 </div>
+
 <div id="delivery-modal" class="modal-overlay">
   <div class="modal">
     <div class="modal-header">
@@ -280,6 +318,7 @@ tr:hover td { background: var(--bg-surface); }
     </div>
   </div>
 </div>
+
 <div id="refund-modal" class="modal-overlay">
   <div class="modal">
     <div class="modal-header">
@@ -287,9 +326,9 @@ tr:hover td { background: var(--bg-surface); }
       <button class="close-modal" onclick="closeModal('refund-modal')"><i class="fas fa-times"></i></button>
     </div>
     <div class="modal-body">
-      <div class="form-group"><label><i class="fas fa-dollar-sign"></i> Refund Amount (₹)</label><input type="number" id="refund-amount" readonly style="background: rgba(255,255,255,0.05);"></div>
+      <div class="form-group"><label><i class="fas fa-dollar-sign"></i> Refund Amount (₹)</label><input type="number" id="refund-amount" readonly style="background:rgba(255,255,255,0.05)"></div>
       <div class="form-group"><label><i class="fas fa-comment"></i> Reason for Refund</label><textarea id="refund-reason" rows="3" placeholder="Enter refund reason..."></textarea></div>
-      <div class="form-group"><label><i class="fas fa-exclamation-triangle"></i> Warning</label><p style="font-size: 12px; color: var(--warning);">This will refund the amount to customer's original payment method. This action cannot be undone!</p></div>
+      <div class="form-group"><label><i class="fas fa-exclamation-triangle"></i> Warning</label><p style="font-size:12px;color:var(--warning)">This will refund the amount to customer's original payment method. This action cannot be undone!</p></div>
     </div>
     <div class="modal-footer">
       <button class="btn btn-danger" onclick="closeModal('refund-modal')">Cancel</button>
@@ -297,105 +336,121 @@ tr:hover td { background: var(--bg-surface); }
     </div>
   </div>
 </div>
+
 <script>
-const CONFIG = {
-  API: window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:5000' : 'https://novastack-backend.onrender.com',
-  TOKEN_KEY: 'nova_admin_token', EMAIL_KEY: 'nova_admin_email'
+// ==================== CONFIG ====================
+const CONFIG={
+  API:window.location.hostname==='localhost'||window.location.hostname==='127.0.0.1'?'http://localhost:5000':'https://novastack-backend.onrender.com',
+  TOKEN_KEY:'nova_admin_token',EMAIL_KEY:'nova_admin_email'
 };
-let adminToken = localStorage.getItem(CONFIG.TOKEN_KEY);
-let adminEmail = localStorage.getItem(CONFIG.EMAIL_KEY);
-let editingServiceId = null, currentOrderId = null, currentConversation = null, chatPollInterval = null;
-let appData = { services: [], orders: [], users: [], customRequests: [], refunds: [], payments: [] };
+let adminToken=localStorage.getItem(CONFIG.TOKEN_KEY);
+let adminEmail=localStorage.getItem(CONFIG.EMAIL_KEY);
+let editingServiceId=null,currentOrderId=null,currentConversation=null,chatPollInterval=null;
+let appData={services:[],orders:[],users:[],customRequests:[],refunds:[],payments:[]};
 
-function showToast(message, type = 'info') {
-  const container = document.getElementById('toast-container');
-  const toast = document.createElement('div');
-  toast.className = `toast toast-${type}`;
-  toast.innerHTML = `<i class="fas fa-${type==='success'?'check-circle':type==='error'?'exclamation-circle':'info-circle'}"></i> ${message}`;
-  container.appendChild(toast); setTimeout(() => toast.remove(), 4000);
+// ==================== UTILS ====================
+function showToast(msg,type='info'){
+  const c=document.getElementById('toast-container'),t=document.createElement('div');
+  t.className=`toast toast-${type}`;
+  t.innerHTML=`<i class="fas fa-${type==='success'?'check-circle':type==='error'?'exclamation-circle':'info-circle'}"></i> ${msg}`;
+  c.appendChild(t);setTimeout(()=>t.remove(),4000);
 }
-function formatCurrency(amount) { return `₹${parseFloat(amount || 0).toLocaleString('en-IN')}`; }
-function formatDate(dateStr) { if(!dateStr) return '—'; return new Date(dateStr).toLocaleDateString('en-IN', { day:'numeric', month:'short', year:'numeric' }); }
-function formatDateTime(dateStr) { if(!dateStr) return '—'; return new Date(dateStr).toLocaleString('en-IN'); }
-function escapeHtml(text) { if(!text) return ''; const d=document.createElement('div'); d.textContent=text; return d.innerHTML; }
+function formatCurrency(a){return`₹${parseFloat(a||0).toLocaleString('en-IN')}`}
+function formatDate(d){if(!d)return'—';return new Date(d).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'})}
+function formatDateTime(d){if(!d)return'—';return new Date(d).toLocaleString('en-IN')}
+function escapeHtml(t){if(!t)return'';const d=document.createElement('div');d.textContent=t;return d.innerHTML}
 
-async function apiCall(method, endpoint, body = null) {
-  const headers = { 'Content-Type': 'application/json' };
-  if (adminToken) headers['Authorization'] = `Bearer ${adminToken}`;
-  const opts = { method, headers };
-  if (body) opts.body = JSON.stringify(body);
-  try {
-    const res = await fetch(`${CONFIG.API}${endpoint}`, opts);
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    const data = await res.json();
-    if (!data.success) throw new Error(data.error || 'Request failed');
+// ==================== API CALLS ====================
+async function apiCall(method,endpoint,body=null){
+  const headers={'Content-Type':'application/json'};
+  if(adminToken)headers['Authorization']=`Bearer ${adminToken}`;
+  const opts={method,headers};
+  if(body)opts.body=JSON.stringify(body);
+  try{
+    const res=await fetch(`${CONFIG.API}${endpoint}`,opts);
+    if(res.status===401){handleTokenExpired();throw new Error('Session expired - redirecting to login');}
+    if(!res.ok)throw new Error(`HTTP ${res.status}`);
+    const data=await res.json();
+    if(!data.success)throw new Error(data.error||'Request failed');
     return data;
-  } catch(err) { console.error('API Error:', err); throw err; }
+  }catch(err){console.error('API Error:',err);throw err}
 }
 
-async function handleLogin() {
-  const email = document.getElementById('login-email').value.trim();
-  const password = document.getElementById('login-password').value;
-  const errDiv = document.getElementById('login-error');
-  if (!email || !password) { errDiv.textContent = 'Please enter email and password'; errDiv.style.display = 'block'; return; }
-  errDiv.style.display = 'none';
-  try {
-    const res = await fetch(`${CONFIG.API}/admin/login`, { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({email, password}) });
-    const data = await res.json();
-    if (!res.ok || !data.token) throw new Error(data.error || 'Login failed');
-    adminToken = data.token; adminEmail = email;
-    localStorage.setItem(CONFIG.TOKEN_KEY, adminToken); localStorage.setItem(CONFIG.EMAIL_KEY, adminEmail);
-    showDashboard(); showToast('Login successful! Welcome back.', 'success');
-  } catch(e) { errDiv.textContent = e.message; errDiv.style.display = 'block'; showToast(e.message, 'error'); }
+// ==================== AUTH ====================
+function handleTokenExpired(){
+  localStorage.removeItem(CONFIG.TOKEN_KEY);localStorage.removeItem(CONFIG.EMAIL_KEY);
+  adminToken=null;adminEmail=null;
+  if(chatPollInterval)clearInterval(chatPollInterval);
+  document.getElementById('dashboard-container').style.display='none';
+  document.getElementById('login-container').style.display='flex';
+  showToast('Session expired. Please login again.','error');
 }
-function handleLogout() {
-  localStorage.removeItem(CONFIG.TOKEN_KEY); localStorage.removeItem(CONFIG.EMAIL_KEY);
-  adminToken = null; adminEmail = null;
-  if(chatPollInterval) clearInterval(chatPollInterval);
-  document.getElementById('dashboard-container').style.display = 'none';
-  document.getElementById('login-container').style.display = 'flex';
-  document.getElementById('login-email').value = ''; document.getElementById('login-password').value = '';
-  showToast('Logged out successfully', 'success');
+
+async function handleLogin(){
+  const email=document.getElementById('login-email').value.trim(),password=document.getElementById('login-password').value,errDiv=document.getElementById('login-error');
+  if(!email||!password){errDiv.textContent='Please enter email and password';errDiv.style.display='block';return}
+  errDiv.style.display='none';
+  try{
+    const res=await fetch(`${CONFIG.API}/admin/login`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,password})});
+    const data=await res.json();
+    if(!res.ok||!data.token)throw new Error(data.error||'Login failed');
+    adminToken=data.token;adminEmail=email;
+    localStorage.setItem(CONFIG.TOKEN_KEY,adminToken);localStorage.setItem(CONFIG.EMAIL_KEY,adminEmail);
+    showDashboard();showToast('Login successful! Welcome back.','success');
+  }catch(e){errDiv.textContent=e.message;errDiv.style.display='block';showToast(e.message,'error')}
 }
-function showDashboard() {
-  document.getElementById('login-container').style.display = 'none';
-  document.getElementById('dashboard-container').style.display = 'block';
-  document.getElementById('admin-name').textContent = adminEmail.split('@')[0];
-  document.getElementById('admin-avatar').textContent = adminEmail[0].toUpperCase();
-  document.getElementById('date-display').textContent = new Date().toLocaleDateString('en-IN', { weekday:'short', year:'numeric', month:'short', day:'numeric' });
+function handleLogout(){
+  localStorage.removeItem(CONFIG.TOKEN_KEY);localStorage.removeItem(CONFIG.EMAIL_KEY);
+  adminToken=null;adminEmail=null;
+  if(chatPollInterval)clearInterval(chatPollInterval);
+  document.getElementById('dashboard-container').style.display='none';
+  document.getElementById('login-container').style.display='flex';
+  document.getElementById('login-email').value='';document.getElementById('login-password').value='';
+  showToast('Logged out successfully','success');
+}
+function showDashboard(){
+  document.getElementById('login-container').style.display='none';
+  document.getElementById('dashboard-container').style.display='block';
+  document.getElementById('admin-name').textContent=adminEmail.split('@')[0];
+  document.getElementById('admin-avatar').textContent=adminEmail[0].toUpperCase();
+  document.getElementById('date-display').textContent=new Date().toLocaleDateString('en-IN',{weekday:'short',year:'numeric',month:'short',day:'numeric'});
   loadAllData();
 }
-async function loadAllData() {
-  try {
-    const [s, o, u, c, r, p] = await Promise.all([
-      apiCall('GET', '/admin/services').catch(()=>({services:[]})),
-      apiCall('GET', '/admin/orders').catch(()=>({orders:[]})),
-      apiCall('GET', '/admin/users').catch(()=>({users:[]})),
-      apiCall('GET', '/custom-requests').catch(()=>({requests:[]})),
-      apiCall('GET', '/admin/refunds/history').catch(()=>({refunds:[]})),
-      apiCall('GET', '/admin/payment-history').catch(()=>({payments:[]}))
+
+// ==================== DATA LOAD ====================
+async function loadAllData(){
+  try{
+    const[s,o,u,c,r,p]=await Promise.all([
+      apiCall('GET','/admin/services').catch(()=>({services:[]})),
+      apiCall('GET','/admin/orders').catch(()=>({orders:[]})),
+      apiCall('GET','/admin/users').catch(()=>({users:[]})),
+      apiCall('GET','/custom-requests').catch(()=>({requests:[]})),
+      apiCall('GET','/admin/refunds/history').catch(()=>({refunds:[]})),
+      apiCall('GET','/admin/payment-history').catch(()=>({payments:[]}))
     ]);
-    appData.services = s.services || []; appData.orders = o.orders || []; appData.users = u.users || [];
-    appData.customRequests = c.requests || []; appData.refunds = r.refunds || []; appData.payments = p.payments || [];
+    appData.services=s.services||[];appData.orders=o.orders||[];appData.users=u.users||[];
+    appData.customRequests=c.requests||[];appData.refunds=r.refunds||[];appData.payments=p.payments||[];
     renderCurrentPage();
-  } catch(e) { showToast('Error loading data: '+e.message, 'error'); console.error(e); }
+  }catch(e){showToast('Error loading data: '+e.message,'error');console.error(e)}
 }
-function renderCurrentPage() {
-  const page = document.querySelector('.nav-item.active')?.getAttribute('data-page') || 'overview';
-  switch(page) {
-    case 'overview': renderOverview(); break; case 'orders': renderOrders(); break;
-    case 'payments': renderPaymentHistory(); break; case 'refunds': renderRefunds(); break;
-    case 'services': renderServices(); break; case 'users': renderUsers(); break;
-    case 'custom-requests': renderCustomRequests(); break; case 'chat': renderChat(); break;
-    default: renderOverview();
+function renderCurrentPage(){
+  const page=document.querySelector('.nav-item.active')?.getAttribute('data-page')||'overview';
+  switch(page){
+    case'overview':renderOverview();break;case'orders':renderOrders();break;
+    case'payments':renderPaymentHistory();break;case'refunds':renderRefunds();break;
+    case'services':renderServices();break;case'users':renderUsers();break;
+    case'custom-requests':renderCustomRequests();break;case'chat':renderChat();break;
+    default:renderOverview();
   }
 }
-function renderOverview() {
-  const rev = appData.payments.filter(p=>p.amount>0 && p.status==='completed').reduce((s,p)=>s+parseFloat(p.amount||0),0);
-  const pend = appData.orders.filter(o=>o.status==='payment_received').length;
-  const canc = appData.orders.filter(o=>o.status==='cancellation_requested').length;
-  const recent = appData.orders.slice(0,5);
-  document.getElementById('content-area').innerHTML = `
+
+// ==================== OVERVIEW ====================
+function renderOverview(){
+  const rev=appData.payments.filter(p=>p.amount>0&&p.status==='completed').reduce((s,p)=>s+parseFloat(p.amount||0),0);
+  const pend=appData.orders.filter(o=>o.status==='payment_received').length;
+  const canc=appData.orders.filter(o=>o.status==='cancellation_requested').length;
+  const recent=appData.orders.slice(0,5);
+  document.getElementById('content-area').innerHTML=`
     <div class="stats-grid">
       <div class="stat-card" onclick="switchPage('services')"><div class="stat-label"><i class="fas fa-cube"></i> Total Services</div><div class="stat-value">${appData.services.length}</div></div>
       <div class="stat-card" onclick="switchPage('orders')"><div class="stat-label"><i class="fas fa-box-open"></i> Total Orders</div><div class="stat-value">${appData.orders.length}</div></div>
@@ -426,15 +481,17 @@ function renderOverview() {
         </tbody></table></div></div>
     </div>`;
 }
-function renderOrders(filter='') {
-  let list = [...appData.orders];
-  if(filter) { const s=filter.toLowerCase(); list=list.filter(o=>o.id?.toString().includes(s)||o.user_name?.toLowerCase().includes(s)||o.user_email?.toLowerCase().includes(s)||o.service_title?.toLowerCase().includes(s)); }
-  document.getElementById('content-area').innerHTML = `
+
+// ==================== ORDERS ====================
+function renderOrders(filter=''){
+  let list=[...appData.orders];
+  if(filter){const s=filter.toLowerCase();list=list.filter(o=>o.id?.toString().includes(s)||o.user_name?.toLowerCase().includes(s)||o.user_email?.toLowerCase().includes(s)||o.service_title?.toLowerCase().includes(s))}
+  document.getElementById('content-area').innerHTML=`
     <div class="card"><div class="card-header"><h3><i class="fas fa-list"></i> All Orders</h3><input type="text" class="search-input" placeholder="Search orders..." onkeyup="renderOrders(this.value)"></div>
       <div class="table-responsive"><table><thead><tr><th>ID</th><th>Customer</th><th>Email</th><th>Service</th><th>Total</th><th>Paid</th><th>Due</th><th>Status</th><th>Actions</th></tr></thead><tbody>
       ${list.map(o=>{
-        const t=parseFloat(o.price)||0, p=parseFloat(o.total_paid||o.advance_paid||0), d=t-p;
-        return `<tr><td><span style="color:var(--accent)">#${o.id}</span></td><td><strong>${escapeHtml(o.user_name||'—')}</strong></td><td><small>${escapeHtml(o.user_email||'—')}</small></td><td>${escapeHtml(o.service_title||'—')}</td><td>${formatCurrency(t)}</td><td style="color:var(--success)">${formatCurrency(p)}</td><td style="color:var(--warning)">${formatCurrency(d)}</td><td><span class="badge badge-${o.status}">${o.status.replace(/_/g,' ')}</span></td><td>
+        const t=parseFloat(o.price)||0,p=parseFloat(o.total_paid||o.advance_paid||0),d=t-p;
+        return`<tr><td><span style="color:var(--accent)">#${o.id}</span></td><td><strong>${escapeHtml(o.user_name||'—')}</strong></td><td><small>${escapeHtml(o.user_email||'—')}</small></td><td>${escapeHtml(o.service_title||'—')}</td><td>${formatCurrency(t)}</td><td style="color:var(--success)">${formatCurrency(p)}</td><td style="color:var(--warning)">${formatCurrency(d)}</td><td><span class="badge badge-${o.status}">${o.status.replace(/_/g,' ')}</span></td><td>
         <div style="display:flex;gap:5px;flex-wrap:wrap">
         <button class="btn btn-sm btn-info" onclick="viewOrderDetails(${o.id})"><i class="fas fa-eye"></i></button>
         <button class="btn btn-sm btn-primary" onclick="openDeliveryModal(${o.id})"><i class="fas fa-box"></i></button>
@@ -448,13 +505,13 @@ function renderOrders(filter='') {
       ${list.length===0?'<tr><td colspan="9" class="empty-row">No orders found</td></tr>':''}
       </tbody></table></div></div>`;
 }
-async function viewOrderDetails(id) {
-  const o = appData.orders.find(x=>x.id===id); if(!o) return;
-  const t=parseFloat(o.price)||0, p=parseFloat(o.total_paid||o.advance_paid||0), pct=t>0?(p/t)*100:0;
-  const u = appData.users.find(x=>x.email===o.user_email);
+async function viewOrderDetails(id){
+  const o=appData.orders.find(x=>x.id===id);if(!o)return;
+  const t=parseFloat(o.price)||0,p=parseFloat(o.total_paid||o.advance_paid||0),pct=t>0?(p/t)*100:0;
+  const u=appData.users.find(x=>x.email===o.user_email);
   let tl='<div class="timeline-item"><div class="loading-spinner"></div> Loading...</div>';
-  try { const res=await apiCall('GET',`/order/${id}/timeline`); if(res.data?.length) tl=res.data.map(x=>`<div class="timeline-item"><div class="timeline-time">${formatDateTime(x.created_at)}</div><div class="timeline-message">${escapeHtml(x.message||x.status)}</div></div>`).join(''); else tl='<div class="timeline-item">No timeline entries</div>'; } catch(e){ tl='<div class="timeline-item">Timeline unavailable</div>'; }
-  document.getElementById('order-detail-content').innerHTML = `
+  try{const res=await apiCall('GET',`/order/${id}/timeline`);if(res.data?.length)tl=res.data.map(x=>`<div class="timeline-item"><div class="timeline-time">${formatDateTime(x.created_at)}</div><div class="timeline-message">${escapeHtml(x.message||x.status)}</div></div>`).join('');else tl='<div class="timeline-item">No timeline entries</div>'}catch(e){tl='<div class="timeline-item">Timeline unavailable</div>'}
+  document.getElementById('order-detail-content').innerHTML=`
     <div class="client-info-card"><h4><i class="fas fa-user-circle"></i> Client Information</h4>
       <div class="client-detail-row"><span class="client-detail-label"><i class="fas fa-user"></i> Full Name</span><span class="client-detail-value">${escapeHtml(o.user_name||'—')}</span></div>
       <div class="client-detail-row"><span class="client-detail-label"><i class="fas fa-envelope"></i> Email</span><span class="client-detail-value"><a href="mailto:${o.user_email}" style="color:var(--accent)">${escapeHtml(o.user_email||'—')}</a></span></div>
@@ -484,50 +541,52 @@ async function viewOrderDetails(id) {
     <div class="order-detail-section"><h4><i class="fas fa-history"></i> Timeline</h4>${tl}</div>
     <div class="order-detail-section"><h4><i class="fas fa-cog"></i> Actions</h4>
       <div style="display:flex;gap:10px;flex-wrap:wrap">
-      <button class="btn btn-primary" onclick="openDeliveryModal(${o.id}); closeModal('order-modal')"><i class="fas fa-box"></i> Update Deliverables</button>
-      ${o.status==='payment_received'?`<button class="btn btn-success" onclick="updateOrderStatus(${o.id},'in_progress'); closeModal('order-modal')"><i class="fas fa-play"></i> Start</button>`:''}
-      ${o.status==='in_progress'?`<button class="btn btn-warning" onclick="updateOrderStatus(${o.id},'ready_for_balance'); closeModal('order-modal')"><i class="fas fa-money-bill"></i> Ready for Balance</button>`:''}
-      ${o.status==='ready_for_balance'?`<button class="btn btn-primary" onclick="updateOrderStatus(${o.id},'completed'); closeModal('order-modal')"><i class="fas fa-check-circle"></i> Mark Completed</button>`:''}
-      ${o.status==='cancellation_requested'?`<button class="btn btn-danger" onclick="openRefundModal(${o.id},${p}); closeModal('order-modal')"><i class="fas fa-undo"></i> Process Refund</button>`:''}
-      <button class="btn btn-info" onclick="chatFromOrder(${o.id}); closeModal('order-modal')"><i class="fas fa-comment"></i> Open Chat</button>
+      <button class="btn btn-primary" onclick="openDeliveryModal(${o.id});closeModal('order-modal')"><i class="fas fa-box"></i> Update Deliverables</button>
+      ${o.status==='payment_received'?`<button class="btn btn-success" onclick="updateOrderStatus(${o.id},'in_progress');closeModal('order-modal')"><i class="fas fa-play"></i> Start</button>`:''}
+      ${o.status==='in_progress'?`<button class="btn btn-warning" onclick="updateOrderStatus(${o.id},'ready_for_balance');closeModal('order-modal')"><i class="fas fa-money-bill"></i> Ready for Balance</button>`:''}
+      ${o.status==='ready_for_balance'?`<button class="btn btn-primary" onclick="updateOrderStatus(${o.id},'completed');closeModal('order-modal')"><i class="fas fa-check-circle"></i> Mark Completed</button>`:''}
+      ${o.status==='cancellation_requested'?`<button class="btn btn-danger" onclick="openRefundModal(${o.id},${p});closeModal('order-modal')"><i class="fas fa-undo"></i> Process Refund</button>`:''}
+      <button class="btn btn-info" onclick="chatFromOrder(${o.id});closeModal('order-modal')"><i class="fas fa-comment"></i> Open Chat</button>
       </div></div>`;
   document.getElementById('order-modal').classList.add('open');
 }
-async function updateOrderStatus(id, status) {
-  try { await apiCall('PUT',`/admin/order/${id}/status`,{status}); showToast(`Order #${id} → ${status}`, 'success'); await loadAllData(); closeModal('order-modal'); }
-  catch(e) { showToast('Failed: '+e.message, 'error'); }
+async function updateOrderStatus(id,status){
+  try{await apiCall('PUT',`/admin/order/${id}/status`,{status});showToast(`Order #${id} → ${status}`,'success');await loadAllData();closeModal('order-modal')}
+  catch(e){showToast('Failed: '+e.message,'error')}
 }
-function openDeliveryModal(id) {
-  const o = appData.orders.find(x=>x.id===id); if(!o) return; currentOrderId = id;
-  document.getElementById('delivery-github').value = o.github_repo||'';
-  document.getElementById('delivery-live').value = o.live_url||'';
-  document.getElementById('delivery-source').value = o.source_code_url||'';
-  document.getElementById('delivery-docs').value = o.documentation_url||'';
-  document.getElementById('delivery-notes').value = o.delivery_notes||'';
-  document.getElementById('delivery-preview').checked = !!o.preview_ready;
-  document.getElementById('delivery-full').checked = !!o.full_access_ready;
-  document.getElementById('delivery-mark').checked = false;
+function openDeliveryModal(id){
+  const o=appData.orders.find(x=>x.id===id);if(!o)return;currentOrderId=id;
+  document.getElementById('delivery-github').value=o.github_repo||'';
+  document.getElementById('delivery-live').value=o.live_url||'';
+  document.getElementById('delivery-source').value=o.source_code_url||'';
+  document.getElementById('delivery-docs').value=o.documentation_url||'';
+  document.getElementById('delivery-notes').value=o.delivery_notes||'';
+  document.getElementById('delivery-preview').checked=!!o.preview_ready;
+  document.getElementById('delivery-full').checked=!!o.full_access_ready;
+  document.getElementById('delivery-mark').checked=false;
   document.getElementById('delivery-modal').classList.add('open');
 }
-async function submitDelivery() {
-  if(!currentOrderId) return;
-  const data = { github_repo: document.getElementById('delivery-github').value, live_url: document.getElementById('delivery-live').value, source_code_url: document.getElementById('delivery-source').value, documentation_url: document.getElementById('delivery-docs').value, delivery_notes: document.getElementById('delivery-notes').value, preview_ready: document.getElementById('delivery-preview').checked, full_access_ready: document.getElementById('delivery-full').checked, mark_delivered: document.getElementById('delivery-mark').checked };
-  try { await apiCall('POST',`/admin/order/${currentOrderId}/update-delivery`,data); showToast('Delivery updated successfully', 'success'); closeModal('delivery-modal'); await loadAllData(); }
-  catch(e) { showToast('Failed: '+e.message, 'error'); }
+async function submitDelivery(){
+  if(!currentOrderId)return;
+  const data={github_repo:document.getElementById('delivery-github').value,live_url:document.getElementById('delivery-live').value,source_code_url:document.getElementById('delivery-source').value,documentation_url:document.getElementById('delivery-docs').value,delivery_notes:document.getElementById('delivery-notes').value,preview_ready:document.getElementById('delivery-preview').checked,full_access_ready:document.getElementById('delivery-full').checked,mark_delivered:document.getElementById('delivery-mark').checked};
+  try{await apiCall('POST',`/admin/order/${currentOrderId}/update-delivery`,data);showToast('Delivery updated successfully','success');closeModal('delivery-modal');await loadAllData()}
+  catch(e){showToast('Failed: '+e.message,'error')}
 }
-function openRefundModal(id, amount) { currentOrderId=id; document.getElementById('refund-amount').value=amount; document.getElementById('refund-reason').value=''; document.getElementById('refund-modal').classList.add('open'); }
-async function processRefund() {
-  if(!currentOrderId) return; const amt=parseFloat(document.getElementById('refund-amount').value), reason=document.getElementById('refund-reason').value;
-  if(!confirm(`Refund ₹${amt}? Cannot be undone!`)) return;
-  try { await apiCall('POST',`/admin/order/${currentOrderId}/refund`,{amount:amt, reason: reason||'Admin refund'}); showToast('Refund processed', 'success'); closeModal('refund-modal'); await loadAllData(); }
-  catch(e) { showToast('Failed: '+e.message, 'error'); }
+function openRefundModal(id,amount){currentOrderId=id;document.getElementById('refund-amount').value=amount;document.getElementById('refund-reason').value='';document.getElementById('refund-modal').classList.add('open')}
+async function processRefund(){
+  if(!currentOrderId)return;const amt=parseFloat(document.getElementById('refund-amount').value),reason=document.getElementById('refund-reason').value;
+  if(!confirm(`Refund ₹${amt}? Cannot be undone!`))return;
+  try{await apiCall('POST',`/admin/order/${currentOrderId}/refund`,{amount:amt,reason:reason||'Admin refund'});showToast('Refund processed','success');closeModal('refund-modal');await loadAllData()}
+  catch(e){showToast('Failed: '+e.message,'error')}
 }
-function renderPaymentHistory(filter='') {
-  let list=[...appData.payments]; if(filter){const s=filter.toLowerCase(); list=list.filter(p=>p.order_id?.toString().includes(s)||p.user_name?.toLowerCase().includes(s));}
+
+// ==================== PAYMENT HISTORY ====================
+function renderPaymentHistory(filter=''){
+  let list=[...appData.payments];if(filter){const s=filter.toLowerCase();list=list.filter(p=>p.order_id?.toString().includes(s)||p.user_name?.toLowerCase().includes(s))}
   const adv=list.filter(p=>p.payment_type==='advance'&&p.status==='completed').reduce((s,p)=>s+parseFloat(p.amount||0),0);
   const bal=list.filter(p=>p.payment_type==='balance'&&p.status==='completed').reduce((s,p)=>s+parseFloat(p.amount||0),0);
   const ref=list.filter(p=>p.payment_type==='refund').reduce((s,p)=>s+Math.abs(parseFloat(p.amount||0)),0);
-  document.getElementById('content-area').innerHTML = `
+  document.getElementById('content-area').innerHTML=`
     <div class="stats-grid">
       <div class="stat-card"><div class="stat-label"><i class="fas fa-hand-holding-usd"></i> Total Advance</div><div class="stat-value">${formatCurrency(adv)}</div></div>
       <div class="stat-card"><div class="stat-label"><i class="fas fa-wallet"></i> Total Balance</div><div class="stat-value">${formatCurrency(bal)}</div></div>
@@ -540,65 +599,75 @@ function renderPaymentHistory(filter='') {
       ${list.length===0?'<tr><td colspan="8" class="empty-row">No records</td></tr>':''}
       </tbody></table></div></div>`;
 }
-function renderRefunds() {
-  document.getElementById('content-area').innerHTML = `
+
+// ==================== REFUNDS ====================
+function renderRefunds(){
+  document.getElementById('content-area').innerHTML=`
     <div class="card"><div class="card-header"><h3><i class="fas fa-money-bill-wave"></i> Refund History</h3></div>
       <div class="table-responsive"><table><thead><tr><th>Order ID</th><th>Customer</th><th>Amount</th><th>Reason</th><th>Status</th><th>Processed By</th><th>Date</th></tr></thead><tbody>
       ${appData.refunds.map(r=>`<tr><td><span style="color:var(--accent)">#${r.order_id}</span></td><td><strong>${escapeHtml(r.user_name||'—')}</strong><br><small>${escapeHtml(r.user_email||'')}</small></td><td style="color:var(--error)">${formatCurrency(r.amount)}</td><td><small>${escapeHtml((r.reason||'').substring(0,50))}</small></td><td><span class="badge badge-${r.status==='completed'?'completed':'pending'}">${r.status}</span></td><td>${r.processed_by||'Admin'}</td><td>${formatDateTime(r.processed_at)}</td></tr>`).join('')}
       ${appData.refunds.length===0?'<tr><td colspan="7" class="empty-row">No refunds</td></tr>':''}
       </tbody></table></div></div>`;
 }
-function renderServices(filter='') {
-  let list=[...appData.services]; if(filter) list=list.filter(s=>s.title?.toLowerCase().includes(filter.toLowerCase()));
-  const oc={}; appData.orders.forEach(o=>{oc[o.service_id]=(oc[o.service_id]||0)+1});
-  document.getElementById('content-area').innerHTML = `
+
+// ==================== SERVICES ====================
+function renderServices(filter=''){
+  let list=[...appData.services];if(filter)list=list.filter(s=>s.title?.toLowerCase().includes(filter.toLowerCase()));
+  const oc={};appData.orders.forEach(o=>{oc[o.service_id]=(oc[o.service_id]||0)+1});
+  document.getElementById('content-area').innerHTML=`
     <div class="card"><div class="card-header"><h3><i class="fas fa-cubes"></i> All Services</h3><div style="display:flex;gap:12px"><input type="text" class="search-input" placeholder="Search services..." onkeyup="renderServices(this.value)"><button class="btn btn-primary" onclick="openAddServiceModal()"><i class="fas fa-plus"></i> Add</button></div></div>
       <div class="table-responsive"><table><thead><tr><th>Service</th><th>Category</th><th>Price</th><th>Orders</th><th>Actions</th></tr></thead><tbody>
       ${list.map(s=>`<tr><td><strong>${s.emoji||'💻'} ${escapeHtml(s.title)}</strong><br><small style="color:var(--text-muted)">${escapeHtml((s.description||'').substring(0,60))}</small></td><td><span class="badge badge-payment_received">${s.category}</span></td><td style="color:var(--success)">${formatCurrency(s.price)}</td><td>${oc[s.id]||0}</td><td><div style="display:flex;gap:5px"><button class="btn btn-sm btn-info" onclick="editService(${s.id})"><i class="fas fa-edit"></i></button><button class="btn btn-sm btn-danger" onclick="deleteService(${s.id})"><i class="fas fa-trash"></i></button></div></td></tr>`).join('')}
       ${list.length===0?'<tr><td colspan="5" class="empty-row">No services</td></tr>':''}
       </tbody></table></div></div>`;
 }
-function openAddServiceModal() { editingServiceId=null; document.getElementById('service-modal-title').innerHTML='<i class="fas fa-plus-circle"></i> Add New Service'; ['service-title','service-desc','service-tech'].forEach(id=>document.getElementById(id).value=''); document.getElementById('service-price').value=''; document.getElementById('service-category').value='web'; document.getElementById('service-emoji').value='💻'; document.getElementById('service-days').value='14'; document.getElementById('service-revisions').value='3'; document.getElementById('service-modal').classList.add('open'); }
-async function editService(id) { const s=appData.services.find(x=>x.id===id); if(!s) return; editingServiceId=id; document.getElementById('service-modal-title').innerHTML='<i class="fas fa-edit"></i> Edit Service'; document.getElementById('service-title').value=s.title||''; document.getElementById('service-desc').value=s.description||''; document.getElementById('service-category').value=s.category||'web'; document.getElementById('service-tech').value=s.technologies||''; document.getElementById('service-price').value=s.price||''; document.getElementById('service-emoji').value=s.emoji||'💻'; document.getElementById('service-days').value=s.delivery_days||14; document.getElementById('service-revisions').value=s.revisions||3; document.getElementById('service-modal').classList.add('open'); }
-async function saveService() {
-  const title=document.getElementById('service-title').value.trim(), price=parseFloat(document.getElementById('service-price').value);
-  if(!title||!price) { showToast('Title & Price required','error'); return; }
-  const data={title, price, description:document.getElementById('service-desc').value.trim(), category:document.getElementById('service-category').value, technologies:document.getElementById('service-tech').value.trim(), emoji:document.getElementById('service-emoji').value||'💻', delivery_days:parseInt(document.getElementById('service-days').value)||14, revisions:parseInt(document.getElementById('service-revisions').value)||3, features:[]};
-  try { if(editingServiceId){data.id=editingServiceId; await apiCall('PUT','/admin/service/update',data);} else { await apiCall('POST','/admin/service/add',data);} closeModal('service-modal'); await loadAllData(); showToast(editingServiceId?'Service updated':'Service added','success'); }
-  catch(e) { showToast('Failed: '+e.message,'error'); }
+function openAddServiceModal(){editingServiceId=null;document.getElementById('service-modal-title').innerHTML='<i class="fas fa-plus-circle"></i> Add New Service';['service-title','service-desc','service-tech'].forEach(id=>document.getElementById(id).value='');document.getElementById('service-price').value='';document.getElementById('service-category').value='web';document.getElementById('service-emoji').value='💻';document.getElementById('service-days').value='14';document.getElementById('service-revisions').value='3';document.getElementById('service-modal').classList.add('open')}
+async function editService(id){const s=appData.services.find(x=>x.id===id);if(!s)return;editingServiceId=id;document.getElementById('service-modal-title').innerHTML='<i class="fas fa-edit"></i> Edit Service';document.getElementById('service-title').value=s.title||'';document.getElementById('service-desc').value=s.description||'';document.getElementById('service-category').value=s.category||'web';document.getElementById('service-tech').value=s.technologies||'';document.getElementById('service-price').value=s.price||'';document.getElementById('service-emoji').value=s.emoji||'💻';document.getElementById('service-days').value=s.delivery_days||14;document.getElementById('service-revisions').value=s.revisions||3;document.getElementById('service-modal').classList.add('open')}
+async function saveService(){
+  const title=document.getElementById('service-title').value.trim(),price=parseFloat(document.getElementById('service-price').value);
+  if(!title||!price){showToast('Title & Price required','error');return}
+  const data={title,price,description:document.getElementById('service-desc').value.trim(),category:document.getElementById('service-category').value,technologies:document.getElementById('service-tech').value.trim(),emoji:document.getElementById('service-emoji').value||'💻',delivery_days:parseInt(document.getElementById('service-days').value)||14,revisions:parseInt(document.getElementById('service-revisions').value)||3,features:[]};
+  try{if(editingServiceId){data.id=editingServiceId;await apiCall('PUT','/admin/service/update',data)}else{await apiCall('POST','/admin/service/add',data)}closeModal('service-modal');await loadAllData();showToast(editingServiceId?'Service updated':'Service added','success')}
+  catch(e){showToast('Failed: '+e.message,'error')}
 }
-async function deleteService(id) { if(!confirm('Delete service?')) return; try { await apiCall('DELETE','/admin/service/delete',{id}); showToast('Deleted','success'); await loadAllData(); } catch(e){ showToast('Failed: '+e.message,'error'); } }
-function renderUsers(filter='') {
-  let list=[...appData.users]; if(filter){const s=filter.toLowerCase(); list=list.filter(u=>u.name?.toLowerCase().includes(s)||u.email?.toLowerCase().includes(s));}
-  const oc={}, ts={}; appData.orders.forEach(o=>{oc[o.user_id]=(oc[o.user_id]||0)+1; ts[o.user_id]=(ts[o.user_id]||0)+(parseFloat(o.total_paid||o.advance_paid||0));});
-  document.getElementById('content-area').innerHTML = `
+async function deleteService(id){if(!confirm('Delete service?'))return;try{await apiCall('DELETE','/admin/service/delete',{id});showToast('Deleted','success');await loadAllData()}catch(e){showToast('Failed: '+e.message,'error')}}
+
+// ==================== USERS ====================
+function renderUsers(filter=''){
+  let list=[...appData.users];if(filter){const s=filter.toLowerCase();list=list.filter(u=>u.name?.toLowerCase().includes(s)||u.email?.toLowerCase().includes(s))}
+  const oc={},ts={};appData.orders.forEach(o=>{oc[o.user_id]=(oc[o.user_id]||0)+1;ts[o.user_id]=(ts[o.user_id]||0)+(parseFloat(o.total_paid||o.advance_paid||0))});
+  document.getElementById('content-area').innerHTML=`
     <div class="card"><div class="card-header"><h3><i class="fas fa-users"></i> Registered Users</h3><input type="text" class="search-input" placeholder="Search users..." onkeyup="renderUsers(this.value)"></div>
       <div class="table-responsive"><table><thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Verified</th><th>Orders</th><th>Spent</th><th>Joined</th><th>Actions</th></tr></thead><tbody>
       ${list.map(u=>`<tr><td><strong>${escapeHtml(u.name||'—')}</strong></td><td>${escapeHtml(u.email)}</td><td>${u.phone||'—'}</td><td>${u.verified?'<span style="color:var(--success)"><i class="fas fa-check-circle"></i> Yes</span>':'<span style="color:var(--warning)"><i class="fas fa-clock"></i> No</span>'}</td><td>${oc[u.id]||0}</td><td style="color:var(--success)">${formatCurrency(ts[u.id]||0)}</td><td>${formatDate(u.created_at)}</td><td><button class="btn btn-sm btn-info" onclick="viewUserOrders(${u.id})"><i class="fas fa-shopping-cart"></i> Orders</button></td></tr>`).join('')}
       ${list.length===0?'<tr><td colspan="8" class="empty-row">No users</td></tr>':''}
       </tbody></table></div></div>`;
 }
-function viewUserOrders(uid) {
-  const uo=appData.orders.filter(o=>o.user_id===uid), u=appData.users.find(x=>x.id===uid);
-  document.getElementById('content-area').innerHTML = `
+function viewUserOrders(uid){
+  const uo=appData.orders.filter(o=>o.user_id===uid),u=appData.users.find(x=>x.id===uid);
+  document.getElementById('content-area').innerHTML=`
     <div class="card"><div class="card-header"><h3><i class="fas fa-shopping-cart"></i> Orders for ${escapeHtml(u?.name||'User')}</h3><button class="btn btn-primary btn-sm" onclick="switchPage('users')">← Back</button></div>
       <div class="table-responsive"><table><thead><tr><th>Order ID</th><th>Service</th><th>Amount</th><th>Paid</th><th>Status</th><th>Date</th><th>Actions</th></tr></thead><tbody>
       ${uo.map(o=>`<tr><td><span style="color:var(--accent)">#${o.id}</span></td><td>${escapeHtml(o.service_title||'—')}</td><td>${formatCurrency(o.price)}</td><td>${formatCurrency(o.total_paid||o.advance_paid||0)}</td><td><span class="badge badge-${o.status}">${o.status.replace(/_/g,' ')}</span></td><td>${formatDate(o.created_at)}</td><td><button class="btn btn-sm btn-info" onclick="viewOrderDetails(${o.id})"><i class="fas fa-eye"></i></button></td></tr>`).join('')}
       ${uo.length===0?'<tr><td colspan="7" class="empty-row">No orders</td></tr>':''}
       </tbody></table></div></div>`;
 }
-function renderCustomRequests() {
-  document.getElementById('content-area').innerHTML = `
+
+// ==================== CUSTOM REQUESTS ====================
+function renderCustomRequests(){
+  document.getElementById('content-area').innerHTML=`
     <div class="card"><div class="card-header"><h3><i class="fas fa-file-signature"></i> Custom Project Requests</h3></div>
       <div class="table-responsive"><table><thead><tr><th>Date</th><th>Name</th><th>Email</th><th>WhatsApp</th><th>Project</th><th>Budget</th><th>Status</th><th>Actions</th></tr></thead><tbody>
       ${appData.customRequests.map(r=>`<tr><td>${formatDate(r.created_at)}</td><td><strong>${escapeHtml(r.name)}</strong></td><td>${escapeHtml(r.email)}</td><td>${r.whatsapp?`<a href="https://wa.me/${r.whatsapp.replace(/[^0-9]/g,'')}" target="_blank" style="background:#25D366;color:white;padding:4px 10px;border-radius:6px;text-decoration:none;font-size:11px"><i class="fab fa-whatsapp"></i> Chat</a>`:'—'}</td><td><strong>${escapeHtml(r.title)}</strong><br><small>${escapeHtml(r.project_type||'—')}</small></td><td><strong style="color:var(--success)">${r.budget||'—'}</strong></td><td><span class="badge badge-${r.status}">${r.status}</span></td><td><div style="display:flex;gap:5px"><button class="btn btn-sm btn-success" onclick="updateReqStatus(${r.id},'contacted')"><i class="fas fa-phone"></i> Contacted</button><button class="btn btn-sm btn-primary" onclick="updateReqStatus(${r.id},'completed')"><i class="fas fa-check"></i> Complete</button><button class="btn btn-sm btn-danger" onclick="deleteReq(${r.id})"><i class="fas fa-trash"></i></button></div></td></tr>`).join('')}
       ${appData.customRequests.length===0?'<tr><td colspan="8" class="empty-row">No requests</td></tr>':''}
       </tbody></table></div></div>`;
 }
-async function updateReqStatus(id,st) { try{ await apiCall('PUT',`/custom-request/${id}/status`,{status:st}); showToast(`Updated to ${st}`,'success'); await loadAllData(); } catch(e){ showToast('Failed: '+e.message,'error'); } }
-async function deleteReq(id) { if(!confirm('Delete?')) return; try{ await apiCall('DELETE',`/custom-request/${id}`); showToast('Deleted','success'); await loadAllData(); } catch(e){ showToast('Failed: '+e.message,'error'); } }
-async function renderChat() {
-  document.getElementById('content-area').innerHTML = `
+async function updateReqStatus(id,st){try{await apiCall('PUT',`/custom-request/${id}/status`,{status:st});showToast(`Updated to ${st}`,'success');await loadAllData()}catch(e){showToast('Failed: '+e.message,'error')}}
+async function deleteReq(id){if(!confirm('Delete?'))return;try{await apiCall('DELETE',`/custom-request/${id}`);showToast('Deleted','success');await loadAllData()}catch(e){showToast('Failed: '+e.message,'error')}}
+
+// ==================== CHAT ====================
+async function renderChat(){
+  document.getElementById('content-area').innerHTML=`
     <div class="chat-container">
       <div class="conversations-list" id="conversations-list"><div style="text-align:center;padding:20px;color:var(--text-muted)">Loading...</div></div>
       <div class="chat-area">
@@ -607,40 +676,44 @@ async function renderChat() {
         <div class="chat-input-area"><textarea id="chat-input" placeholder="Type message..." rows="2"></textarea><button onclick="sendChatMessage()"><i class="fas fa-paper-plane"></i> Send</button></div>
       </div>
     </div>`;
-  await loadConversations(); startChatPolling();
+  await loadConversations();startChatPolling();
 }
-async function loadConversations() {
-  try { const res=await apiCall('GET','/conversations'); displayConversations(res.conversations||[]); } catch(e){ console.error(e); }
+async function loadConversations(){
+  try{const res=await apiCall('GET','/conversations');displayConversations(res.conversations||[])}catch(e){console.error(e)}
 }
-function displayConversations(list) {
-  const c=document.getElementById('conversations-list'); if(!c) return;
-  if(!list.length){c.innerHTML='<div style="text-align:center;padding:20px;color:var(--text-muted)">No conversations</div>';return;}
+function displayConversations(list){
+  const c=document.getElementById('conversations-list');if(!c)return;
+  if(!list.length){c.innerHTML='<div style="text-align:center;padding:20px;color:var(--text-muted)">No conversations</div>';return}
   c.innerHTML=list.map(conv=>`<div class="conversation-item ${conv.unread_count>0?'unread':''} ${currentConversation===conv.id?'active':''}" onclick="selectConv('${conv.id}','${escapeHtml(conv.users?.name||'User')}')">
     <div class="conversation-name">${escapeHtml(conv.users?.name||'User')} <span style="font-size:11px;color:var(--accent)">#${conv.id.replace('order_','')}</span></div>
     <div class="conversation-last-msg">${escapeHtml((conv.last_message||'').substring(0,50))}</div>
     <div class="conversation-time">${conv.last_message_at?formatDateTime(conv.last_message_at):''}</div>
-    <button class="delete-conv" onclick="event.stopPropagation(); deleteConv('${conv.id}')"><i class="fas fa-trash"></i></button>
+    <button class="delete-conv" onclick="event.stopPropagation();deleteConv('${conv.id}')"><i class="fas fa-trash"></i></button>
   </div>`).join('');
 }
-async function selectConv(id,name) { currentConversation=id; document.getElementById('chat-header-title').innerHTML=`<i class="fas fa-comment"></i> Chat with ${name}`; try{ const res=await apiCall('GET',`/conversation/${id}/messages`); displayMsgs(res.messages||[]); await loadConversations(); } catch(e){} }
-function displayMsgs(list) { const c=document.getElementById('chat-messages'); if(!c)return; c.innerHTML=list.length?list.map(m=>`<div class="message ${m.sender_role==='admin'?'admin':'user'}"><div class="message-content">${escapeHtml(m.message)}<span class="message-time">${formatDateTime(m.created_at)}</span></div></div>`).join(''):'<div style="text-align:center;padding:40px;color:var(--text-muted)">No messages</div>'; c.scrollTop=c.scrollHeight; }
-async function sendChatMessage() { if(!currentConversation){showToast('Select conversation first','error');return;} const msg=document.getElementById('chat-input').value.trim(); if(!msg)return; try{ await apiCall('POST',`/conversation/${currentConversation}/send`,{message:msg}); document.getElementById('chat-input').value=''; await selectConv(currentConversation,''); showToast('Sent','success'); } catch(e){ showToast('Failed','error'); } }
-async function deleteConv(id) { if(!confirm('Delete permanently?')) return; try{ await apiCall('DELETE',`/conversation/${id}`); showToast('Deleted','success'); if(currentConversation===id){currentConversation=null; document.getElementById('chat-header-title').innerHTML='<i class="fas fa-comment"></i> Select conversation'; document.getElementById('chat-messages').innerHTML='<div style="text-align:center;padding:40px;color:var(--text-muted)">Select a conversation</div>'; } await loadConversations(); } catch(e){ showToast('Failed','error'); } }
-function chatFromOrder(id) { switchPage('chat'); setTimeout(()=>selectConv(`order_${id}`,'Client'),500); }
-function startChatPolling() { if(chatPollInterval) clearInterval(chatPollInterval); chatPollInterval=setInterval(()=>{ if(document.querySelector('.nav-item.active')?.getAttribute('data-page')==='chat' && currentConversation){ loadConversations(); selectConv(currentConversation,''); } },5000); }
-function switchPage(page, el=null) {
-  if(el){ document.querySelectorAll('.nav-item').forEach(i=>i.classList.remove('active')); el.classList.add('active'); }
+async function selectConv(id,name){currentConversation=id;document.getElementById('chat-header-title').innerHTML=`<i class="fas fa-comment"></i> Chat with ${name}`;try{const res=await apiCall('GET',`/conversation/${id}/messages`);displayMsgs(res.messages||[]);await loadConversations()}catch(e){}}
+function displayMsgs(list){const c=document.getElementById('chat-messages');if(!c)return;c.innerHTML=list.length?list.map(m=>`<div class="message ${m.sender_role==='admin'?'admin':'user'}"><div class="message-content">${escapeHtml(m.message)}<span class="message-time">${formatDateTime(m.created_at)}</span></div></div>`).join(''):'<div style="text-align:center;padding:40px;color:var(--text-muted)">No messages</div>';c.scrollTop=c.scrollHeight}
+async function sendChatMessage(){if(!currentConversation){showToast('Select conversation first','error');return}const msg=document.getElementById('chat-input').value.trim();if(!msg)return;try{await apiCall('POST',`/conversation/${currentConversation}/send`,{message:msg});document.getElementById('chat-input').value='';await selectConv(currentConversation,'');showToast('Sent','success')}catch(e){showToast('Failed','error')}}
+async function deleteConv(id){if(!confirm('Delete permanently?'))return;try{await apiCall('DELETE',`/conversation/${id}`);showToast('Deleted','success');if(currentConversation===id){currentConversation=null;document.getElementById('chat-header-title').innerHTML='<i class="fas fa-comment"></i> Select conversation';document.getElementById('chat-messages').innerHTML='<div style="text-align:center;padding:40px;color:var(--text-muted)">Select a conversation</div>'}await loadConversations()}catch(e){showToast('Failed','error')}}
+function chatFromOrder(id){switchPage('chat');setTimeout(()=>selectConv(`order_${id}`,'Client'),500)}
+function startChatPolling(){if(chatPollInterval)clearInterval(chatPollInterval);chatPollInterval=setInterval(()=>{if(document.querySelector('.nav-item.active')?.getAttribute('data-page')==='chat'&&currentConversation){loadConversations();selectConv(currentConversation,'')}},5000)}
+
+// ==================== UI HELPERS ====================
+function switchPage(page,el=null){
+  if(el){document.querySelectorAll('.nav-item').forEach(i=>i.classList.remove('active'));el.classList.add('active')}
   const titles={overview:'Dashboard Overview',orders:'Order Management',payments:'Payment History',refunds:'Refund History',services:'Services',users:'Users','custom-requests':'Custom Requests',chat:'Support Chat'};
   const icons={overview:'tachometer-alt',orders:'shopping-cart',payments:'credit-card',refunds:'money-bill-wave',services:'cubes',users:'user-friends','custom-requests':'file-signature',chat:'comment-dots'};
   document.querySelector('#page-title span').textContent=titles[page]||'Dashboard';
   document.querySelector('#page-title i').className=`fas fa-${icons[page]||'tachometer-alt'}`;
-  if(page!=='chat'&&chatPollInterval){clearInterval(chatPollInterval);chatPollInterval=null;}
+  if(page!=='chat'&&chatPollInterval){clearInterval(chatPollInterval);chatPollInterval=null}
   renderCurrentPage();
 }
-function toggleSidebar() { const s=document.getElementById('sidebar'),m=document.getElementById('main-content'); if(window.innerWidth>768){s.classList.toggle('collapsed');m.classList.toggle('expanded');} else{s.classList.toggle('mobile-open');} }
-function closeModal(id){ document.getElementById(id)?.classList.remove('open'); }
-document.querySelectorAll('.modal-overlay').forEach(m=>m.addEventListener('click',e=>{if(e.target===m)m.classList.remove('open');}));
-window.onload=()=>{ if(adminToken&&adminEmail) showDashboard(); else{ document.getElementById('login-container').style.display='flex'; document.getElementById('dashboard-container').style.display='none'; } };
+function toggleSidebar(){const s=document.getElementById('sidebar'),m=document.getElementById('main-content');if(window.innerWidth>768){s.classList.toggle('collapsed');m.classList.toggle('expanded')}else{s.classList.toggle('mobile-open')}}
+function closeModal(id){document.getElementById(id)?.classList.remove('open')}
+document.querySelectorAll('.modal-overlay').forEach(m=>m.addEventListener('click',e=>{if(e.target===m)m.classList.remove('open')}))
+
+// ==================== INIT ====================
+window.onload=()=>{if(adminToken&&adminEmail)showDashboard();else{document.getElementById('login-container').style.display='flex';document.getElementById('dashboard-container').style.display='none'}}
 </script>
 </body>
 </html>
