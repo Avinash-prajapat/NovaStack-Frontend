@@ -4,915 +4,221 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>My Orders - NovaStack</title>
-    
-    <!-- SEO & Meta -->
     <meta name="description" content="Track your NovaStack orders, manage payments, and access deliverables.">
-    <meta name="keywords" content="orders, software development, NovaStack, payment, deliverables">
     
     <!-- Fonts & Icons -->
     <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-    
-    <!-- Favicon -->
-    <link rel="icon" type="image/png" href="logo.png">
+    <link rel="icon" type="logo/jpeg" href="logo.png">
     
     <style>
         /* ===== 🎨 CSS Variables ===== */
         :root {
-            --bg-primary: #0f0c1a;
-            --bg-secondary: #1a162a;
-            --bg-card: rgba(26, 22, 42, 0.85);
-            --surface: rgba(255, 255, 255, 0.08);
-            --surface-hover: rgba(255, 255, 255, 0.15);
-            --border: rgba(255, 255, 255, 0.12);
-            --border-hover: rgba(232, 93, 38, 0.6);
-            --text-primary: #ffffff;
-            --text-secondary: rgba(255, 255, 255, 0.75);
-            --text-muted: rgba(255, 255, 255, 0.45);
-            --accent: #ff6b35;
-            --accent-glow: rgba(255, 107, 53, 0.4);
-            --green: #10b981;
-            --green-glow: rgba(16, 185, 129, 0.35);
-            --error: #ef4444;
-            --error-glow: rgba(239, 68, 68, 0.3);
-            --warning: #f59e0b;
-            --info: #3b82f6;
+            --bg-primary: #0f0c1a; --bg-secondary: #1a162a; --bg-card: rgba(26, 22, 42, 0.8);
+            --surface: rgba(255, 255, 255, 0.08); --surface-hover: rgba(255, 255, 255, 0.15);
+            --border: rgba(255, 255, 255, 0.12); --border-hover: rgba(232, 93, 38, 0.6);
+            --text-primary: #ffffff; --text-secondary: rgba(255, 255, 255, 0.7); --text-muted: rgba(255, 255, 255, 0.45);
+            --accent: #ff6b35; --accent-glow: rgba(255, 107, 53, 0.4);
             --gradient-accent: linear-gradient(135deg, #ff6b35 0%, #f7c531 100%);
-            --gradient-success: linear-gradient(135deg, #10b981 0%, #059669 100%);
-            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.2);
-            --shadow-md: 0 8px 30px rgba(0, 0, 0, 0.35);
-            --shadow-lg: 0 20px 60px rgba(0, 0, 0, 0.5);
+            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.2); --shadow-md: 0 8px 30px rgba(0, 0, 0, 0.35); --shadow-lg: 0 20px 60px rgba(0, 0, 0, 0.5);
             --transition-normal: 300ms cubic-bezier(0.4, 0, 0.2, 1);
-            --radius-sm: 8px;
-            --radius-md: 14px;
-            --radius-lg: 20px;
-            --radius-full: 9999px;
+            --radius-sm: 8px; --radius-md: 16px; --radius-lg: 24px; --radius-full: 9999px;
+            --success: #10b981; --warning: #f59e0b; --error: #ef4444; --info: #3b82f6;
         }
-
-        /* ===== 🌟 Base Reset ===== */
         *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         html { scroll-behavior: smooth; }
-        body {
-            font-family: 'DM Sans', sans-serif;
-            background: var(--bg-primary);
-            color: var(--text-primary);
-            line-height: 1.6;
-            min-height: 100vh;
-            overflow-x: hidden;
-        }
+        body { font-family: 'DM Sans', sans-serif; background: var(--bg-primary); color: var(--text-primary); line-height: 1.6; min-height: 100vh; overflow-x: hidden; }
         body.menu-open { overflow: hidden; position: fixed; width: 100%; }
 
-        /* Animated Background */
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: radial-gradient(ellipse at 20% 80%, rgba(124, 58, 237, 0.12) 0%, transparent 50%),
-                        radial-gradient(ellipse at 80% 20%, rgba(255, 107, 53, 0.1) 0%, transparent 50%);
-            z-index: -2;
-            pointer-events: none;
-        }
-
-        /* ===== 🔗 Navigation ===== */
-        nav {
-            position: fixed;
-            top: 0; left: 0; right: 0;
-            z-index: 1000;
-            background: rgba(15, 12, 26, 0.95);
-            backdrop-filter: blur(20px);
-            border-bottom: 1px solid var(--border);
-            padding: 0 5%;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            height: 72px;
-            transition: all var(--transition-normal);
-        }
+        /* Nav & Dropdown (Same as before) */
+        nav { position: fixed; top: 0; left: 0; right: 0; z-index: 1000; background: rgba(15, 12, 26, 0.95); backdrop-filter: blur(20px); border-bottom: 1px solid var(--border); padding: 0 5%; display: flex; align-items: center; justify-content: space-between; height: 72px; transition: all var(--transition-normal); }
         nav.scrolled { height: 64px; box-shadow: var(--shadow-md); }
-        
-        .logo {
-            font-family: 'Syne', sans-serif;
-            font-weight: 800;
-            font-size: 1.6rem;
-            color: var(--text-primary);
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            gap: 0.3rem;
-        }
-        .logo span {
-            background: var(--gradient-accent);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        
-        .nav-links {
-            display: flex;
-            gap: 2rem;
-            align-items: center;
-        }
-        .nav-links a {
-            text-decoration: none;
-            color: var(--text-secondary);
-            font-size: 0.95rem;
-            font-weight: 500;
-            padding: 0.5rem 0;
-            transition: color var(--transition-normal);
-            display: flex;
-            align-items: center;
-            gap: 0.4rem;
-        }
+        .logo { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.6rem; color: var(--text-primary); text-decoration: none; display: flex; align-items: center; gap: 0.3rem; }
+        .logo span { background: var(--gradient-accent); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .nav-links { display: flex; gap: 2rem; align-items: center; }
+        .nav-links a { text-decoration: none; color: var(--text-secondary); font-size: 0.95rem; font-weight: 500; padding: 0.5rem 0; transition: color var(--transition-normal); display: flex; align-items: center; gap: 0.4rem; }
         .nav-links a:hover, .nav-links a.active { color: var(--text-primary); }
-        
-        /* ===== 👤 User Toggle ===== */
-        .user-toggle-wrapper {
-            position: relative;
-            display: flex;
-            align-items: center;
-        }
-        .user-toggle {
-            display: flex;
-            align-items: center;
-            gap: 0.6rem;
-            padding: 0.4rem 0.8rem;
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: var(--radius-full);
-            cursor: pointer;
-            transition: all var(--transition-normal);
-            min-height: 40px;
-        }
-        .user-toggle:hover, .user-toggle.active {
-            background: var(--surface-hover);
-            border-color: var(--accent);
-        }
-        .user-avatar {
-            width: 32px; height: 32px;
-            border-radius: 50%;
-            background: var(--gradient-accent);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 600;
-            font-size: 0.85rem;
-            color: white;
-            text-transform: uppercase;
-            overflow: hidden;
-        }
+        .user-toggle-wrapper { position: relative; display: flex; align-items: center; }
+        .user-toggle { display: flex; align-items: center; gap: 0.6rem; padding: 0.4rem 0.8rem; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-full); cursor: pointer; transition: all var(--transition-normal); min-height: 40px; }
+        .user-toggle:hover, .user-toggle.active { background: var(--surface-hover); border-color: var(--accent); }
+        .user-avatar { width: 32px; height: 32px; border-radius: 50%; background: var(--gradient-accent); display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 0.85rem; color: white; text-transform: uppercase; overflow: hidden; }
         .user-avatar img { width: 100%; height: 100%; object-fit: cover; }
-        .user-name {
-            font-size: 0.9rem;
-            font-weight: 500;
-            color: var(--text-primary);
-            max-width: 120px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-        .user-toggle i.chevron {
-            font-size: 0.75rem;
-            color: var(--text-muted);
-            transition: transform 0.2s;
-        }
+        .user-name { font-size: 0.9rem; font-weight: 500; color: var(--text-primary); max-width: 120px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .user-toggle i.chevron { font-size: 0.75rem; color: var(--text-muted); transition: transform 0.2s; }
         .user-toggle.active i.chevron { transform: rotate(180deg); }
-        
-        .user-dropdown {
-            position: absolute;
-            top: calc(100% + 12px);
-            left: 0;
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: var(--radius-md);
-            min-width: 240px;
-            padding: 0.5rem 0;
-            box-shadow: var(--shadow-lg);
-            backdrop-filter: blur(20px);
-            opacity: 0;
-            visibility: hidden;
-            transform: translateY(-10px);
-            transition: all var(--transition-normal);
-            z-index: 1001;
-        }
-        .user-dropdown.active {
-            opacity: 1;
-            visibility: visible;
-            transform: translateY(0);
-        }
-        .user-dropdown::before {
-            content: '';
-            position: absolute;
-            top: -6px; left: 24px;
-            width: 12px; height: 12px;
-            background: var(--bg-card);
-            border-left: 1px solid var(--border);
-            border-top: 1px solid var(--border);
-            transform: rotate(45deg);
-        }
-        .dropdown-header {
-            padding: 0.8rem 1.2rem;
-            border-bottom: 1px solid var(--border);
-            margin-bottom: 0.3rem;
-        }
-        .dropdown-header .user-avatar {
-            width: 40px; height: 40px;
-            font-size: 1rem;
-            margin-bottom: 0.4rem;
-        }
-        .dropdown-header .user-name {
-            font-size: 1rem;
-            font-weight: 600;
-            max-width: none;
-        }
-        .dropdown-header .user-email {
-            font-size: 0.8rem;
-            color: var(--text-muted);
-        }
-        .dropdown-item {
-            display: flex;
-            align-items: center;
-            gap: 0.8rem;
-            padding: 0.7rem 1.2rem;
-            color: var(--text-secondary);
-            text-decoration: none;
-            font-size: 0.9rem;
-            transition: all 0.2s;
-            border-left: 3px solid transparent;
-        }
-        .dropdown-item:hover {
-            background: var(--surface-hover);
-            color: var(--text-primary);
-            border-left-color: var(--accent);
-            padding-left: 1.5rem;
-        }
+        .user-dropdown { position: absolute; top: calc(100% + 12px); left: 0; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-md); min-width: 240px; padding: 0.5rem 0; box-shadow: var(--shadow-lg); backdrop-filter: blur(20px); opacity: 0; visibility: hidden; transform: translateY(-10px); transition: all var(--transition-normal); z-index: 1001; }
+        .user-dropdown.active { opacity: 1; visibility: visible; transform: translateY(0); }
+        .user-dropdown::before { content: ''; position: absolute; top: -6px; left: 24px; width: 12px; height: 12px; background: var(--bg-card); border-left: 1px solid var(--border); border-top: 1px solid var(--border); transform: rotate(45deg); }
+        .dropdown-header { padding: 0.8rem 1.2rem; border-bottom: 1px solid var(--border); margin-bottom: 0.3rem; }
+        .dropdown-header .user-avatar { width: 40px; height: 40px; font-size: 1rem; margin-bottom: 0.4rem; }
+        .dropdown-header .user-name { font-size: 1rem; font-weight: 600; max-width: none; }
+        .dropdown-header .user-email { font-size: 0.8rem; color: var(--text-muted); }
+        .dropdown-item { display: flex; align-items: center; gap: 0.8rem; padding: 0.7rem 1.2rem; color: var(--text-secondary); text-decoration: none; font-size: 0.9rem; transition: all 0.2s; border-left: 3px solid transparent; }
+        .dropdown-item:hover { background: var(--surface-hover); color: var(--text-primary); border-left-color: var(--accent); padding-left: 1.5rem; }
         .dropdown-item i { width: 20px; text-align: center; color: var(--accent); }
-        .dropdown-item .badge {
-            margin-left: auto;
-            background: var(--accent);
-            color: white;
-            font-size: 0.7rem;
-            font-weight: 700;
-            padding: 0.15rem 0.5rem;
-            border-radius: var(--radius-full);
-            min-width: 20px;
-            text-align: center;
-        }
+        .dropdown-item .badge { margin-left: auto; background: var(--accent); color: white; font-size: 0.7rem; font-weight: 700; padding: 0.15rem 0.5rem; border-radius: var(--radius-full); min-width: 20px; text-align: center; }
         .dropdown-divider { height: 1px; background: var(--border); margin: 0.4rem 0; }
         .dropdown-logout { color: #ef4444 !important; border-top: 1px solid var(--border); margin-top: 0.3rem; }
         .dropdown-logout i { color: #ef4444 !important; }
         
-        /* ===== 📱 Mobile Menu ===== */
-        .menu-toggle {
-            display: none;
-            font-size: 1.4rem;
-            color: var(--accent);
-            cursor: pointer;
-            padding: 0.6rem;
-            border-radius: var(--radius-sm);
-            min-width: 44px;
-            min-height: 44px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .menu-toggle:hover { background: var(--surface); }
-        
-        .mobile-menu {
-            position: fixed;
-            top: 72px;
-            left: 0; right: 0;
-            background: var(--bg-secondary);
-            border-bottom: 1px solid var(--border);
-            padding: 1rem 5%;
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.4s ease, opacity 0.3s ease;
-            opacity: 0;
-            z-index: 999;
-            backdrop-filter: blur(20px);
-        }
-        .mobile-menu.active {
-            max-height: 80vh;
-            opacity: 1;
-            overflow-y: auto;
-        }
+        .menu-toggle { display: none; font-size: 1.4rem; color: var(--accent); cursor: pointer; padding: 0.6rem; border-radius: var(--radius-sm); min-width: 44px; min-height: 44px; display: flex; align-items: center; justify-content: center; }
+        .mobile-menu { position: fixed; top: 72px; left: 0; right: 0; background: var(--bg-secondary); border-bottom: 1px solid var(--border); padding: 1rem 5%; max-height: 0; overflow: hidden; transition: max-height 0.4s ease, opacity 0.3s ease; opacity: 0; z-index: 999; backdrop-filter: blur(20px); }
+        .mobile-menu.active { max-height: 80vh; opacity: 1; overflow-y: auto; }
         .mobile-menu-inner { display: flex; flex-direction: column; gap: 0.5rem; padding-bottom: 1rem; }
-        .mobile-nav-link {
-            display: flex;
-            align-items: center;
-            gap: 0.8rem;
-            padding: 1rem 1.2rem;
-            color: var(--text-secondary);
-            text-decoration: none;
-            font-size: 1rem;
-            font-weight: 500;
-            border-radius: var(--radius-md);
-            transition: all 0.2s;
-            min-height: 48px;
-        }
-        .mobile-nav-link:hover, .mobile-nav-link.active {
-            background: var(--surface-hover);
-            color: var(--text-primary);
-        }
+        .mobile-nav-link { display: flex; align-items: center; gap: 0.8rem; padding: 1rem 1.2rem; color: var(--text-secondary); text-decoration: none; font-size: 1rem; font-weight: 500; border-radius: var(--radius-md); transition: all 0.2s; min-height: 48px; }
+        .mobile-nav-link:hover, .mobile-nav-link.active { background: var(--surface-hover); color: var(--text-primary); }
         .mobile-nav-link i { width: 24px; text-align: center; color: var(--accent); }
         .mobile-divider { height: 1px; background: var(--border); margin: 0.5rem 0; }
-        .mobile-logout-btn {
-            width: 100%;
-            justify-content: center;
-            color: #ef4444 !important;
-            border-color: rgba(239, 68, 68, 0.3) !important;
-        }
+        .mobile-logout-btn { width: 100%; justify-content: center; color: #ef4444 !important; border-color: rgba(239, 68, 68, 0.3) !important; }
         .mobile-logout-btn:hover { background: rgba(239, 68, 68, 0.1) !important; }
         
-        /* ===== 📦 Main Container ===== */
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 100px 5% 4rem;
-        }
+        .container { max-width: 1200px; margin: 0 auto; padding: 100px 5% 4rem; }
+        .page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem; }
+        .page-header h1 { font-family: 'Syne', sans-serif; font-weight: 800; font-size: clamp(1.5rem, 4vw, 2rem); display: flex; align-items: center; gap: 0.5rem; }
+        .btn-new-order { background: var(--gradient-accent); color: white; text-decoration: none; padding: 0.7rem 1.5rem; border-radius: var(--radius-full); display: inline-flex; align-items: center; gap: 0.5rem; font-weight: 600; font-size: 0.9rem; transition: all var(--transition-normal); min-height: 44px; }
+        .btn-new-order:hover { transform: translateY(-2px); box-shadow: 0 8px 25px var(--accent-glow); }
         
-        .page-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 2rem;
-            flex-wrap: wrap;
-            gap: 1rem;
-        }
-        .page-header h1 {
-            font-family: 'Syne', sans-serif;
-            font-weight: 800;
-            font-size: clamp(1.5rem, 4vw, 2rem);
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        .btn-new-order {
-            background: var(--gradient-accent);
-            color: white;
-            text-decoration: none;
-            padding: 0.7rem 1.5rem;
-            border-radius: var(--radius-full);
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            font-weight: 600;
-            font-size: 0.9rem;
-            transition: all var(--transition-normal);
-            min-height: 44px;
-        }
-        .btn-new-order:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px var(--accent-glow);
-        }
-        
-        /* ===== 🗂️ Order Card ===== */
         .orders-grid { display: grid; gap: 1rem; }
+        .order-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1rem; transition: all var(--transition-normal); backdrop-filter: blur(10px); position: relative; }
+        .order-card:hover { border-color: var(--accent); transform: translateY(-2px); box-shadow: var(--shadow-lg); }
+        .order-card.refund-pending { border-color: var(--warning); background: rgba(245, 158, 11, 0.05); }
+        .order-card.refund-completed { border-color: var(--success); background: rgba(16, 185, 129, 0.05); }
+        .order-card.refund-rejected { border-color: var(--error); background: rgba(239, 68, 68, 0.05); }
         
-        .order-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: var(--radius-lg);
-            padding: 1rem;
-            transition: all var(--transition-normal);
-            backdrop-filter: blur(10px);
-        }
-        .order-card:hover {
-            border-color: var(--accent);
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-lg);
-        }
+        .refund-badge { position: absolute; top: 1rem; right: 1rem; padding: 0.3rem 0.8rem; border-radius: var(--radius-full); font-size: 0.7rem; font-weight: 600; text-transform: uppercase; display: flex; align-items: center; gap: 5px; }
+        .refund-badge.pending { background: rgba(245,158,11,0.2); color: var(--warning); }
+        .refund-badge.approved { background: rgba(16,185,129,0.2); color: var(--success); }
+        .refund-badge.completed { background: rgba(16,185,129,0.2); color: var(--success); }
+        .refund-badge.rejected { background: rgba(239,68,68,0.2); color: var(--error); }
         
-        .order-header-compact {
-            display: grid;
-            grid-template-columns: auto 1fr auto;
-            gap: 0.8rem;
-            align-items: center;
-            padding-bottom: 0.8rem;
-            border-bottom: 1px solid var(--border);
-            flex-wrap: wrap;
-        }
-        
-        .order-status {
-            padding: 0.25rem 0.8rem;
-            border-radius: var(--radius-full);
-            font-size: 0.7rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
+        .order-header-compact { display: grid; grid-template-columns: auto 1fr auto; gap: 0.8rem; align-items: center; padding-bottom: 0.8rem; border-bottom: 1px solid var(--border); flex-wrap: wrap; }
+        .order-status { padding: 0.25rem 0.8rem; border-radius: var(--radius-full); font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
         .status-pending { background: rgba(245, 158, 11, 0.2); color: #f59e0b; }
         .status-payment_received { background: rgba(16, 185, 129, 0.2); color: #10b981; }
         .status-in_progress { background: rgba(59, 130, 246, 0.2); color: #3b82f6; }
         .status-ready_for_balance { background: rgba(255, 107, 53, 0.2); color: #ff6b35; }
         .status-completed, .status-delivered { background: rgba(16, 185, 129, 0.2); color: #10b981; }
         .status-cancelled { background: rgba(239, 68, 68, 0.2); color: #ef4444; }
-        .status-cancellation_requested { background: rgba(239, 68, 68, 0.2); color: #ef4444; }
+        .status-cancellation_requested { background: rgba(245, 158, 11, 0.2); color: var(--warning); }
+        .status-refund_failed { background: rgba(239, 68, 68, 0.2); color: #ef4444; }
         
-        /* Eligibility Badge */
-        .eligibility-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.4rem;
-            padding: 0.2rem 0.6rem;
-            border-radius: var(--radius-full);
-            font-size: 0.7rem;
-            font-weight: 600;
-        }
-        .eligibility-eligible { background: rgba(16, 185, 129, 0.2); color: #10b981; }
-        .eligibility-not-eligible { background: rgba(239, 68, 68, 0.2); color: #ef4444; }
-        .eligibility-pending { background: rgba(245, 158, 11, 0.2); color: #f59e0b; }
-        
-        .service-mini {
-            display: flex;
-            align-items: center;
-            gap: 0.4rem;
-            font-size: 0.9rem;
-            font-weight: 500;
-        }
+        .service-mini { display: flex; align-items: center; gap: 0.4rem; font-size: 0.9rem; font-weight: 500; }
         .service-emoji { font-size: 1.1rem; }
+        .price-mini { font-family: 'Syne', sans-serif; font-weight: 700; color: var(--accent); font-size: 1rem; }
         
-        .price-mini {
-            font-family: 'Syne', sans-serif;
-            font-weight: 700;
-            color: var(--accent);
-            font-size: 1rem;
-        }
-        
-        .payment-summary-mini {
-            padding: 0.8rem 0;
-            border-bottom: 1px solid var(--border);
-        }
-        .payment-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 0.85rem;
-            margin-bottom: 0.4rem;
-        }
+        .payment-summary-mini { padding: 0.8rem 0; border-bottom: 1px solid var(--border); }
+        .payment-row { display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem; margin-bottom: 0.4rem; }
         .paid-amount { color: #10b981; font-weight: 600; }
         .balance-due { font-size: 0.8rem; }
         .balance-due.due { color: #ff6b35; font-weight: 600; }
         .balance-due.paid { color: #10b981; }
+        .progress-bar-mini { height: 4px; background: var(--surface); border-radius: var(--radius-full); overflow: hidden; }
+        .progress-fill { height: 100%; background: var(--gradient-accent); border-radius: var(--radius-full); transition: width 0.5s ease; }
         
-        .progress-bar-mini {
-            height: 4px;
-            background: var(--surface);
-            border-radius: var(--radius-full);
-            overflow: hidden;
-        }
-        .progress-fill {
-            height: 100%;
-            background: var(--gradient-accent);
-            border-radius: var(--radius-full);
-            transition: width 0.5s ease;
-        }
-        
-        .order-actions-compact {
-            display: flex;
-            gap: 0.5rem;
-            padding: 0.8rem 0;
-            flex-wrap: wrap;
-        }
-        .btn-action {
-            padding: 0.4rem 0.9rem;
-            border-radius: var(--radius-sm);
-            font-size: 0.8rem;
-            font-weight: 500;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.4rem;
-            transition: all 0.2s;
-            border: 1px solid var(--border);
-            background: var(--surface);
-            color: var(--text-secondary);
-            min-height: 36px;
-        }
-        .btn-action:hover {
-            background: var(--surface-hover);
-            color: var(--text-primary);
-            border-color: var(--accent);
-        }
-        .btn-action.btn-pay {
-            background: var(--gradient-accent);
-            color: white;
-            border: none;
-        }
-        .btn-action.btn-pay:hover {
-            box-shadow: 0 4px 15px var(--accent-glow);
-            transform: translateY(-1px);
-        }
+        .order-actions-compact { display: flex; gap: 0.5rem; padding: 0.8rem 0; flex-wrap: wrap; }
+        .btn-action { padding: 0.4rem 0.9rem; border-radius: var(--radius-sm); font-size: 0.8rem; font-weight: 500; cursor: pointer; display: inline-flex; align-items: center; gap: 0.4rem; transition: all 0.2s; border: 1px solid var(--border); background: var(--surface); color: var(--text-secondary); min-height: 36px; }
+        .btn-action:hover:not(:disabled) { background: var(--surface-hover); color: var(--text-primary); border-color: var(--accent); }
+        .btn-action:disabled { opacity: 0.5; cursor: not-allowed; }
+        .btn-action.btn-pay { background: var(--gradient-accent); color: white; border: none; }
+        .btn-action.btn-pay:hover:not(:disabled) { box-shadow: 0 4px 15px var(--accent-glow); transform: translateY(-1px); }
         .btn-action.btn-chat { border-color: #10b981; color: #10b981; }
-        .btn-action.btn-chat:hover { background: rgba(16, 185, 129, 0.15); }
+        .btn-action.btn-chat:hover:not(:disabled) { background: rgba(16, 185, 129, 0.15); }
         .btn-action.btn-revision { border-color: #f59e0b; color: #f59e0b; }
-        .btn-action.btn-revision:hover { background: rgba(245, 158, 11, 0.15); }
+        .btn-action.btn-revision:hover:not(:disabled) { background: rgba(245, 158, 11, 0.15); }
         .btn-action.btn-cancel { border-color: #ef4444; color: #ef4444; }
-        .btn-action.btn-cancel:hover { background: rgba(239, 68, 68, 0.15); }
+        .btn-action.btn-cancel:hover:not(:disabled) { background: rgba(239, 68, 68, 0.15); }
         
-        .order-preview {
-            display: flex;
-            align-items: center;
-            gap: 0.4rem;
-            padding: 0.5rem 0;
-            color: var(--text-muted);
-            font-size: 0.85rem;
-            cursor: pointer;
-            transition: color 0.2s;
-        }
+        .order-preview { display: flex; align-items: center; gap: 0.4rem; padding: 0.5rem 0; color: var(--text-muted); font-size: 0.85rem; cursor: pointer; transition: color 0.2s; }
         .order-preview:hover { color: var(--accent); }
         .order-preview i { transition: transform 0.2s; }
         .order-preview.expanded i { transform: rotate(180deg); }
-        
-        .order-details-preview {
-            padding: 0.8rem;
-            background: var(--surface);
-            border-radius: var(--radius-md);
-            margin-top: 0.5rem;
-            font-size: 0.85rem;
-            color: var(--text-secondary);
-        }
+        .order-details-preview { padding: 0.8rem; background: var(--surface); border-radius: var(--radius-md); margin-top: 0.5rem; font-size: 0.85rem; color: var(--text-secondary); }
         .preview-section { margin-bottom: 0.4rem; }
         .preview-section strong { color: var(--text-primary); }
         
-        /* ===== 🪟 Modal System ===== */
-        .modal-overlay {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0, 0, 0, 0.85);
-            z-index: 2000;
-            align-items: center;
-            justify-content: center;
-            padding: 1rem;
-            backdrop-filter: blur(5px);
-        }
+        .cancellation-notice { background: rgba(245, 158, 11, 0.1); border-left: 3px solid var(--warning); padding: 0.8rem 1rem; border-radius: 0 var(--radius-sm) var(--radius-sm) 0; margin: 0.8rem 0; font-size: 0.8rem; }
+        .cancellation-notice.expired { background: rgba(239, 68, 68, 0.1); border-left-color: var(--error); }
+        .cancellation-timer { font-weight: 600; color: var(--accent); }
+        
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.85); z-index: 2000; align-items: center; justify-content: center; padding: 1rem; backdrop-filter: blur(5px); }
         .modal-overlay.active { display: flex; }
-        
-        .modal-container {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: var(--radius-lg);
-            max-width: 600px;
-            width: 100%;
-            max-height: 85vh;
-            display: flex;
-            flex-direction: column;
-            animation: modalSlideIn 0.3s ease;
-        }
-        @keyframes modalSlideIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1rem 1.5rem;
-            border-bottom: 1px solid var(--border);
-        }
-        .modal-header h3 {
-            font-family: 'Syne', sans-serif;
-            font-weight: 700;
-            font-size: 1.1rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        .modal-close {
-            background: none;
-            border: none;
-            color: var(--text-muted);
-            font-size: 1.2rem;
-            cursor: pointer;
-            padding: 0.3rem;
-            border-radius: var(--radius-sm);
-            transition: all 0.2s;
-        }
+        .modal-container { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); max-width: 600px; width: 100%; max-height: 85vh; display: flex; flex-direction: column; animation: modalSlideIn 0.3s ease; }
+        @keyframes modalSlideIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; padding: 1rem 1.5rem; border-bottom: 1px solid var(--border); }
+        .modal-header h3 { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1.1rem; display: flex; align-items: center; gap: 0.5rem; }
+        .modal-close { background: none; border: none; color: var(--text-muted); font-size: 1.2rem; cursor: pointer; padding: 0.3rem; border-radius: var(--radius-sm); transition: all 0.2s; }
         .modal-close:hover { color: var(--text-primary); background: var(--surface); }
+        .modal-body { padding: 1rem 1.5rem; overflow-y: auto; flex: 1; }
+        .modal-loading { text-align: center; padding: 2rem; color: var(--text-muted); }
+        .modal-error { text-align: center; padding: 1rem; color: #ef4444; background: rgba(239, 68, 68, 0.1); border-radius: var(--radius-md); }
+        .modal-footer { padding: 1rem 1.5rem; border-top: 1px solid var(--border); display: flex; gap: 0.8rem; justify-content: flex-end; }
         
-        .modal-body {
-            padding: 1rem 1.5rem;
-            overflow-y: auto;
-            flex: 1;
-        }
-        .modal-loading {
-            text-align: center;
-            padding: 2rem;
-            color: var(--text-muted);
-        }
-        .modal-error {
-            text-align: center;
-            padding: 1rem;
-            color: #ef4444;
-            background: rgba(239, 68, 68, 0.1);
-            border-radius: var(--radius-md);
-        }
-        
-        .modal-footer {
-            padding: 1rem 1.5rem;
-            border-top: 1px solid var(--border);
-            display: flex;
-            gap: 0.8rem;
-            justify-content: flex-end;
-        }
-        
-        /* ===== 🕐 Timeline Modal ===== */
         .timeline-vertical { display: flex; flex-direction: column; gap: 1rem; }
-        .timeline-item {
-            display: flex;
-            gap: 1rem;
-            align-items: flex-start;
-            position: relative;
-            padding-left: 1.5rem;
-        }
-        .timeline-item::before {
-            content: '';
-            position: absolute;
-            left: 4px;
-            top: 20px;
-            bottom: -20px;
-            width: 2px;
-            background: var(--border);
-        }
+        .timeline-item { display: flex; gap: 1rem; align-items: flex-start; position: relative; padding-left: 1.5rem; }
+        .timeline-item::before { content: ''; position: absolute; left: 4px; top: 20px; bottom: -20px; width: 2px; background: var(--border); }
         .timeline-item:last-child::before { display: none; }
-        .timeline-dot {
-            width: 10px;
-            height: 10px;
-            background: var(--accent);
-            border-radius: 50%;
-            flex-shrink: 0;
-            margin-top: 4px;
-            position: relative;
-            z-index: 1;
-        }
+        .timeline-dot { width: 10px; height: 10px; background: var(--accent); border-radius: 50%; flex-shrink: 0; margin-top: 4px; position: relative; z-index: 1; }
         .timeline-content { flex: 1; }
-        .timeline-status {
-            font-weight: 600;
-            font-size: 0.85rem;
-            color: var(--accent);
-            margin-bottom: 0.2rem;
-        }
-        .timeline-message {
-            font-size: 0.9rem;
-            color: var(--text-secondary);
-            margin-bottom: 0.3rem;
-        }
-        .timeline-time {
-            font-size: 0.75rem;
-            color: var(--text-muted);
-        }
+        .timeline-status { font-weight: 600; font-size: 0.85rem; color: var(--accent); margin-bottom: 0.2rem; }
+        .timeline-message { font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 0.3rem; }
+        .timeline-time { font-size: 0.75rem; color: var(--text-muted); }
         
-        /* ===== 📁 Deliverables Modal ===== */
-        .deliverable-link {
-            display: flex;
-            align-items: center;
-            gap: 0.6rem;
-            padding: 0.8rem 1rem;
-            background: var(--surface);
-            border-radius: var(--radius-md);
-            color: var(--text-secondary);
-            text-decoration: none;
-            margin-bottom: 0.5rem;
-            transition: all 0.2s;
-            font-size: 0.9rem;
-        }
-        .deliverable-link:hover {
-            background: var(--surface-hover);
-            color: var(--text-primary);
-            transform: translateX(4px);
-        }
+        .deliverable-link { display: flex; align-items: center; gap: 0.6rem; padding: 0.8rem 1rem; background: var(--surface); border-radius: var(--radius-md); color: var(--text-secondary); text-decoration: none; margin-bottom: 0.5rem; transition: all 0.2s; font-size: 0.9rem; }
+        .deliverable-link:hover { background: var(--surface-hover); color: var(--text-primary); transform: translateX(4px); }
         .deliverable-link i { width: 20px; text-align: center; color: var(--accent); }
-        .delivery-notes {
-            margin-top: 1rem;
-            padding: 1rem;
-            background: var(--surface);
-            border-radius: var(--radius-md);
-            font-size: 0.9rem;
-            color: var(--text-secondary);
-        }
+        .delivery-notes { margin-top: 1rem; padding: 1rem; background: var(--surface); border-radius: var(--radius-md); font-size: 0.9rem; color: var(--text-secondary); }
         .delivery-notes strong { color: var(--text-primary); display: block; margin-bottom: 0.4rem; }
-        .access-denied {
-            text-align: center;
-            padding: 2rem;
-            color: var(--text-muted);
-        }
+        .access-denied { text-align: center; padding: 2rem; color: var(--text-muted); }
         .access-denied i { font-size: 2rem; margin-bottom: 0.5rem; color: var(--accent); }
         
-        /* ===== 💬 Chat Widget ===== */
-        .chat-widget {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            width: 360px;
-            max-width: 90vw;
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: var(--radius-lg);
-            box-shadow: var(--shadow-lg);
-            z-index: 1500;
-            display: none;
-            flex-direction: column;
-            overflow: hidden;
-        }
+        .chat-widget { position: fixed; bottom: 20px; right: 20px; width: 360px; max-width: 90vw; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); box-shadow: var(--shadow-lg); z-index: 1500; display: none; flex-direction: column; overflow: hidden; }
         .chat-widget.active { display: flex; }
-        
-        .chat-header {
-            padding: 0.8rem 1rem;
-            background: var(--gradient-accent);
-            display: flex;
-            align-items: center;
-            gap: 0.6rem;
-            color: white;
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 0.9rem;
-        }
+        .chat-header { padding: 0.8rem 1rem; background: var(--gradient-accent); display: flex; align-items: center; gap: 0.6rem; color: white; cursor: pointer; font-weight: 600; font-size: 0.9rem; }
         .chat-header i { font-size: 1rem; }
-        .chat-order-id {
-            background: rgba(0,0,0,0.2);
-            padding: 0.2rem 0.6rem;
-            border-radius: var(--radius-full);
-            font-size: 0.75rem;
-            margin-left: auto;
-        }
+        .chat-order-id { background: rgba(0,0,0,0.2); padding: 0.2rem 0.6rem; border-radius: var(--radius-full); font-size: 0.75rem; margin-left: auto; }
         .chat-close { cursor: pointer; padding: 0.2rem 0.4rem; border-radius: var(--radius-sm); }
         .chat-close:hover { background: rgba(0,0,0,0.2); }
-        
         .chat-body { display: flex; flex-direction: column; height: 400px; }
-        .chat-messages {
-            flex: 1;
-            overflow-y: auto;
-            padding: 1rem;
-            background: var(--bg-secondary);
-            display: flex;
-            flex-direction: column;
-            gap: 0.8rem;
-        }
+        .chat-messages { flex: 1; overflow-y: auto; padding: 1rem; background: var(--bg-secondary); display: flex; flex-direction: column; gap: 0.8rem; }
         .message { max-width: 85%; padding: 0.6rem 1rem; border-radius: var(--radius-md); font-size: 0.9rem; word-wrap: break-word; }
-        .message.user {
-            align-self: flex-end;
-            background: var(--gradient-accent);
-            color: white;
-            border-bottom-right-radius: 4px;
-        }
-        .message.admin {
-            align-self: flex-start;
-            background: var(--surface);
-            color: var(--text-primary);
-            border-bottom-left-radius: 4px;
-        }
-        .message-time {
-            font-size: 0.7rem;
-            color: var(--text-muted);
-            margin-top: 0.2rem;
-            text-align: right;
-        }
-        
-        .chat-input-area {
-            padding: 0.8rem;
-            border-top: 1px solid var(--border);
-            display: flex;
-            gap: 0.5rem;
-            background: var(--bg-card);
-        }
-        .chat-input-area textarea {
-            flex: 1;
-            padding: 0.6rem 0.9rem;
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: var(--radius-md);
-            color: var(--text-primary);
-            font-family: inherit;
-            font-size: 0.9rem;
-            resize: none;
-            min-height: 40px;
-            max-height: 100px;
-        }
-        .chat-input-area textarea:focus {
-            outline: none;
-            border-color: var(--accent);
-        }
-        .chat-input-area button {
-            padding: 0.6rem 1rem;
-            background: var(--gradient-accent);
-            color: white;
-            border: none;
-            border-radius: var(--radius-md);
-            cursor: pointer;
-            font-weight: 600;
-            transition: transform 0.2s;
-        }
+        .message.user { align-self: flex-end; background: var(--gradient-accent); color: white; border-bottom-right-radius: 4px; }
+        .message.admin { align-self: flex-start; background: var(--surface); color: var(--text-primary); border-bottom-left-radius: 4px; }
+        .message-time { font-size: 0.7rem; color: var(--text-muted); margin-top: 0.2rem; text-align: right; }
+        .chat-input-area { padding: 0.8rem; border-top: 1px solid var(--border); display: flex; gap: 0.5rem; background: var(--bg-card); }
+        .chat-input-area textarea { flex: 1; padding: 0.6rem 0.9rem; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md); color: var(--text-primary); font-family: inherit; font-size: 0.9rem; resize: none; min-height: 40px; max-height: 100px; }
+        .chat-input-area textarea:focus { outline: none; border-color: var(--accent); }
+        .chat-input-area button { padding: 0.6rem 1rem; background: var(--gradient-accent); color: white; border: none; border-radius: var(--radius-md); cursor: pointer; font-weight: 600; transition: transform 0.2s; }
         .chat-input-area button:hover { transform: scale(1.05); }
         
-        /* ===== 🍞 Toast ===== */
-        .toast {
-            position: fixed;
-            bottom: 2rem;
-            left: 50%;
-            transform: translateX(-50%) translateY(100px);
-            padding: 0.8rem 1.5rem;
-            background: #10b981;
-            color: white;
-            border-radius: var(--radius-full);
-            font-size: 0.9rem;
-            font-weight: 500;
-            z-index: 9999;
-            transition: transform 0.3s ease;
-            box-shadow: var(--shadow-md);
-            max-width: 90vw;
-            text-align: center;
-        }
+        .toast { position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%) translateY(100px); padding: 0.8rem 1.5rem; background: #10b981; color: white; border-radius: var(--radius-full); font-size: 0.9rem; font-weight: 500; z-index: 9999; transition: transform 0.3s ease; box-shadow: var(--shadow-md); max-width: 90vw; text-align: center; }
         .toast.show { transform: translateX(-50%) translateY(0); }
         .toast.error { background: #ef4444; }
         .toast.warning { background: #f59e0b; color: #1a162a; }
         
-        /* ===== 🌀 Spinner ===== */
-        .spinner {
-            width: 32px; height: 32px;
-            border: 3px solid var(--border);
-            border-top-color: var(--accent);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin: 1rem auto;
-        }
+        .spinner { width: 32px; height: 32px; border: 3px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 1s linear infinite; margin: 1rem auto; }
         @keyframes spin { to { transform: rotate(360deg); } }
-        
-        .empty-state {
-            text-align: center;
-            padding: 3rem 1.5rem;
-            background: var(--bg-card);
-            border-radius: var(--radius-lg);
-            border: 1px dashed var(--border);
-        }
+        .empty-state { text-align: center; padding: 3rem 1.5rem; background: var(--bg-card); border-radius: var(--radius-lg); border: 1px dashed var(--border); }
         .empty-state i { font-size: 3rem; margin-bottom: 1rem; opacity: 0.5; }
         .empty-state h3 { margin-bottom: 0.5rem; }
         .empty-state p { color: var(--text-muted); margin-bottom: 1.5rem; }
         
-        /* ===== 💳 Payment History Styles ===== */
-        .payment-summary-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 1rem;
-            margin-bottom: 1.5rem;
-        }
-        .payment-stat-card {
-            text-align: center;
-            padding: 1rem;
-            background: var(--surface);
-            border-radius: var(--radius-md);
-        }
-        .payment-stat-card.highlight {
-            background: rgba(16, 185, 129, 0.1);
-            border: 1px solid rgba(16, 185, 129, 0.3);
-        }
-        .payment-stat-card.warning {
-            background: rgba(255, 107, 53, 0.1);
-            border: 1px solid rgba(255, 107, 53, 0.3);
-        }
-        .payment-stat-label {
-            font-size: 0.75rem;
-            color: var(--text-muted);
-            margin-bottom: 0.3rem;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-        .payment-stat-value {
-            font-size: 1.2rem;
-            font-weight: 700;
-            color: var(--text-primary);
-        }
+        .payment-summary-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; margin-bottom: 1.5rem; }
+        .payment-stat-card { text-align: center; padding: 1rem; background: var(--surface); border-radius: var(--radius-md); }
+        .payment-stat-card.highlight { background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); }
+        .payment-stat-card.warning { background: rgba(255, 107, 53, 0.1); border: 1px solid rgba(255, 107, 53, 0.3); }
+        .payment-stat-label { font-size: 0.75rem; color: var(--text-muted); margin-bottom: 0.3rem; text-transform: uppercase; letter-spacing: 0.5px; }
+        .payment-stat-value { font-size: 1.2rem; font-weight: 700; color: var(--text-primary); }
         .payment-stat-value.green { color: #10b981; }
         .payment-stat-value.orange { color: #ff6b35; }
-        .payment-stat-value.red { color: #ef4444; }
         
-        .payment-timeline {
-            margin-top: 1.5rem;
-        }
-        .payment-timeline-item {
-            display: flex;
-            gap: 0.8rem;
-            align-items: flex-start;
-            padding: 0.8rem;
-            background: var(--surface);
-            border-radius: var(--radius-md);
-            margin-bottom: 0.5rem;
-            border-left: 3px solid var(--border);
-        }
+        .payment-timeline { margin-top: 1.5rem; }
+        .payment-timeline-item { display: flex; gap: 0.8rem; align-items: flex-start; padding: 0.8rem; background: var(--surface); border-radius: var(--radius-md); margin-bottom: 0.5rem; border-left: 3px solid var(--border); }
         .payment-timeline-item.advance { border-left-color: #ff6b35; background: rgba(255, 107, 53, 0.1); }
         .payment-timeline-item.balance { border-left-color: #10b981; background: rgba(16, 185, 129, 0.1); }
         .payment-timeline-item.refund { border-left-color: #ef4444; background: rgba(239, 68, 68, 0.1); }
         .payment-timeline-item.pending { opacity: 0.6; }
-        .payment-timeline-icon {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-        }
+        .payment-timeline-icon { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
         .payment-timeline-icon.advance { background: #ff6b35; }
         .payment-timeline-icon.balance { background: #10b981; }
         .payment-timeline-icon.refund { background: #ef4444; }
@@ -920,122 +226,28 @@
         .payment-timeline-icon i { color: white; font-size: 0.8rem; }
         .payment-timeline-icon.pending i { color: var(--text-muted); }
         .payment-timeline-content { flex: 1; }
-        .payment-timeline-title {
-            font-weight: 600;
-            color: var(--text-primary);
-            margin-bottom: 0.2rem;
-        }
-        .payment-timeline-detail {
-            font-size: 0.85rem;
-            color: var(--text-secondary);
-        }
-        .payment-timeline-id {
-            font-size: 0.7rem;
-            color: var(--text-muted);
-            font-family: monospace;
-            margin-top: 0.3rem;
-        }
+        .payment-timeline-title { font-weight: 600; color: var(--text-primary); margin-bottom: 0.2rem; }
+        .payment-timeline-detail { font-size: 0.85rem; color: var(--text-secondary); }
+        .payment-timeline-id { font-size: 0.7rem; color: var(--text-muted); font-family: monospace; margin-top: 0.3rem; }
         
-        /* Refund Status Card */
-        .refund-status-card {
-            background: linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(16, 185, 129, 0.05));
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 16px;
-            margin-bottom: 16px;
-        }
-        .refund-status-card h4 {
-            color: var(--accent);
-            margin-bottom: 12px;
-            font-size: 14px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .refund-status-row {
-            display: flex;
-            justify-content: space-between;
-            padding: 6px 0;
-            border-bottom: 1px solid var(--border);
-        }
-        .refund-status-row:last-child { border-bottom: none; }
-        .refund-status-label { color: var(--text-muted); font-size: 12px; }
-        .refund-status-value { font-weight: 500; font-size: 13px; }
-        .refund-status-value.pending { color: var(--warning); }
-        .refund-status-value.approved { color: var(--info); }
-        .refund-status-value.completed { color: var(--success); }
-        .refund-status-value.rejected { color: var(--error); }
-        
-        /* Cancel Info Card */
-        .cancel-info-card {
-            background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(239, 68, 68, 0.05));
-            border: 1px solid var(--warning);
-            border-radius: 12px;
-            padding: 12px 16px;
-            margin-bottom: 16px;
-        }
-        .cancel-info-card .title {
-            font-weight: 600;
-            margin-bottom: 8px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .cancel-info-card .title i { color: var(--warning); }
-        .cancel-info-card .warning { color: var(--error); font-size: 12px; margin-top: 5px; }
-        .cancel-info-card .eligible { color: var(--success); font-weight: 600; }
-        .cancel-info-card .not-eligible { color: var(--error); font-weight: 600; }
-        .time-remaining { color: var(--info); font-weight: 600; }
-        
-        /* ===== 📱 Responsive ===== */
-        @media (max-width: 1024px) {
-            .order-header-compact { grid-template-columns: auto 1fr auto; }
-        }
-        
+        @media (max-width: 1024px) { .order-header-compact { grid-template-columns: auto 1fr auto; } }
         @media (max-width: 768px) {
-            nav { padding: 0 4%; height: 68px; }
-            .nav-links { display: none; }
-            .user-toggle-wrapper { display: none; }
-            .menu-toggle { display: flex; }
-            .container { padding: 85px 4% 3rem; }
-            .page-header { flex-direction: column; text-align: center; }
-            .order-header-compact { grid-template-columns: 1fr auto; gap: 0.5rem; }
-            .order-actions-compact { justify-content: center; }
-            .modal-container { max-width: 95vw; margin: 1rem; }
-            .chat-widget { width: 100%; max-width: 100vw; bottom: 0; right: 0; border-radius: var(--radius-lg) var(--radius-lg) 0 0; }
-            .chat-body { height: 350px; }
+            nav { padding: 0 4%; height: 68px; } .nav-links { display: none; } .user-toggle-wrapper { display: none; } .menu-toggle { display: flex; }
+            .container { padding: 85px 4% 3rem; } .page-header { flex-direction: column; text-align: center; }
+            .order-header-compact { grid-template-columns: 1fr auto; gap: 0.5rem; } .order-actions-compact { justify-content: center; }
+            .modal-container { max-width: 95vw; margin: 1rem; } .chat-widget { width: 100%; max-width: 100vw; bottom: 0; right: 0; border-radius: var(--radius-lg) var(--radius-lg) 0 0; } .chat-body { height: 350px; }
             .payment-summary-grid { grid-template-columns: 1fr; }
         }
-        
-        @media (max-width: 480px) {
-            .order-header-compact { grid-template-columns: 1fr; text-align: center; }
-            .order-actions-compact { flex-wrap: wrap; }
-            .btn-action { flex: 1; min-width: 100px; justify-content: center; }
-        }
-        
-        /* ===== ♿ Accessibility ===== */
-        @media (prefers-reduced-motion: reduce) {
-            *, *::before, *::after {
-                animation-duration: 0.01ms !important;
-                transition-duration: 0.01ms !important;
-            }
-        }
-        a:focus, button:focus, .user-toggle:focus {
-            outline: 2px solid var(--accent);
-            outline-offset: 2px;
-        }
-        
-        /* ===== 🎨 Scrollbar ===== */
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: var(--bg-secondary); }
-        ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 10px; }
-        ::-webkit-scrollbar-thumb:hover { background: #ff8f5e; }
+        @media (max-width: 480px) { .order-header-compact { grid-template-columns: 1fr; text-align: center; } .order-actions-compact { flex-wrap: wrap; } .btn-action { flex: 1; min-width: 100px; justify-content: center; } }
+        @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; } }
+        a:focus, button:focus, .user-toggle:focus { outline: 2px solid var(--accent); outline-offset: 2px; }
+        ::-webkit-scrollbar { width: 6px; } ::-webkit-scrollbar-track { background: var(--bg-secondary); } ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 10px; }
         .modal-body::-webkit-scrollbar, .chat-messages::-webkit-scrollbar { width: 4px; }
     </style>
 </head>
 <body>
 
-<!-- ===== 🔗 Navigation ===== -->
+<!-- Nav (Same as before) -->
 <nav id="navbar">
     <a href="index.html" class="logo"><i class="fas fa-code"></i> Nova<span>Stack</span></a>
     <div class="nav-links" id="navLinks">
@@ -1063,12 +275,10 @@
             <a href="#" class="dropdown-item dropdown-logout" id="dropdownLogout" role="menuitem"><i class="fas fa-sign-out-alt"></i> Logout</a>
         </div>
     </div>
-    <button class="menu-toggle" id="menuToggle" aria-label="Toggle menu" aria-expanded="false">
-        <i class="fas fa-bars"></i>
-    </button>
+    <button class="menu-toggle" id="menuToggle" aria-label="Toggle menu" aria-expanded="false"><i class="fas fa-bars"></i></button>
 </nav>
 
-<!-- ===== 📱 Mobile Menu ===== -->
+<!-- Mobile Menu (Same) -->
 <div class="mobile-menu" id="mobileMenu">
     <div class="mobile-menu-inner">
         <a href="index.html" class="mobile-nav-link"><i class="fas fa-home"></i> Home</a>
@@ -1080,20 +290,32 @@
     </div>
 </div>
 
-<!-- ===== 📦 Main Content ===== -->
+<!-- Main Content -->
 <div class="container">
     <div class="page-header">
         <h1><i class="fas fa-shopping-bag"></i> My Orders</h1>
         <a href="services.html" class="btn-new-order"><i class="fas fa-plus"></i> New Order</a>
     </div>
     
+    <!-- Refund Policy Notice -->
+    <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1rem;margin-bottom:1.5rem">
+        <div style="display:flex;align-items:center;gap:0.8rem">
+            <i class="fas fa-info-circle" style="color:var(--accent);font-size:1.2rem"></i>
+            <div>
+                <strong style="color:var(--text-primary)">Cancellation & Refund Policy</strong>
+                <p style="color:var(--text-secondary);font-size:0.85rem;margin:0.3rem 0 0">
+                    Orders can be cancelled within <strong style="color:var(--accent)">48 hours</strong> of placement for a <strong>full refund</strong>. 
+                    After 48 hours, cancellations require admin approval and may not be eligible for a refund.
+                </p>
+            </div>
+        </div>
+    </div>
+    
     <div id="loading" style="display:none; text-align:center; padding:3rem;">
         <div class="spinner"></div>
         <p style="color:var(--text-muted); margin-top:1rem;">Loading your orders...</p>
     </div>
-    
     <div id="orders-container" class="orders-grid"></div>
-    
     <div id="empty-state" class="empty-state" style="display:none;">
         <i class="fas fa-shopping-bag"></i>
         <h3>No orders yet</h3>
@@ -1102,7 +324,7 @@
     </div>
 </div>
 
-<!-- ===== 🪟 Modal ===== -->
+<!-- Modal -->
 <div class="modal-overlay" id="modalOverlay" role="dialog" aria-modal="true">
     <div class="modal-container">
         <div class="modal-header">
@@ -1116,7 +338,7 @@
     </div>
 </div>
 
-<!-- ===== 💬 Chat Widget ===== -->
+<!-- Chat Widget -->
 <div class="chat-widget" id="chatWidget">
     <div class="chat-header" id="chatHeader">
         <i class="fas fa-comments"></i>
@@ -1135,1036 +357,162 @@
     </div>
 </div>
 
-<!-- ===== 🍞 Toast ===== -->
 <div id="toastContainer"></div>
 
 <script>
 // ===== 🔧 CONFIG =====
-const CONFIG = {
-    API: window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
-        ? 'http://localhost:5000' 
-        : 'https://novastack-backend.onrender.com',
-    WA_NUMBER: '9015277062'
-};
+const CONFIG = { API: 'https://novastack-backend.onrender.com', CANCELLATION_HOURS: 48 };
 
 // ===== 🔐 Auth =====
 const Auth = {
-    getToken() {
-        return localStorage.getItem('dc_token') || sessionStorage.getItem('dc_token') || '';
-    },
-    getUser() {
-        try {
-            const user = localStorage.getItem('dc_user') || sessionStorage.getItem('dc_user');
-            return user ? JSON.parse(user) : null;
-        } catch { return null; }
-    },
-    isLoggedIn() {
-        return !!this.getToken() && !!this.getUser();
-    },
+    getToken() { return localStorage.getItem('dc_token') || sessionStorage.getItem('dc_token') || ''; },
+    getUser() { try { return JSON.parse(localStorage.getItem('dc_user') || sessionStorage.getItem('dc_user')); } catch { return null; } },
+    isLoggedIn() { return !!this.getToken() && !!this.getUser(); },
     async fetchUser() {
-        const token = this.getToken();
-        if (!token) return null;
-        try {
-            const res = await fetch(`${CONFIG.API}/user`, {
-                headers: { 'Authorization': `Bearer ${token}` }
-            });
-            if (!res.ok) throw new Error('Auth failed');
-            const data = await res.json();
-            return data.user || data;
-        } catch (e) {
-            console.warn('Failed to fetch user:', e.message);
-            return null;
-        }
+        const token = this.getToken(); if (!token) return null;
+        try { const res = await fetch(`${CONFIG.API}/user`, { headers: { 'Authorization': `Bearer ${token}` } }); return res.ok ? (await res.json()).user : null; } catch { return null; }
     }
 };
 
 // ===== 🛒 Cart =====
-const Cart = {
-    async fetch() {
-        const token = Auth.getToken();
-        if (!token) return [];
-        try {
-            const res = await fetch(`${CONFIG.API}/cart`, {
-                headers: { 'Authorization': `Bearer ${token}` }
-            });
-            if (!res.ok) throw new Error('Cart fetch failed');
-            const data = await res.json();
-            return data.items || data.cart || [];
-        } catch { return []; }
-    },
-    getLocalCount() {
-        try {
-            const local = JSON.parse(localStorage.getItem('dc_cart_local') || '[]');
-            return local.length;
-        } catch { return 0; }
-    }
-};
+const Cart = { async fetch() { const t = Auth.getToken(); if(!t) return []; try { const r = await fetch(`${CONFIG.API}/cart`, {headers:{'Authorization':`Bearer ${t}`}}); return r.ok ? (await r.json()).items || (await r.json()).cart || [] : []; } catch { return []; } }, getLocalCount() { try { return JSON.parse(localStorage.getItem('dc_cart_local')||'[]').length; } catch { return 0; } } };
 
 // ===== 🍞 Toast =====
-function showToast(message, type = 'success', duration = 4000) {
-    const container = document.getElementById('toastContainer');
-    const toast = document.createElement('div');
-    toast.className = `toast ${type}`;
-    toast.textContent = message;
-    container.appendChild(toast);
-    setTimeout(() => toast.classList.add('show'), 10);
-    setTimeout(() => {
-        toast.classList.remove('show');
-        setTimeout(() => toast.remove(), 300);
-    }, duration);
+function showToast(msg, type='success', dur=4000) {
+    const c=document.getElementById('toastContainer'), t=document.createElement('div');
+    t.className=`toast ${type}`; t.textContent=msg; c.appendChild(t);
+    setTimeout(()=>t.classList.add('show'),10); setTimeout(()=>{t.classList.remove('show');setTimeout(()=>t.remove(),300);},dur);
 }
 
-// ===== Helper Functions =====
-function calculateHoursSince(dateStr) {
-    if (!dateStr) return 999;
-    const created = new Date(dateStr);
-    const now = new Date();
-    const diffMs = now - created;
-    return diffMs / (1000 * 60 * 60);
-}
+// ===== 👤 UI Updates =====
+function updateProfileUI(u){if(!u)return;const n=u.name||u.email?.split('@')[0]||'User',i=n[0].toUpperCase();const av=document.getElementById('userAvatar'),un=document.getElementById('userName');if(av){av.innerHTML=u.avatar?`<img src="${u.avatar}">`:i}if(un)un.textContent=n.length>12?n.slice(0,12)+'...':n;document.getElementById('dropdownAvatar')&&(document.getElementById('dropdownAvatar').innerHTML=av?.innerHTML||i);document.getElementById('dropdownName')&&(document.getElementById('dropdownName').textContent=n);document.getElementById('dropdownEmail')&&(document.getElementById('dropdownEmail').textContent=u.email||'');}
+window.addEventListener('scroll',()=>{const n=document.getElementById('navbar'),m=document.getElementById('mobileMenu');if(!n)return;if(window.scrollY>50){n.classList.add('scrolled');if(m)m.style.top='64px'}else{n.classList.remove('scrolled');if(m)m.style.top=window.innerWidth<=768?'68px':'72px'}});
 
-function getRemainingTime(hoursSince) {
-    const remaining = 48 - hoursSince;
-    if (remaining <= 0) return null;
-    const hours = Math.floor(remaining);
-    const minutes = Math.floor((remaining - hours) * 60);
-    if (hours > 0) return `${hours}h ${minutes}m`;
-    return `${minutes}m`;
-}
+// ===== 📱 Mobile & Dropdown =====
+const menuToggle=document.getElementById('menuToggle'),mobileMenu=document.getElementById('mobileMenu'),body=document.body;
+function toggleMobileMenu(){if(!mobileMenu||!menuToggle)return;const a=mobileMenu.classList.toggle('active');menuToggle.classList.toggle('active',a);menuToggle.setAttribute('aria-expanded',a);if(a){body.classList.add('menu-open');body.dataset.scrollY=window.scrollY}else{body.classList.remove('menu-open');if(body.dataset.scrollY){window.scrollTo(0,parseInt(body.dataset.scrollY));delete body.dataset.scrollY}}}
+if(menuToggle)menuToggle.addEventListener('click',toggleMobileMenu);
+document.querySelectorAll('.mobile-nav-link').forEach(l=>l.addEventListener('click',()=>{if(mobileMenu?.classList.contains('active')){mobileMenu.classList.remove('active');menuToggle?.classList.remove('active');body.classList.remove('menu-open')}}));
+document.addEventListener('click',(e)=>{if(mobileMenu?.classList.contains('active')&&!mobileMenu.contains(e.target)&&!menuToggle?.contains(e.target)){mobileMenu.classList.remove('active');menuToggle?.classList.remove('active');body.classList.remove('menu-open')}});
 
-// ===== 👤 Profile UI =====
-function updateProfileUI(user) {
-    if (!user) return;
-    const name = user.name || user.email?.split('@')[0] || 'User';
-    const initial = name.charAt(0).toUpperCase();
-    
-    const avatar = document.getElementById('userAvatar');
-    const userName = document.getElementById('userName');
-    const dropdownAvatar = document.getElementById('dropdownAvatar');
-    const dropdownName = document.getElementById('dropdownName');
-    const dropdownEmail = document.getElementById('dropdownEmail');
-    
-    if (avatar) {
-        if (user.avatar) {
-            avatar.innerHTML = `<img src="${user.avatar}" alt="${name}">`;
-        } else {
-            avatar.textContent = initial;
-        }
-    }
-    if (userName) userName.textContent = name.length > 12 ? name.slice(0, 12) + '...' : name;
-    if (dropdownAvatar) dropdownAvatar.innerHTML = avatar?.innerHTML || initial;
-    if (dropdownName) dropdownName.textContent = name;
-    if (dropdownEmail) dropdownEmail.textContent = user.email || '';
-}
-
-// ===== 🔄 Navbar Scroll =====
-window.addEventListener('scroll', () => {
-    const nav = document.getElementById('navbar');
-    const mobileMenu = document.getElementById('mobileMenu');
-    if (!nav) return;
-    if (window.scrollY > 50) {
-        nav.classList.add('scrolled');
-        if (mobileMenu) mobileMenu.style.top = '64px';
-    } else {
-        nav.classList.remove('scrolled');
-        if (mobileMenu) mobileMenu.style.top = window.innerWidth <= 768 ? '68px' : '72px';
-    }
-});
-
-// ===== 📱 Mobile Menu =====
-const menuToggle = document.getElementById('menuToggle');
-const mobileMenu = document.getElementById('mobileMenu');
-const body = document.body;
-
-function toggleMobileMenu() {
-    if (!mobileMenu || !menuToggle) return;
-    const isActive = mobileMenu.classList.toggle('active');
-    menuToggle.classList.toggle('active', isActive);
-    menuToggle.setAttribute('aria-expanded', isActive);
-    if (isActive) {
-        body.classList.add('menu-open');
-        body.dataset.scrollY = window.scrollY;
-    } else {
-        body.classList.remove('menu-open');
-        if (body.dataset.scrollY) {
-            window.scrollTo(0, parseInt(body.dataset.scrollY));
-            delete body.dataset.scrollY;
-        }
-    }
-}
-if (menuToggle) menuToggle.addEventListener('click', toggleMobileMenu);
-
-document.querySelectorAll('.mobile-nav-link').forEach(link => {
-    link.addEventListener('click', () => {
-        if (mobileMenu?.classList.contains('active')) {
-            mobileMenu.classList.remove('active');
-            menuToggle?.classList.remove('active');
-            body.classList.remove('menu-open');
-        }
-    });
-});
-
-document.addEventListener('click', (e) => {
-    if (mobileMenu?.classList.contains('active') && 
-        !mobileMenu.contains(e.target) && 
-        !menuToggle?.contains(e.target)) {
-        mobileMenu.classList.remove('active');
-        menuToggle?.classList.remove('active');
-        body.classList.remove('menu-open');
-    }
-});
-
-// ===== 👤 User Dropdown =====
-const userToggle = document.getElementById('userToggle');
-const userDropdown = document.getElementById('userDropdown');
-
-function toggleUserDropdown() {
-    if (!userToggle || !userDropdown) return;
-    const isActive = userDropdown.classList.toggle('active');
-    userToggle.classList.toggle('active', isActive);
-    userToggle.setAttribute('aria-expanded', isActive);
-}
-if (userToggle) {
-    userToggle.addEventListener('click', (e) => {
-        e.stopPropagation();
-        toggleUserDropdown();
-    });
-    userToggle.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
-            e.preventDefault();
-            toggleUserDropdown();
-        }
-    });
-}
-document.addEventListener('click', (e) => {
-    if (userDropdown && userToggle && 
-        !userToggle.contains(e.target) && 
-        !userDropdown.contains(e.target)) {
-        userDropdown.classList.remove('active');
-        userToggle.classList.remove('active');
-        userToggle.setAttribute('aria-expanded', 'false');
-    }
-});
+const userToggle=document.getElementById('userToggle'),userDropdown=document.getElementById('userDropdown');
+function toggleUserDropdown(){if(!userToggle||!userDropdown)return;const a=userDropdown.classList.toggle('active');userToggle.classList.toggle('active',a);userToggle.setAttribute('aria-expanded',a)}
+if(userToggle){userToggle.addEventListener('click',e=>{e.stopPropagation();toggleUserDropdown()});userToggle.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();toggleUserDropdown()}})}
+document.addEventListener('click',e=>{if(userDropdown&&userToggle&&!userToggle.contains(e.target)&&!userDropdown.contains(e.target)){userDropdown.classList.remove('active');userToggle.classList.remove('active');userToggle.setAttribute('aria-expanded','false')}});
 
 // ===== 🚪 Logout =====
-async function logout() {
-    const token = Auth.getToken();
-    if (token) {
-        try {
-            await fetch(`${CONFIG.API}/auth/logout`, {
-                method: 'POST',
-                headers: { 'Authorization': `Bearer ${token}` }
-            });
-        } catch (e) { console.warn('Logout API failed:', e.message); }
-    }
-    localStorage.removeItem('dc_token');
-    localStorage.removeItem('dc_user');
-    localStorage.removeItem('dc_cart_local');
-    sessionStorage.removeItem('dc_token');
-    sessionStorage.removeItem('dc_user');
-    closeModal();
-    closeChat();
-    showToast('Logged out successfully');
-    setTimeout(() => window.location.href = 'index.html', 1000);
-}
-
-document.getElementById('dropdownLogout')?.addEventListener('click', (e) => {
-    e.preventDefault();
-    logout();
-});
-document.getElementById('mobileLogoutBtn')?.addEventListener('click', logout);
+async function logout(){const t=Auth.getToken();if(t)try{await fetch(`${CONFIG.API}/auth/logout`,{method:'POST',headers:{'Authorization':`Bearer ${t}`}})}catch{}localStorage.removeItem('dc_token');localStorage.removeItem('dc_user');localStorage.removeItem('dc_cart_local');sessionStorage.removeItem('dc_token');sessionStorage.removeItem('dc_user');closeModal();closeChat();showToast('Logged out successfully');setTimeout(()=>window.location.href='index.html',1000)}
+document.getElementById('dropdownLogout')?.addEventListener('click',e=>{e.preventDefault();logout()});document.getElementById('mobileLogoutBtn')?.addEventListener('click',logout);
 
 // ===== 📦 Load Orders =====
-let allOrders = [];
+let allOrders=[], cancellationTimers={};
+async function loadOrders(){const t=Auth.getToken();if(!t){showToast('Please login to view orders','warning');window.location.href='login.html?redirect=my-orders.html';return}const load=document.getElementById('loading'),cont=document.getElementById('orders-container'),emp=document.getElementById('empty-state');load.style.display='block';cont.innerHTML='';emp.style.display='none';try{const res=await fetch(`${CONFIG.API}/my-orders`,{headers:{'Authorization':`Bearer ${t}`}});if(!res.ok)throw new Error((await res.json().catch(()=>({}))).error||`Error ${res.status}`);const data=await res.json();allOrders=data.orders||data.data||[];if(!allOrders.length){load.style.display='none';emp.style.display='block';return}renderOrders(allOrders);load.style.display='none'}catch(e){console.error(e);load.style.display='none';cont.innerHTML=`<div class="empty-state"><i class="fas fa-exclamation-triangle"></i><h3>Unable to load orders</h3><p>${e.message}</p><button class="btn-new-order" onclick="loadOrders()"><i class="fas fa-redo"></i> Retry</button></div>`}}
 
-async function loadOrders() {
-    const token = Auth.getToken();
-    if (!token) {
-        showToast('Please login to view orders', 'warning');
-        window.location.href = 'login.html?redirect=my-orders.html';
-        return;
-    }
-    
-    const loading = document.getElementById('loading');
-    const container = document.getElementById('orders-container');
-    const empty = document.getElementById('empty-state');
-    
-    loading.style.display = 'block';
-    container.innerHTML = '';
-    empty.style.display = 'none';
-    
-    try {
-        const res = await fetch(`${CONFIG.API}/my-orders`, {
-            headers: { 'Authorization': `Bearer ${token}` }
-        });
-        
-        if (!res.ok) {
-            const err = await res.json().catch(() => ({}));
-            throw new Error(err.error || `Error ${res.status}`);
-        }
-        
-        const data = await res.json();
-        allOrders = data.orders || data.data || [];
-        
-        if (!allOrders.length) {
-            loading.style.display = 'none';
-            empty.style.display = 'block';
-            return;
-        }
-        
-        renderOrders(allOrders);
-        loading.style.display = 'none';
-        
-    } catch (error) {
-        console.error('Failed to load orders:', error);
-        loading.style.display = 'none';
-        container.innerHTML = `
-            <div class="empty-state">
-                <i class="fas fa-exclamation-triangle"></i>
-                <h3>Unable to load orders</h3>
-                <p>${error.message}</p>
-                <button class="btn-new-order" onclick="loadOrders()">
-                    <i class="fas fa-redo"></i> Retry
-                </button>
-            </div>
-        `;
-    }
-}
+// ===== ⏰ Cancellation Timer =====
+function formatTimeLeft(ms){const h=Math.floor(ms/(1000*60*60)),m=Math.floor((ms%(1000*60*60))/(1000*60)),s=Math.floor((ms%(1000*60))/1000);if(h>0)return`${h}h ${m}m ${s}s`;if(m>0)return`${m}m ${s}s`;return`${s}s`}
+function startCancellationTimer(oid,deadline){if(cancellationTimers[oid])clearInterval(cancellationTimers[oid]);const up=()=>{const now=new Date().getTime(),rem=deadline-now,tel=document.getElementById(`cancel-timer-${oid}`),cbtn=document.getElementById(`cancel-btn-${oid}`);if(rem<=0){if(tel)tel.innerHTML='<span style="color:var(--error)">Expired</span>';if(cbtn){cbtn.disabled=true;cbtn.title='Cancellation window expired';cbtn.innerHTML='<i class="fas fa-ban"></i> Cancel (Expired)'}clearInterval(cancellationTimers[oid]);delete cancellationTimers[oid];return}if(tel)tel.textContent=formatTimeLeft(rem)};up();cancellationTimers[oid]=setInterval(up,1000)}
 
-// ===== 🗂️ Render Orders =====
-function renderOrders(orders) {
-    const container = document.getElementById('orders-container');
-    
-    container.innerHTML = orders.map(order => {
-        const total = order.price || 0;
-        const advancePaid = order.advance_paid || 0;
-        const totalPaid = order.total_paid || advancePaid;
-        const balanceDue = Math.max(0, total - totalPaid);
-        const paidPercent = total > 0 ? Math.min(100, Math.round((totalPaid / total) * 100)) : 0;
+// ===== 🗂️ Render Orders (UPDATED WITH REFUND) =====
+function renderOrders(orders){
+    const cont=document.getElementById('orders-container');
+    cont.innerHTML=orders.map(o=>{
+        const total=o.price||0, adv=o.advance_paid||0, paid=o.total_paid||adv, due=Math.max(0,total-paid), pct=total>0?Math.min(100,Math.round((paid/total)*100)):0;
+        const created=new Date(o.created_at).getTime(), now=new Date().getTime(), deadline=created+(CONFIG.CANCELLATION_HOURS*60*60*1000), inWindow=now<deadline;
+        const canCancel=(o.status==='pending'||o.status==='payment_received')&&paid<total&&inWindow&&o.status!=='cancellation_requested';
         
-        const canPayBalance = (order.status === 'ready_for_balance' || (order.status === 'delivered' && balanceDue > 0)) && balanceDue > 0;
-        const canCancel = (order.status === 'pending' || order.status === 'payment_received') && totalPaid < total;
-        const canRequestRevision = (order.status === 'delivered' || order.status === 'completed') && !order.revision_requested;
-        const hasPreview = order.preview_ready && advancePaid > 0;
-        const hasFullAccess = (order.full_access_ready && totalPaid >= total) || order.status === 'completed';
+        // 🟢 Refund Status Logic
+        let refundBadge='', cardClass='';
+        const rs=o.refund_status||null, ra=o.refund_amount||0;
+        if(rs==='pending'){refundBadge=`<span class="refund-badge pending"><i class="fas fa-clock"></i> Refund Processing</span>`;cardClass='refund-pending'}
+        else if(rs==='approved'){refundBadge=`<span class="refund-badge approved"><i class="fas fa-check"></i> Refund Approved</span>`;cardClass='refund-completed'}
+        else if(rs==='completed'){refundBadge=`<span class="refund-badge completed"><i class="fas fa-check-circle"></i> Refunded (₹${ra.toLocaleString()})</span>`;cardClass='refund-completed'}
+        else if(rs==='rejected'){refundBadge=`<span class="refund-badge rejected"><i class="fas fa-times"></i> Refund Rejected</span>`;cardClass='refund-rejected'}
+        else if(o.status==='cancellation_requested'&&!rs){refundBadge=`<span class="refund-badge pending"><i class="fas fa-hourglass-half"></i> Awaiting Approval</span>`;cardClass='refund-pending'}
+
+        const canPay=(o.status==='ready_for_balance'||(o.status==='delivered'&&due>0))&&due>0;
+        const canRev=(o.status==='delivered'||o.status==='completed')&&!o.revision_requested;
+        const hasPrev=o.preview_ready&&adv>0, hasFull=(o.full_access_ready&&paid>=total)||o.status==='completed';
         
-        // Calculate cancellation eligibility
-        const hoursSince = calculateHoursSince(order.created_at);
-        const isEligibleForRefund = canCancel && hoursSince <= 48;
-        const remainingTime = getRemainingTime(hoursSince);
-        
-        return `
-        <div class="order-card" id="order-${order.id}">
+        return`<div class="order-card ${cardClass}" id="order-${o.id}">
+            ${refundBadge}
             <div class="order-header-compact">
-                <span class="order-status status-${order.status}">${order.status.replace(/_/g, ' ').toUpperCase()}</span>
-                <div class="service-mini">
-                    <span class="service-emoji">${order.services?.emoji || '💻'}</span>
-                    <span class="service-title">${order.services?.title || 'Custom Project'}</span>
-                </div>
+                <span class="order-status status-${o.status}">${o.status.replace(/_/g,' ').toUpperCase()}</span>
+                <div class="service-mini"><span class="service-emoji">${o.services?.emoji||'💻'}</span><span class="service-title">${o.services?.title||'Custom Project'}</span></div>
                 <div class="price-mini">₹${total.toLocaleString()}</div>
             </div>
-            
-            ${canCancel ? `
-            <div style="padding: 0.5rem 0;">
-                <span class="eligibility-badge ${isEligibleForRefund ? 'eligibility-eligible' : 'eligibility-not-eligible'}">
-                    <i class="fas ${isEligibleForRefund ? 'fa-check-circle' : 'fa-times-circle'}"></i>
-                    ${isEligibleForRefund ? `Eligible for full refund (${remainingTime || 'expiring soon'} left)` : 'Not eligible for refund (48hrs passed)'}
-                </span>
-            </div>
-            ` : ''}
-            
             <div class="payment-summary-mini">
-                <div class="payment-row">
-                    <span>Paid:</span>
-                    <span class="paid-amount">₹${totalPaid.toLocaleString()}</span>
-                    <span class="balance-due ${balanceDue > 0 ? 'due' : 'paid'}">
-                        ${balanceDue > 0 ? `Due: ₹${balanceDue.toLocaleString()}` : '✓ Fully Paid'}
-                    </span>
-                </div>
-                <div class="progress-bar-mini">
-                    <div class="progress-fill" style="width: ${paidPercent}%"></div>
-                </div>
+                <div class="payment-row"><span>Paid:</span><span class="paid-amount">₹${paid.toLocaleString()}</span><span class="balance-due ${due>0?'due':'paid'}">${due>0?`Due: ₹${due.toLocaleString()}`:'✓ Fully Paid'}</span></div>
+                <div class="progress-bar-mini"><div class="progress-fill" style="width:${pct}%"></div></div>
             </div>
-            
-            ${hasPreview && !hasFullAccess ? `
-            <div style="padding:0.5rem 0; font-size:0.8rem; color:#ff6b35;">
-                <i class="fas fa-eye"></i> Preview available
-            </div>` : ''}
-            ${hasFullAccess ? `
-            <div style="padding:0.5rem 0; font-size:0.8rem; color:#10b981;">
-                <i class="fas fa-check-circle"></i> Full access unlocked
-            </div>` : ''}
-            
+            ${hasPrev&&!hasFull?`<div style="padding:0.5rem 0;font-size:0.8rem;color:#ff6b35"><i class="fas fa-eye"></i> Preview available</div>`:''}
+            ${hasFull?`<div style="padding:0.5rem 0;font-size:0.8rem;color:#10b981"><i class="fas fa-check-circle"></i> Full access unlocked</div>`:''}
+            ${canCancel?`<div class="cancellation-notice"><i class="fas fa-clock"></i> Cancel within <span class="cancellation-timer" id="cancel-timer-${o.id}">--:--:--</span> for full refund</div>`:(o.status==='pending'||o.status==='payment_received')&&paid<total&&!inWindow?`<div class="cancellation-notice expired"><i class="fas fa-exclamation-triangle"></i> Cancellation window expired. No refund available.</div>`:''}
             <div class="order-actions-compact">
-                ${canPayBalance ? `
-                <button class="btn-action btn-pay" onclick="payBalance(${order.id}, ${balanceDue})">
-                    <i class="fas fa-credit-card"></i> Pay Balance ₹${balanceDue.toLocaleString()}
-                </button>` : ''}
-                
-                <button class="btn-action" onclick="openModal('timeline', ${order.id})">
-                    <i class="fas fa-history"></i> Timeline
-                </button>
-                <button class="btn-action" onclick="openModal('deliverables', ${order.id})">
-                    <i class="fas fa-download"></i> Files
-                </button>
-                <button class="btn-action" onclick="openModal('payment', ${order.id})">
-                    <i class="fas fa-receipt"></i> Payment
-                </button>
-                <button class="btn-action btn-chat" onclick="openChat(${order.id})">
-                    <i class="fas fa-comment"></i> Chat
-                </button>
-                
-                ${canRequestRevision ? `
-                <button class="btn-action btn-revision" onclick="openModal('revision', ${order.id})">
-                    <i class="fas fa-pencil-alt"></i> Revision
-                </button>` : ''}
-                ${canCancel ? `
-                <button class="btn-action btn-cancel" onclick="openModal('cancel', ${order.id})">
-                    <i class="fas fa-ban"></i> Cancel Order
-                </button>` : ''}
+                ${canPay?`<button class="btn-action btn-pay" onclick="payBalance(${o.id},${due})"><i class="fas fa-credit-card"></i> Pay Balance ₹${due.toLocaleString()}</button>`:''}
+                <button class="btn-action" onclick="openModal('timeline',${o.id})"><i class="fas fa-history"></i> Timeline</button>
+                <button class="btn-action" onclick="openModal('deliverables',${o.id})"><i class="fas fa-download"></i> Files</button>
+                <button class="btn-action" onclick="openModal('payment',${o.id})"><i class="fas fa-receipt"></i> Payment</button>
+                <button class="btn-action btn-chat" onclick="openChat(${o.id})"><i class="fas fa-comment"></i> Chat</button>
+                ${canRev?`<button class="btn-action btn-revision" onclick="openModal('revision',${o.id})"><i class="fas fa-pencil-alt"></i> Revision</button>`:''}
+                ${canCancel?`<button class="btn-action btn-cancel" id="cancel-btn-${o.id}" onclick="openModal('cancel',${o.id})"><i class="fas fa-ban"></i> Cancel</button>`:(o.status==='pending'||o.status==='payment_received')&&paid<total&&!inWindow?`<button class="btn-action btn-cancel" disabled title="Cancellation window expired"><i class="fas fa-ban"></i> Cancel (Expired)</button>`:''}
             </div>
-            
-            <div class="order-preview" onclick="togglePreview(${order.id})">
-                <i class="fas fa-chevron-down"></i> View Details
-            </div>
-            <div class="order-details-preview" id="preview-${order.id}" style="display:none">
-                ${order.customization && Object.keys(order.customization).length ? `
-                <div class="preview-section">
-                    <strong>Customizations:</strong> ${formatCustomization(order.customization)}
-                </div>` : ''}
-                ${order.requirements ? `
-                <div class="preview-section">
-                    <strong>Requirements:</strong> ${truncate(order.requirements, 120)}
-                </div>` : ''}
-                <div class="preview-section">
-                    <strong>Ordered:</strong> ${new Date(order.created_at).toLocaleString()}
-                </div>
-                ${canCancel ? `
-                <div class="preview-section">
-                    <strong>Cancellation Policy:</strong> 
-                    ${isEligibleForRefund ? 
-                        `<span style="color: var(--success);">✓ Eligible for full refund (within 48 hours of order)</span>` : 
-                        `<span style="color: var(--error);">✗ No refund (48-hour window has passed)</span>`}
-                </div>` : ''}
+            <div class="order-preview" onclick="togglePreview(${o.id})"><i class="fas fa-chevron-down"></i> View Details</div>
+            <div class="order-details-preview" id="preview-${o.id}" style="display:none">
+                ${o.customization&&Object.keys(o.customization).length?`<div class="preview-section"><strong>Customizations:</strong> ${formatCustom(o.customization)}</div>`:''}
+                ${o.requirements?`<div class="preview-section"><strong>Requirements:</strong> ${truncate(o.requirements,120)}</div>`:''}
+                <div class="preview-section"><strong>Ordered:</strong> ${new Date(o.created_at).toLocaleDateString()}</div>
             </div>
         </div>`;
     }).join('');
+    
+    // Start timers
+    orders.forEach(o=>{if((o.status==='pending'||o.status==='payment_received')&&o.total_paid<o.price){const d=new Date(o.created_at).getTime()+(CONFIG.CANCELLATION_HOURS*60*60*1000);if(new Date().getTime()<d)startCancellationTimer(o.id,d)}});
 }
-
-// ===== 🔽 Toggle Preview =====
-function togglePreview(orderId) {
-    const preview = document.getElementById(`preview-${orderId}`);
-    const trigger = preview?.previousElementSibling;
-    if (!preview || !trigger) return;
-    const isExpanded = preview.style.display === 'block';
-    preview.style.display = isExpanded ? 'none' : 'block';
-    trigger.classList.toggle('expanded', !isExpanded);
-}
-
-// ===== 🔧 Helpers =====
-function formatCustomization(obj) {
-    if (!obj || typeof obj !== 'object') return 'None';
-    return Object.entries(obj).slice(0, 3).map(([k, v]) => 
-        `${k.replace(/_/g, ' ')}: ${typeof v === 'boolean' ? (v ? 'Yes' : 'No') : v}`
-    ).join(', ') + (Object.keys(obj).length > 3 ? '...' : '');
-}
-
-function truncate(str, len) {
-    if (!str) return '';
-    return str.length > len ? str.slice(0, len) + '...' : str;
-}
-
-function escapeHtml(text) {
-    if (!text) return '';
-    const div = document.createElement('div');
-    div.textContent = text;
-    return div.innerHTML;
-}
+function togglePreview(id){const p=document.getElementById(`preview-${id}`),t=p?.previousElementSibling;if(!p||!t)return;const e=p.style.display==='block';p.style.display=e?'none':'block';t.classList.toggle('expanded',!e)}
+function formatCustom(obj){if(!obj||typeof obj!=='object')return'None';return Object.entries(obj).slice(0,3).map(([k,v])=>`${k.replace(/_/g,' ')}: ${typeof v==='boolean'?(v?'Yes':'No'):v}`).join(', ')+(Object.keys(obj).length>3?'...':'')}
+function truncate(s,l){if(!s)return'';return s.length>l?s.slice(0,l)+'...':s}
+function escapeHtml(t){if(!t)return'';const d=document.createElement('div');d.textContent=t;return d.innerHTML}
 
 // ===== 🪟 Modal System =====
-let currentModalOrderId = null;
+let currentModalOrderId=null;
+function openModal(type,oid){currentModalOrderId=oid;const m=document.getElementById('modalOverlay'),t=document.getElementById('modalTitle'),b=document.getElementById('modalBody'),f=document.getElementById('modalFooter');const titles={timeline:'<i class="fas fa-history"></i> Order Timeline',deliverables:'<i class="fas fa-download"></i> Project Deliverables',revision:'<i class="fas fa-pencil-alt"></i> Request Revision',cancel:'<i class="fas fa-ban"></i> Cancel Order',payment:'<i class="fas fa-receipt"></i> Payment History'};t.innerHTML=titles[type]||'Details';b.innerHTML='<div class="modal-loading"><div class="spinner"></div><p>Loading...</p></div>';f.innerHTML='';m.classList.add('active');document.body.style.overflow='hidden';loadModalContent(type,oid,b,f)}
+function closeModal(){const m=document.getElementById('modalOverlay');m.classList.remove('active');document.body.style.overflow='';currentModalOrderId=null}
+document.getElementById('modalClose')?.addEventListener('click',closeModal);document.getElementById('modalOverlay')?.addEventListener('click',e=>{if(e.target.id==='modalOverlay')closeModal()});document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal()});
 
-function openModal(type, orderId) {
-    currentModalOrderId = orderId;
-    const modal = document.getElementById('modalOverlay');
-    const title = document.getElementById('modalTitle');
-    const body = document.getElementById('modalBody');
-    const footer = document.getElementById('modalFooter');
-    
-    const titles = {
-        timeline: '<i class="fas fa-history"></i> Order Timeline',
-        deliverables: '<i class="fas fa-download"></i> Project Deliverables',
-        revision: '<i class="fas fa-pencil-alt"></i> Request Revision',
-        cancel: '<i class="fas fa-ban"></i> Cancel Order',
-        payment: '<i class="fas fa-receipt"></i> Payment History'
-    };
-    
-    title.innerHTML = titles[type] || 'Details';
-    body.innerHTML = '<div class="modal-loading"><div class="spinner"></div><p>Loading...</p></div>';
-    footer.innerHTML = '';
-    modal.classList.add('active');
-    document.body.style.overflow = 'hidden';
-    loadModalContent(type, orderId, body, footer);
-}
+async function loadModalContent(type,oid,b,f){const t=Auth.getToken();try{if(type==='timeline'){const r=await fetch(`${CONFIG.API}/order/${oid}/timeline`,{headers:{'Authorization':`Bearer ${t}`}});renderTimelineModal(b,(await r.json()).data||[])}else if(type==='deliverables'){const r=await fetch(`${CONFIG.API}/order/${oid}/deliverables`,{headers:{'Authorization':`Bearer ${t}`}});renderDeliverablesModal(b,await r.json(),r.status)}else if(type==='revision')renderRevisionModal(b,oid,f);else if(type==='cancel')renderCancelModal(b,oid,f);else if(type==='payment')await renderPaymentModal(b,oid)}catch(e){b.innerHTML=`<p class="modal-error"><i class="fas fa-exclamation-triangle"></i> ${e.message}</p>`}}
 
-function closeModal() {
-    const modal = document.getElementById('modalOverlay');
-    modal.classList.remove('active');
-    document.body.style.overflow = '';
-    currentModalOrderId = null;
-}
+function renderTimelineModal(c,tl){if(!tl?.length){c.innerHTML='<p style="text-align:center;color:var(--text-muted);padding:1rem;">No timeline updates yet.</p>';return}c.innerHTML=`<div class="timeline-vertical">${tl.map(i=>`<div class="timeline-item"><div class="timeline-dot"></div><div class="timeline-content"><div class="timeline-status">${i.status?.replace(/_/g,' ').toUpperCase()||'UPDATE'}</div><div class="timeline-message">${escapeHtml(i.message||'Status updated')}</div><div class="timeline-time">${new Date(i.created_at).toLocaleString()}</div></div></div>`).join('')}</div>`}
 
-document.getElementById('modalClose')?.addEventListener('click', closeModal);
-document.getElementById('modalOverlay')?.addEventListener('click', (e) => {
-    if (e.target.id === 'modalOverlay') closeModal();
-});
-document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') closeModal();
-});
+function renderDeliverablesModal(c,r,st){if(!r?.success){c.innerHTML=`<div class="access-denied"><i class="fas fa-lock"></i><p>${st===403?'🔒 Complete balance payment to access deliverables.':r?.error||'Unable to load'}</p></div>`;return}const d=r.data;let h='';if(d.live_url)h+=`<a href="${d.live_url}" target="_blank" class="deliverable-link"><i class="fas fa-globe"></i> 🌐 Live Demo</a>`;if(d.github_repo&&d.has_full_access)h+=`<a href="${d.github_repo}" target="_blank" class="deliverable-link"><i class="fab fa-github"></i> 📦 GitHub Repository</a>`;if(d.source_code_url&&d.has_full_access)h+=`<a href="${d.source_code_url}" download class="deliverable-link"><i class="fas fa-code"></i> 💾 Source Code</a>`;if(d.documentation_url&&d.has_full_access)h+=`<a href="${d.documentation_url}" target="_blank" class="deliverable-link"><i class="fas fa-book"></i> 📚 Documentation</a>`;if(d.deliverables?.length)d.deliverables.forEach(doc=>{if(doc.is_preview||d.has_full_access)h+=`<a href="${doc.file_url}" download class="deliverable-link"><i class="fas fa-file"></i> 📄 ${escapeHtml(doc.title)}</a>`});if(d.delivery_notes)h+=`<div class="delivery-notes"><strong>📝 Delivery Notes:</strong>${escapeHtml(d.delivery_notes)}</div>`;c.innerHTML=h||'<p style="text-align:center;color:var(--text-muted);padding:1rem;">📭 No deliverables available yet.</p>'}
 
-// ===== 📦 Load Modal Content =====
-async function loadModalContent(type, orderId, body, footer) {
-    const token = Auth.getToken();
-    const order = allOrders.find(o => o.id === orderId);
-    
-    try {
-        if (type === 'timeline') {
-            const res = await fetch(`${CONFIG.API}/order/${orderId}/timeline`, {
-                headers: { 'Authorization': `Bearer ${token}` }
-            });
-            const data = await res.json();
-            renderTimelineModal(body, data.data || []);
-            
-        } else if (type === 'deliverables') {
-            const res = await fetch(`${CONFIG.API}/order/${orderId}/deliverables`, {
-                headers: { 'Authorization': `Bearer ${token}` }
-            });
-            const result = await res.json();
-            renderDeliverablesModal(body, result, res.status);
-            
-        } else if (type === 'revision') {
-            renderRevisionModal(body, orderId, footer);
-            
-        } else if (type === 'cancel') {
-            renderCancelModal(body, orderId, footer, order);
-            
-        } else if (type === 'payment') {
-            await renderPaymentModal(body, orderId);
-        }
-        
-    } catch (error) {
-        body.innerHTML = `<p class="modal-error"><i class="fas fa-exclamation-triangle"></i> ${error.message}</p>`;
-    }
-}
+function renderRevisionModal(c,oid,f){c.innerHTML=`<p style="margin-bottom:1rem;color:var(--text-secondary)">Describe the changes you'd like:</p><textarea id="revisionInput" rows="5" placeholder="e.g., Change the button color to blue..." style="width:100%;padding:0.8rem;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-md);color:var(--text-primary);font-family:inherit;font-size:0.9rem;resize:vertical;"></textarea>`;f.innerHTML=`<button class="btn-action" onclick="closeModal()">Cancel</button><button class="btn-action btn-pay" onclick="submitRevision(${oid})">Send Request</button>`;setTimeout(()=>document.getElementById('revisionInput')?.focus(),100)}
+async function submitRevision(oid){const i=document.getElementById('revisionInput'),d=i?.value?.trim();if(!d){showToast('Please describe the changes','warning');return}const t=Auth.getToken(),btn=event?.target;if(btn){btn.disabled=true;btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> Sending...'}try{const r=await fetch(`${CONFIG.API}/conversation/order_${oid}/send`,{method:'POST',headers:{'Content-Type':'application/json','Authorization':`Bearer ${t}`},body:JSON.stringify({message:`🔁 REVISION REQUEST:\n\n${d}\n\nPlease review.`})});if(!r.ok)throw new Error('Failed');showToast('✅ Revision request sent!');closeModal();openChat(oid)}catch(e){showToast(e.message,'error');if(btn){btn.disabled=false;btn.innerHTML='Send Request'}}}
 
-// ===== 🕐 Timeline Modal =====
-function renderTimelineModal(container, timeline) {
-    if (!timeline?.length) {
-        container.innerHTML = '<p style="text-align:center;color:var(--text-muted);padding:1rem;">No timeline updates yet.</p>';
-        return;
-    }
-    container.innerHTML = `
-        <div class="timeline-vertical">
-            ${timeline.map(item => `
-            <div class="timeline-item">
-                <div class="timeline-dot"></div>
-                <div class="timeline-content">
-                    <div class="timeline-status">${item.status?.replace(/_/g, ' ').toUpperCase() || 'UPDATE'}</div>
-                    <div class="timeline-message">${escapeHtml(item.message || 'Status updated')}</div>
-                    <div class="timeline-time">${new Date(item.created_at).toLocaleString()}</div>
-                </div>
-            </div>
-            `).join('')}
-        </div>
-    `;
-}
+// ===== ❌ Cancel Modal (UPDATED WITH REFUND INFO) =====
+function renderCancelModal(c,oid,f){const o=allOrders.find(x=>x.id===oid);if(!o)return;const paid=o.total_paid||o.advance_paid||0,cr=new Date(o.created_at).getTime(),dl=cr+(CONFIG.CANCELLATION_HOURS*60*60*1000),inW=new Date().getTime()<dl;c.innerHTML=`<div style="margin-bottom:1.5rem"><div style="background:rgba(245,158,11,0.1);border:1px solid var(--warning);border-radius:var(--radius-md);padding:1rem;margin-bottom:1rem"><strong style="color:var(--warning)"><i class="fas fa-exclamation-triangle"></i> Refund Policy</strong><p style="margin:0.5rem 0 0;font-size:0.85rem;color:var(--text-secondary)">${inW?`✅ You're within the 48h window. Full refund of <strong>₹${paid.toLocaleString()}</strong> will be processed.`:`❌ Cancellation window expired. No refund will be processed if you cancel now.`}</p></div><p style="color:var(--text-secondary);margin-bottom:1rem">Please tell us why you want to cancel:</p><textarea id="cancelInput" rows="4" placeholder="Reason for cancellation..." style="width:100%;padding:0.8rem;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-md);color:var(--text-primary);font-family:inherit;font-size:0.9rem;resize:vertical;"></textarea></div>${!inW?`<div style="background:rgba(239,68,68,0.1);border:1px solid var(--error);border-radius:var(--radius-md);padding:1rem;margin-bottom:1rem"><strong style="color:var(--error)"><i class="fas fa-ban"></i> Warning</strong><p style="margin:0.5rem 0 0;font-size:0.85rem;color:var(--text-secondary)">Since the 48h window has passed, cancelling will <strong>not</strong> result in any refund. Your payment of ₹${paid.toLocaleString()} will be retained.</p></div>`:''}`;f.innerHTML=`<button class="btn-action" onclick="closeModal()">Keep Order</button><button class="btn-action btn-cancel" onclick="submitCancel(${oid})">${inW?'Confirm Cancel & Refund':'Confirm Cancel (No Refund)'}</button>`;setTimeout(()=>document.getElementById('cancelInput')?.focus(),100)}
+async function submitCancel(oid){const i=document.getElementById('cancelInput'),r=i?.value?.trim();if(!r){showToast('Please provide a reason','warning');return}const t=Auth.getToken(),btn=event?.target;if(btn){btn.disabled=true;btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> Processing...'}try{const res=await fetch(`${CONFIG.API}/order/${oid}/cancel`,{method:'POST',headers:{'Content-Type':'application/json','Authorization':`Bearer ${t}`},body:JSON.stringify({reason:r})});const d=await res.json();if(!res.ok)throw new Error(d.error||'Cancellation failed');showToast('✅ Cancellation requested! Admin will review within 24h.');closeModal();loadOrders()}catch(e){showToast(e.message,'error');if(btn){btn.disabled=false;btn.innerHTML='Confirm Cancel'}}}
 
-// ===== 📁 Deliverables Modal =====
-function renderDeliverablesModal(container, result, status) {
-    if (!result?.success) {
-        container.innerHTML = `
-            <div class="access-denied">
-                <i class="fas fa-lock"></i>
-                <p>${status === 403 ? '🔒 Complete balance payment to access deliverables.' : result?.error || 'Unable to load'}</p>
-            </div>
-        `;
-        return;
-    }
-    const data = result.data;
-    let html = '';
-    if (data.live_url) {
-        html += `<a href="${data.live_url}" target="_blank" class="deliverable-link"><i class="fas fa-globe"></i> 🌐 Live Demo</a>`;
-    }
-    if (data.github_repo && data.has_full_access) {
-        html += `<a href="${data.github_repo}" target="_blank" class="deliverable-link"><i class="fab fa-github"></i> 📦 GitHub Repository</a>`;
-    }
-    if (data.source_code_url && data.has_full_access) {
-        html += `<a href="${data.source_code_url}" download class="deliverable-link"><i class="fas fa-code"></i> 💾 Source Code</a>`;
-    }
-    if (data.documentation_url && data.has_full_access) {
-        html += `<a href="${data.documentation_url}" target="_blank" class="deliverable-link"><i class="fas fa-book"></i> 📚 Documentation</a>`;
-    }
-    if (data.deliverables?.length) {
-        data.deliverables.forEach(doc => {
-            if (doc.is_preview || data.has_full_access) {
-                html += `<a href="${doc.file_url}" download class="deliverable-link"><i class="fas fa-file"></i> 📄 ${escapeHtml(doc.title)}</a>`;
-            }
-        });
-    }
-    if (data.delivery_notes) {
-        html += `<div class="delivery-notes"><strong>📝 Delivery Notes:</strong>${escapeHtml(data.delivery_notes)}</div>`;
-    }
-    container.innerHTML = html || '<p style="text-align:center;color:var(--text-muted);padding:1rem;">📭 No deliverables available yet.</p>';
-}
-
-// ===== ✏️ Revision Modal =====
-function renderRevisionModal(container, orderId, footer) {
-    container.innerHTML = `
-        <p style="margin-bottom:1rem;color:var(--text-secondary);">Describe the changes you'd like:</p>
-        <textarea id="revisionInput" rows="5" placeholder="e.g., Change the button color to blue, add a contact form..." 
-            style="width:100%;padding:0.8rem;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-md);color:var(--text-primary);font-family:inherit;font-size:0.9rem;resize:vertical;"></textarea>
-    `;
-    footer.innerHTML = `
-        <button class="btn-action" onclick="closeModal()">Cancel</button>
-        <button class="btn-action btn-pay" onclick="submitRevision(${orderId})">Send Request</button>
-    `;
-    setTimeout(() => document.getElementById('revisionInput')?.focus(), 100);
-}
-
-async function submitRevision(orderId) {
-    const input = document.getElementById('revisionInput');
-    const details = input?.value?.trim();
-    if (!details) {
-        showToast('Please describe the changes you want', 'warning');
-        return;
-    }
-    const token = Auth.getToken();
-    const btn = event?.target;
-    if (btn) {
-        btn.disabled = true;
-        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
-    }
-    try {
-        const res = await fetch(`${CONFIG.API}/conversation/order_${orderId}/send`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
-            },
-            body: JSON.stringify({
-                message: `🔁 REVISION REQUEST:\n\n${details}\n\nPlease review and let me know when changes are done.`
-            })
-        });
-        if (!res.ok) throw new Error('Failed to send request');
-        showToast('✅ Revision request sent! Admin will review shortly.');
-        closeModal();
-        openChat(orderId);
-    } catch (error) {
-        showToast(error.message, 'error');
-        if (btn) {
-            btn.disabled = false;
-            btn.innerHTML = 'Send Request';
-        }
-    }
-}
-
-// ===== ❌ Cancel Modal with 48-hour policy =====
-function renderCancelModal(container, orderId, footer, order) {
-    const hoursSince = calculateHoursSince(order?.created_at);
-    const isEligible = hoursSince <= 48;
-    const remainingTime = getRemainingTime(hoursSince);
-    
-    container.innerHTML = `
-        ${!isEligible ? `
-        <div class="cancel-info-card">
-            <div class="title"><i class="fas fa-clock"></i> Cancellation Policy</div>
-            <div>Order placed: ${new Date(order?.created_at).toLocaleString()}</div>
-            <div class="not-eligible"><i class="fas fa-times-circle"></i> 48-hour window has passed (${Math.floor(hoursSince)} hours ago)</div>
-            <div class="warning"><i class="fas fa-exclamation-triangle"></i> No refund will be issued for this cancellation.</div>
-        </div>
-        ` : `
-        <div class="cancel-info-card">
-            <div class="title"><i class="fas fa-clock"></i> Cancellation Policy</div>
-            <div>Order placed: ${new Date(order?.created_at).toLocaleString()}</div>
-            <div class="eligible"><i class="fas fa-check-circle"></i> Eligible for full refund (${remainingTime} remaining)</div>
-            <div class="warning"><i class="fas fa-info-circle"></i> Full advance amount will be refunded to your original payment method.</div>
-        </div>
-        `}
-        <p style="margin-bottom:1rem;color:var(--text-secondary);">Please tell us why you want to cancel:</p>
-        <textarea id="cancelInput" rows="4" placeholder="Reason for cancellation..." 
-            style="width:100%;padding:0.8rem;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-md);color:var(--text-primary);font-family:inherit;font-size:0.9rem;resize:vertical;"></textarea>
-    `;
-    footer.innerHTML = `
-        <button class="btn-action" onclick="closeModal()">Keep Order</button>
-        <button class="btn-action btn-cancel" onclick="submitCancel(${orderId}, ${isEligible})">Confirm Cancel</button>
-    `;
-    setTimeout(() => document.getElementById('cancelInput')?.focus(), 100);
-}
-
-async function submitCancel(orderId, isEligibleForRefund) {
-    const input = document.getElementById('cancelInput');
-    const reason = input?.value?.trim();
-    if (!reason) {
-        showToast('Please provide a reason for cancellation', 'warning');
-        return;
-    }
-    
-    let confirmMsg = isEligibleForRefund 
-        ? '⚠️ You will receive a FULL refund. Are you sure you want to cancel this order?'
-        : '⚠️ You will NOT receive any refund (48-hour policy). Are you sure you want to cancel?';
-    
-    if (!confirm(confirmMsg)) return;
-    
-    const token = Auth.getToken();
-    const btn = event?.target;
-    if (btn) {
-        btn.disabled = true;
-        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
-    }
-    
-    try {
-        const res = await fetch(`${CONFIG.API}/order/${orderId}/cancel`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
-            },
-            body: JSON.stringify({ reason })
-        });
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.error || 'Cancellation failed');
-        
-        showToast(isEligibleForRefund 
-            ? '✅ Cancellation requested! Refund will be processed within 48 hours.' 
-            : '✅ Order cancelled. No refund will be issued as per policy.');
-        closeModal();
-        loadOrders();
-    } catch (error) {
-        showToast(error.message, 'error');
-        if (btn) {
-            btn.disabled = false;
-            btn.innerHTML = 'Confirm Cancel';
-        }
-    }
-}
-
-// ===== 💳 Payment History Modal with Refund Status =====
-async function renderPaymentModal(container, orderId) {
-    const token = Auth.getToken();
-    
-    try {
-        const res = await fetch(`${CONFIG.API}/my-orders`, {
-            headers: { 'Authorization': `Bearer ${token}` }
-        });
-        const data = await res.json();
-        const order = data.orders?.find(o => o.id === orderId);
-        
-        if (!order) {
-            container.innerHTML = '<p class="modal-error">Order not found</p>';
-            return;
-        }
-        
-        // Check refund status
-        let refundStatus = null;
-        try {
-            const refundRes = await fetch(`${CONFIG.API}/order/${orderId}/refund-status`, {
-                headers: { 'Authorization': `Bearer ${token}` }
-            });
-            if (refundRes.ok) {
-                const refundData = await refundRes.json();
-                refundStatus = refundData;
-            }
-        } catch(e) { console.log('Refund status check failed'); }
-        
-        const total = order.price || 0;
-        const advancePaid = order.advance_paid || 0;
-        const balancePaid = order.balance_paid || 0;
-        const totalPaid = order.total_paid || advancePaid;
-        const due = Math.max(0, total - totalPaid);
-        const paidPercent = total > 0 ? Math.round((totalPaid / total) * 100) : 0;
-        
-        let refundHtml = '';
-        if (refundStatus && refundStatus.status !== 'no_refund_requested') {
-            refundHtml = `
-            <div class="refund-status-card">
-                <h4><i class="fas fa-undo-alt"></i> Refund Status</h4>
-                <div class="refund-status-row">
-                    <span class="refund-status-label">Status</span>
-                    <span class="refund-status-value ${refundStatus.status}">${refundStatus.status?.toUpperCase()}</span>
-                </div>
-                <div class="refund-status-row">
-                    <span class="refund-status-label">Amount</span>
-                    <span class="refund-status-value">${formatCurrency(refundStatus.amount)}</span>
-                </div>
-                ${refundStatus.processed_at ? `
-                <div class="refund-status-row">
-                    <span class="refund-status-label">Processed On</span>
-                    <span class="refund-status-value">${new Date(refundStatus.processed_at).toLocaleString()}</span>
-                </div>
-                ` : ''}
-                ${refundStatus.expected_days ? `
-                <div class="refund-status-row">
-                    <span class="refund-status-label">Expected Timeline</span>
-                    <span class="refund-status-value">${refundStatus.expected_days}</span>
-                </div>
-                ` : ''}
-            </div>
-            `;
-        }
-        
-        container.innerHTML = `
-            ${refundHtml}
-            <div class="payment-summary-grid">
-                <div class="payment-stat-card"><div class="payment-stat-label">Total Amount</div><div class="payment-stat-value">${formatCurrency(total)}</div></div>
-                <div class="payment-stat-card highlight"><div class="payment-stat-label">Total Paid</div><div class="payment-stat-value green">${formatCurrency(totalPaid)}</div></div>
-                <div class="payment-stat-card"><div class="payment-stat-label">Advance (15%)</div><div class="payment-stat-value orange">${formatCurrency(advancePaid)}</div></div>
-                <div class="payment-stat-card ${due > 0 ? 'warning' : 'highlight'}">
-                    <div class="payment-stat-label">${due > 0 ? 'Balance Due' : 'Balance Paid'}</div>
-                    <div class="payment-stat-value ${due > 0 ? 'orange' : 'green'}">${due > 0 ? formatCurrency(due) : '0'}</div>
-                </div>
-            </div>
-            <div style="margin-bottom:1.5rem;">
-                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.8rem;">
-                    <strong style="color:var(--text-primary);">Payment Progress</strong>
-                    <span style="color:var(--accent);font-weight:600;">${paidPercent}%</span>
-                </div>
-                <div style="height:8px;background:var(--surface);border-radius:var(--radius-full);overflow:hidden;">
-                    <div style="height:100%;width:${paidPercent}%;background:var(--gradient-accent);border-radius:var(--radius-full);transition:width 0.5s;"></div>
-                </div>
-            </div>
-            <div class="payment-timeline">
-                <strong style="display:block;margin-bottom:0.8rem;color:var(--text-primary);"><i class="fas fa-clock"></i> Payment Timeline</strong>
-                ${order.advance_paid_at ? `
-                <div class="payment-timeline-item advance">
-                    <div class="payment-timeline-icon advance"><i class="fas fa-arrow-down"></i></div>
-                    <div class="payment-timeline-content">
-                        <div class="payment-timeline-title">Advance Payment</div>
-                        <div class="payment-timeline-detail">${formatCurrency(advancePaid)} • ${new Date(order.advance_paid_at).toLocaleString()}</div>
-                        ${order.advance_payment_id ? `<div class="payment-timeline-id">TXN: ${order.advance_payment_id}</div>` : ''}
-                    </div>
-                </div>` : `<div class="payment-timeline-item pending"><div class="payment-timeline-icon pending"><i class="fas fa-clock"></i></div><div class="payment-timeline-content"><div class="payment-timeline-title">Advance Payment</div><div class="payment-timeline-detail">Pending</div></div></div>`}
-                ${order.balance_paid_at ? `
-                <div class="payment-timeline-item balance">
-                    <div class="payment-timeline-icon balance"><i class="fas fa-check"></i></div>
-                    <div class="payment-timeline-content">
-                        <div class="payment-timeline-title">Balance Payment</div>
-                        <div class="payment-timeline-detail">${formatCurrency(balancePaid)} • ${new Date(order.balance_paid_at).toLocaleString()}</div>
-                        ${order.balance_payment_id ? `<div class="payment-timeline-id">TXN: ${order.balance_payment_id}</div>` : ''}
-                    </div>
-                </div>` : due > 0 ? `<div class="payment-timeline-item pending"><div class="payment-timeline-icon pending"><i class="fas fa-clock"></i></div><div class="payment-timeline-content"><div class="payment-timeline-title">Balance Payment</div><div class="payment-timeline-detail">${formatCurrency(due)} Due</div></div></div>` : `<div class="payment-timeline-item balance"><div class="payment-timeline-icon balance"><i class="fas fa-check"></i></div><div class="payment-timeline-content"><div class="payment-timeline-title">Balance Payment</div><div class="payment-timeline-detail">Fully Paid</div></div></div>`}
-            </div>`;
-        
-    } catch (error) {
-        console.error('Payment modal error:', error);
-        container.innerHTML = `<div class="modal-error"><i class="fas fa-exclamation-triangle"></i> <p>Failed to load payment details</p><p style="font-size:0.8rem;margin-top:0.5rem;">${error.message}</p></div>`;
-    }
-}
+// ===== 💳 Payment History Modal (UPDATED WITH REFUND) =====
+async function renderPaymentModal(c,oid){const t=Auth.getToken();try{const res=await fetch(`${CONFIG.API}/my-orders`,{headers:{'Authorization':`Bearer ${t}`}});const o=(await res.json()).orders?.find(x=>x.id===oid);if(!o){c.innerHTML='<p class="modal-error">Order not found</p>';return}const total=o.price||0,adv=o.advance_paid||0,bal=o.balance_paid||0,paid=o.total_paid||adv,due=Math.max(0,total-paid),pct=total>0?Math.round((paid/total)*100):0,c.innerHTML=`<div class="payment-summary-grid"><div class="payment-stat-card"><div class="payment-stat-label">Total Amount</div><div class="payment-stat-value">₹${total.toLocaleString()}</div></div><div class="payment-stat-card highlight"><div class="payment-stat-label">Total Paid</div><div class="payment-stat-value green">₹${paid.toLocaleString()}</div></div><div class="payment-stat-card"><div class="payment-stat-label">Advance (15%)</div><div class="payment-stat-value orange">₹${adv.toLocaleString()}</div></div><div class="payment-stat-card ${due>0?'warning':'highlight'}"><div class="payment-stat-label">${due>0?'Balance Due':'Balance Paid'}</div><div class="payment-stat-value ${due>0?'orange':'green'}">₹${due>0?due.toLocaleString():'0'}</div></div></div><div style="margin-bottom:1.5rem"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.8rem"><strong style="color:var(--text-primary)">Payment Progress</strong><span style="color:var(--accent);font-weight:600">${pct}%</span></div><div style="height:8px;background:var(--surface);border-radius:var(--radius-full);overflow:hidden"><div style="height:100%;width:${pct}%;background:var(--gradient-accent);border-radius:var(--radius-full);transition:width 0.5s"></div></div></div><div class="payment-timeline"><strong style="display:block;margin-bottom:0.8rem;color:var(--text-primary)"><i class="fas fa-clock"></i> Payment Timeline</strong>${o.advance_paid_at?`<div class="payment-timeline-item advance"><div class="payment-timeline-icon advance"><i class="fas fa-arrow-down"></i></div><div class="payment-timeline-content"><div class="payment-timeline-title">Advance Payment</div><div class="payment-timeline-detail">₹${adv.toLocaleString()} • ${new Date(o.advance_paid_at).toLocaleString()}</div>${o.advance_payment_id?`<div class="payment-timeline-id">TXN: ${o.advance_payment_id}</div>`:''}</div></div>`:`<div class="payment-timeline-item pending"><div class="payment-timeline-icon pending"><i class="fas fa-clock"></i></div><div class="payment-timeline-content"><div class="payment-timeline-title">Advance Payment</div><div class="payment-timeline-detail">Pending</div></div></div>`}${o.balance_paid_at?`<div class="payment-timeline-item balance"><div class="payment-timeline-icon balance"><i class="fas fa-check"></i></div><div class="payment-timeline-content"><div class="payment-timeline-title">Balance Payment</div><div class="payment-timeline-detail">₹${bal.toLocaleString()} • ${new Date(o.balance_paid_at).toLocaleString()}</div>${o.balance_payment_id?`<div class="payment-timeline-id">TXN: ${o.balance_payment_id}</div>`:''}</div></div>`:due>0?`<div class="payment-timeline-item pending"><div class="payment-timeline-icon pending"><i class="fas fa-clock"></i></div><div class="payment-timeline-content"><div class="payment-timeline-title">Balance Payment</div><div class="payment-timeline-detail">₹${due.toLocaleString()} Due</div></div></div>`:`<div class="payment-timeline-item balance"><div class="payment-timeline-icon balance"><i class="fas fa-check"></i></div><div class="payment-timeline-content"><div class="payment-timeline-title">Balance Payment</div><div class="payment-timeline-detail">Not Required (Fully Paid)</div></div></div>`}${o.refund_amount?`<div class="payment-timeline-item refund"><div class="payment-timeline-icon refund"><i class="fas fa-undo"></i></div><div class="payment-timeline-content"><div class="payment-timeline-title">Refund ${o.refund_status?`(${o.refund_status})`:''}</div><div class="payment-timeline-detail">₹${o.refund_amount.toLocaleString()} • ${o.refund_processed_at?new Date(o.refund_processed_at).toLocaleString():'Pending'}</div>${o.refund_reason?`<div style="font-size:0.75rem;margin-top:0.3rem;color:var(--text-muted)">Reason: ${escapeHtml(o.refund_reason)}</div>`:''}</div></div>`:''}</div>${o.payment_history&&o.payment_history.length>0?`<div style="margin-top:1.5rem"><strong style="display:block;margin-bottom:0.8rem;color:var(--text-primary)"><i class="fas fa-list"></i> All Transactions</strong><div style="max-height:200px;overflow-y:auto">${o.payment_history.map(tx=>`<div style="display:flex;justify-content:space-between;align-items:center;padding:0.6rem 0.8rem;background:var(--surface);border-radius:var(--radius-sm);margin-bottom:0.4rem;font-size:0.85rem"><div style="display:flex;align-items:center;gap:0.5rem"><i class="fas ${tx.type==='credit'?'fa-arrow-down':tx.type==='refund'?'fa-undo':'fa-arrow-up'}" style="color:${tx.type==='credit'?'#10b981':tx.type==='refund'?'#ef4444':'#ff6b35'}"></i><span style="color:var(--text-secondary)">${tx.type==='credit'?'Payment':tx.type==='refund'?'Refund':'Advance'}</span></div><div style="text-align:right"><div style="font-weight:600;color:${tx.type==='credit'?'#10b981':tx.type==='refund'?'#ef4444':'#ff6b35'}">${tx.type==='credit'?'+':tx.type==='refund'?'-':'+'}₹${tx.amount?.toLocaleString()}</div><div style="font-size:0.7rem;color:var(--text-muted)">${new Date(tx.created_at).toLocaleDateString()}</div></div></div>`).join('')}</div></div>`:''}`}catch(e){console.error(e);c.innerHTML=`<div class="modal-error"><i class="fas fa-exclamation-triangle"></i><p>Failed to load payment details</p><p style="font-size:0.8rem;margin-top:0.5rem">${e.message}</p></div>`}}
 
 // ===== 💰 Pay Balance =====
-async function payBalance(orderId, amount) {
-    const token = Auth.getToken();
-    if (!token) {
-        showToast('Please login to continue', 'error');
-        window.location.href = 'login.html';
-        return;
-    }
-    const btn = event?.currentTarget;
-    const originalText = btn?.innerHTML;
-    if (btn) {
-        btn.disabled = true;
-        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
-    }
-    try {
-        const ordersRes = await fetch(`${CONFIG.API}/my-orders`, {
-            headers: { 'Authorization': `Bearer ${token}` }
-        });
-        if (!ordersRes.ok) throw new Error('Failed to fetch orders');
-        const ordersData = await ordersRes.json();
-        const order = ordersData.orders?.find(o => o.id === orderId);
-        if (!order) throw new Error('Order not found');
-        if (order.status !== 'ready_for_balance' && order.status !== 'delivered') {
-            throw new Error(`Cannot pay balance: Order is "${order.status}". Wait for admin to mark as ready.`);
-        }
-        if (amount <= 0) {
-            showToast('✅ Order is already fully paid!', 'success');
-            if (btn) btn.disabled = false;
-            return;
-        }
-        const res = await fetch(`${CONFIG.API}/order/${orderId}/pay-balance`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` }
-        });
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.error || `Server error: ${res.status}`);
-        if (!data.success || !data.data) throw new Error(data.error || 'Invalid response from server');
-        const paymentData = data.data;
-        if (!paymentData.key_id || !paymentData.razorpay_order_id) throw new Error('Invalid payment configuration');
-        
-        const options = {
-            key: paymentData.key_id,
-            amount: Math.round(amount * 100),
-            currency: "INR",
-            name: "NovaStack",
-            description: `Balance Payment - Order #${orderId}`,
-            order_id: paymentData.razorpay_order_id,
-            handler: async function(response) {
-                await verifyBalancePayment(orderId, amount, response);
-            },
-            prefill: { name: Auth.getUser()?.name || '', email: Auth.getUser()?.email || '', contact: Auth.getUser()?.phone || '' },
-            theme: { color: "#ff6b35" },
-            modal: { ondismiss: function() { if (btn) { btn.disabled = false; btn.innerHTML = originalText; } showToast('Payment cancelled', 'warning'); } }
-        };
-        const rzp = new Razorpay(options);
-        rzp.on('payment.failed', function(response) {
-            showToast(`Payment failed: ${response.error.description || 'Please try again'}`, 'error');
-            if (btn) { btn.disabled = false; btn.innerHTML = originalText; }
-            fetch(`${CONFIG.API}/payment-failed`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
-                body: JSON.stringify({ order_id: orderId, razorpay_order_id: paymentData.razorpay_order_id, error: response.error.code, error_description: response.error.description })
-            }).catch(e => console.error('Failed to log error:', e));
-        });
-        rzp.open();
-    } catch (error) {
-        showToast(error.message, 'error');
-        if (btn) { btn.disabled = false; btn.innerHTML = originalText; }
-    }
-}
-
-async function verifyBalancePayment(orderId, amount, response) {
-    const token = Auth.getToken();
-    if (!token) { showToast('Session expired. Please login again.', 'error'); return; }
-    try {
-        const res = await fetch(`${CONFIG.API}/verify-balance-payment`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
-            body: JSON.stringify({ order_id: orderId, amount: amount, razorpay_order_id: response.razorpay_order_id, razorpay_payment_id: response.razorpay_payment_id, razorpay_signature: response.razorpay_signature })
-        });
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.error || 'Verification failed');
-        showToast('✅ Balance payment successful! Order completed.', 'success');
-        setTimeout(() => { loadOrders(); }, 1500);
-    } catch (error) {
-        showToast(`⚠️ Payment verification failed: ${error.message}. Please contact support.`, 'warning');
-    }
-}
+async function payBalance(oid,amt){const t=Auth.getToken();if(!t){showToast('Please login to continue','error');window.location.href='login.html';return}const btn=event?.currentTarget,orig=btn?.innerHTML;if(btn){btn.disabled=true;btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> Processing...'}try{const or=await fetch(`${CONFIG.API}/my-orders`,{headers:{'Authorization':`Bearer ${t}`}});if(!or.ok)throw new Error('Failed to fetch orders');const od=await or.json(),o=od.orders?.find(x=>x.id===oid);if(!o)throw new Error('Order not found');if(o.status!=='ready_for_balance'&&o.status!=='delivered')throw new Error(`Cannot pay balance: Order is "${o.status}". Wait for admin to mark as ready.`);if(amt<=0){showToast('✅ Order is already fully paid!','success');if(btn)btn.disabled=false;return}const r=await fetch(`${CONFIG.API}/order/${oid}/pay-balance`,{method:'POST',headers:{'Content-Type':'application/json','Authorization':`Bearer ${t}`}});const d=await r.json();if(!r.ok)throw new Error(d.error||`Server error: ${r.status}`);if(!d.success||!d.data)throw new Error(d.error||'Invalid response');const p=d.data;if(!p.key_id||!p.razorpay_order_id)throw new Error('Invalid payment config');const op={key:p.key_id,amount:Math.round(amt*100),currency:"INR",name:"NovaStack",description:`Balance Payment - Order #${oid}`,order_id:p.razorpay_order_id,handler:async(res)=>{console.log('✅ Razorpay success:',res);await verifyBalance(oid,amt,res)},prefill:{name:Auth.getUser()?.name||'',email:Auth.getUser()?.email||'',contact:Auth.getUser()?.phone||''},theme:{color:"#ff6b35"},modal:{ondismiss:()=>{console.log('Modal closed');if(btn){btn.disabled=false;btn.innerHTML=orig}showToast('Payment cancelled','warning')}}};const rzp=new Razorpay(op);rzp.on('payment.failed',function(res){console.error('❌ Razorpay failed:',res.error);showToast(`Payment failed: ${res.error.description||'Try again'}`,'error');if(btn){btn.disabled=false;btn.innerHTML=orig}fetch(`${CONFIG.API}/payment-failed`,{method:'POST',headers:{'Content-Type':'application/json','Authorization':`Bearer ${t}`},body:JSON.stringify({order_id:oid,razorpay_order_id:p.razorpay_order_id,error:res.error.code,error_description:res.error.description})}).catch(()=>{})});rzp.open()}catch(e){console.error(e);showToast(e.message,'error');if(btn){btn.disabled=false;btn.innerHTML=orig}}}
+async function verifyBalance(oid,amt,res){const t=Auth.getToken();if(!t){showToast('Session expired','error');return}try{const r=await fetch(`${CONFIG.API}/verify-balance-payment`,{method:'POST',headers:{'Content-Type':'application/json','Authorization':`Bearer ${t}`},body:JSON.stringify({order_id:oid,amount:amt,razorpay_order_id:res.razorpay_order_id,razorpay_payment_id:res.razorpay_payment_id,razorpay_signature:res.razorpay_signature})});const d=await r.json();if(!r.ok)throw new Error(d.error||'Verification failed');showToast('✅ Balance payment successful! Order completed.','success');setTimeout(()=>loadOrders(),1500)}catch(e){showToast(`⚠️ Verification failed: ${e.message}. Contact support.`,'warning')}}
 
 // ===== 💬 Chat =====
-let currentChatOrderId = null;
-let chatPollInterval = null;
-
-function openChat(orderId) {
-    currentChatOrderId = orderId;
-    const chat = document.getElementById('chatWidget');
-    const orderIdDisplay = document.getElementById('chatOrderIdDisplay');
-    orderIdDisplay.textContent = `Order`;
-    chat.classList.add('active');
-    loadChatMessages();
-    if (chatPollInterval) clearInterval(chatPollInterval);
-    chatPollInterval = setInterval(loadChatMessages, 5000);
-    setTimeout(() => document.getElementById('chatMessageInput')?.focus(), 100);
-}
-
-function closeChat() {
-    document.getElementById('chatWidget')?.classList.remove('active');
-    if (chatPollInterval) { clearInterval(chatPollInterval); chatPollInterval = null; }
-    currentChatOrderId = null;
-}
-document.getElementById('chatClose')?.addEventListener('click', closeChat);
-
-async function loadChatMessages() {
-    if (!currentChatOrderId) return;
-    const token = Auth.getToken();
-    if (!token) return;
-    try {
-        const res = await fetch(`${CONFIG.API}/conversation/order_${currentChatOrderId}/messages`, {
-            headers: { 'Authorization': `Bearer ${token}` }
-        });
-        if (res.ok) {
-            const data = await res.json();
-            renderChatMessages(data.messages || []);
-        }
-    } catch (error) { console.warn('Failed to load chat:', error.message); }
-}
-
-function renderChatMessages(messages) {
-    const container = document.getElementById('chatMessages');
-    if (!container) return;
-    if (!messages.length) {
-        container.innerHTML = '<div style="text-align:center;padding:1rem;color:var(--text-muted);">💬 Start the conversation!</div>';
-        return;
-    }
-    container.innerHTML = messages.map(msg => {
-        const isUser = msg.sender_role === 'user';
-        const time = msg.created_at ? new Date(msg.created_at).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'}) : '';
-        return `<div class="message ${isUser ? 'user' : 'admin'}">${escapeHtml(msg.message || '')}${time ? `<div class="message-time">${time}</div>` : ''}</div>`;
-    }).join('');
-    container.scrollTop = container.scrollHeight;
-}
-
-async function sendChatMessage() {
-    const input = document.getElementById('chatMessageInput');
-    const message = input?.value?.trim();
-    if (!message || !currentChatOrderId) return;
-    const token = Auth.getToken();
-    if (!token) { showToast('Please login to send messages', 'error'); return; }
-    input.value = '';
-    try {
-        const res = await fetch(`${CONFIG.API}/conversation/order_${currentChatOrderId}/send`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
-            body: JSON.stringify({ message })
-        });
-        if (!res.ok) throw new Error('Failed to send');
-        await loadChatMessages();
-    } catch (error) {
-        showToast('Failed to send message', 'error');
-        if (input) input.value = message;
-    }
-}
-document.getElementById('chatSendBtn')?.addEventListener('click', sendChatMessage);
-document.getElementById('chatMessageInput')?.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendChatMessage(); }
-});
+let currentChatOrderId=null,chatPollInterval=null;
+function openChat(oid){currentChatOrderId=oid;const c=document.getElementById('chatWidget');document.getElementById('chatOrderIdDisplay').textContent=`Order #${oid}`;c.classList.add('active');loadChatMsgs();if(chatPollInterval)clearInterval(chatPollInterval);chatPollInterval=setInterval(loadChatMsgs,5000);setTimeout(()=>document.getElementById('chatMessageInput')?.focus(),100)}
+function closeChat(){document.getElementById('chatWidget')?.classList.remove('active');if(chatPollInterval){clearInterval(chatPollInterval);chatPollInterval=null}currentChatOrderId=null}
+document.getElementById('chatClose')?.addEventListener('click',closeChat);
+async function loadChatMsgs(){if(!currentChatOrderId)return;const t=Auth.getToken();if(!t)return;try{const r=await fetch(`${CONFIG.API}/conversation/order_${currentChatOrderId}/messages`,{headers:{'Authorization':`Bearer ${t}`}});if(r.ok)renderChat((await r.json()).messages||[])}catch{}}
+function renderChat(msgs){const c=document.getElementById('chatMessages');if(!c)return;if(!msgs.length){c.innerHTML='<div style="text-align:center;padding:1rem;color:var(--text-muted)">💬 Start the conversation!</div>';return}c.innerHTML=msgs.map(m=>{const u=m.sender_role==='user',t=m.created_at?new Date(m.created_at).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}):'';return`<div class="message ${u?'user':'admin'}"><div class="message-content">${escapeHtml(m.message||'')}${t?`<div class="message-time">${t}</div>`:''}</div></div>`}).join('');c.scrollTop=c.scrollHeight}
+async function sendChatMsg(){const i=document.getElementById('chatMessageInput'),m=i?.value?.trim();if(!m||!currentChatOrderId)return;const t=Auth.getToken();if(!t){showToast('Please login','error');return}i.value='';try{const r=await fetch(`${CONFIG.API}/conversation/order_${currentChatOrderId}/send`,{method:'POST',headers:{'Content-Type':'application/json','Authorization':`Bearer ${t}`},body:JSON.stringify({message:m})});if(!r.ok)throw new Error('Failed');await loadChatMsgs()}catch(e){showToast('Failed to send','error');if(i)i.value=m}}
+document.getElementById('chatSendBtn')?.addEventListener('click',sendChatMsg);document.getElementById('chatMessageInput')?.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendChatMsg()}});
 
 // ===== 🔄 Initialize =====
-document.addEventListener('DOMContentLoaded', async () => {
-    if (Auth.isLoggedIn()) {
-        const freshUser = await Auth.fetchUser();
-        if (freshUser) { localStorage.setItem('dc_user', JSON.stringify(freshUser)); }
-        updateProfileUI(Auth.getUser());
-    }
-    await loadOrders();
-    if (Auth.isLoggedIn()) {
-        const cartItems = await Cart.fetch();
-        const badge = document.getElementById('cartBadge');
-        if (badge) { badge.textContent = cartItems.length; badge.style.display = cartItems.length > 0 ? 'flex' : 'none'; }
-    }
-    window.addEventListener('resize', () => {
-        const nav = document.getElementById('navbar');
-        const mobileMenu = document.getElementById('mobileMenu');
-        if (nav && mobileMenu) { mobileMenu.style.top = window.scrollY > 50 ? '64px' : (window.innerWidth <= 768 ? '68px' : '72px'); }
-        if (window.innerWidth > 768 && mobileMenu?.classList.contains('active')) {
-            mobileMenu.classList.remove('active');
-            menuToggle?.classList.remove('active');
-            body.classList.remove('menu-open');
-        }
-    });
-    document.addEventListener('visibilitychange', async () => {
-        if (!document.hidden && Auth.isLoggedIn()) {
-            const freshUser = await Auth.fetchUser();
-            if (freshUser) updateProfileUI(freshUser);
-        }
-    });
-});
+document.addEventListener('DOMContentLoaded',async()=>{if(Auth.isLoggedIn()){const fu=await Auth.fetchUser();if(fu)localStorage.setItem('dc_user',JSON.stringify(fu));updateProfileUI(Auth.getUser())}await loadOrders();if(Auth.isLoggedIn()){const ci=await Cart.fetch(),b=document.getElementById('cartBadge');if(b){b.textContent=ci.length;b.style.display=ci.length>0?'flex':'none'}}window.addEventListener('resize',()=>{const n=document.getElementById('navbar'),m=document.getElementById('mobileMenu');if(n&&m){m.style.top=window.scrollY>50?'64px':(window.innerWidth<=768?'68px':'72px')}if(window.innerWidth>768&&m?.classList.contains('active')){m.classList.remove('active');menuToggle?.classList.remove('active');body.classList.remove('menu-open')}});document.addEventListener('visibilitychange',async()=>{if(!document.hidden&&Auth.isLoggedIn()){const fu=await Auth.fetchUser();if(fu)updateProfileUI(fu)}});window.addEventListener('beforeunload',()=>{Object.values(cancellationTimers).forEach(t=>clearInterval(t))})});
 
-// Prevent zoom on double-tap
-let lastTouchEnd = 0;
-document.addEventListener('touchend', (e) => {
-    const now = Date.now();
-    if (now - lastTouchEnd <= 300) e.preventDefault();
-    lastTouchEnd = now;
-}, { passive: false });
+let lastTouchEnd=0;document.addEventListener('touchend',e=>{const now=Date.now();if(now-lastTouchEnd<=300)e.preventDefault();lastTouchEnd=now},{passive:false});
 </script>
 </body>
 </html>
