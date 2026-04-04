@@ -14,24 +14,15 @@
     
     <style>
         :root {
-            --bg-primary: #0a0b0f;
-            --bg-secondary: #11121a;
-            --bg-card: rgba(20, 21, 32, 0.85);
-            --surface: rgba(255, 255, 255, 0.04);
-            --surface-hover: rgba(255, 255, 255, 0.08);
-            --border: rgba(255, 255, 255, 0.08);
-            --border-hover: rgba(255, 107, 53, 0.5);
-            --text-primary: #ffffff;
-            --text-secondary: rgba(255, 255, 255, 0.75);
-            --text-muted: rgba(255, 255, 255, 0.45);
-            --accent: #ff6b35;
-            --accent-glow: rgba(255, 107, 53, 0.25);
+            --bg-primary: #0a0b0f; --bg-secondary: #11121a; --bg-card: rgba(20, 21, 32, 0.85);
+            --surface: rgba(255, 255, 255, 0.04); --surface-hover: rgba(255, 255, 255, 0.08);
+            --border: rgba(255, 255, 255, 0.08); --border-hover: rgba(255, 107, 53, 0.5);
+            --text-primary: #ffffff; --text-secondary: rgba(255, 255, 255, 0.75); --text-muted: rgba(255, 255, 255, 0.45);
+            --accent: #ff6b35; --accent-glow: rgba(255, 107, 53, 0.25);
             --gradient: linear-gradient(135deg, #ff6b35 0%, #f7c531 100%);
             --success: #10b981; --warning: #f59e0b; --error: #ef4444; --info: #3b82f6;
             --radius-sm: 8px; --radius-md: 14px; --radius-lg: 20px; --radius-full: 9999px;
-            --shadow-sm: 0 4px 12px rgba(0,0,0,0.2);
-            --shadow-md: 0 8px 24px rgba(0,0,0,0.3);
-            --shadow-lg: 0 12px 40px rgba(0,0,0,0.4);
+            --shadow-sm: 0 4px 12px rgba(0,0,0,0.2); --shadow-md: 0 8px 24px rgba(0,0,0,0.3); --shadow-lg: 0 12px 40px rgba(0,0,0,0.4);
             --trans: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
         }
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -510,47 +501,127 @@ function renderOrders(list) {
 }
 function togglePreview(id) { const p=document.getElementById(`prev-${id}`); p?.classList.toggle('show'); const i=p?.parentElement.querySelector('.toggle-preview i'); i?.classList.toggle('fa-rotate-180'); }
 
-// ===== MODALS =====
-const mod = { ov:()=>document.getElementById('modalOverlay'), t:()=>document.getElementById('modalTitle'), b:()=>document.getElementById('modalBody'), f:()=>document.getElementById('modalFooter') };
+// ===== MODALS - FIXED SYSTEM (NO "mod is not a function" ERROR) =====
 function openModal(type, oid) {
-    const titles = { timeline:'Project Timeline', deliverables:'Project Deliverables', revision:'Request Revision', cancel:'Cancel Order', payment:'Payment History' };
-    mod().classList.add('active'); mod.t().innerHTML = `<i class="fas fa-${type==='timeline'?'history':type==='deliverables'?'download':type==='revision'?'pencil-alt':type==='cancel'?'ban':'receipt'}"></i> ${titles[type]}`;
-    mod.b().innerHTML = '<div style="text-align:center;"><div class="spinner"></div></div>'; mod.f().innerHTML = '';
-    loadModal(type, oid);
+    // ✅ Direct DOM access - no function wrapper that causes errors
+    const modalOverlay = document.getElementById('modalOverlay');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalBody = document.getElementById('modalBody');
+    const modalFooter = document.getElementById('modalFooter');
+    
+    if (!modalOverlay || !modalBody) {
+        console.error('Modal elements not found');
+        return;
+    }
+    
+    const titles = { 
+        timeline:'<i class="fas fa-history"></i> Project Timeline', 
+        deliverables:'<i class="fas fa-download"></i> Project Files', 
+        revision:'<i class="fas fa-pencil-alt"></i> Request Revision', 
+        cancel:'<i class="fas fa-ban"></i> Cancel Order', 
+        payment:'<i class="fas fa-receipt"></i> Payment History' 
+    };
+    
+    modalTitle.innerHTML = titles[type] || 'Details';
+    modalBody.innerHTML = '<div style="text-align:center;"><div class="spinner"></div></div>';
+    if (modalFooter) modalFooter.innerHTML = '';
+    
+    modalOverlay.classList.add('active');
+    document.body.style.overflow = 'hidden';
+    
+    loadModalContent(type, oid, modalBody, modalFooter);
 }
-function closeModal() { mod().classList.remove('active'); }
-mod().onclick = (e) => e.target===mod().ov() && closeModal();
-document.getElementById('modalClose').onclick = closeModal;
 
-async function loadModal(type, oid) {
-    const t = Auth.token();
+function closeModal() {
+    const modalOverlay = document.getElementById('modalOverlay');
+    if (modalOverlay) {
+        modalOverlay.classList.remove('active');
+        document.body.style.overflow = '';
+    }
+}
+
+// Event listeners with null checks
+document.getElementById('modalClose')?.addEventListener('click', closeModal);
+document.getElementById('modalOverlay')?.addEventListener('click', (e) => {
+    if (e.target.id === 'modalOverlay') closeModal();
+});
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeModal();
+});
+
+async function loadModalContent(type, oid, body, footer) {
+    const token = Auth.token();
+    if (!token) return;
+    
     try {
-        if(type==='timeline') { const r=await fetch(`${CONFIG.API}/order/${oid}/timeline`, {headers:{Authorization:`Bearer ${t}`}}); renderTimeline((await r.json()).data||[]); }
-        else if(type==='deliverables') { const r=await fetch(`${CONFIG.API}/order/${oid}/deliverables`, {headers:{Authorization:`Bearer ${t}`}}); renderDeliverables(await r.json(), r.status); }
-        else if(type==='payment') await renderPayment(oid);
-        else if(type==='cancel') renderCancel(oid);
-        else if(type==='revision') renderRevision(oid);
-    } catch(e) { mod.b().innerHTML = `<div class="error-msg"><i class="fas fa-exclamation-triangle"></i> ${esc(e.message)}</div>`; }
+        if(type==='timeline') {
+            // ✅ Works with your order_timeline table schema
+            const r = await fetch(`${CONFIG.API}/order/${oid}/timeline`, { 
+                headers: { 'Authorization': `Bearer ${token}` } 
+            });
+            const data = await r.json();
+            renderTimeline(body, data.data || []);
+        }
+        else if(type==='deliverables') {
+            const r = await fetch(`${CONFIG.API}/order/${oid}/deliverables`, { 
+                headers: { 'Authorization': `Bearer ${token}` } 
+            });
+            renderDeliverables(body, await r.json(), r.status);
+        }
+        else if(type==='payment') {
+            await renderPayment(body, oid);
+        }
+        else if(type==='cancel') {
+            renderCancel(body, oid, footer);
+        }
+        else if(type==='revision') {
+            renderRevision(body, oid, footer);
+        }
+    } catch(e) {
+        if(body) body.innerHTML = `<div class="error-msg"><i class="fas fa-exclamation-triangle"></i> ${esc(e.message)}</div>`;
+    }
 }
 
-function renderTimeline(data) {
-    if(!data.length) { mod.b().innerHTML='<div class="empty-msg">No timeline updates yet.</div>'; return; }
-    mod.b().innerHTML = `<div class="timeline">${data.map(i=>`<div class="timeline-item"><div class="t-time">${fmtDate(i.created_at)}</div><div class="t-status">${i.status?.replace(/_/g,' ')}</div><div class="t-msg">${esc(i.message||'Status updated')}</div></div>`).join('')}</div>`;
+// ===== RENDER TIMELINE (Compatible with your Supabase schema) =====
+function renderTimeline(container, timelineData) {
+    if(!container) return;
+    if(!timelineData || !timelineData.length) { 
+        container.innerHTML='<div class="empty-msg">No timeline updates yet. Project is being prepared.</div>'; 
+        return; 
+    }
+    
+    // ✅ Sort by created_at ascending (oldest first)
+    const sorted = [...timelineData].sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
+    
+    container.innerHTML = `<div class="timeline">${sorted.map(item => {
+        // Format status for display
+        const statusDisplay = item.status?.replace(/_/g, ' ').toUpperCase() || 'UPDATE';
+        return `<div class="timeline-item">
+            <div class="t-time">${fmtDate(item.created_at)}</div>
+            <div class="t-status">${esc(statusDisplay)}</div>
+            <div class="t-msg">${esc(item.message || 'Status updated')}</div>
+        </div>`;
+    }).join('')}</div>`;
 }
 
-function renderDeliverables(res, status) {
-    if(!res.success) { mod.b().innerHTML=`<div class="empty-msg">${status===403?'🔒 Complete balance payment to access deliverables.':res.error||'Unable to load'}</div>`; return; }
+function renderDeliverables(container, res, status) {
+    if(!container) return;
+    if(!res?.success) { 
+        container.innerHTML=`<div class="empty-msg">${status===403?'🔒 Complete balance payment to access deliverables.':res?.error||'Unable to load'}</div>`; 
+        return; 
+    }
     const d=res.data; let h='';
     if(d.live_url) h+=`<a href="${d.live_url}" target="_blank" class="btn-action" style="margin-bottom:0.5rem;justify-content:center"><i class="fas fa-globe"></i> Live Demo</a>`;
     if(d.github_repo && d.has_full_access) h+=`<a href="${d.github_repo}" target="_blank" class="btn-action" style="margin-bottom:0.5rem;justify-content:center"><i class="fab fa-github"></i> Repository</a>`;
     if(d.source_code_url && d.has_full_access) h+=`<a href="${d.source_code_url}" target="_blank" class="btn-action" style="margin-bottom:0.5rem;justify-content:center"><i class="fas fa-code"></i> Source Code</a>`;
     if(d.deliverables?.length) d.deliverables.filter(doc=>doc.is_preview||d.has_full_access).forEach(doc=>{ h+=`<a href="${doc.file_url}" class="btn-action" style="margin-bottom:0.5rem;justify-content:center"><i class="fas fa-file"></i> ${esc(doc.title)}</a>`; });
     if(d.delivery_notes) h+=`<div style="background:var(--surface);padding:1rem;border-radius:var(--radius-md);margin-top:0.5rem;font-size:0.9rem"><strong>Notes:</strong> ${esc(d.delivery_notes)}</div>`;
-    mod.b().innerHTML = h || '<div class="empty-msg">📭 No deliverables available yet.</div>';
+    container.innerHTML = h || '<div class="empty-msg">📭 No deliverables available yet.</div>';
 }
 
-// ===== 💳 PAYMENT MODAL - FIXED REFUND DISPLAY =====
-async function renderPayment(oid) {
+// ===== 💳 PAYMENT MODAL - FIXED REFUND DISPLAY (POSITIVE AMOUNTS ONLY) =====
+async function renderPayment(container, oid) {
+    if(!container) return;
     const t = Auth.token();
     try {
         const r = await fetch(`${CONFIG.API}/my-orders`, {headers:{Authorization:`Bearer ${t}`}});
@@ -581,7 +652,7 @@ async function renderPayment(oid) {
             refundNotice = '❌ Refund request was reviewed and not approved.';
         }
         
-        mod.b().innerHTML = `
+        container.innerHTML = `
             <div class="pay-stats">
                 <div class="pay-card"><div class="pay-label">Total</div><div class="pay-val">${fmtCurr(total)}</div></div>
                 <div class="pay-card highlight"><div class="pay-label">Paid</div><div class="pay-val green">${fmtCurr(paid)}</div></div>
@@ -598,13 +669,13 @@ async function renderPayment(oid) {
                 return `<div class="txn-item"><div class="txn-left"><div class="txn-icon ${isR?'refund':tx.type}"><i class="fas fa-${isR?'undo':'arrow-down'}"></i></div><span>${label}</span></div><div class="txn-right"><div class="txn-amount" style="color:${c}">${fmtCurr(Math.abs(tx.amount))}</div><div class="txn-date">${fmtDate(tx.created_at)}</div></div></div>`;
             }).join('')}</div>` : '<div class="empty-msg">No transactions recorded yet.</div>'}
         `;
-    } catch(e) { mod.b().innerHTML = `<div class="error-msg"><i class="fas fa-exclamation-triangle"></i> ${esc(e.message)}</div>`; }
+    } catch(e) { container.innerHTML = `<div class="error-msg"><i class="fas fa-exclamation-triangle"></i> ${esc(e.message)}</div>`; }
 }
 
-function renderCancel(oid) {
+function renderCancel(container, oid, footer) {
     const o = orders.find(x=>x.id===oid); if(!o) return;
     const paid = o.total_paid||o.advance_paid||0, cr=new Date(o.created_at).getTime(), now=Date.now(), inW=now<cr+(CONFIG.CANCEL_HOURS*3600000);
-    mod.b().innerHTML = `
+    container.innerHTML = `
         <div style="background:rgba(59,130,246,0.1);padding:1rem;border-radius:var(--radius-md);margin-bottom:1rem;font-size:0.9rem;">
             <strong style="color:var(--info)"><i class="fas fa-clock"></i> Cancellation Policy</strong>
             <p style="margin-top:0.4rem;">${inW ? `✅ Within the refund window. Full refund of <strong>${fmtCurr(paid)}</strong> will be processed automatically.` : `❌ Window expired. Cancellations are reviewed based on project status. Refund eligibility cannot be guaranteed.`}</p>
@@ -612,30 +683,30 @@ function renderCancel(oid) {
         <p style="margin-bottom:0.6rem;">Reason for cancellation:</p>
         <textarea id="cancelReason" rows="3" placeholder="Briefly describe why you're cancelling..." style="width:100%;padding:0.8rem;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-md);color:var(--text-primary);font-family:inherit;resize:vertical;"></textarea>
     `;
-    mod.f().innerHTML = `<button class="btn-action" onclick="closeModal()">Keep Order</button><button class="btn-action btn-cancel" id="submitCancelBtn" onclick="submitCancel(${oid})">${inW?'Request Refund':'Request Cancellation'}</button>`;
+    if(footer) footer.innerHTML = `<button class="btn-action" onclick="closeModal()">Keep Order</button><button class="btn-action btn-cancel" id="submitCancelBtn" onclick="submitCancel(${oid})">${inW?'Request Refund':'Request Cancellation'}</button>`;
 }
 async function submitCancel(oid) {
     const reason = document.getElementById('cancelReason')?.value.trim();
     if(!reason) { toast('Please provide a reason', 'warning'); return; }
-    const btn = document.getElementById('submitCancelBtn'); btn.disabled=true; btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> Processing...';
+    const btn = document.getElementById('submitCancelBtn'); if(btn){ btn.disabled=true; btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> Processing...'; }
     try {
         const r = await fetch(`${CONFIG.API}/order/${oid}/cancel`, {method:'POST', headers:{'Content-Type':'application/json', Authorization:`Bearer ${Auth.token()}`}, body:JSON.stringify({reason})});
         const d = await r.json(); if(!r.ok) throw new Error(d.error||'Failed');
         closeModal(); await loadOrders(); toast('Request submitted successfully', 'success');
-    } catch(e) { toast(e.message, 'error'); btn.disabled=false; btn.innerHTML='Request'; }
+    } catch(e) { toast(e.message, 'error'); const btn = document.getElementById('submitCancelBtn'); if(btn){ btn.disabled=false; btn.innerHTML='Request'; } }
 }
 
-function renderRevision(oid) {
-    mod.b().innerHTML = `<p style="margin-bottom:0.6rem;">Describe the changes you need:</p><textarea id="revReason" rows="4" placeholder="Be specific about what needs to be updated..." style="width:100%;padding:0.8rem;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-md);color:var(--text-primary);font-family:inherit;resize:vertical;"></textarea>`;
-    mod.f().innerHTML = `<button class="btn-action" onclick="closeModal()">Cancel</button><button class="btn-action btn-pay" id="submitRevBtn" onclick="submitRevision(${oid})">Send Request</button>`;
+function renderRevision(container, oid, footer) {
+    container.innerHTML = `<p style="margin-bottom:0.6rem;">Describe the changes you need:</p><textarea id="revReason" rows="4" placeholder="Be specific about what needs to be updated..." style="width:100%;padding:0.8rem;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-md);color:var(--text-primary);font-family:inherit;resize:vertical;"></textarea>`;
+    if(footer) footer.innerHTML = `<button class="btn-action" onclick="closeModal()">Cancel</button><button class="btn-action btn-pay" id="submitRevBtn" onclick="submitRevision(${oid})">Send Request</button>`;
 }
 async function submitRevision(oid) {
     const d = document.getElementById('revReason')?.value.trim(); if(!d){toast('Please describe changes','warning');return;}
-    const btn = document.getElementById('submitRevBtn'); btn.disabled=true; btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> Sending...';
+    const btn = document.getElementById('submitRevBtn'); if(btn){ btn.disabled=true; btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> Sending...'; }
     try {
         await fetch(`${CONFIG.API}/conversation/order_${oid}/send`, {method:'POST', headers:{'Content-Type':'application/json', Authorization:`Bearer ${Auth.token()}`}, body:JSON.stringify({message:`🔁 REVISION REQUEST:\n\n${d}`})});
         closeModal(); startChat(oid, orders.find(x=>x.id===oid)?.service_title||'Project'); toast('Revision request sent', 'success');
-    } catch(e){toast(e.message,'error'); btn.disabled=false; btn.innerHTML='Send Request';}
+    } catch(e){toast(e.message,'error'); const btn = document.getElementById('submitRevBtn'); if(btn){ btn.disabled=false; btn.innerHTML='Send Request'; }}
 }
 
 // ===== PAY BALANCE =====
