@@ -4,10 +4,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>NovaStack Admin Panel 🛡️</title>
-<link rel="icon" type="logo/jpeg" href="logo.png">
+<link rel="icon" type="image/png" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='50' fill='%23ff6b35'/%3E%3Ctext x='50' y='67' text-anchor='middle' fill='white' font-size='50' font-weight='bold'%3ENS%3C/text%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{
@@ -186,6 +187,14 @@ tr:hover td{background:var(--bg-surface)}
 .client-detail-label{color:var(--text-muted);font-size:12px}
 .client-detail-value{font-weight:500;font-size:13px}
 
+/* Cancel Info Card */
+.cancel-info-card{background:linear-gradient(135deg,rgba(245,158,11,0.1),rgba(239,68,68,0.05));border:1px solid var(--warning);border-radius:12px;padding:12px 16px;margin-bottom:16px}
+.cancel-info-card .title{font-weight:600;margin-bottom:8px;display:flex;align-items:center;gap:8px}
+.cancel-info-card .title i{color:var(--warning)}
+.cancel-info-card .warning{color:var(--error);font-size:12px;margin-top:5px}
+.cancel-info-card .eligible{color:var(--success);font-weight:600}
+.cancel-info-card .not-eligible{color:var(--error);font-weight:600}
+
 /* Loading */
 .loading-spinner{display:inline-block;width:20px;height:20px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin 0.8s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
@@ -265,10 +274,7 @@ tr:hover td{background:var(--bg-surface)}
 <!-- Modals -->
 <div id="service-modal" class="modal-overlay">
   <div class="modal">
-    <div class="modal-header">
-      <h3 id="service-modal-title"><i class="fas fa-plus-circle"></i> Add New Service</h3>
-      <button class="close-modal" onclick="closeModal('service-modal')"><i class="fas fa-times"></i></button>
-    </div>
+    <div class="modal-header"><h3 id="service-modal-title"><i class="fas fa-plus-circle"></i> Add New Service</h3><button class="close-modal" onclick="closeModal('service-modal')"><i class="fas fa-times"></i></button></div>
     <div class="modal-body">
       <div class="form-group"><label><i class="fas fa-heading"></i> Service Title *</label><input type="text" id="service-title" placeholder="e.g., Full Stack Web Application"></div>
       <div class="form-group"><label><i class="fas fa-align-left"></i> Description</label><textarea id="service-desc" placeholder="Describe the service..."></textarea></div>
@@ -279,29 +285,20 @@ tr:hover td{background:var(--bg-surface)}
       <div class="form-group"><label><i class="fas fa-clock"></i> Delivery Days</label><input type="number" id="service-days" value="14"></div>
       <div class="form-group"><label><i class="fas fa-sync"></i> Revisions</label><input type="number" id="service-revisions" value="3"></div>
     </div>
-    <div class="modal-footer">
-      <button class="btn btn-danger" onclick="closeModal('service-modal')">Cancel</button>
-      <button class="btn btn-primary" onclick="saveService()">Save Service</button>
-    </div>
+    <div class="modal-footer"><button class="btn btn-danger" onclick="closeModal('service-modal')">Cancel</button><button class="btn btn-primary" onclick="saveService()">Save Service</button></div>
   </div>
 </div>
 
 <div id="order-modal" class="modal-overlay">
   <div class="modal" style="max-width:850px">
-    <div class="modal-header">
-      <h3><i class="fas fa-info-circle"></i> Order Details</h3>
-      <button class="close-modal" onclick="closeModal('order-modal')"><i class="fas fa-times"></i></button>
-    </div>
+    <div class="modal-header"><h3><i class="fas fa-info-circle"></i> Order Details</h3><button class="close-modal" onclick="closeModal('order-modal')"><i class="fas fa-times"></i></button></div>
     <div class="modal-body" id="order-detail-content"></div>
   </div>
 </div>
 
 <div id="delivery-modal" class="modal-overlay">
   <div class="modal">
-    <div class="modal-header">
-      <h3><i class="fas fa-box"></i> Update Deliverables</h3>
-      <button class="close-modal" onclick="closeModal('delivery-modal')"><i class="fas fa-times"></i></button>
-    </div>
+    <div class="modal-header"><h3><i class="fas fa-box"></i> Update Deliverables</h3><button class="close-modal" onclick="closeModal('delivery-modal')"><i class="fas fa-times"></i></button></div>
     <div class="modal-body">
       <div class="form-group"><label><i class="fab fa-github"></i> GitHub Repository URL</label><input type="text" id="delivery-github" placeholder="https://github.com/..."></div>
       <div class="form-group"><label><i class="fas fa-globe"></i> Live URL</label><input type="text" id="delivery-live" placeholder="https://example.com"></div>
@@ -312,28 +309,19 @@ tr:hover td{background:var(--bg-surface)}
       <div class="form-group"><label><input type="checkbox" id="delivery-full"> Full Access Ready (For fully paid clients)</label></div>
       <div class="form-group"><label><input type="checkbox" id="delivery-mark"> Mark as Delivered</label></div>
     </div>
-    <div class="modal-footer">
-      <button class="btn btn-danger" onclick="closeModal('delivery-modal')">Cancel</button>
-      <button class="btn btn-primary" onclick="submitDelivery()">Save Changes</button>
-    </div>
+    <div class="modal-footer"><button class="btn btn-danger" onclick="closeModal('delivery-modal')">Cancel</button><button class="btn btn-primary" onclick="submitDelivery()">Save Changes</button></div>
   </div>
 </div>
 
 <div id="refund-modal" class="modal-overlay">
   <div class="modal">
-    <div class="modal-header">
-      <h3><i class="fas fa-money-bill-wave"></i> Process Refund</h3>
-      <button class="close-modal" onclick="closeModal('refund-modal')"><i class="fas fa-times"></i></button>
-    </div>
+    <div class="modal-header"><h3><i class="fas fa-money-bill-wave"></i> Process Refund</h3><button class="close-modal" onclick="closeModal('refund-modal')"><i class="fas fa-times"></i></button></div>
     <div class="modal-body">
       <div class="form-group"><label><i class="fas fa-dollar-sign"></i> Refund Amount (₹)</label><input type="number" id="refund-amount" readonly style="background:rgba(255,255,255,0.05)"></div>
       <div class="form-group"><label><i class="fas fa-comment"></i> Reason for Refund</label><textarea id="refund-reason" rows="3" placeholder="Enter refund reason..."></textarea></div>
       <div class="form-group"><label><i class="fas fa-exclamation-triangle"></i> Warning</label><p style="font-size:12px;color:var(--warning)">This will refund the amount to customer's original payment method. This action cannot be undone!</p></div>
     </div>
-    <div class="modal-footer">
-      <button class="btn btn-danger" onclick="closeModal('refund-modal')">Cancel</button>
-      <button class="btn btn-primary" onclick="processRefund()">Process Refund</button>
-    </div>
+    <div class="modal-footer"><button class="btn btn-danger" onclick="closeModal('refund-modal')">Cancel</button><button class="btn btn-primary" onclick="processRefund()">Process Refund</button></div>
   </div>
 </div>
 
@@ -359,6 +347,13 @@ function formatCurrency(a){return`₹${parseFloat(a||0).toLocaleString('en-IN')}
 function formatDate(d){if(!d)return'—';return new Date(d).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'})}
 function formatDateTime(d){if(!d)return'—';return new Date(d).toLocaleString('en-IN')}
 function escapeHtml(t){if(!t)return'';const d=document.createElement('div');d.textContent=t;return d.innerHTML}
+function calculateHoursSince(dateStr){
+  if(!dateStr)return 999;
+  const created=new Date(dateStr);
+  const now=new Date();
+  const diffMs=now-created;
+  return diffMs/(1000*60*60);
+}
 
 // ==================== API CALLS ====================
 async function apiCall(method,endpoint,body=null){
@@ -368,8 +363,7 @@ async function apiCall(method,endpoint,body=null){
   if(body)opts.body=JSON.stringify(body);
   try{
     const res=await fetch(`${CONFIG.API}${endpoint}`,opts);
-    if(res.status===401){handleTokenExpired();throw new Error('Session expired - redirecting to login');}
-    if(!res.ok)throw new Error(`HTTP ${res.status}`);
+    if(res.status===401){handleTokenExpired();throw new Error('Session expired');}
     const data=await res.json();
     if(!data.success)throw new Error(data.error||'Request failed');
     return data;
@@ -405,7 +399,6 @@ function handleLogout(){
   if(chatPollInterval)clearInterval(chatPollInterval);
   document.getElementById('dashboard-container').style.display='none';
   document.getElementById('login-container').style.display='flex';
-  document.getElementById('login-email').value='';document.getElementById('login-password').value='';
   showToast('Logged out successfully','success');
 }
 function showDashboard(){
@@ -464,7 +457,7 @@ function renderOverview(){
     <div class="card"><div class="card-header"><h3><i class="fas fa-clock"></i> Recent Orders</h3><button class="btn btn-primary btn-sm" onclick="switchPage('orders')">View All →</button></div>
       <div class="table-responsive"><table><thead><tr><th>Order ID</th><th>Customer</th><th>Service</th><th>Amount</th><th>Status</th><th>Date</th><th>Actions</th></tr></thead><tbody>
       ${recent.map(o=>`<tr><td><span style="color:var(--accent)">#${o.id}</span></td><td><strong>${escapeHtml(o.user_name||'—')}</strong></td><td>${escapeHtml(o.service_title||'—')}</td><td>${formatCurrency(o.price)}</td><td><span class="badge badge-${o.status}">${o.status.replace(/_/g,' ')}</span></td><td>${formatDate(o.created_at)}</td><td><button class="btn btn-sm btn-info" onclick="viewOrderDetails(${o.id})"><i class="fas fa-eye"></i></button></td></tr>`).join('')}
-      ${recent.length===0?'<tr><td colspan="7" class="empty-row">No orders found</td></tr>':''}
+      ${recent.length===0?'<tr><td colspan="7" class="empty-row">No orders found</td>':''}
       </tbody></table></div></div>
     <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:20px">
       <div class="card"><div class="card-header"><h3><i class="fas fa-bell"></i> Pending Actions</h3></div>
@@ -488,27 +481,44 @@ function renderOrders(filter=''){
   if(filter){const s=filter.toLowerCase();list=list.filter(o=>o.id?.toString().includes(s)||o.user_name?.toLowerCase().includes(s)||o.user_email?.toLowerCase().includes(s)||o.service_title?.toLowerCase().includes(s))}
   document.getElementById('content-area').innerHTML=`
     <div class="card"><div class="card-header"><h3><i class="fas fa-list"></i> All Orders</h3><input type="text" class="search-input" placeholder="Search orders..." onkeyup="renderOrders(this.value)"></div>
-      <div class="table-responsive"><table><thead><tr><th>ID</th><th>Customer</th><th>Email</th><th>Service</th><th>Total</th><th>Paid</th><th>Due</th><th>Status</th><th>Actions</th></tr></thead><tbody>
+      <div class="table-responsive"><table><thead><tr><th>ID</th><th>Customer</th><th>Email</th><th>Service</th><th>Total</th><th>Paid</th><th>Due</th><th>Status</th><th>Cancel Eligible</th><th>Actions</th></tr></thead><tbody>
       ${list.map(o=>{
         const t=parseFloat(o.price)||0,p=parseFloat(o.total_paid||o.advance_paid||0),d=t-p;
-        return`<tr><td><span style="color:var(--accent)">#${o.id}</span></td><td><strong>${escapeHtml(o.user_name||'—')}</strong></td><td><small>${escapeHtml(o.user_email||'—')}</small></td><td>${escapeHtml(o.service_title||'—')}</td><td>${formatCurrency(t)}</td><td style="color:var(--success)">${formatCurrency(p)}</td><td style="color:var(--warning)">${formatCurrency(d)}</td><td><span class="badge badge-${o.status}">${o.status.replace(/_/g,' ')}</span></td><td>
-        <div style="display:flex;gap:5px;flex-wrap:wrap">
-        <button class="btn btn-sm btn-info" onclick="viewOrderDetails(${o.id})"><i class="fas fa-eye"></i></button>
-        <button class="btn btn-sm btn-primary" onclick="openDeliveryModal(${o.id})"><i class="fas fa-box"></i></button>
-        <button class="btn btn-sm btn-success" onclick="chatFromOrder(${o.id})"><i class="fas fa-comment"></i></button>
-        ${o.status==='payment_received'?`<button class="btn btn-sm btn-success" onclick="updateOrderStatus(${o.id},'in_progress')"><i class="fas fa-play"></i> Start</button>`:''}
-        ${o.status==='in_progress'?`<button class="btn btn-sm btn-warning" onclick="updateOrderStatus(${o.id},'ready_for_balance')"><i class="fas fa-money-bill"></i> Balance</button>`:''}
-        ${o.status==='ready_for_balance'?`<button class="btn btn-sm btn-primary" onclick="updateOrderStatus(${o.id},'completed')"><i class="fas fa-check-circle"></i> Complete</button>`:''}
-        ${o.status==='cancellation_requested'?`<button class="btn btn-sm btn-danger" onclick="openRefundModal(${o.id},${p})"><i class="fas fa-undo"></i> Refund</button>`:''}
-        </div></td></tr>`;
+        const hoursSince=calculateHoursSince(o.created_at);
+        const canCancel = (o.status === 'pending' || o.status === 'payment_received') && p < t;
+        const isEligibleForRefund = canCancel && hoursSince <= 48;
+        return`<tr>
+          <td><span style="color:var(--accent)">#${o.id}</span></td>
+          <td><strong>${escapeHtml(o.user_name||'—')}</strong></td>
+          <td><small>${escapeHtml(o.user_email||'—')}</small></td>
+          <td>${escapeHtml(o.service_title||'—')}</td>
+          <td>${formatCurrency(t)}</td>
+          <td style="color:var(--success)">${formatCurrency(p)}</td>
+          <td style="color:var(--warning)">${formatCurrency(d)}</td>
+          <td><span class="badge badge-${o.status}">${o.status.replace(/_/g,' ')}</span></td>
+          <td>${canCancel ? (isEligibleForRefund ? '<span style="color:var(--success)"><i class="fas fa-check-circle"></i> Eligible (48h)</span>' : '<span style="color:var(--error)"><i class="fas fa-times-circle"></i> Not Eligible</span>') : '<span style="color:var(--text-muted)">—</span>'}</td>
+          <td><div style="display:flex;gap:5px;flex-wrap:wrap">
+            <button class="btn btn-sm btn-info" onclick="viewOrderDetails(${o.id})"><i class="fas fa-eye"></i></button>
+            <button class="btn btn-sm btn-primary" onclick="openDeliveryModal(${o.id})"><i class="fas fa-box"></i></button>
+            <button class="btn btn-sm btn-success" onclick="chatFromOrder(${o.id})"><i class="fas fa-comment"></i></button>
+            ${o.status==='payment_received'?`<button class="btn btn-sm btn-success" onclick="updateOrderStatus(${o.id},'in_progress')"><i class="fas fa-play"></i> Start</button>`:''}
+            ${o.status==='in_progress'?`<button class="btn btn-sm btn-warning" onclick="updateOrderStatus(${o.id},'ready_for_balance')"><i class="fas fa-money-bill"></i> Balance</button>`:''}
+            ${o.status==='ready_for_balance'?`<button class="btn btn-sm btn-primary" onclick="updateOrderStatus(${o.id},'completed')"><i class="fas fa-check-circle"></i> Complete</button>`:''}
+            ${o.status==='cancellation_requested'?`<button class="btn btn-sm btn-danger" onclick="openRefundModal(${o.id},${p})"><i class="fas fa-undo"></i> Refund</button>`:''}
+          </div></td>
+        </tr>`;
       }).join('')}
-      ${list.length===0?'<tr><td colspan="9" class="empty-row">No orders found</td></tr>':''}
+      ${list.length===0?'<tr><td colspan="10" class="empty-row">No orders found</td></tr>':''}
       </tbody></table></div></div>`;
 }
+
 async function viewOrderDetails(id){
   const o=appData.orders.find(x=>x.id===id);if(!o)return;
   const t=parseFloat(o.price)||0,p=parseFloat(o.total_paid||o.advance_paid||0),pct=t>0?(p/t)*100:0;
   const u=appData.users.find(x=>x.email===o.user_email);
+  const hoursSince=calculateHoursSince(o.created_at);
+  const canCancel = (o.status === 'pending' || o.status === 'payment_received') && p < t;
+  const isEligibleForRefund = canCancel && hoursSince <= 48;
   let tl='<div class="timeline-item"><div class="loading-spinner"></div> Loading...</div>';
   try{const res=await apiCall('GET',`/order/${id}/timeline`);if(res.data?.length)tl=res.data.map(x=>`<div class="timeline-item"><div class="timeline-time">${formatDateTime(x.created_at)}</div><div class="timeline-message">${escapeHtml(x.message||x.status)}</div></div>`).join('');else tl='<div class="timeline-item">No timeline entries</div>'}catch(e){tl='<div class="timeline-item">Timeline unavailable</div>'}
   document.getElementById('order-detail-content').innerHTML=`
@@ -518,6 +528,14 @@ async function viewOrderDetails(id){
       <div class="client-detail-row"><span class="client-detail-label"><i class="fas fa-phone"></i> Phone</span><span class="client-detail-value">${u?.phone||'—'}</span></div>
       <div class="client-detail-row"><span class="client-detail-label"><i class="fas fa-calendar"></i> Joined</span><span class="client-detail-value">${u?.created_at?formatDate(u.created_at):'—'}</span></div>
     </div>
+    ${canCancel ? `<div class="cancel-info-card">
+      <div class="title"><i class="fas fa-clock"></i> Cancellation Eligibility</div>
+      <div>Order placed: ${formatDateTime(o.created_at)} (${Math.floor(hoursSince)} hours ago)</div>
+      <div class="${isEligibleForRefund ? 'eligible' : 'not-eligible'}">
+        ${isEligibleForRefund ? '<i class="fas fa-check-circle"></i> Eligible for full refund (within 48 hours)' : '<i class="fas fa-times-circle"></i> Not eligible for refund (beyond 48 hours)'}
+      </div>
+      <div class="warning"><i class="fas fa-info-circle"></i> 48-hour cancellation policy applies</div>
+    </div>` : ''}
     <div class="order-detail-section"><h4><i class="fas fa-info-circle"></i> Order Info</h4><div class="info-grid">
       <div class="info-item"><div class="label">Order ID</div><div class="value">#${o.id}</div></div>
       <div class="info-item"><div class="label">Status</div><div class="value"><span class="badge badge-${o.status}">${o.status.replace(/_/g,' ')}</span></div></div>
@@ -545,11 +563,12 @@ async function viewOrderDetails(id){
       ${o.status==='payment_received'?`<button class="btn btn-success" onclick="updateOrderStatus(${o.id},'in_progress');closeModal('order-modal')"><i class="fas fa-play"></i> Start</button>`:''}
       ${o.status==='in_progress'?`<button class="btn btn-warning" onclick="updateOrderStatus(${o.id},'ready_for_balance');closeModal('order-modal')"><i class="fas fa-money-bill"></i> Ready for Balance</button>`:''}
       ${o.status==='ready_for_balance'?`<button class="btn btn-primary" onclick="updateOrderStatus(${o.id},'completed');closeModal('order-modal')"><i class="fas fa-check-circle"></i> Mark Completed</button>`:''}
-      ${o.status==='cancellation_requested'?`<button class="btn btn-danger" onclick="openRefundModal(${o.id},${p});closeModal('order-modal')"><i class="fas fa-undo"></i> Process Refund</button>`:''}
+      ${o.status==='cancellation_requested'?`<button class="btn btn-danger" onclick="openRefundModal(${o.id},${p})"><i class="fas fa-undo"></i> Process Refund</button>`:''}
       <button class="btn btn-info" onclick="chatFromOrder(${o.id});closeModal('order-modal')"><i class="fas fa-comment"></i> Open Chat</button>
       </div></div>`;
   document.getElementById('order-modal').classList.add('open');
 }
+
 async function updateOrderStatus(id,status){
   try{await apiCall('PUT',`/admin/order/${id}/status`,{status});showToast(`Order #${id} → ${status}`,'success');await loadAllData();closeModal('order-modal')}
   catch(e){showToast('Failed: '+e.message,'error')}
@@ -604,7 +623,7 @@ function renderPaymentHistory(filter=''){
 function renderRefunds(){
   document.getElementById('content-area').innerHTML=`
     <div class="card"><div class="card-header"><h3><i class="fas fa-money-bill-wave"></i> Refund History</h3></div>
-      <div class="table-responsive"><table><thead><tr><th>Order ID</th><th>Customer</th><th>Amount</th><th>Reason</th><th>Status</th><th>Processed By</th><th>Date</th></tr></thead><tbody>
+      <div class="table-responsive"><tr><thead><tr><th>Order ID</th><th>Customer</th><th>Amount</th><th>Reason</th><th>Status</th><th>Processed By</th><th>Date</th></tr></thead><tbody>
       ${appData.refunds.map(r=>`<tr><td><span style="color:var(--accent)">#${r.order_id}</span></td><td><strong>${escapeHtml(r.user_name||'—')}</strong><br><small>${escapeHtml(r.user_email||'')}</small></td><td style="color:var(--error)">${formatCurrency(r.amount)}</td><td><small>${escapeHtml((r.reason||'').substring(0,50))}</small></td><td><span class="badge badge-${r.status==='completed'?'completed':'pending'}">${r.status}</span></td><td>${r.processed_by||'Admin'}</td><td>${formatDateTime(r.processed_at)}</td></tr>`).join('')}
       ${appData.refunds.length===0?'<tr><td colspan="7" class="empty-row">No refunds</td></tr>':''}
       </tbody></table></div></div>`;
@@ -638,16 +657,16 @@ function renderUsers(filter=''){
   const oc={},ts={};appData.orders.forEach(o=>{oc[o.user_id]=(oc[o.user_id]||0)+1;ts[o.user_id]=(ts[o.user_id]||0)+(parseFloat(o.total_paid||o.advance_paid||0))});
   document.getElementById('content-area').innerHTML=`
     <div class="card"><div class="card-header"><h3><i class="fas fa-users"></i> Registered Users</h3><input type="text" class="search-input" placeholder="Search users..." onkeyup="renderUsers(this.value)"></div>
-      <div class="table-responsive"><table><thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Verified</th><th>Orders</th><th>Spent</th><th>Joined</th><th>Actions</th></tr></thead><tbody>
+      <div class="table-responsive"><tr><thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Verified</th><th>Orders</th><th>Spent</th><th>Joined</th><th>Actions</th></tr></thead><tbody>
       ${list.map(u=>`<tr><td><strong>${escapeHtml(u.name||'—')}</strong></td><td>${escapeHtml(u.email)}</td><td>${u.phone||'—'}</td><td>${u.verified?'<span style="color:var(--success)"><i class="fas fa-check-circle"></i> Yes</span>':'<span style="color:var(--warning)"><i class="fas fa-clock"></i> No</span>'}</td><td>${oc[u.id]||0}</td><td style="color:var(--success)">${formatCurrency(ts[u.id]||0)}</td><td>${formatDate(u.created_at)}</td><td><button class="btn btn-sm btn-info" onclick="viewUserOrders(${u.id})"><i class="fas fa-shopping-cart"></i> Orders</button></td></tr>`).join('')}
-      ${list.length===0?'<tr><td colspan="8" class="empty-row">No users</td></tr>':''}
+      ${list.length===0?'<td><td colspan="8" class="empty-row">No users</td></table>':''}
       </tbody></table></div></div>`;
 }
 function viewUserOrders(uid){
   const uo=appData.orders.filter(o=>o.user_id===uid),u=appData.users.find(x=>x.id===uid);
   document.getElementById('content-area').innerHTML=`
     <div class="card"><div class="card-header"><h3><i class="fas fa-shopping-cart"></i> Orders for ${escapeHtml(u?.name||'User')}</h3><button class="btn btn-primary btn-sm" onclick="switchPage('users')">← Back</button></div>
-      <div class="table-responsive"><table><thead><tr><th>Order ID</th><th>Service</th><th>Amount</th><th>Paid</th><th>Status</th><th>Date</th><th>Actions</th></tr></thead><tbody>
+      <div class="table-responsive"></table><thead><tr><th>Order ID</th><th>Service</th><th>Amount</th><th>Paid</th><th>Status</th><th>Date</th><th>Actions</th></tr></thead><tbody>
       ${uo.map(o=>`<tr><td><span style="color:var(--accent)">#${o.id}</span></td><td>${escapeHtml(o.service_title||'—')}</td><td>${formatCurrency(o.price)}</td><td>${formatCurrency(o.total_paid||o.advance_paid||0)}</td><td><span class="badge badge-${o.status}">${o.status.replace(/_/g,' ')}</span></td><td>${formatDate(o.created_at)}</td><td><button class="btn btn-sm btn-info" onclick="viewOrderDetails(${o.id})"><i class="fas fa-eye"></i></button></td></tr>`).join('')}
       ${uo.length===0?'<tr><td colspan="7" class="empty-row">No orders</td></tr>':''}
       </tbody></table></div></div>`;
@@ -657,7 +676,7 @@ function viewUserOrders(uid){
 function renderCustomRequests(){
   document.getElementById('content-area').innerHTML=`
     <div class="card"><div class="card-header"><h3><i class="fas fa-file-signature"></i> Custom Project Requests</h3></div>
-      <div class="table-responsive"><table><thead><tr><th>Date</th><th>Name</th><th>Email</th><th>WhatsApp</th><th>Project</th><th>Budget</th><th>Status</th><th>Actions</th></tr></thead><tbody>
+      <div class="table-responsive"><tr><thead><tr><th>Date</th><th>Name</th><th>Email</th><th>WhatsApp</th><th>Project</th><th>Budget</th><th>Status</th><th>Actions</th></tr></thead><tbody>
       ${appData.customRequests.map(r=>`<tr><td>${formatDate(r.created_at)}</td><td><strong>${escapeHtml(r.name)}</strong></td><td>${escapeHtml(r.email)}</td><td>${r.whatsapp?`<a href="https://wa.me/${r.whatsapp.replace(/[^0-9]/g,'')}" target="_blank" style="background:#25D366;color:white;padding:4px 10px;border-radius:6px;text-decoration:none;font-size:11px"><i class="fab fa-whatsapp"></i> Chat</a>`:'—'}</td><td><strong>${escapeHtml(r.title)}</strong><br><small>${escapeHtml(r.project_type||'—')}</small></td><td><strong style="color:var(--success)">${r.budget||'—'}</strong></td><td><span class="badge badge-${r.status}">${r.status}</span></td><td><div style="display:flex;gap:5px"><button class="btn btn-sm btn-success" onclick="updateReqStatus(${r.id},'contacted')"><i class="fas fa-phone"></i> Contacted</button><button class="btn btn-sm btn-primary" onclick="updateReqStatus(${r.id},'completed')"><i class="fas fa-check"></i> Complete</button><button class="btn btn-sm btn-danger" onclick="deleteReq(${r.id})"><i class="fas fa-trash"></i></button></div></td></tr>`).join('')}
       ${appData.customRequests.length===0?'<tr><td colspan="8" class="empty-row">No requests</td></tr>':''}
       </tbody></table></div></div>`;
