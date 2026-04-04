@@ -619,7 +619,6 @@ function renderDeliverables(container, res, status) {
     container.innerHTML = h || '<div class="empty-msg">📭 No deliverables available yet.</div>';
 }
 
-// ===== 💳 PAYMENT MODAL - FIXED REFUND DISPLAY (POSITIVE AMOUNTS ONLY) =====
 async function renderPayment(container, oid) {
     if(!container) return;
     const t = Auth.token();
@@ -629,27 +628,27 @@ async function renderPayment(container, oid) {
         
         const total = o.price||0, paid = o.total_paid||o.advance_paid||0, due = Math.max(0,total-paid), pct = total>0?Math.round((paid/total)*100):0;
         
-        // 🔥 REFUND LOGIC - FIXED: Positive amounts, proper status labels
+        // 🔥 FIXED REFUND STATUS MAPPING
         const hasRef = o.refund_amount != null && o.refund_amount > 0;
         const refundStatus = o.refund_status || 'pending';
         const refundAmount = o.refund_amount || 0;
         
-        let refundLabel = "Refund Processing";
-        let refundColor = "var(--warning)";
-        let refundNotice = 'ℹ️ Refunds typically reflect in your account within 3-5 business days.';
+        let refundLabel = "Refund Initiated";
+        let refundColor = "var(--info)";
+        let refundNotice = '📝 Refund request received by admin.';
         
-        if (refundStatus === 'completed') {
-            refundLabel = "Refund Credited";
-            refundColor = "var(--success)";
-            refundNotice = '✅ Refund has been successfully credited to your account.';
-        } else if (refundStatus === 'approved') {
-            refundLabel = "Refund Processing";
+        if (refundStatus === 'processing') {
+            refundLabel = "Processing with Bank";
             refundColor = "var(--warning)";
-            refundNotice = '⏳ Refund initiated. Bank processing may take 3-5 days.';
-        } else if (refundStatus === 'rejected') {
-            refundLabel = "Refund Not Eligible";
+            refundNotice = '⏳ Refund initiated. Expected to reflect in 3-5 business days.';
+        } else if (refundStatus === 'completed') {
+            refundLabel = "Credited to Account";
+            refundColor = "var(--success)";
+            refundNotice = '✅ Refund successfully credited to your original payment method.';
+        } else if (refundStatus === 'failed') {
+            refundLabel = "Refund Failed";
             refundColor = "var(--error)";
-            refundNotice = '❌ Refund request was reviewed and not approved.';
+            refundNotice = '❌ Refund could not be processed. Please contact support.';
         }
         
         container.innerHTML = `
@@ -664,8 +663,7 @@ async function renderPayment(container, oid) {
             ${o.payment_history?.length ? `<div class="txn-list">${o.payment_history.map(tx=>{
                 const isR=tx.type==='refund';
                 const c = isR ? 'var(--success)' : tx.type==='advance' ? 'var(--info)' : 'var(--accent)';
-                // ✅ FIXED: All amounts positive, clear labels
-                const label = isR ? 'Refund Credited' : tx.type==='advance' ? 'Advance Paid' : 'Balance Paid';
+                const label = isR ? (refundStatus==='completed'?'Refund Credited':'Refund '+refundStatus) : tx.type==='advance'?'Advance Paid':'Balance Paid';
                 return `<div class="txn-item"><div class="txn-left"><div class="txn-icon ${isR?'refund':tx.type}"><i class="fas fa-${isR?'undo':'arrow-down'}"></i></div><span>${label}</span></div><div class="txn-right"><div class="txn-amount" style="color:${c}">${fmtCurr(Math.abs(tx.amount))}</div><div class="txn-date">${fmtDate(tx.created_at)}</div></div></div>`;
             }).join('')}</div>` : '<div class="empty-msg">No transactions recorded yet.</div>'}
         `;
