@@ -669,17 +669,32 @@ async function updateReqStatus(id,st){try{await apiCall('PUT',`/custom-request/$
 async function deleteReq(id){if(!confirm('Delete?'))return;try{await apiCall('DELETE',`/custom-request/${id}`);showToast('Deleted','success');await loadAllData()}catch(e){showToast('Failed: '+e.message,'error')}}
 
 // ==================== CHAT ====================
-async function renderChat(){
-  document.getElementById('content-area').innerHTML=`
-    <div class="chat-container">
-      <div class="conversations-list" id="conversations-list"><div style="text-align:center;padding:20px;color:var(--text-muted)">Loading...</div></div>
-      <div class="chat-area">
-        <div class="chat-header"><h4 id="chat-header-title"><i class="fas fa-comment"></i> Select conversation</h4></div>
-        <div class="chat-messages" id="chat-messages"><div style="text-align:center;padding:40px;color:var(--text-muted)">Select a conversation</div></div>
-        <div class="chat-input-area"><textarea id="chat-input" placeholder="Type message..." rows="2"></textarea><button onclick="sendChatMessage()"><i class="fas fa-paper-plane"></i> Send</button></div>
-      </div>
-    </div>`;
-  await loadConversations();startChatPolling();
+function renderChat() {
+    // Pehle check karo ki chat container exist karta hai
+    if (!document.getElementById('content-area')) return;
+    
+    document.getElementById('content-area').innerHTML = `
+        <div class="chat-container">
+            <div class="conversations-list" id="conversations-list">
+                <div style="text-align:center;padding:20px;color:var(--text-muted)">Loading...</div>
+            </div>
+            <div class="chat-area">
+                <div class="chat-header">
+                    <h4 id="chat-header-title"><i class="fas fa-comment"></i> Select conversation</h4>
+                </div>
+                <div class="chat-messages" id="chat-messages">
+                    <div style="text-align:center;padding:40px;color:var(--text-muted)">Select a conversation</div>
+                </div>
+                <div class="chat-input-area">
+                    <textarea id="chat-input" placeholder="Type message..." rows="2"></textarea>
+                    <button onclick="sendChatMessage()"><i class="fas fa-paper-plane"></i> Send</button>
+                </div>
+            </div>
+        </div>`;
+    
+    // Ab elements exist karte hain, toh load karo
+    loadConversations();
+    startChatPolling();
 }
 async function loadConversations(){
   try{const res=await apiCall('GET','/conversations');displayConversations(res.conversations||[])}catch(e){console.error(e)}
@@ -694,7 +709,31 @@ function displayConversations(list){
     <button class="delete-conv" onclick="event.stopPropagation();deleteConv('${conv.id}')"><i class="fas fa-trash"></i></button>
   </div>`).join('');
 }
-async function selectConv(id,name){currentConversation=id;document.getElementById('chat-header-title').innerHTML=`<i class="fas fa-comment"></i> Chat with ${name}`;try{const res=await apiCall('GET',`/conversation/${id}/messages`);displayMsgs(res.messages||[]);await loadConversations()}catch(e){}}
+async function selectConv(id, name) {
+    currentConversation = id;
+    
+    // 🔥 NULL CHECKS ADD KARO - Agar element nahi mila toh error nahi aayega
+    const headerTitle = document.getElementById('chat-header-title');
+    const messagesDiv = document.getElementById('chat-messages');
+    
+    if (headerTitle) {
+        headerTitle.innerHTML = `<i class="fas fa-comment"></i> Chat with ${escapeHtml(name)}`;
+    }
+    
+    try {
+        const res = await apiCall('GET', `/conversation/${id}/messages`);
+        if (messagesDiv) {
+            displayMsgs(res.messages || []);
+        }
+        // Refresh conversations list to update unread counts
+        await loadConversations();
+    } catch (e) {
+        console.error('Error loading messages:', e);
+        if (messagesDiv) {
+            messagesDiv.innerHTML = '<div style="text-align:center;padding:40px;color:var(--error)">Failed to load messages</div>';
+        }
+    }
+}
 function displayMsgs(list){const c=document.getElementById('chat-messages');if(!c)return;c.innerHTML=list.length?list.map(m=>`<div class="message ${m.sender_role==='admin'?'admin':'user'}"><div class="message-content">${escapeHtml(m.message)}<span class="message-time">${formatDateTime(m.created_at)}</span></div></div>`).join(''):'<div style="text-align:center;padding:40px;color:var(--text-muted)">No messages</div>';c.scrollTop=c.scrollHeight}
 async function sendChatMessage(){if(!currentConversation){showToast('Select conversation first','error');return}const msg=document.getElementById('chat-input').value.trim();if(!msg)return;try{await apiCall('POST',`/conversation/${currentConversation}/send`,{message:msg});document.getElementById('chat-input').value='';await selectConv(currentConversation,'');showToast('Sent','success')}catch(e){showToast('Failed','error')}}
 async function deleteConv(id){if(!confirm('Delete permanently?'))return;try{await apiCall('DELETE',`/conversation/${id}`);showToast('Deleted','success');if(currentConversation===id){currentConversation=null;document.getElementById('chat-header-title').innerHTML='<i class="fas fa-comment"></i> Select conversation';document.getElementById('chat-messages').innerHTML='<div style="text-align:center;padding:40px;color:var(--text-muted)">Select a conversation</div>'}await loadConversations()}catch(e){showToast('Failed','error')}}
