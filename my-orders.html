@@ -4,10 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>My Orders - NovaStack</title>
-    
-    <!-- SEO & Meta -->
-    <meta name="description" content="Track your NovaStack orders, manage payments, and access deliverables.">
-    <meta name="keywords" content="orders, software development, NovaStack, payment, deliverables">
+  
     
     <!-- Fonts & Icons -->
     <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -15,7 +12,7 @@
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
     
     <!-- Favicon -->
-    <link rel="icon" type="image/png" href="logo.png">
+    <link rel="icon" type="logo/jpeg" href="logo.png">
     
     <style>
         /* ===== 🎨 CSS Variables ===== */
@@ -41,6 +38,10 @@
             --radius-md: 16px;
             --radius-lg: 24px;
             --radius-full: 9999px;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --error: #ef4444;
+            --info: #3b82f6;
         }
 
         /* ===== 🌟 Base Reset ===== */
@@ -358,12 +359,40 @@
             padding: 1rem;
             transition: all var(--transition-normal);
             backdrop-filter: blur(10px);
+            position: relative;
         }
         .order-card:hover {
             border-color: var(--accent);
             transform: translateY(-2px);
             box-shadow: var(--shadow-lg);
         }
+        .order-card.refund-pending {
+            border-color: var(--warning);
+            background: rgba(245, 158, 11, 0.05);
+        }
+        .order-card.refund-completed {
+            border-color: var(--success);
+            background: rgba(16, 185, 129, 0.05);
+        }
+        .order-card.refund-rejected {
+            border-color: var(--error);
+            background: rgba(239, 68, 68, 0.05);
+        }
+        
+        .refund-badge {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            padding: 0.3rem 0.8rem;
+            border-radius: var(--radius-full);
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        .refund-badge.pending { background: rgba(245,158,11,0.2); color: var(--warning); }
+        .refund-badge.approved { background: rgba(16,185,129,0.2); color: var(--success); }
+        .refund-badge.completed { background: rgba(16,185,129,0.2); color: var(--success); }
+        .refund-badge.rejected { background: rgba(239,68,68,0.2); color: var(--error); }
         
         .order-header-compact {
             display: grid;
@@ -389,6 +418,7 @@
         .status-ready_for_balance { background: rgba(255, 107, 53, 0.2); color: #ff6b35; }
         .status-completed, .status-delivered { background: rgba(16, 185, 129, 0.2); color: #10b981; }
         .status-cancelled { background: rgba(239, 68, 68, 0.2); color: #ef4444; }
+        .status-cancellation_requested { background: rgba(245, 158, 11, 0.2); color: var(--warning); }
         
         .service-mini {
             display: flex;
@@ -456,24 +486,30 @@
             color: var(--text-secondary);
             min-height: 36px;
         }
-        .btn-action:hover {
+        .btn-action:hover:not(:disabled) {
             background: var(--surface-hover);
             color: var(--text-primary);
             border-color: var(--accent);
+        }
+        .btn-action:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
         }
         .btn-action.btn-pay {
             background: var(--gradient-accent);
             color: white;
             border: none;
         }
-        .btn-action.btn-pay:hover {
+        .btn-action.btn-pay:hover:not(:disabled) {
             box-shadow: 0 4px 15px var(--accent-glow);
             transform: translateY(-1px);
         }
         .btn-action.btn-chat { border-color: #10b981; color: #10b981; }
-        .btn-action.btn-chat:hover { background: rgba(16, 185, 129, 0.15); }
+        .btn-action.btn-chat:hover:not(:disabled) { background: rgba(16, 185, 129, 0.15); }
         .btn-action.btn-revision { border-color: #f59e0b; color: #f59e0b; }
-        .btn-action.btn-revision:hover { background: rgba(245, 158, 11, 0.15); }
+        .btn-action.btn-revision:hover:not(:disabled) { background: rgba(245, 158, 11, 0.15); }
+        .btn-action.btn-cancel { border-color: #ef4444; color: #ef4444; }
+        .btn-action.btn-cancel:hover:not(:disabled) { background: rgba(239, 68, 68, 0.15); }
         
         .order-preview {
             display: flex;
@@ -499,6 +535,23 @@
         }
         .preview-section { margin-bottom: 0.4rem; }
         .preview-section strong { color: var(--text-primary); }
+        
+        .cancellation-notice {
+            background: rgba(245, 158, 11, 0.1);
+            border-left: 3px solid var(--warning);
+            padding: 0.8rem 1rem;
+            border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+            margin: 0.8rem 0;
+            font-size: 0.8rem;
+        }
+        .cancellation-notice.expired {
+            background: rgba(239, 68, 68, 0.1);
+            border-left-color: var(--error);
+        }
+        .cancellation-timer {
+            font-weight: 600;
+            color: var(--accent);
+        }
         
         /* ===== 🪟 Modal System ===== */
         .modal-overlay {
@@ -872,6 +925,10 @@
             border-left-color: #10b981;
             background: rgba(16, 185, 129, 0.1);
         }
+        .payment-timeline-item.refund {
+            border-left-color: #ef4444;
+            background: rgba(239, 68, 68, 0.1);
+        }
         .payment-timeline-item.pending {
             opacity: 0.6;
         }
@@ -886,6 +943,7 @@
         }
         .payment-timeline-icon.advance { background: #ff6b35; }
         .payment-timeline-icon.balance { background: #10b981; }
+        .payment-timeline-icon.refund { background: #ef4444; }
         .payment-timeline-icon.pending { background: var(--border); }
         .payment-timeline-icon i { color: white; font-size: 0.8rem; }
         .payment-timeline-icon.pending i { color: var(--text-muted); }
@@ -1021,6 +1079,20 @@
         <a href="services.html" class="btn-new-order"><i class="fas fa-plus"></i> New Order</a>
     </div>
     
+    <!-- Cancellation Policy Notice -->
+    <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1rem;margin-bottom:1.5rem">
+        <div style="display:flex;align-items:center;gap:0.8rem">
+            <i class="fas fa-info-circle" style="color:var(--accent);font-size:1.2rem"></i>
+            <div>
+                <strong style="color:var(--text-primary)">Cancellation & Refund Policy</strong>
+                <p style="color:var(--text-secondary);font-size:0.85rem;margin:0.3rem 0 0">
+                    Orders can be cancelled within <strong style="color:var(--accent)">48 hours</strong> of placement for a <strong>full refund</strong>. 
+                    After 48 hours, cancellations are subject to admin approval and <strong>no refund</strong> will be processed.
+                </p>
+            </div>
+        </div>
+    </div>
+    
     <div id="loading" style="display:none; text-align:center; padding:3rem;">
         <div class="spinner"></div>
         <p style="color:var(--text-muted); margin-top:1rem;">Loading your orders...</p>
@@ -1076,7 +1148,8 @@
 // ===== 🔧 CONFIG =====
 const CONFIG = {
     API: 'https://novastack-backend.onrender.com',
-    WA_NUMBER: '9015277062'
+    WA_NUMBER: '9015277062',
+    CANCELLATION_HOURS: 48 // 48-hour window for full refund
 };
 
 // ===== 🔐 Auth =====
@@ -1301,6 +1374,7 @@ document.getElementById('mobileLogoutBtn')?.addEventListener('click', logout);
 
 // ===== 📦 Load Orders =====
 let allOrders = [];
+let cancellationTimers = {};
 
 async function loadOrders() {
     const token = Auth.getToken();
@@ -1356,6 +1430,86 @@ async function loadOrders() {
     }
 }
 
+// ===== 🔽 Toggle Preview =====
+function togglePreview(orderId) {
+    const preview = document.getElementById(`preview-${orderId}`);
+    const trigger = preview?.previousElementSibling;
+    if (!preview || !trigger) return;
+    
+    const isExpanded = preview.style.display === 'block';
+    preview.style.display = isExpanded ? 'none' : 'block';
+    trigger.classList.toggle('expanded', !isExpanded);
+}
+
+// ===== 🔧 Helpers =====
+function formatCustomization(obj) {
+    if (!obj || typeof obj !== 'object') return 'None';
+    return Object.entries(obj).slice(0, 3).map(([k, v]) => 
+        `${k.replace(/_/g, ' ')}: ${typeof v === 'boolean' ? (v ? 'Yes' : 'No') : v}`
+    ).join(', ') + (Object.keys(obj).length > 3 ? '...' : '');
+}
+
+function truncate(str, len) {
+    if (!str) return '';
+    return str.length > len ? str.slice(0, len) + '...' : str;
+}
+
+function escapeHtml(text) {
+    if (!text) return '';
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
+
+// ===== ⏰ Cancellation Timer =====
+function formatTimeLeft(ms) {
+    const hours = Math.floor(ms / (1000 * 60 * 60));
+    const minutes = Math.floor((ms % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((ms % (1000 * 60)) / 1000);
+    
+    if (hours > 0) {
+        return `${hours}h ${minutes}m ${seconds}s`;
+    } else if (minutes > 0) {
+        return `${minutes}m ${seconds}s`;
+    } else {
+        return `${seconds}s`;
+    }
+}
+
+function startCancellationTimer(orderId, deadline) {
+    if (cancellationTimers[orderId]) {
+        clearInterval(cancellationTimers[orderId]);
+    }
+    
+    const updateTimer = () => {
+        const now = new Date().getTime();
+        const remaining = deadline - now;
+        const timerEl = document.getElementById(`cancel-timer-${orderId}`);
+        const cancelBtn = document.getElementById(`cancel-btn-${orderId}`);
+        
+        if (remaining <= 0) {
+            if (timerEl) {
+                timerEl.innerHTML = '<span style="color:var(--error)">Expired</span>';
+            }
+            if (cancelBtn) {
+                cancelBtn.disabled = true;
+                cancelBtn.title = 'Cancellation window expired';
+                cancelBtn.innerHTML = '<i class="fas fa-ban"></i> Cancel (Expired)';
+            }
+            clearInterval(cancellationTimers[orderId]);
+            delete cancellationTimers[orderId];
+            return;
+        }
+        
+        if (timerEl) {
+            timerEl.textContent = formatTimeLeft(remaining);
+        }
+    };
+    
+    updateTimer();
+    cancellationTimers[orderId] = setInterval(updateTimer, 1000);
+}
+
 // ===== 🗂️ Render Orders =====
 function renderOrders(orders) {
     const container = document.getElementById('orders-container');
@@ -1367,14 +1521,41 @@ function renderOrders(orders) {
         const balanceDue = Math.max(0, total - totalPaid);
         const paidPercent = total > 0 ? Math.min(100, Math.round((totalPaid / total) * 100)) : 0;
         
+        // Cancellation logic
+        const createdAt = new Date(order.created_at).getTime();
+        const now = new Date().getTime();
+        const cancellationDeadline = createdAt + (CONFIG.CANCELLATION_HOURS * 60 * 60 * 1000);
+        const isWithinWindow = now < cancellationDeadline;
+        const canCancel = (order.status === 'pending' || order.status === 'payment_received') && 
+                         totalPaid < total && 
+                         isWithinWindow && 
+                         order.status !== 'cancellation_requested';
+        
+        // Refund status
+        let refundBadge = '';
+        let cardClass = '';
+        if (order.refund_status === 'pending') {
+            refundBadge = '<span class="refund-badge pending">Refund Pending</span>';
+            cardClass = 'refund-pending';
+        } else if (order.refund_status === 'approved') {
+            refundBadge = '<span class="refund-badge approved">Refund Approved</span>';
+            cardClass = 'refund-completed';
+        } else if (order.refund_status === 'completed') {
+            refundBadge = '<span class="refund-badge completed">Refund Completed</span>';
+            cardClass = 'refund-completed';
+        } else if (order.refund_status === 'rejected') {
+            refundBadge = '<span class="refund-badge rejected">Refund Rejected</span>';
+            cardClass = 'refund-rejected';
+        }
+        
         const canPayBalance = (order.status === 'ready_for_balance' || (order.status === 'delivered' && balanceDue > 0)) && balanceDue > 0;
-        const canCancel = (order.status === 'pending' || order.status === 'payment_received') && totalPaid < total;
         const canRequestRevision = (order.status === 'delivered' || order.status === 'completed') && !order.revision_requested;
         const hasPreview = order.preview_ready && advancePaid > 0;
         const hasFullAccess = (order.full_access_ready && totalPaid >= total) || order.status === 'completed';
         
         return `
-        <div class="order-card" id="order-${order.id}">
+        <div class="order-card ${cardClass}" id="order-${order.id}">
+            ${refundBadge}
             <div class="order-header-compact">
                 <span class="order-status status-${order.status}">${order.status.replace(/_/g, ' ').toUpperCase()}</span>
                 <div class="service-mini">
@@ -1406,6 +1587,15 @@ function renderOrders(orders) {
                 <i class="fas fa-check-circle"></i> Full access unlocked
             </div>` : ''}
             
+            ${canCancel ? `
+            <div class="cancellation-notice">
+                <i class="fas fa-clock"></i> Cancel within <span class="cancellation-timer" id="cancel-timer-${order.id}">--:--:--</span> for full refund
+            </div>` : 
+            (order.status === 'pending' || order.status === 'payment_received') && totalPaid < total && !isWithinWindow ? `
+            <div class="cancellation-notice expired">
+                <i class="fas fa-exclamation-triangle"></i> Cancellation window expired. No refund available.
+            </div>` : ''}
+            
             <div class="order-actions-compact">
                 ${canPayBalance ? `
                 <button class="btn-action btn-pay" onclick="payBalance(${order.id}, ${balanceDue})">
@@ -1430,8 +1620,12 @@ function renderOrders(orders) {
                     <i class="fas fa-pencil-alt"></i> Revision
                 </button>` : ''}
                 ${canCancel ? `
-                <button class="btn-action" style="border-color:#ef4444;color:#ef4444" onclick="openModal('cancel', ${order.id})">
+                <button class="btn-action btn-cancel" id="cancel-btn-${order.id}" onclick="openModal('cancel', ${order.id})">
                     <i class="fas fa-ban"></i> Cancel
+                </button>` : 
+                (order.status === 'pending' || order.status === 'payment_received') && totalPaid < total && !isWithinWindow ? `
+                <button class="btn-action btn-cancel" disabled title="Cancellation window expired">
+                    <i class="fas fa-ban"></i> Cancel (Expired)
                 </button>` : ''}
             </div>
             
@@ -1453,37 +1647,18 @@ function renderOrders(orders) {
             </div>
         </div>`;
     }).join('');
-}
-
-// ===== 🔽 Toggle Preview =====
-function togglePreview(orderId) {
-    const preview = document.getElementById(`preview-${orderId}`);
-    const trigger = preview?.previousElementSibling;
-    if (!preview || !trigger) return;
     
-    const isExpanded = preview.style.display === 'block';
-    preview.style.display = isExpanded ? 'none' : 'block';
-    trigger.classList.toggle('expanded', !isExpanded);
-}
-
-// ===== 🔧 Helpers =====
-function formatCustomization(obj) {
-    if (!obj || typeof obj !== 'object') return 'None';
-    return Object.entries(obj).slice(0, 3).map(([k, v]) => 
-        `${k.replace(/_/g, ' ')}: ${typeof v === 'boolean' ? (v ? 'Yes' : 'No') : v}`
-    ).join(', ') + (Object.keys(obj).length > 3 ? '...' : '');
-}
-
-function truncate(str, len) {
-    if (!str) return '';
-    return str.length > len ? str.slice(0, len) + '...' : str;
-}
-
-function escapeHtml(text) {
-    if (!text) return '';
-    const div = document.createElement('div');
-    div.textContent = text;
-    return div.innerHTML;
+    // Start timers for orders within cancellation window
+    orders.forEach(order => {
+        if ((order.status === 'pending' || order.status === 'payment_received') && 
+            order.total_paid < order.price) {
+            const createdAt = new Date(order.created_at).getTime();
+            const deadline = createdAt + (CONFIG.CANCELLATION_HOURS * 60 * 60 * 1000);
+            if (new Date().getTime() < deadline) {
+                startCancellationTimer(order.id, deadline);
+            }
+        }
+    });
 }
 
 // ===== 🪟 Modal System =====
@@ -1690,15 +1865,46 @@ async function submitRevision(orderId) {
 
 // ===== ❌ Cancel Modal =====
 function renderCancelModal(container, orderId, footer) {
+    const order = allOrders.find(o => o.id === orderId);
+    if (!order) return;
+    
+    const total = order.price || 0;
+    const paid = order.total_paid || order.advance_paid || 0;
+    const createdAt = new Date(order.created_at);
+    const deadline = new Date(createdAt.getTime() + CONFIG.CANCELLATION_HOURS * 60 * 60 * 1000);
+    const now = new Date();
+    const isWithinWindow = now < deadline;
+    
     container.innerHTML = `
-        <p style="margin-bottom:1rem;color:var(--text-secondary);">Please tell us why you want to cancel:</p>
-        <textarea id="cancelInput" rows="4" placeholder="Reason for cancellation..." 
-            style="width:100%;padding:0.8rem;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-md);color:var(--text-primary);font-family:inherit;font-size:0.9rem;resize:vertical;"></textarea>
+        <div style="margin-bottom:1.5rem">
+            <div style="background:rgba(245,158,11,0.1);border:1px solid var(--warning);border-radius:var(--radius-md);padding:1rem;margin-bottom:1rem">
+                <strong style="color:var(--warning)"><i class="fas fa-exclamation-triangle"></i> Refund Policy</strong>
+                <p style="margin:0.5rem 0 0;font-size:0.85rem;color:var(--text-secondary)">
+                    ${isWithinWindow 
+                        ? `✅ You're within the 48-hour window. Full refund of <strong>₹${paid.toLocaleString()}</strong> will be processed.` 
+                        : `❌ Cancellation window expired. No refund will be processed if you cancel now.`}
+                </p>
+            </div>
+            <p style="color:var(--text-secondary);margin-bottom:1rem">
+                Please tell us why you want to cancel:
+            </p>
+            <textarea id="cancelInput" rows="4" placeholder="Reason for cancellation..." 
+                style="width:100%;padding:0.8rem;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-md);color:var(--text-primary);font-family:inherit;font-size:0.9rem;resize:vertical;"></textarea>
+        </div>
+        ${!isWithinWindow ? `
+        <div style="background:rgba(239,68,68,0.1);border:1px solid var(--error);border-radius:var(--radius-md);padding:1rem;margin-bottom:1rem">
+            <strong style="color:var(--error)"><i class="fas fa-ban"></i> Warning</strong>
+            <p style="margin:0.5rem 0 0;font-size:0.85rem;color:var(--text-secondary)">
+                Since the 48-hour window has passed, cancelling this order will <strong>not</strong> result in any refund. Your payment of ₹${paid.toLocaleString()} will be retained.
+            </p>
+        </div>` : ''}
     `;
     
     footer.innerHTML = `
         <button class="btn-action" onclick="closeModal()">Keep Order</button>
-        <button class="btn-action" style="border-color:#ef4444;color:#ef4444" onclick="submitCancel(${orderId})">Confirm Cancel</button>
+        <button class="btn-action btn-cancel" onclick="submitCancel(${orderId})">
+            ${isWithinWindow ? 'Confirm Cancel & Refund' : 'Confirm Cancel (No Refund)'}
+        </button>
     `;
     
     setTimeout(() => document.getElementById('cancelInput')?.focus(), 100);
@@ -1860,6 +2066,20 @@ async function renderPaymentModal(container, orderId) {
                         <div class="payment-timeline-detail">Not Required (Fully Paid)</div>
                     </div>
                 </div>`}
+                
+                ${order.refund_amount ? `
+                <div class="payment-timeline-item refund">
+                    <div class="payment-timeline-icon refund">
+                        <i class="fas fa-undo"></i>
+                    </div>
+                    <div class="payment-timeline-content">
+                        <div class="payment-timeline-title">Refund ${order.refund_status ? `(${order.refund_status})` : ''}</div>
+                        <div class="payment-timeline-detail">
+                            ₹${order.refund_amount.toLocaleString()} • ${order.refund_processed_at ? new Date(order.refund_processed_at).toLocaleString() : 'Pending'}
+                        </div>
+                        ${order.refund_reason ? `<div style="font-size:0.75rem;margin-top:0.3rem;color:var(--text-muted)">Reason: ${escapeHtml(order.refund_reason)}</div>` : ''}
+                    </div>
+                </div>` : ''}
             </div>
             
             ${order.payment_history && order.payment_history.length > 0 ? `
@@ -1871,12 +2091,12 @@ async function renderPaymentModal(container, orderId) {
                     ${order.payment_history.map(txn => `
                     <div style="display:flex;justify-content:space-between;align-items:center;padding:0.6rem 0.8rem;background:var(--surface);border-radius:var(--radius-sm);margin-bottom:0.4rem;font-size:0.85rem;">
                         <div style="display:flex;align-items:center;gap:0.5rem;">
-                            <i class="fas ${txn.type === 'credit' ? 'fa-arrow-down' : 'fa-arrow-up'}" style="color:${txn.type === 'credit' ? '#10b981' : '#ff6b35'};"></i>
-                            <span style="color:var(--text-secondary);">${txn.type === 'credit' ? 'Payment' : 'Refund'}</span>
+                            <i class="fas ${txn.type === 'credit' ? 'fa-arrow-down' : txn.type === 'refund' ? 'fa-undo' : 'fa-arrow-up'}" style="color:${txn.type === 'credit' ? '#10b981' : txn.type === 'refund' ? '#ef4444' : '#ff6b35'};"></i>
+                            <span style="color:var(--text-secondary);">${txn.type === 'credit' ? 'Payment' : txn.type === 'refund' ? 'Refund' : 'Advance'}</span>
                         </div>
                         <div style="text-align:right;">
-                            <div style="font-weight:600;color:${txn.type === 'credit' ? '#10b981' : '#ff6b35'};">
-                                ${txn.type === 'credit' ? '+' : '-'}₹${txn.amount?.toLocaleString()}
+                            <div style="font-weight:600;color:${txn.type === 'credit' ? '#10b981' : txn.type === 'refund' ? '#ef4444' : '#ff6b35'};">
+                                ${txn.type === 'credit' ? '+' : txn.type === 'refund' ? '-' : '+'}₹${txn.amount?.toLocaleString()}
                             </div>
                             <div style="font-size:0.7rem;color:var(--text-muted);">
                                 ${new Date(txn.created_at).toLocaleDateString()}
@@ -2104,7 +2324,7 @@ function openChat(orderId) {
     const chat = document.getElementById('chatWidget');
     const orderIdDisplay = document.getElementById('chatOrderIdDisplay');
     
-    orderIdDisplay.textContent = `Order`;
+    orderIdDisplay.textContent = `Order #${orderId}`;
     chat.classList.add('active');
     
     loadChatMessages();
@@ -2249,6 +2469,11 @@ document.addEventListener('DOMContentLoaded', async () => {
             const freshUser = await Auth.fetchUser();
             if (freshUser) updateProfileUI(freshUser);
         }
+    });
+    
+    // Cleanup timers on page unload
+    window.addEventListener('beforeunload', () => {
+        Object.values(cancellationTimers).forEach(timer => clearInterval(timer));
     });
 });
 
