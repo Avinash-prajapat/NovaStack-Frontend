@@ -4,7 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>My Orders - NovaStack</title>
-  
+    
+    <!-- SEO & Meta -->
+    <meta name="description" content="Track your NovaStack orders, manage payments, and access deliverables.">
+    <meta name="keywords" content="orders, software development, NovaStack, payment, deliverables">
     
     <!-- Fonts & Icons -->
     <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -12,36 +15,39 @@
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
     
     <!-- Favicon -->
-    <link rel="icon" type="logo/jpeg" href="logo.png">
+    <link rel="icon" type="image/png" href="logo.png">
     
     <style>
         /* ===== 🎨 CSS Variables ===== */
         :root {
             --bg-primary: #0f0c1a;
             --bg-secondary: #1a162a;
-            --bg-card: rgba(26, 22, 42, 0.8);
+            --bg-card: rgba(26, 22, 42, 0.85);
             --surface: rgba(255, 255, 255, 0.08);
             --surface-hover: rgba(255, 255, 255, 0.15);
             --border: rgba(255, 255, 255, 0.12);
             --border-hover: rgba(232, 93, 38, 0.6);
             --text-primary: #ffffff;
-            --text-secondary: rgba(255, 255, 255, 0.7);
+            --text-secondary: rgba(255, 255, 255, 0.75);
             --text-muted: rgba(255, 255, 255, 0.45);
             --accent: #ff6b35;
             --accent-glow: rgba(255, 107, 53, 0.4);
+            --green: #10b981;
+            --green-glow: rgba(16, 185, 129, 0.35);
+            --error: #ef4444;
+            --error-glow: rgba(239, 68, 68, 0.3);
+            --warning: #f59e0b;
+            --info: #3b82f6;
             --gradient-accent: linear-gradient(135deg, #ff6b35 0%, #f7c531 100%);
+            --gradient-success: linear-gradient(135deg, #10b981 0%, #059669 100%);
             --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.2);
             --shadow-md: 0 8px 30px rgba(0, 0, 0, 0.35);
             --shadow-lg: 0 20px 60px rgba(0, 0, 0, 0.5);
             --transition-normal: 300ms cubic-bezier(0.4, 0, 0.2, 1);
             --radius-sm: 8px;
-            --radius-md: 16px;
-            --radius-lg: 24px;
+            --radius-md: 14px;
+            --radius-lg: 20px;
             --radius-full: 9999px;
-            --success: #10b981;
-            --warning: #f59e0b;
-            --error: #ef4444;
-            --info: #3b82f6;
         }
 
         /* ===== 🌟 Base Reset ===== */
@@ -56,6 +62,17 @@
             overflow-x: hidden;
         }
         body.menu-open { overflow: hidden; position: fixed; width: 100%; }
+
+        /* Animated Background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: radial-gradient(ellipse at 20% 80%, rgba(124, 58, 237, 0.12) 0%, transparent 50%),
+                        radial-gradient(ellipse at 80% 20%, rgba(255, 107, 53, 0.1) 0%, transparent 50%);
+            z-index: -2;
+            pointer-events: none;
+        }
 
         /* ===== 🔗 Navigation ===== */
         nav {
@@ -359,40 +376,12 @@
             padding: 1rem;
             transition: all var(--transition-normal);
             backdrop-filter: blur(10px);
-            position: relative;
         }
         .order-card:hover {
             border-color: var(--accent);
             transform: translateY(-2px);
             box-shadow: var(--shadow-lg);
         }
-        .order-card.refund-pending {
-            border-color: var(--warning);
-            background: rgba(245, 158, 11, 0.05);
-        }
-        .order-card.refund-completed {
-            border-color: var(--success);
-            background: rgba(16, 185, 129, 0.05);
-        }
-        .order-card.refund-rejected {
-            border-color: var(--error);
-            background: rgba(239, 68, 68, 0.05);
-        }
-        
-        .refund-badge {
-            position: absolute;
-            top: 1rem;
-            right: 1rem;
-            padding: 0.3rem 0.8rem;
-            border-radius: var(--radius-full);
-            font-size: 0.7rem;
-            font-weight: 600;
-            text-transform: uppercase;
-        }
-        .refund-badge.pending { background: rgba(245,158,11,0.2); color: var(--warning); }
-        .refund-badge.approved { background: rgba(16,185,129,0.2); color: var(--success); }
-        .refund-badge.completed { background: rgba(16,185,129,0.2); color: var(--success); }
-        .refund-badge.rejected { background: rgba(239,68,68,0.2); color: var(--error); }
         
         .order-header-compact {
             display: grid;
@@ -418,7 +407,21 @@
         .status-ready_for_balance { background: rgba(255, 107, 53, 0.2); color: #ff6b35; }
         .status-completed, .status-delivered { background: rgba(16, 185, 129, 0.2); color: #10b981; }
         .status-cancelled { background: rgba(239, 68, 68, 0.2); color: #ef4444; }
-        .status-cancellation_requested { background: rgba(245, 158, 11, 0.2); color: var(--warning); }
+        .status-cancellation_requested { background: rgba(239, 68, 68, 0.2); color: #ef4444; }
+        
+        /* Eligibility Badge */
+        .eligibility-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.2rem 0.6rem;
+            border-radius: var(--radius-full);
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+        .eligibility-eligible { background: rgba(16, 185, 129, 0.2); color: #10b981; }
+        .eligibility-not-eligible { background: rgba(239, 68, 68, 0.2); color: #ef4444; }
+        .eligibility-pending { background: rgba(245, 158, 11, 0.2); color: #f59e0b; }
         
         .service-mini {
             display: flex;
@@ -486,30 +489,26 @@
             color: var(--text-secondary);
             min-height: 36px;
         }
-        .btn-action:hover:not(:disabled) {
+        .btn-action:hover {
             background: var(--surface-hover);
             color: var(--text-primary);
             border-color: var(--accent);
-        }
-        .btn-action:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
         }
         .btn-action.btn-pay {
             background: var(--gradient-accent);
             color: white;
             border: none;
         }
-        .btn-action.btn-pay:hover:not(:disabled) {
+        .btn-action.btn-pay:hover {
             box-shadow: 0 4px 15px var(--accent-glow);
             transform: translateY(-1px);
         }
         .btn-action.btn-chat { border-color: #10b981; color: #10b981; }
-        .btn-action.btn-chat:hover:not(:disabled) { background: rgba(16, 185, 129, 0.15); }
+        .btn-action.btn-chat:hover { background: rgba(16, 185, 129, 0.15); }
         .btn-action.btn-revision { border-color: #f59e0b; color: #f59e0b; }
-        .btn-action.btn-revision:hover:not(:disabled) { background: rgba(245, 158, 11, 0.15); }
+        .btn-action.btn-revision:hover { background: rgba(245, 158, 11, 0.15); }
         .btn-action.btn-cancel { border-color: #ef4444; color: #ef4444; }
-        .btn-action.btn-cancel:hover:not(:disabled) { background: rgba(239, 68, 68, 0.15); }
+        .btn-action.btn-cancel:hover { background: rgba(239, 68, 68, 0.15); }
         
         .order-preview {
             display: flex;
@@ -535,23 +534,6 @@
         }
         .preview-section { margin-bottom: 0.4rem; }
         .preview-section strong { color: var(--text-primary); }
-        
-        .cancellation-notice {
-            background: rgba(245, 158, 11, 0.1);
-            border-left: 3px solid var(--warning);
-            padding: 0.8rem 1rem;
-            border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
-            margin: 0.8rem 0;
-            font-size: 0.8rem;
-        }
-        .cancellation-notice.expired {
-            background: rgba(239, 68, 68, 0.1);
-            border-left-color: var(--error);
-        }
-        .cancellation-timer {
-            font-weight: 600;
-            color: var(--accent);
-        }
         
         /* ===== 🪟 Modal System ===== */
         .modal-overlay {
@@ -903,6 +885,7 @@
         }
         .payment-stat-value.green { color: #10b981; }
         .payment-stat-value.orange { color: #ff6b35; }
+        .payment-stat-value.red { color: #ef4444; }
         
         .payment-timeline {
             margin-top: 1.5rem;
@@ -917,21 +900,10 @@
             margin-bottom: 0.5rem;
             border-left: 3px solid var(--border);
         }
-        .payment-timeline-item.advance {
-            border-left-color: #ff6b35;
-            background: rgba(255, 107, 53, 0.1);
-        }
-        .payment-timeline-item.balance {
-            border-left-color: #10b981;
-            background: rgba(16, 185, 129, 0.1);
-        }
-        .payment-timeline-item.refund {
-            border-left-color: #ef4444;
-            background: rgba(239, 68, 68, 0.1);
-        }
-        .payment-timeline-item.pending {
-            opacity: 0.6;
-        }
+        .payment-timeline-item.advance { border-left-color: #ff6b35; background: rgba(255, 107, 53, 0.1); }
+        .payment-timeline-item.balance { border-left-color: #10b981; background: rgba(16, 185, 129, 0.1); }
+        .payment-timeline-item.refund { border-left-color: #ef4444; background: rgba(239, 68, 68, 0.1); }
+        .payment-timeline-item.pending { opacity: 0.6; }
         .payment-timeline-icon {
             width: 32px;
             height: 32px;
@@ -964,11 +936,60 @@
             margin-top: 0.3rem;
         }
         
+        /* Refund Status Card */
+        .refund-status-card {
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(16, 185, 129, 0.05));
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+        .refund-status-card h4 {
+            color: var(--accent);
+            margin-bottom: 12px;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .refund-status-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 6px 0;
+            border-bottom: 1px solid var(--border);
+        }
+        .refund-status-row:last-child { border-bottom: none; }
+        .refund-status-label { color: var(--text-muted); font-size: 12px; }
+        .refund-status-value { font-weight: 500; font-size: 13px; }
+        .refund-status-value.pending { color: var(--warning); }
+        .refund-status-value.approved { color: var(--info); }
+        .refund-status-value.completed { color: var(--success); }
+        .refund-status-value.rejected { color: var(--error); }
+        
+        /* Cancel Info Card */
+        .cancel-info-card {
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(239, 68, 68, 0.05));
+            border: 1px solid var(--warning);
+            border-radius: 12px;
+            padding: 12px 16px;
+            margin-bottom: 16px;
+        }
+        .cancel-info-card .title {
+            font-weight: 600;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .cancel-info-card .title i { color: var(--warning); }
+        .cancel-info-card .warning { color: var(--error); font-size: 12px; margin-top: 5px; }
+        .cancel-info-card .eligible { color: var(--success); font-weight: 600; }
+        .cancel-info-card .not-eligible { color: var(--error); font-weight: 600; }
+        .time-remaining { color: var(--info); font-weight: 600; }
+        
         /* ===== 📱 Responsive ===== */
         @media (max-width: 1024px) {
-            .order-header-compact {
-                grid-template-columns: auto 1fr auto;
-            }
+            .order-header-compact { grid-template-columns: auto 1fr auto; }
         }
         
         @media (max-width: 768px) {
@@ -976,28 +997,18 @@
             .nav-links { display: none; }
             .user-toggle-wrapper { display: none; }
             .menu-toggle { display: flex; }
-            
             .container { padding: 85px 4% 3rem; }
             .page-header { flex-direction: column; text-align: center; }
-            
-            .order-header-compact {
-                grid-template-columns: 1fr auto;
-                gap: 0.5rem;
-            }
+            .order-header-compact { grid-template-columns: 1fr auto; gap: 0.5rem; }
             .order-actions-compact { justify-content: center; }
-            
             .modal-container { max-width: 95vw; margin: 1rem; }
             .chat-widget { width: 100%; max-width: 100vw; bottom: 0; right: 0; border-radius: var(--radius-lg) var(--radius-lg) 0 0; }
             .chat-body { height: 350px; }
-            
             .payment-summary-grid { grid-template-columns: 1fr; }
         }
         
         @media (max-width: 480px) {
-            .order-header-compact {
-                grid-template-columns: 1fr;
-                text-align: center;
-            }
+            .order-header-compact { grid-template-columns: 1fr; text-align: center; }
             .order-actions-compact { flex-wrap: wrap; }
             .btn-action { flex: 1; min-width: 100px; justify-content: center; }
         }
@@ -1027,14 +1038,12 @@
 <!-- ===== 🔗 Navigation ===== -->
 <nav id="navbar">
     <a href="index.html" class="logo"><i class="fas fa-code"></i> Nova<span>Stack</span></a>
-    
     <div class="nav-links" id="navLinks">
         <a href="index.html"><i class="fas fa-home"></i> Home</a>
         <a href="services.html"><i class="fas fa-cube"></i> Services</a>
         <a href="my-orders.html" class="active"><i class="fas fa-shopping-bag"></i> My Orders</a>
         <a href="cart.html"><i class="fas fa-shopping-cart"></i> Cart</a>
     </div>
-    
     <div class="user-toggle-wrapper" id="userToggleWrapper">
         <div class="user-toggle" id="userToggle" tabindex="0" role="button" aria-expanded="false">
             <div class="user-avatar" id="userAvatar"><i class="fas fa-user"></i></div>
@@ -1054,7 +1063,6 @@
             <a href="#" class="dropdown-item dropdown-logout" id="dropdownLogout" role="menuitem"><i class="fas fa-sign-out-alt"></i> Logout</a>
         </div>
     </div>
-    
     <button class="menu-toggle" id="menuToggle" aria-label="Toggle menu" aria-expanded="false">
         <i class="fas fa-bars"></i>
     </button>
@@ -1077,20 +1085,6 @@
     <div class="page-header">
         <h1><i class="fas fa-shopping-bag"></i> My Orders</h1>
         <a href="services.html" class="btn-new-order"><i class="fas fa-plus"></i> New Order</a>
-    </div>
-    
-    <!-- Cancellation Policy Notice -->
-    <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1rem;margin-bottom:1.5rem">
-        <div style="display:flex;align-items:center;gap:0.8rem">
-            <i class="fas fa-info-circle" style="color:var(--accent);font-size:1.2rem"></i>
-            <div>
-                <strong style="color:var(--text-primary)">Cancellation & Refund Policy</strong>
-                <p style="color:var(--text-secondary);font-size:0.85rem;margin:0.3rem 0 0">
-                    Orders can be cancelled within <strong style="color:var(--accent)">48 hours</strong> of placement for a <strong>full refund</strong>. 
-                    After 48 hours, cancellations are subject to admin approval and <strong>no refund</strong> will be processed.
-                </p>
-            </div>
-        </div>
     </div>
     
     <div id="loading" style="display:none; text-align:center; padding:3rem;">
@@ -1147,9 +1141,10 @@
 <script>
 // ===== 🔧 CONFIG =====
 const CONFIG = {
-    API: 'https://novastack-backend.onrender.com',
-    WA_NUMBER: '9015277062',
-    CANCELLATION_HOURS: 48 // 48-hour window for full refund
+    API: window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
+        ? 'http://localhost:5000' 
+        : 'https://novastack-backend.onrender.com',
+    WA_NUMBER: '9015277062'
 };
 
 // ===== 🔐 Auth =====
@@ -1212,19 +1207,34 @@ function showToast(message, type = 'success', duration = 4000) {
     toast.className = `toast ${type}`;
     toast.textContent = message;
     container.appendChild(toast);
-    
     setTimeout(() => toast.classList.add('show'), 10);
-    
     setTimeout(() => {
         toast.classList.remove('show');
         setTimeout(() => toast.remove(), 300);
     }, duration);
 }
 
+// ===== Helper Functions =====
+function calculateHoursSince(dateStr) {
+    if (!dateStr) return 999;
+    const created = new Date(dateStr);
+    const now = new Date();
+    const diffMs = now - created;
+    return diffMs / (1000 * 60 * 60);
+}
+
+function getRemainingTime(hoursSince) {
+    const remaining = 48 - hoursSince;
+    if (remaining <= 0) return null;
+    const hours = Math.floor(remaining);
+    const minutes = Math.floor((remaining - hours) * 60);
+    if (hours > 0) return `${hours}h ${minutes}m`;
+    return `${minutes}m`;
+}
+
 // ===== 👤 Profile UI =====
 function updateProfileUI(user) {
     if (!user) return;
-    
     const name = user.name || user.email?.split('@')[0] || 'User';
     const initial = name.charAt(0).toUpperCase();
     
@@ -1252,7 +1262,6 @@ window.addEventListener('scroll', () => {
     const nav = document.getElementById('navbar');
     const mobileMenu = document.getElementById('mobileMenu');
     if (!nav) return;
-    
     if (window.scrollY > 50) {
         nav.classList.add('scrolled');
         if (mobileMenu) mobileMenu.style.top = '64px';
@@ -1272,7 +1281,6 @@ function toggleMobileMenu() {
     const isActive = mobileMenu.classList.toggle('active');
     menuToggle.classList.toggle('active', isActive);
     menuToggle.setAttribute('aria-expanded', isActive);
-    
     if (isActive) {
         body.classList.add('menu-open');
         body.dataset.scrollY = window.scrollY;
@@ -1284,7 +1292,6 @@ function toggleMobileMenu() {
         }
     }
 }
-
 if (menuToggle) menuToggle.addEventListener('click', toggleMobileMenu);
 
 document.querySelectorAll('.mobile-nav-link').forEach(link => {
@@ -1317,7 +1324,6 @@ function toggleUserDropdown() {
     userToggle.classList.toggle('active', isActive);
     userToggle.setAttribute('aria-expanded', isActive);
 }
-
 if (userToggle) {
     userToggle.addEventListener('click', (e) => {
         e.stopPropagation();
@@ -1330,7 +1336,6 @@ if (userToggle) {
         }
     });
 }
-
 document.addEventListener('click', (e) => {
     if (userDropdown && userToggle && 
         !userToggle.contains(e.target) && 
@@ -1352,16 +1357,13 @@ async function logout() {
             });
         } catch (e) { console.warn('Logout API failed:', e.message); }
     }
-    
     localStorage.removeItem('dc_token');
     localStorage.removeItem('dc_user');
     localStorage.removeItem('dc_cart_local');
     sessionStorage.removeItem('dc_token');
     sessionStorage.removeItem('dc_user');
-    
     closeModal();
     closeChat();
-    
     showToast('Logged out successfully');
     setTimeout(() => window.location.href = 'index.html', 1000);
 }
@@ -1374,7 +1376,6 @@ document.getElementById('mobileLogoutBtn')?.addEventListener('click', logout);
 
 // ===== 📦 Load Orders =====
 let allOrders = [];
-let cancellationTimers = {};
 
 async function loadOrders() {
     const token = Auth.getToken();
@@ -1430,86 +1431,6 @@ async function loadOrders() {
     }
 }
 
-// ===== 🔽 Toggle Preview =====
-function togglePreview(orderId) {
-    const preview = document.getElementById(`preview-${orderId}`);
-    const trigger = preview?.previousElementSibling;
-    if (!preview || !trigger) return;
-    
-    const isExpanded = preview.style.display === 'block';
-    preview.style.display = isExpanded ? 'none' : 'block';
-    trigger.classList.toggle('expanded', !isExpanded);
-}
-
-// ===== 🔧 Helpers =====
-function formatCustomization(obj) {
-    if (!obj || typeof obj !== 'object') return 'None';
-    return Object.entries(obj).slice(0, 3).map(([k, v]) => 
-        `${k.replace(/_/g, ' ')}: ${typeof v === 'boolean' ? (v ? 'Yes' : 'No') : v}`
-    ).join(', ') + (Object.keys(obj).length > 3 ? '...' : '');
-}
-
-function truncate(str, len) {
-    if (!str) return '';
-    return str.length > len ? str.slice(0, len) + '...' : str;
-}
-
-function escapeHtml(text) {
-    if (!text) return '';
-    const div = document.createElement('div');
-    div.textContent = text;
-    return div.innerHTML;
-}
-
-// ===== ⏰ Cancellation Timer =====
-function formatTimeLeft(ms) {
-    const hours = Math.floor(ms / (1000 * 60 * 60));
-    const minutes = Math.floor((ms % (1000 * 60 * 60)) / (1000 * 60));
-    const seconds = Math.floor((ms % (1000 * 60)) / 1000);
-    
-    if (hours > 0) {
-        return `${hours}h ${minutes}m ${seconds}s`;
-    } else if (minutes > 0) {
-        return `${minutes}m ${seconds}s`;
-    } else {
-        return `${seconds}s`;
-    }
-}
-
-function startCancellationTimer(orderId, deadline) {
-    if (cancellationTimers[orderId]) {
-        clearInterval(cancellationTimers[orderId]);
-    }
-    
-    const updateTimer = () => {
-        const now = new Date().getTime();
-        const remaining = deadline - now;
-        const timerEl = document.getElementById(`cancel-timer-${orderId}`);
-        const cancelBtn = document.getElementById(`cancel-btn-${orderId}`);
-        
-        if (remaining <= 0) {
-            if (timerEl) {
-                timerEl.innerHTML = '<span style="color:var(--error)">Expired</span>';
-            }
-            if (cancelBtn) {
-                cancelBtn.disabled = true;
-                cancelBtn.title = 'Cancellation window expired';
-                cancelBtn.innerHTML = '<i class="fas fa-ban"></i> Cancel (Expired)';
-            }
-            clearInterval(cancellationTimers[orderId]);
-            delete cancellationTimers[orderId];
-            return;
-        }
-        
-        if (timerEl) {
-            timerEl.textContent = formatTimeLeft(remaining);
-        }
-    };
-    
-    updateTimer();
-    cancellationTimers[orderId] = setInterval(updateTimer, 1000);
-}
-
 // ===== 🗂️ Render Orders =====
 function renderOrders(orders) {
     const container = document.getElementById('orders-container');
@@ -1521,41 +1442,19 @@ function renderOrders(orders) {
         const balanceDue = Math.max(0, total - totalPaid);
         const paidPercent = total > 0 ? Math.min(100, Math.round((totalPaid / total) * 100)) : 0;
         
-        // Cancellation logic
-        const createdAt = new Date(order.created_at).getTime();
-        const now = new Date().getTime();
-        const cancellationDeadline = createdAt + (CONFIG.CANCELLATION_HOURS * 60 * 60 * 1000);
-        const isWithinWindow = now < cancellationDeadline;
-        const canCancel = (order.status === 'pending' || order.status === 'payment_received') && 
-                         totalPaid < total && 
-                         isWithinWindow && 
-                         order.status !== 'cancellation_requested';
-        
-        // Refund status
-        let refundBadge = '';
-        let cardClass = '';
-        if (order.refund_status === 'pending') {
-            refundBadge = '<span class="refund-badge pending">Refund Pending</span>';
-            cardClass = 'refund-pending';
-        } else if (order.refund_status === 'approved') {
-            refundBadge = '<span class="refund-badge approved">Refund Approved</span>';
-            cardClass = 'refund-completed';
-        } else if (order.refund_status === 'completed') {
-            refundBadge = '<span class="refund-badge completed">Refund Completed</span>';
-            cardClass = 'refund-completed';
-        } else if (order.refund_status === 'rejected') {
-            refundBadge = '<span class="refund-badge rejected">Refund Rejected</span>';
-            cardClass = 'refund-rejected';
-        }
-        
         const canPayBalance = (order.status === 'ready_for_balance' || (order.status === 'delivered' && balanceDue > 0)) && balanceDue > 0;
+        const canCancel = (order.status === 'pending' || order.status === 'payment_received') && totalPaid < total;
         const canRequestRevision = (order.status === 'delivered' || order.status === 'completed') && !order.revision_requested;
         const hasPreview = order.preview_ready && advancePaid > 0;
         const hasFullAccess = (order.full_access_ready && totalPaid >= total) || order.status === 'completed';
         
+        // Calculate cancellation eligibility
+        const hoursSince = calculateHoursSince(order.created_at);
+        const isEligibleForRefund = canCancel && hoursSince <= 48;
+        const remainingTime = getRemainingTime(hoursSince);
+        
         return `
-        <div class="order-card ${cardClass}" id="order-${order.id}">
-            ${refundBadge}
+        <div class="order-card" id="order-${order.id}">
             <div class="order-header-compact">
                 <span class="order-status status-${order.status}">${order.status.replace(/_/g, ' ').toUpperCase()}</span>
                 <div class="service-mini">
@@ -1564,6 +1463,15 @@ function renderOrders(orders) {
                 </div>
                 <div class="price-mini">₹${total.toLocaleString()}</div>
             </div>
+            
+            ${canCancel ? `
+            <div style="padding: 0.5rem 0;">
+                <span class="eligibility-badge ${isEligibleForRefund ? 'eligibility-eligible' : 'eligibility-not-eligible'}">
+                    <i class="fas ${isEligibleForRefund ? 'fa-check-circle' : 'fa-times-circle'}"></i>
+                    ${isEligibleForRefund ? `Eligible for full refund (${remainingTime || 'expiring soon'} left)` : 'Not eligible for refund (48hrs passed)'}
+                </span>
+            </div>
+            ` : ''}
             
             <div class="payment-summary-mini">
                 <div class="payment-row">
@@ -1585,15 +1493,6 @@ function renderOrders(orders) {
             ${hasFullAccess ? `
             <div style="padding:0.5rem 0; font-size:0.8rem; color:#10b981;">
                 <i class="fas fa-check-circle"></i> Full access unlocked
-            </div>` : ''}
-            
-            ${canCancel ? `
-            <div class="cancellation-notice">
-                <i class="fas fa-clock"></i> Cancel within <span class="cancellation-timer" id="cancel-timer-${order.id}">--:--:--</span> for full refund
-            </div>` : 
-            (order.status === 'pending' || order.status === 'payment_received') && totalPaid < total && !isWithinWindow ? `
-            <div class="cancellation-notice expired">
-                <i class="fas fa-exclamation-triangle"></i> Cancellation window expired. No refund available.
             </div>` : ''}
             
             <div class="order-actions-compact">
@@ -1620,12 +1519,8 @@ function renderOrders(orders) {
                     <i class="fas fa-pencil-alt"></i> Revision
                 </button>` : ''}
                 ${canCancel ? `
-                <button class="btn-action btn-cancel" id="cancel-btn-${order.id}" onclick="openModal('cancel', ${order.id})">
-                    <i class="fas fa-ban"></i> Cancel
-                </button>` : 
-                (order.status === 'pending' || order.status === 'payment_received') && totalPaid < total && !isWithinWindow ? `
-                <button class="btn-action btn-cancel" disabled title="Cancellation window expired">
-                    <i class="fas fa-ban"></i> Cancel (Expired)
+                <button class="btn-action btn-cancel" onclick="openModal('cancel', ${order.id})">
+                    <i class="fas fa-ban"></i> Cancel Order
                 </button>` : ''}
             </div>
             
@@ -1642,23 +1537,48 @@ function renderOrders(orders) {
                     <strong>Requirements:</strong> ${truncate(order.requirements, 120)}
                 </div>` : ''}
                 <div class="preview-section">
-                    <strong>Ordered:</strong> ${new Date(order.created_at).toLocaleDateString()}
+                    <strong>Ordered:</strong> ${new Date(order.created_at).toLocaleString()}
                 </div>
+                ${canCancel ? `
+                <div class="preview-section">
+                    <strong>Cancellation Policy:</strong> 
+                    ${isEligibleForRefund ? 
+                        `<span style="color: var(--success);">✓ Eligible for full refund (within 48 hours of order)</span>` : 
+                        `<span style="color: var(--error);">✗ No refund (48-hour window has passed)</span>`}
+                </div>` : ''}
             </div>
         </div>`;
     }).join('');
-    
-    // Start timers for orders within cancellation window
-    orders.forEach(order => {
-        if ((order.status === 'pending' || order.status === 'payment_received') && 
-            order.total_paid < order.price) {
-            const createdAt = new Date(order.created_at).getTime();
-            const deadline = createdAt + (CONFIG.CANCELLATION_HOURS * 60 * 60 * 1000);
-            if (new Date().getTime() < deadline) {
-                startCancellationTimer(order.id, deadline);
-            }
-        }
-    });
+}
+
+// ===== 🔽 Toggle Preview =====
+function togglePreview(orderId) {
+    const preview = document.getElementById(`preview-${orderId}`);
+    const trigger = preview?.previousElementSibling;
+    if (!preview || !trigger) return;
+    const isExpanded = preview.style.display === 'block';
+    preview.style.display = isExpanded ? 'none' : 'block';
+    trigger.classList.toggle('expanded', !isExpanded);
+}
+
+// ===== 🔧 Helpers =====
+function formatCustomization(obj) {
+    if (!obj || typeof obj !== 'object') return 'None';
+    return Object.entries(obj).slice(0, 3).map(([k, v]) => 
+        `${k.replace(/_/g, ' ')}: ${typeof v === 'boolean' ? (v ? 'Yes' : 'No') : v}`
+    ).join(', ') + (Object.keys(obj).length > 3 ? '...' : '');
+}
+
+function truncate(str, len) {
+    if (!str) return '';
+    return str.length > len ? str.slice(0, len) + '...' : str;
+}
+
+function escapeHtml(text) {
+    if (!text) return '';
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
 }
 
 // ===== 🪟 Modal System =====
@@ -1682,10 +1602,8 @@ function openModal(type, orderId) {
     title.innerHTML = titles[type] || 'Details';
     body.innerHTML = '<div class="modal-loading"><div class="spinner"></div><p>Loading...</p></div>';
     footer.innerHTML = '';
-    
     modal.classList.add('active');
     document.body.style.overflow = 'hidden';
-    
     loadModalContent(type, orderId, body, footer);
 }
 
@@ -1707,6 +1625,7 @@ document.addEventListener('keydown', (e) => {
 // ===== 📦 Load Modal Content =====
 async function loadModalContent(type, orderId, body, footer) {
     const token = Auth.getToken();
+    const order = allOrders.find(o => o.id === orderId);
     
     try {
         if (type === 'timeline') {
@@ -1727,7 +1646,7 @@ async function loadModalContent(type, orderId, body, footer) {
             renderRevisionModal(body, orderId, footer);
             
         } else if (type === 'cancel') {
-            renderCancelModal(body, orderId, footer);
+            renderCancelModal(body, orderId, footer, order);
             
         } else if (type === 'payment') {
             await renderPaymentModal(body, orderId);
@@ -1744,7 +1663,6 @@ function renderTimelineModal(container, timeline) {
         container.innerHTML = '<p style="text-align:center;color:var(--text-muted);padding:1rem;">No timeline updates yet.</p>';
         return;
     }
-    
     container.innerHTML = `
         <div class="timeline-vertical">
             ${timeline.map(item => `
@@ -1772,10 +1690,8 @@ function renderDeliverablesModal(container, result, status) {
         `;
         return;
     }
-    
     const data = result.data;
     let html = '';
-    
     if (data.live_url) {
         html += `<a href="${data.live_url}" target="_blank" class="deliverable-link"><i class="fas fa-globe"></i> 🌐 Live Demo</a>`;
     }
@@ -1788,7 +1704,6 @@ function renderDeliverablesModal(container, result, status) {
     if (data.documentation_url && data.has_full_access) {
         html += `<a href="${data.documentation_url}" target="_blank" class="deliverable-link"><i class="fas fa-book"></i> 📚 Documentation</a>`;
     }
-    
     if (data.deliverables?.length) {
         data.deliverables.forEach(doc => {
             if (doc.is_preview || data.has_full_access) {
@@ -1796,11 +1711,9 @@ function renderDeliverablesModal(container, result, status) {
             }
         });
     }
-    
     if (data.delivery_notes) {
         html += `<div class="delivery-notes"><strong>📝 Delivery Notes:</strong>${escapeHtml(data.delivery_notes)}</div>`;
     }
-    
     container.innerHTML = html || '<p style="text-align:center;color:var(--text-muted);padding:1rem;">📭 No deliverables available yet.</p>';
 }
 
@@ -1811,31 +1724,26 @@ function renderRevisionModal(container, orderId, footer) {
         <textarea id="revisionInput" rows="5" placeholder="e.g., Change the button color to blue, add a contact form..." 
             style="width:100%;padding:0.8rem;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-md);color:var(--text-primary);font-family:inherit;font-size:0.9rem;resize:vertical;"></textarea>
     `;
-    
     footer.innerHTML = `
         <button class="btn-action" onclick="closeModal()">Cancel</button>
         <button class="btn-action btn-pay" onclick="submitRevision(${orderId})">Send Request</button>
     `;
-    
     setTimeout(() => document.getElementById('revisionInput')?.focus(), 100);
 }
 
 async function submitRevision(orderId) {
     const input = document.getElementById('revisionInput');
     const details = input?.value?.trim();
-    
     if (!details) {
         showToast('Please describe the changes you want', 'warning');
         return;
     }
-    
     const token = Auth.getToken();
     const btn = event?.target;
     if (btn) {
         btn.disabled = true;
         btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
     }
-    
     try {
         const res = await fetch(`${CONFIG.API}/conversation/order_${orderId}/send`, {
             method: 'POST',
@@ -1847,13 +1755,10 @@ async function submitRevision(orderId) {
                 message: `🔁 REVISION REQUEST:\n\n${details}\n\nPlease review and let me know when changes are done.`
             })
         });
-        
         if (!res.ok) throw new Error('Failed to send request');
-        
         showToast('✅ Revision request sent! Admin will review shortly.');
         closeModal();
         openChat(orderId);
-        
     } catch (error) {
         showToast(error.message, 'error');
         if (btn) {
@@ -1863,61 +1768,52 @@ async function submitRevision(orderId) {
     }
 }
 
-// ===== ❌ Cancel Modal =====
-function renderCancelModal(container, orderId, footer) {
-    const order = allOrders.find(o => o.id === orderId);
-    if (!order) return;
-    
-    const total = order.price || 0;
-    const paid = order.total_paid || order.advance_paid || 0;
-    const createdAt = new Date(order.created_at);
-    const deadline = new Date(createdAt.getTime() + CONFIG.CANCELLATION_HOURS * 60 * 60 * 1000);
-    const now = new Date();
-    const isWithinWindow = now < deadline;
+// ===== ❌ Cancel Modal with 48-hour policy =====
+function renderCancelModal(container, orderId, footer, order) {
+    const hoursSince = calculateHoursSince(order?.created_at);
+    const isEligible = hoursSince <= 48;
+    const remainingTime = getRemainingTime(hoursSince);
     
     container.innerHTML = `
-        <div style="margin-bottom:1.5rem">
-            <div style="background:rgba(245,158,11,0.1);border:1px solid var(--warning);border-radius:var(--radius-md);padding:1rem;margin-bottom:1rem">
-                <strong style="color:var(--warning)"><i class="fas fa-exclamation-triangle"></i> Refund Policy</strong>
-                <p style="margin:0.5rem 0 0;font-size:0.85rem;color:var(--text-secondary)">
-                    ${isWithinWindow 
-                        ? `✅ You're within the 48-hour window. Full refund of <strong>₹${paid.toLocaleString()}</strong> will be processed.` 
-                        : `❌ Cancellation window expired. No refund will be processed if you cancel now.`}
-                </p>
-            </div>
-            <p style="color:var(--text-secondary);margin-bottom:1rem">
-                Please tell us why you want to cancel:
-            </p>
-            <textarea id="cancelInput" rows="4" placeholder="Reason for cancellation..." 
-                style="width:100%;padding:0.8rem;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-md);color:var(--text-primary);font-family:inherit;font-size:0.9rem;resize:vertical;"></textarea>
+        ${!isEligible ? `
+        <div class="cancel-info-card">
+            <div class="title"><i class="fas fa-clock"></i> Cancellation Policy</div>
+            <div>Order placed: ${new Date(order?.created_at).toLocaleString()}</div>
+            <div class="not-eligible"><i class="fas fa-times-circle"></i> 48-hour window has passed (${Math.floor(hoursSince)} hours ago)</div>
+            <div class="warning"><i class="fas fa-exclamation-triangle"></i> No refund will be issued for this cancellation.</div>
         </div>
-        ${!isWithinWindow ? `
-        <div style="background:rgba(239,68,68,0.1);border:1px solid var(--error);border-radius:var(--radius-md);padding:1rem;margin-bottom:1rem">
-            <strong style="color:var(--error)"><i class="fas fa-ban"></i> Warning</strong>
-            <p style="margin:0.5rem 0 0;font-size:0.85rem;color:var(--text-secondary)">
-                Since the 48-hour window has passed, cancelling this order will <strong>not</strong> result in any refund. Your payment of ₹${paid.toLocaleString()} will be retained.
-            </p>
-        </div>` : ''}
+        ` : `
+        <div class="cancel-info-card">
+            <div class="title"><i class="fas fa-clock"></i> Cancellation Policy</div>
+            <div>Order placed: ${new Date(order?.created_at).toLocaleString()}</div>
+            <div class="eligible"><i class="fas fa-check-circle"></i> Eligible for full refund (${remainingTime} remaining)</div>
+            <div class="warning"><i class="fas fa-info-circle"></i> Full advance amount will be refunded to your original payment method.</div>
+        </div>
+        `}
+        <p style="margin-bottom:1rem;color:var(--text-secondary);">Please tell us why you want to cancel:</p>
+        <textarea id="cancelInput" rows="4" placeholder="Reason for cancellation..." 
+            style="width:100%;padding:0.8rem;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-md);color:var(--text-primary);font-family:inherit;font-size:0.9rem;resize:vertical;"></textarea>
     `;
-    
     footer.innerHTML = `
         <button class="btn-action" onclick="closeModal()">Keep Order</button>
-        <button class="btn-action btn-cancel" onclick="submitCancel(${orderId})">
-            ${isWithinWindow ? 'Confirm Cancel & Refund' : 'Confirm Cancel (No Refund)'}
-        </button>
+        <button class="btn-action btn-cancel" onclick="submitCancel(${orderId}, ${isEligible})">Confirm Cancel</button>
     `;
-    
     setTimeout(() => document.getElementById('cancelInput')?.focus(), 100);
 }
 
-async function submitCancel(orderId) {
+async function submitCancel(orderId, isEligibleForRefund) {
     const input = document.getElementById('cancelInput');
     const reason = input?.value?.trim();
-    
     if (!reason) {
         showToast('Please provide a reason for cancellation', 'warning');
         return;
     }
+    
+    let confirmMsg = isEligibleForRefund 
+        ? '⚠️ You will receive a FULL refund. Are you sure you want to cancel this order?'
+        : '⚠️ You will NOT receive any refund (48-hour policy). Are you sure you want to cancel?';
+    
+    if (!confirm(confirmMsg)) return;
     
     const token = Auth.getToken();
     const btn = event?.target;
@@ -1935,14 +1831,14 @@ async function submitCancel(orderId) {
             },
             body: JSON.stringify({ reason })
         });
-        
         const data = await res.json();
         if (!res.ok) throw new Error(data.error || 'Cancellation failed');
         
-        showToast('✅ Cancellation requested! Admin will review within 24h.');
+        showToast(isEligibleForRefund 
+            ? '✅ Cancellation requested! Refund will be processed within 48 hours.' 
+            : '✅ Order cancelled. No refund will be issued as per policy.');
         closeModal();
         loadOrders();
-        
     } catch (error) {
         showToast(error.message, 'error');
         if (btn) {
@@ -1952,7 +1848,7 @@ async function submitCancel(orderId) {
     }
 }
 
-// ===== 💳 Payment History Modal =====
+// ===== 💳 Payment History Modal with Refund Status =====
 async function renderPaymentModal(container, orderId) {
     const token = Auth.getToken();
     
@@ -1968,6 +1864,18 @@ async function renderPaymentModal(container, orderId) {
             return;
         }
         
+        // Check refund status
+        let refundStatus = null;
+        try {
+            const refundRes = await fetch(`${CONFIG.API}/order/${orderId}/refund-status`, {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            if (refundRes.ok) {
+                const refundData = await refundRes.json();
+                refundStatus = refundData;
+            }
+        } catch(e) { console.log('Refund status check failed'); }
+        
         const total = order.price || 0;
         const advancePaid = order.advance_paid || 0;
         const balancePaid = order.balance_paid || 0;
@@ -1975,26 +1883,46 @@ async function renderPaymentModal(container, orderId) {
         const due = Math.max(0, total - totalPaid);
         const paidPercent = total > 0 ? Math.round((totalPaid / total) * 100) : 0;
         
+        let refundHtml = '';
+        if (refundStatus && refundStatus.status !== 'no_refund_requested') {
+            refundHtml = `
+            <div class="refund-status-card">
+                <h4><i class="fas fa-undo-alt"></i> Refund Status</h4>
+                <div class="refund-status-row">
+                    <span class="refund-status-label">Status</span>
+                    <span class="refund-status-value ${refundStatus.status}">${refundStatus.status?.toUpperCase()}</span>
+                </div>
+                <div class="refund-status-row">
+                    <span class="refund-status-label">Amount</span>
+                    <span class="refund-status-value">${formatCurrency(refundStatus.amount)}</span>
+                </div>
+                ${refundStatus.processed_at ? `
+                <div class="refund-status-row">
+                    <span class="refund-status-label">Processed On</span>
+                    <span class="refund-status-value">${new Date(refundStatus.processed_at).toLocaleString()}</span>
+                </div>
+                ` : ''}
+                ${refundStatus.expected_days ? `
+                <div class="refund-status-row">
+                    <span class="refund-status-label">Expected Timeline</span>
+                    <span class="refund-status-value">${refundStatus.expected_days}</span>
+                </div>
+                ` : ''}
+            </div>
+            `;
+        }
+        
         container.innerHTML = `
+            ${refundHtml}
             <div class="payment-summary-grid">
-                <div class="payment-stat-card">
-                    <div class="payment-stat-label">Total Amount</div>
-                    <div class="payment-stat-value">₹${total.toLocaleString()}</div>
-                </div>
-                <div class="payment-stat-card highlight">
-                    <div class="payment-stat-label">Total Paid</div>
-                    <div class="payment-stat-value green">₹${totalPaid.toLocaleString()}</div>
-                </div>
-                <div class="payment-stat-card">
-                    <div class="payment-stat-label">Advance (15%)</div>
-                    <div class="payment-stat-value orange">₹${advancePaid.toLocaleString()}</div>
-                </div>
+                <div class="payment-stat-card"><div class="payment-stat-label">Total Amount</div><div class="payment-stat-value">${formatCurrency(total)}</div></div>
+                <div class="payment-stat-card highlight"><div class="payment-stat-label">Total Paid</div><div class="payment-stat-value green">${formatCurrency(totalPaid)}</div></div>
+                <div class="payment-stat-card"><div class="payment-stat-label">Advance (15%)</div><div class="payment-stat-value orange">${formatCurrency(advancePaid)}</div></div>
                 <div class="payment-stat-card ${due > 0 ? 'warning' : 'highlight'}">
                     <div class="payment-stat-label">${due > 0 ? 'Balance Due' : 'Balance Paid'}</div>
-                    <div class="payment-stat-value ${due > 0 ? 'orange' : 'green'}">₹${due > 0 ? due.toLocaleString() : '0'}</div>
+                    <div class="payment-stat-value ${due > 0 ? 'orange' : 'green'}">${due > 0 ? formatCurrency(due) : '0'}</div>
                 </div>
             </div>
-            
             <div style="margin-bottom:1.5rem;">
                 <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.8rem;">
                     <strong style="color:var(--text-primary);">Payment Progress</strong>
@@ -2004,119 +1932,31 @@ async function renderPaymentModal(container, orderId) {
                     <div style="height:100%;width:${paidPercent}%;background:var(--gradient-accent);border-radius:var(--radius-full);transition:width 0.5s;"></div>
                 </div>
             </div>
-            
             <div class="payment-timeline">
-                <strong style="display:block;margin-bottom:0.8rem;color:var(--text-primary);">
-                    <i class="fas fa-clock"></i> Payment Timeline
-                </strong>
-                
+                <strong style="display:block;margin-bottom:0.8rem;color:var(--text-primary);"><i class="fas fa-clock"></i> Payment Timeline</strong>
                 ${order.advance_paid_at ? `
                 <div class="payment-timeline-item advance">
-                    <div class="payment-timeline-icon advance">
-                        <i class="fas fa-arrow-down"></i>
-                    </div>
+                    <div class="payment-timeline-icon advance"><i class="fas fa-arrow-down"></i></div>
                     <div class="payment-timeline-content">
                         <div class="payment-timeline-title">Advance Payment</div>
-                        <div class="payment-timeline-detail">
-                            ₹${advancePaid.toLocaleString()} • ${new Date(order.advance_paid_at).toLocaleString()}
-                        </div>
-                        ${order.advance_payment_id ? `
-                        <div class="payment-timeline-id">TXN: ${order.advance_payment_id}</div>` : ''}
+                        <div class="payment-timeline-detail">${formatCurrency(advancePaid)} • ${new Date(order.advance_paid_at).toLocaleString()}</div>
+                        ${order.advance_payment_id ? `<div class="payment-timeline-id">TXN: ${order.advance_payment_id}</div>` : ''}
                     </div>
-                </div>` : `
-                <div class="payment-timeline-item pending">
-                    <div class="payment-timeline-icon pending">
-                        <i class="fas fa-clock"></i>
-                    </div>
-                    <div class="payment-timeline-content">
-                        <div class="payment-timeline-title">Advance Payment</div>
-                        <div class="payment-timeline-detail">Pending</div>
-                    </div>
-                </div>`}
-                
+                </div>` : `<div class="payment-timeline-item pending"><div class="payment-timeline-icon pending"><i class="fas fa-clock"></i></div><div class="payment-timeline-content"><div class="payment-timeline-title">Advance Payment</div><div class="payment-timeline-detail">Pending</div></div></div>`}
                 ${order.balance_paid_at ? `
                 <div class="payment-timeline-item balance">
-                    <div class="payment-timeline-icon balance">
-                        <i class="fas fa-check"></i>
-                    </div>
+                    <div class="payment-timeline-icon balance"><i class="fas fa-check"></i></div>
                     <div class="payment-timeline-content">
                         <div class="payment-timeline-title">Balance Payment</div>
-                        <div class="payment-timeline-detail">
-                            ₹${balancePaid.toLocaleString()} • ${new Date(order.balance_paid_at).toLocaleString()}
-                        </div>
-                        ${order.balance_payment_id ? `
-                        <div class="payment-timeline-id">TXN: ${order.balance_payment_id}</div>` : ''}
+                        <div class="payment-timeline-detail">${formatCurrency(balancePaid)} • ${new Date(order.balance_paid_at).toLocaleString()}</div>
+                        ${order.balance_payment_id ? `<div class="payment-timeline-id">TXN: ${order.balance_payment_id}</div>` : ''}
                     </div>
-                </div>` : due > 0 ? `
-                <div class="payment-timeline-item pending">
-                    <div class="payment-timeline-icon pending">
-                        <i class="fas fa-clock"></i>
-                    </div>
-                    <div class="payment-timeline-content">
-                        <div class="payment-timeline-title">Balance Payment</div>
-                        <div class="payment-timeline-detail">₹${due.toLocaleString()} Due</div>
-                    </div>
-                </div>` : `
-                <div class="payment-timeline-item balance">
-                    <div class="payment-timeline-icon balance">
-                        <i class="fas fa-check"></i>
-                    </div>
-                    <div class="payment-timeline-content">
-                        <div class="payment-timeline-title">Balance Payment</div>
-                        <div class="payment-timeline-detail">Not Required (Fully Paid)</div>
-                    </div>
-                </div>`}
-                
-                ${order.refund_amount ? `
-                <div class="payment-timeline-item refund">
-                    <div class="payment-timeline-icon refund">
-                        <i class="fas fa-undo"></i>
-                    </div>
-                    <div class="payment-timeline-content">
-                        <div class="payment-timeline-title">Refund ${order.refund_status ? `(${order.refund_status})` : ''}</div>
-                        <div class="payment-timeline-detail">
-                            ₹${order.refund_amount.toLocaleString()} • ${order.refund_processed_at ? new Date(order.refund_processed_at).toLocaleString() : 'Pending'}
-                        </div>
-                        ${order.refund_reason ? `<div style="font-size:0.75rem;margin-top:0.3rem;color:var(--text-muted)">Reason: ${escapeHtml(order.refund_reason)}</div>` : ''}
-                    </div>
-                </div>` : ''}
-            </div>
-            
-            ${order.payment_history && order.payment_history.length > 0 ? `
-            <div style="margin-top:1.5rem;">
-                <strong style="display:block;margin-bottom:0.8rem;color:var(--text-primary);">
-                    <i class="fas fa-list"></i> All Transactions
-                </strong>
-                <div style="max-height:200px;overflow-y:auto;">
-                    ${order.payment_history.map(txn => `
-                    <div style="display:flex;justify-content:space-between;align-items:center;padding:0.6rem 0.8rem;background:var(--surface);border-radius:var(--radius-sm);margin-bottom:0.4rem;font-size:0.85rem;">
-                        <div style="display:flex;align-items:center;gap:0.5rem;">
-                            <i class="fas ${txn.type === 'credit' ? 'fa-arrow-down' : txn.type === 'refund' ? 'fa-undo' : 'fa-arrow-up'}" style="color:${txn.type === 'credit' ? '#10b981' : txn.type === 'refund' ? '#ef4444' : '#ff6b35'};"></i>
-                            <span style="color:var(--text-secondary);">${txn.type === 'credit' ? 'Payment' : txn.type === 'refund' ? 'Refund' : 'Advance'}</span>
-                        </div>
-                        <div style="text-align:right;">
-                            <div style="font-weight:600;color:${txn.type === 'credit' ? '#10b981' : txn.type === 'refund' ? '#ef4444' : '#ff6b35'};">
-                                ${txn.type === 'credit' ? '+' : txn.type === 'refund' ? '-' : '+'}₹${txn.amount?.toLocaleString()}
-                            </div>
-                            <div style="font-size:0.7rem;color:var(--text-muted);">
-                                ${new Date(txn.created_at).toLocaleDateString()}
-                            </div>
-                        </div>
-                    </div>
-                    `).join('')}
-                </div>
-            </div>` : ''}
-        `;
+                </div>` : due > 0 ? `<div class="payment-timeline-item pending"><div class="payment-timeline-icon pending"><i class="fas fa-clock"></i></div><div class="payment-timeline-content"><div class="payment-timeline-title">Balance Payment</div><div class="payment-timeline-detail">${formatCurrency(due)} Due</div></div></div>` : `<div class="payment-timeline-item balance"><div class="payment-timeline-icon balance"><i class="fas fa-check"></i></div><div class="payment-timeline-content"><div class="payment-timeline-title">Balance Payment</div><div class="payment-timeline-detail">Fully Paid</div></div></div>`}
+            </div>`;
         
     } catch (error) {
         console.error('Payment modal error:', error);
-        container.innerHTML = `
-            <div class="modal-error">
-                <i class="fas fa-exclamation-triangle"></i>
-                <p>Failed to load payment details</p>
-                <p style="font-size:0.8rem;margin-top:0.5rem;">${error.message}</p>
-            </div>
-        `;
+        container.innerHTML = `<div class="modal-error"><i class="fas fa-exclamation-triangle"></i> <p>Failed to load payment details</p><p style="font-size:0.8rem;margin-top:0.5rem;">${error.message}</p></div>`;
     }
 }
 
@@ -2128,75 +1968,38 @@ async function payBalance(orderId, amount) {
         window.location.href = 'login.html';
         return;
     }
-    
     const btn = event?.currentTarget;
     const originalText = btn?.innerHTML;
-    
     if (btn) {
         btn.disabled = true;
         btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
     }
-    
     try {
-        // First verify the order status
-        console.log(`🔍 Checking order ${orderId} status...`);
         const ordersRes = await fetch(`${CONFIG.API}/my-orders`, {
             headers: { 'Authorization': `Bearer ${token}` }
         });
-        
-        if (!ordersRes.ok) {
-            throw new Error('Failed to fetch orders');
-        }
-        
+        if (!ordersRes.ok) throw new Error('Failed to fetch orders');
         const ordersData = await ordersRes.json();
         const order = ordersData.orders?.find(o => o.id === orderId);
-        
-        if (!order) {
-            throw new Error('Order not found');
-        }
-        
-        console.log('Order status:', order.status);
-        console.log('Balance due:', amount);
-        
-        // Check if payment is allowed
+        if (!order) throw new Error('Order not found');
         if (order.status !== 'ready_for_balance' && order.status !== 'delivered') {
             throw new Error(`Cannot pay balance: Order is "${order.status}". Wait for admin to mark as ready.`);
         }
-        
         if (amount <= 0) {
             showToast('✅ Order is already fully paid!', 'success');
             if (btn) btn.disabled = false;
             return;
         }
-        
-        // Initiate payment
-        console.log(`💰 Initiating balance payment for ₹${amount}`);
         const res = await fetch(`${CONFIG.API}/order/${orderId}/pay-balance`, {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
-            }
+            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` }
         });
-        
         const data = await res.json();
-        console.log('Payment initiation response:', data);
-        
-        if (!res.ok) {
-            throw new Error(data.error || `Server error: ${res.status}`);
-        }
-        
-        if (!data.success || !data.data) {
-            throw new Error(data.error || 'Invalid response from server');
-        }
-        
+        if (!res.ok) throw new Error(data.error || `Server error: ${res.status}`);
+        if (!data.success || !data.data) throw new Error(data.error || 'Invalid response from server');
         const paymentData = data.data;
+        if (!paymentData.key_id || !paymentData.razorpay_order_id) throw new Error('Invalid payment configuration');
         
-        if (!paymentData.key_id || !paymentData.razorpay_order_id) {
-            throw new Error('Invalid payment configuration from server');
-        }
-        
-        // Prepare Razorpay options
         const options = {
             key: paymentData.key_id,
             amount: Math.round(amount * 100),
@@ -2205,113 +2008,44 @@ async function payBalance(orderId, amount) {
             description: `Balance Payment - Order #${orderId}`,
             order_id: paymentData.razorpay_order_id,
             handler: async function(response) {
-                console.log('✅ Razorpay payment success:', response);
                 await verifyBalancePayment(orderId, amount, response);
             },
-            prefill: {
-                name: Auth.getUser()?.name || '',
-                email: Auth.getUser()?.email || '',
-                contact: Auth.getUser()?.phone || ''
-            },
-            theme: {
-                color: "#ff6b35"
-            },
-            modal: {
-                ondismiss: function() {
-                    console.log('Payment modal closed');
-                    if (btn) {
-                        btn.disabled = false;
-                        btn.innerHTML = originalText;
-                    }
-                    showToast('Payment cancelled', 'warning');
-                }
-            }
+            prefill: { name: Auth.getUser()?.name || '', email: Auth.getUser()?.email || '', contact: Auth.getUser()?.phone || '' },
+            theme: { color: "#ff6b35" },
+            modal: { ondismiss: function() { if (btn) { btn.disabled = false; btn.innerHTML = originalText; } showToast('Payment cancelled', 'warning'); } }
         };
-        
-        console.log('Opening Razorpay checkout...');
         const rzp = new Razorpay(options);
-        
         rzp.on('payment.failed', function(response) {
-            console.error('❌ Razorpay payment failed:', response.error);
             showToast(`Payment failed: ${response.error.description || 'Please try again'}`, 'error');
-            if (btn) {
-                btn.disabled = false;
-                btn.innerHTML = originalText;
-            }
-            
-            // Log failure to backend
+            if (btn) { btn.disabled = false; btn.innerHTML = originalText; }
             fetch(`${CONFIG.API}/payment-failed`, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                },
-                body: JSON.stringify({
-                    order_id: orderId,
-                    razorpay_order_id: paymentData.razorpay_order_id,
-                    error: response.error.code,
-                    error_description: response.error.description
-                })
+                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                body: JSON.stringify({ order_id: orderId, razorpay_order_id: paymentData.razorpay_order_id, error: response.error.code, error_description: response.error.description })
             }).catch(e => console.error('Failed to log error:', e));
         });
-        
         rzp.open();
-        
     } catch (error) {
-        console.error('❌ Pay balance error:', error);
         showToast(error.message, 'error');
-        if (btn) {
-            btn.disabled = false;
-            btn.innerHTML = originalText;
-        }
+        if (btn) { btn.disabled = false; btn.innerHTML = originalText; }
     }
 }
 
 async function verifyBalancePayment(orderId, amount, response) {
     const token = Auth.getToken();
-    
-    if (!token) {
-        showToast('Session expired. Please login again.', 'error');
-        return;
-    }
-    
+    if (!token) { showToast('Session expired. Please login again.', 'error'); return; }
     try {
-        console.log(`🔍 Verifying balance payment for order ${orderId}...`);
-        
         const res = await fetch(`${CONFIG.API}/verify-balance-payment`, {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
-            },
-            body: JSON.stringify({
-                order_id: orderId,
-                amount: amount,
-                razorpay_order_id: response.razorpay_order_id,
-                razorpay_payment_id: response.razorpay_payment_id,
-                razorpay_signature: response.razorpay_signature
-            })
+            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+            body: JSON.stringify({ order_id: orderId, amount: amount, razorpay_order_id: response.razorpay_order_id, razorpay_payment_id: response.razorpay_payment_id, razorpay_signature: response.razorpay_signature })
         });
-        
         const data = await res.json();
-        console.log('Verification response:', data);
-        
-        if (!res.ok) {
-            throw new Error(data.error || 'Verification failed');
-        }
-        
+        if (!res.ok) throw new Error(data.error || 'Verification failed');
         showToast('✅ Balance payment successful! Order completed.', 'success');
-        
-        // Reload orders to show updated status
-        setTimeout(() => {
-            loadOrders();
-        }, 1500);
-        
+        setTimeout(() => { loadOrders(); }, 1500);
     } catch (error) {
-        console.error('❌ Balance verification failed:', error);
         showToast(`⚠️ Payment verification failed: ${error.message}. Please contact support.`, 'warning');
-        
-        // Don't re-enable button as payment might be processing
     }
 }
 
@@ -2323,157 +2057,104 @@ function openChat(orderId) {
     currentChatOrderId = orderId;
     const chat = document.getElementById('chatWidget');
     const orderIdDisplay = document.getElementById('chatOrderIdDisplay');
-    
-    orderIdDisplay.textContent = `Order #${orderId}`;
+    orderIdDisplay.textContent = `Order`;
     chat.classList.add('active');
-    
     loadChatMessages();
-    
     if (chatPollInterval) clearInterval(chatPollInterval);
     chatPollInterval = setInterval(loadChatMessages, 5000);
-    
     setTimeout(() => document.getElementById('chatMessageInput')?.focus(), 100);
 }
 
 function closeChat() {
     document.getElementById('chatWidget')?.classList.remove('active');
-    if (chatPollInterval) {
-        clearInterval(chatPollInterval);
-        chatPollInterval = null;
-    }
+    if (chatPollInterval) { clearInterval(chatPollInterval); chatPollInterval = null; }
     currentChatOrderId = null;
 }
-
 document.getElementById('chatClose')?.addEventListener('click', closeChat);
 
 async function loadChatMessages() {
     if (!currentChatOrderId) return;
     const token = Auth.getToken();
     if (!token) return;
-    
     try {
         const res = await fetch(`${CONFIG.API}/conversation/order_${currentChatOrderId}/messages`, {
             headers: { 'Authorization': `Bearer ${token}` }
         });
-        
         if (res.ok) {
             const data = await res.json();
             renderChatMessages(data.messages || []);
         }
-    } catch (error) {
-        console.warn('Failed to load chat:', error.message);
-    }
+    } catch (error) { console.warn('Failed to load chat:', error.message); }
 }
 
 function renderChatMessages(messages) {
     const container = document.getElementById('chatMessages');
     if (!container) return;
-    
     if (!messages.length) {
         container.innerHTML = '<div style="text-align:center;padding:1rem;color:var(--text-muted);">💬 Start the conversation!</div>';
         return;
     }
-    
     container.innerHTML = messages.map(msg => {
         const isUser = msg.sender_role === 'user';
         const time = msg.created_at ? new Date(msg.created_at).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'}) : '';
-        
-        return `
-        <div class="message ${isUser ? 'user' : 'admin'}">
-            ${escapeHtml(msg.message || '')}
-            ${time ? `<div class="message-time">${time}</div>` : ''}
-        </div>`;
+        return `<div class="message ${isUser ? 'user' : 'admin'}">${escapeHtml(msg.message || '')}${time ? `<div class="message-time">${time}</div>` : ''}</div>`;
     }).join('');
-    
     container.scrollTop = container.scrollHeight;
 }
 
 async function sendChatMessage() {
     const input = document.getElementById('chatMessageInput');
     const message = input?.value?.trim();
-    
     if (!message || !currentChatOrderId) return;
-    
     const token = Auth.getToken();
-    if (!token) {
-        showToast('Please login to send messages', 'error');
-        return;
-    }
-    
+    if (!token) { showToast('Please login to send messages', 'error'); return; }
     input.value = '';
-    
     try {
         const res = await fetch(`${CONFIG.API}/conversation/order_${currentChatOrderId}/send`, {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
-            },
+            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
             body: JSON.stringify({ message })
         });
-        
         if (!res.ok) throw new Error('Failed to send');
-        
         await loadChatMessages();
-        
     } catch (error) {
         showToast('Failed to send message', 'error');
         if (input) input.value = message;
     }
 }
-
 document.getElementById('chatSendBtn')?.addEventListener('click', sendChatMessage);
 document.getElementById('chatMessageInput')?.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
-        e.preventDefault();
-        sendChatMessage();
-    }
+    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendChatMessage(); }
 });
 
 // ===== 🔄 Initialize =====
 document.addEventListener('DOMContentLoaded', async () => {
     if (Auth.isLoggedIn()) {
         const freshUser = await Auth.fetchUser();
-        if (freshUser) {
-            localStorage.setItem('dc_user', JSON.stringify(freshUser));
-        }
+        if (freshUser) { localStorage.setItem('dc_user', JSON.stringify(freshUser)); }
         updateProfileUI(Auth.getUser());
     }
-    
     await loadOrders();
-    
     if (Auth.isLoggedIn()) {
         const cartItems = await Cart.fetch();
         const badge = document.getElementById('cartBadge');
-        if (badge) {
-            badge.textContent = cartItems.length;
-            badge.style.display = cartItems.length > 0 ? 'flex' : 'none';
-        }
+        if (badge) { badge.textContent = cartItems.length; badge.style.display = cartItems.length > 0 ? 'flex' : 'none'; }
     }
-    
     window.addEventListener('resize', () => {
         const nav = document.getElementById('navbar');
         const mobileMenu = document.getElementById('mobileMenu');
-        if (nav && mobileMenu) {
-            mobileMenu.style.top = window.scrollY > 50 ? '64px' : (window.innerWidth <= 768 ? '68px' : '72px');
-        }
+        if (nav && mobileMenu) { mobileMenu.style.top = window.scrollY > 50 ? '64px' : (window.innerWidth <= 768 ? '68px' : '72px'); }
         if (window.innerWidth > 768 && mobileMenu?.classList.contains('active')) {
             mobileMenu.classList.remove('active');
             menuToggle?.classList.remove('active');
             body.classList.remove('menu-open');
         }
     });
-    
     document.addEventListener('visibilitychange', async () => {
         if (!document.hidden && Auth.isLoggedIn()) {
             const freshUser = await Auth.fetchUser();
             if (freshUser) updateProfileUI(freshUser);
         }
-    });
-    
-    // Cleanup timers on page unload
-    window.addEventListener('beforeunload', () => {
-        Object.values(cancellationTimers).forEach(timer => clearInterval(timer));
     });
 });
 
