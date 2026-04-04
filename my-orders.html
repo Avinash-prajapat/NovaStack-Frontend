@@ -493,8 +493,175 @@ function renderCancelModal(c,oid,f){const o=allOrders.find(x=>x.id===oid);if(!o)
 async function submitCancel(oid){const i=document.getElementById('cancelInput'),r=i?.value?.trim();if(!r){showToast('Please provide a reason','warning');return}const t=Auth.getToken(),btn=event?.target;if(btn){btn.disabled=true;btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> Processing...'}try{const res=await fetch(`${CONFIG.API}/order/${oid}/cancel`,{method:'POST',headers:{'Content-Type':'application/json','Authorization':`Bearer ${t}`},body:JSON.stringify({reason:r})});const d=await res.json();if(!res.ok)throw new Error(d.error||'Cancellation failed');showToast('✅ Cancellation requested! Admin will review within 24h.');closeModal();loadOrders()}catch(e){showToast(e.message,'error');if(btn){btn.disabled=false;btn.innerHTML='Confirm Cancel'}}}
 
 // ===== 💳 Payment History Modal (UPDATED WITH REFUND) =====
-async function renderPaymentModal(c,oid){const t=Auth.getToken();try{const res=await fetch(`${CONFIG.API}/my-orders`,{headers:{'Authorization':`Bearer ${t}`}});const o=(await res.json()).orders?.find(x=>x.id===oid);if(!o){c.innerHTML='<p class="modal-error">Order not found</p>';return}const total=o.price||0,adv=o.advance_paid||0,bal=o.balance_paid||0,paid=o.total_paid||adv,due=Math.max(0,total-paid),pct=total>0?Math.round((paid/total)*100):0,c.innerHTML=`<div class="payment-summary-grid"><div class="payment-stat-card"><div class="payment-stat-label">Total Amount</div><div class="payment-stat-value">₹${total.toLocaleString()}</div></div><div class="payment-stat-card highlight"><div class="payment-stat-label">Total Paid</div><div class="payment-stat-value green">₹${paid.toLocaleString()}</div></div><div class="payment-stat-card"><div class="payment-stat-label">Advance (15%)</div><div class="payment-stat-value orange">₹${adv.toLocaleString()}</div></div><div class="payment-stat-card ${due>0?'warning':'highlight'}"><div class="payment-stat-label">${due>0?'Balance Due':'Balance Paid'}</div><div class="payment-stat-value ${due>0?'orange':'green'}">₹${due>0?due.toLocaleString():'0'}</div></div></div><div style="margin-bottom:1.5rem"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.8rem"><strong style="color:var(--text-primary)">Payment Progress</strong><span style="color:var(--accent);font-weight:600">${pct}%</span></div><div style="height:8px;background:var(--surface);border-radius:var(--radius-full);overflow:hidden"><div style="height:100%;width:${pct}%;background:var(--gradient-accent);border-radius:var(--radius-full);transition:width 0.5s"></div></div></div><div class="payment-timeline"><strong style="display:block;margin-bottom:0.8rem;color:var(--text-primary)"><i class="fas fa-clock"></i> Payment Timeline</strong>${o.advance_paid_at?`<div class="payment-timeline-item advance"><div class="payment-timeline-icon advance"><i class="fas fa-arrow-down"></i></div><div class="payment-timeline-content"><div class="payment-timeline-title">Advance Payment</div><div class="payment-timeline-detail">₹${adv.toLocaleString()} • ${new Date(o.advance_paid_at).toLocaleString()}</div>${o.advance_payment_id?`<div class="payment-timeline-id">TXN: ${o.advance_payment_id}</div>`:''}</div></div>`:`<div class="payment-timeline-item pending"><div class="payment-timeline-icon pending"><i class="fas fa-clock"></i></div><div class="payment-timeline-content"><div class="payment-timeline-title">Advance Payment</div><div class="payment-timeline-detail">Pending</div></div></div>`}${o.balance_paid_at?`<div class="payment-timeline-item balance"><div class="payment-timeline-icon balance"><i class="fas fa-check"></i></div><div class="payment-timeline-content"><div class="payment-timeline-title">Balance Payment</div><div class="payment-timeline-detail">₹${bal.toLocaleString()} • ${new Date(o.balance_paid_at).toLocaleString()}</div>${o.balance_payment_id?`<div class="payment-timeline-id">TXN: ${o.balance_payment_id}</div>`:''}</div></div>`:due>0?`<div class="payment-timeline-item pending"><div class="payment-timeline-icon pending"><i class="fas fa-clock"></i></div><div class="payment-timeline-content"><div class="payment-timeline-title">Balance Payment</div><div class="payment-timeline-detail">₹${due.toLocaleString()} Due</div></div></div>`:`<div class="payment-timeline-item balance"><div class="payment-timeline-icon balance"><i class="fas fa-check"></i></div><div class="payment-timeline-content"><div class="payment-timeline-title">Balance Payment</div><div class="payment-timeline-detail">Not Required (Fully Paid)</div></div></div>`}${o.refund_amount?`<div class="payment-timeline-item refund"><div class="payment-timeline-icon refund"><i class="fas fa-undo"></i></div><div class="payment-timeline-content"><div class="payment-timeline-title">Refund ${o.refund_status?`(${o.refund_status})`:''}</div><div class="payment-timeline-detail">₹${o.refund_amount.toLocaleString()} • ${o.refund_processed_at?new Date(o.refund_processed_at).toLocaleString():'Pending'}</div>${o.refund_reason?`<div style="font-size:0.75rem;margin-top:0.3rem;color:var(--text-muted)">Reason: ${escapeHtml(o.refund_reason)}</div>`:''}</div></div>`:''}</div>${o.payment_history&&o.payment_history.length>0?`<div style="margin-top:1.5rem"><strong style="display:block;margin-bottom:0.8rem;color:var(--text-primary)"><i class="fas fa-list"></i> All Transactions</strong><div style="max-height:200px;overflow-y:auto">${o.payment_history.map(tx=>`<div style="display:flex;justify-content:space-between;align-items:center;padding:0.6rem 0.8rem;background:var(--surface);border-radius:var(--radius-sm);margin-bottom:0.4rem;font-size:0.85rem"><div style="display:flex;align-items:center;gap:0.5rem"><i class="fas ${tx.type==='credit'?'fa-arrow-down':tx.type==='refund'?'fa-undo':'fa-arrow-up'}" style="color:${tx.type==='credit'?'#10b981':tx.type==='refund'?'#ef4444':'#ff6b35'}"></i><span style="color:var(--text-secondary)">${tx.type==='credit'?'Payment':tx.type==='refund'?'Refund':'Advance'}</span></div><div style="text-align:right"><div style="font-weight:600;color:${tx.type==='credit'?'#10b981':tx.type==='refund'?'#ef4444':'#ff6b35'}">${tx.type==='credit'?'+':tx.type==='refund'?'-':'+'}₹${tx.amount?.toLocaleString()}</div><div style="font-size:0.7rem;color:var(--text-muted)">${new Date(tx.created_at).toLocaleDateString()}</div></div></div>`).join('')}</div></div>`:''}`}catch(e){console.error(e);c.innerHTML=`<div class="modal-error"><i class="fas fa-exclamation-triangle"></i><p>Failed to load payment details</p><p style="font-size:0.8rem;margin-top:0.5rem">${e.message}</p></div>`}}
-
+// ===== 💳 Payment History Modal - FIXED VERSION =====
+async function renderPaymentModal(container, orderId) {
+    const token = Auth.getToken();
+    
+    try {
+        const res = await fetch(`${CONFIG.API}/my-orders`, {
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const data = await res.json();
+        const order = data.orders?.find(o => o.id === orderId);
+        
+        if (!order) {
+            container.innerHTML = '<p class="modal-error">Order not found</p>';
+            return;
+        }
+        
+        // 🔥 Sab variables alag se declare karo
+        const total = order.price || 0;
+        const advancePaid = order.advance_paid || 0;
+        const balancePaid = order.balance_paid || 0;
+        const totalPaid = order.total_paid || advancePaid;
+        const due = Math.max(0, total - totalPaid);
+        const paidPercent = total > 0 ? Math.round((totalPaid / total) * 100) : 0;
+        
+        // 🔥 Ab innerHTML alag se set karo (const chain ke bahar)
+        container.innerHTML = `
+            <div class="payment-summary-grid">
+                <div class="payment-stat-card">
+                    <div class="payment-stat-label">Total Amount</div>
+                    <div class="payment-stat-value">₹${total.toLocaleString()}</div>
+                </div>
+                <div class="payment-stat-card highlight">
+                    <div class="payment-stat-label">Total Paid</div>
+                    <div class="payment-stat-value green">₹${totalPaid.toLocaleString()}</div>
+                </div>
+                <div class="payment-stat-card">
+                    <div class="payment-stat-label">Advance (15%)</div>
+                    <div class="payment-stat-value orange">₹${advancePaid.toLocaleString()}</div>
+                </div>
+                <div class="payment-stat-card ${due > 0 ? 'warning' : 'highlight'}">
+                    <div class="payment-stat-label">${due > 0 ? 'Balance Due' : 'Balance Paid'}</div>
+                    <div class="payment-stat-value ${due > 0 ? 'orange' : 'green'}">₹${due > 0 ? due.toLocaleString() : '0'}</div>
+                </div>
+            </div>
+            
+            <div style="margin-bottom:1.5rem;">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.8rem;">
+                    <strong style="color:var(--text-primary);">Payment Progress</strong>
+                    <span style="color:var(--accent);font-weight:600;">${paidPercent}%</span>
+                </div>
+                <div style="height:8px;background:var(--surface);border-radius:var(--radius-full);overflow:hidden;">
+                    <div style="height:100%;width:${paidPercent}%;background:var(--gradient-accent);border-radius:var(--radius-full);transition:width 0.5s;"></div>
+                </div>
+            </div>
+            
+            <div class="payment-timeline">
+                <strong style="display:block;margin-bottom:0.8rem;color:var(--text-primary);">
+                    <i class="fas fa-clock"></i> Payment Timeline
+                </strong>
+                
+                ${order.advance_paid_at ? `
+                <div class="payment-timeline-item advance">
+                    <div class="payment-timeline-icon advance">
+                        <i class="fas fa-arrow-down"></i>
+                    </div>
+                    <div class="payment-timeline-content">
+                        <div class="payment-timeline-title">Advance Payment</div>
+                        <div class="payment-timeline-detail">
+                            ₹${advancePaid.toLocaleString()} • ${new Date(order.advance_paid_at).toLocaleString()}
+                        </div>
+                        ${order.advance_payment_id ? `
+                        <div class="payment-timeline-id">TXN: ${order.advance_payment_id}</div>` : ''}
+                    </div>
+                </div>` : `
+                <div class="payment-timeline-item pending">
+                    <div class="payment-timeline-icon pending">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="payment-timeline-content">
+                        <div class="payment-timeline-title">Advance Payment</div>
+                        <div class="payment-timeline-detail">Pending</div>
+                    </div>
+                </div>`}
+                
+                ${order.balance_paid_at ? `
+                <div class="payment-timeline-item balance">
+                    <div class="payment-timeline-icon balance">
+                        <i class="fas fa-check"></i>
+                    </div>
+                    <div class="payment-timeline-content">
+                        <div class="payment-timeline-title">Balance Payment</div>
+                        <div class="payment-timeline-detail">
+                            ₹${balancePaid.toLocaleString()} • ${new Date(order.balance_paid_at).toLocaleString()}
+                        </div>
+                        ${order.balance_payment_id ? `
+                        <div class="payment-timeline-id">TXN: ${order.balance_payment_id}</div>` : ''}
+                    </div>
+                </div>` : due > 0 ? `
+                <div class="payment-timeline-item pending">
+                    <div class="payment-timeline-icon pending">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="payment-timeline-content">
+                        <div class="payment-timeline-title">Balance Payment</div>
+                        <div class="payment-timeline-detail">₹${due.toLocaleString()} Due</div>
+                    </div>
+                </div>` : `
+                <div class="payment-timeline-item balance">
+                    <div class="payment-timeline-icon balance">
+                        <i class="fas fa-check"></i>
+                    </div>
+                    <div class="payment-timeline-content">
+                        <div class="payment-timeline-title">Balance Payment</div>
+                        <div class="payment-timeline-detail">Not Required (Fully Paid)</div>
+                    </div>
+                </div>`}
+                
+                ${order.refund_amount ? `
+                <div class="payment-timeline-item refund">
+                    <div class="payment-timeline-icon refund">
+                        <i class="fas fa-undo"></i>
+                    </div>
+                    <div class="payment-timeline-content">
+                        <div class="payment-timeline-title">Refund ${order.refund_status ? `(${order.refund_status})` : ''}</div>
+                        <div class="payment-timeline-detail">
+                            ₹${order.refund_amount.toLocaleString()} • ${order.refund_processed_at ? new Date(order.refund_processed_at).toLocaleString() : 'Pending'}
+                        </div>
+                        ${order.refund_reason ? `<div style="font-size:0.75rem;margin-top:0.3rem;color:var(--text-muted)">Reason: ${escapeHtml(order.refund_reason)}</div>` : ''}
+                    </div>
+                </div>` : ''}
+            </div>
+            
+            ${order.payment_history && order.payment_history.length > 0 ? `
+            <div style="margin-top:1.5rem;">
+                <strong style="display:block;margin-bottom:0.8rem;color:var(--text-primary);">
+                    <i class="fas fa-list"></i> All Transactions
+                </strong>
+                <div style="max-height:200px;overflow-y:auto;">
+                    ${order.payment_history.map(txn => `
+                    <div style="display:flex;justify-content:space-between;align-items:center;padding:0.6rem 0.8rem;background:var(--surface);border-radius:var(--radius-sm);margin-bottom:0.4rem;font-size:0.85rem;">
+                        <div style="display:flex;align-items:center;gap:0.5rem;">
+                            <i class="fas ${txn.type === 'credit' ? 'fa-arrow-down' : txn.type === 'refund' ? 'fa-undo' : 'fa-arrow-up'}" style="color:${txn.type === 'credit' ? '#10b981' : txn.type === 'refund' ? '#ef4444' : '#ff6b35'};"></i>
+                            <span style="color:var(--text-secondary);">${txn.type === 'credit' ? 'Payment' : txn.type === 'refund' ? 'Refund' : 'Advance'}</span>
+                        </div>
+                        <div style="text-align:right;">
+                            <div style="font-weight:600;color:${txn.type === 'credit' ? '#10b981' : txn.type === 'refund' ? '#ef4444' : '#ff6b35'};">
+                                ${txn.type === 'credit' ? '+' : txn.type === 'refund' ? '-' : '+'}₹${txn.amount?.toLocaleString()}
+                            </div>
+                            <div style="font-size:0.7rem;color:var(--text-muted);">
+                                ${new Date(txn.created_at).toLocaleDateString()}
+                            </div>
+                        </div>
+                    </div>
+                    `).join('')}
+                </div>
+            </div>` : ''}
+        `;
+        
+    } catch (error) {
+        console.error('Payment modal error:', error);
+        container.innerHTML = `
+            <div class="modal-error">
+                <i class="fas fa-exclamation-triangle"></i>
+                <p>Failed to load payment details</p>
+                <p style="font-size:0.8rem;margin-top:0.5rem;">${error.message}</p>
+            </div>
+        `;
+    }
+}
 // ===== 💰 Pay Balance =====
 async function payBalance(oid,amt){const t=Auth.getToken();if(!t){showToast('Please login to continue','error');window.location.href='login.html';return}const btn=event?.currentTarget,orig=btn?.innerHTML;if(btn){btn.disabled=true;btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> Processing...'}try{const or=await fetch(`${CONFIG.API}/my-orders`,{headers:{'Authorization':`Bearer ${t}`}});if(!or.ok)throw new Error('Failed to fetch orders');const od=await or.json(),o=od.orders?.find(x=>x.id===oid);if(!o)throw new Error('Order not found');if(o.status!=='ready_for_balance'&&o.status!=='delivered')throw new Error(`Cannot pay balance: Order is "${o.status}". Wait for admin to mark as ready.`);if(amt<=0){showToast('✅ Order is already fully paid!','success');if(btn)btn.disabled=false;return}const r=await fetch(`${CONFIG.API}/order/${oid}/pay-balance`,{method:'POST',headers:{'Content-Type':'application/json','Authorization':`Bearer ${t}`}});const d=await r.json();if(!r.ok)throw new Error(d.error||`Server error: ${r.status}`);if(!d.success||!d.data)throw new Error(d.error||'Invalid response');const p=d.data;if(!p.key_id||!p.razorpay_order_id)throw new Error('Invalid payment config');const op={key:p.key_id,amount:Math.round(amt*100),currency:"INR",name:"NovaStack",description:`Balance Payment - Order #${oid}`,order_id:p.razorpay_order_id,handler:async(res)=>{console.log('✅ Razorpay success:',res);await verifyBalance(oid,amt,res)},prefill:{name:Auth.getUser()?.name||'',email:Auth.getUser()?.email||'',contact:Auth.getUser()?.phone||''},theme:{color:"#ff6b35"},modal:{ondismiss:()=>{console.log('Modal closed');if(btn){btn.disabled=false;btn.innerHTML=orig}showToast('Payment cancelled','warning')}}};const rzp=new Razorpay(op);rzp.on('payment.failed',function(res){console.error('❌ Razorpay failed:',res.error);showToast(`Payment failed: ${res.error.description||'Try again'}`,'error');if(btn){btn.disabled=false;btn.innerHTML=orig}fetch(`${CONFIG.API}/payment-failed`,{method:'POST',headers:{'Content-Type':'application/json','Authorization':`Bearer ${t}`},body:JSON.stringify({order_id:oid,razorpay_order_id:p.razorpay_order_id,error:res.error.code,error_description:res.error.description})}).catch(()=>{})});rzp.open()}catch(e){console.error(e);showToast(e.message,'error');if(btn){btn.disabled=false;btn.innerHTML=orig}}}
 async function verifyBalance(oid,amt,res){const t=Auth.getToken();if(!t){showToast('Session expired','error');return}try{const r=await fetch(`${CONFIG.API}/verify-balance-payment`,{method:'POST',headers:{'Content-Type':'application/json','Authorization':`Bearer ${t}`},body:JSON.stringify({order_id:oid,amount:amt,razorpay_order_id:res.razorpay_order_id,razorpay_payment_id:res.razorpay_payment_id,razorpay_signature:res.razorpay_signature})});const d=await r.json();if(!r.ok)throw new Error(d.error||'Verification failed');showToast('✅ Balance payment successful! Order completed.','success');setTimeout(()=>loadOrders(),1500)}catch(e){showToast(`⚠️ Verification failed: ${e.message}. Contact support.`,'warning')}}
