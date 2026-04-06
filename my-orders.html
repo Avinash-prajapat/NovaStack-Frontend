@@ -22,7 +22,7 @@
             --gradient: linear-gradient(135deg, #ff6b35 0%, #f7c531 100%);
             --success: #10b981; --warning: #f59e0b; --error: #ef4444; --info: #3b82f6;
             --radius-sm: 8px; --radius-md: 14px; --radius-lg: 20px; --radius-full: 9999px;
-            --shadow-sm: 0 4px 12px rgba(0,0,0,0.2); --shadow-md: 0 8px 24px rgba(0,0,0,0.3); --shadow-lg: 0 12px 40px rgba(0,0,0,0.4);
+            --shadow-sm: 0 4px 12px rgba(0,0,0,0.2); --shadow-md: 0 8px 24px rgba(0,0,0,0.3);
             --trans: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
         }
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -30,13 +30,13 @@
         body { font-family: 'Inter', sans-serif; background: var(--bg-primary); color: var(--text-primary); line-height: 1.5; min-height: 100vh; overflow-x: hidden; }
         body.menu-open { overflow: hidden; position: fixed; width: 100%; }
 
-        /* Nav */
+        /* Navigation */
         nav { position: fixed; top: 0; left: 0; right: 0; z-index: 1000; background: rgba(10, 11, 15, 0.92); backdrop-filter: blur(16px); border-bottom: 1px solid var(--border); padding: 0 5%; display: flex; align-items: center; justify-content: space-between; height: 68px; transition: var(--trans); }
         nav.scrolled { height: 60px; box-shadow: var(--shadow-md); }
         .logo { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.4rem; color: var(--text-primary); text-decoration: none; display: flex; align-items: center; gap: 0.3rem; }
         .logo span { background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         .nav-links { display: flex; gap: 1.5rem; align-items: center; }
-        .nav-links a { text-decoration: none; color: var(--text-secondary); font-size: 0.9rem; font-weight: 500; padding: 0.4rem 0; transition: var(--trans); }
+        .nav-links a { text-decoration: none; color: var(--text-secondary); font-size: 0.9rem; font-weight: 500; transition: var(--trans); }
         .nav-links a:hover, .nav-links a.active { color: var(--text-primary); }
         .user-toggle-wrapper { position: relative; display: flex; align-items: center; }
         .user-toggle { display: flex; align-items: center; gap: 0.5rem; padding: 0.35rem 0.7rem; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-full); cursor: pointer; transition: var(--trans); min-height: 38px; }
@@ -45,7 +45,7 @@
         .user-name { font-size: 0.85rem; font-weight: 500; color: var(--text-primary); max-width: 110px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .user-toggle i { font-size: 0.7rem; color: var(--text-muted); transition: transform 0.2s; }
         .user-toggle.active i { transform: rotate(180deg); }
-        .user-dropdown { position: absolute; top: calc(100% + 10px); left: 0; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-md); min-width: 220px; padding: 0.4rem 0; box-shadow: var(--shadow-lg); backdrop-filter: blur(20px); opacity: 0; visibility: hidden; transform: translateY(-8px); transition: var(--trans); z-index: 1001; }
+        .user-dropdown { position: absolute; top: calc(100% + 10px); left: 0; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-md); min-width: 220px; padding: 0.4rem 0; box-shadow: var(--shadow-md); backdrop-filter: blur(20px); opacity: 0; visibility: hidden; transform: translateY(-8px); transition: var(--trans); z-index: 1001; }
         .user-dropdown.active { opacity: 1; visibility: visible; transform: translateY(0); }
         .user-dropdown::before { content: ''; position: absolute; top: -5px; left: 20px; width: 10px; height: 10px; background: var(--bg-card); border-left: 1px solid var(--border); border-top: 1px solid var(--border); transform: rotate(45deg); }
         .dropdown-item { display: flex; align-items: center; gap: 0.7rem; padding: 0.6rem 1rem; color: var(--text-secondary); text-decoration: none; font-size: 0.85rem; transition: var(--trans); }
@@ -54,7 +54,7 @@
         .dropdown-divider { height: 1px; background: var(--border); margin: 0.3rem 0; }
         .dropdown-logout { color: var(--error) !important; }
         .dropdown-logout i { color: var(--error) !important; }
-        .menu-toggle { display: none; font-size: 1.3rem; color: var(--accent); cursor: pointer; padding: 0.5rem; border-radius: var(--radius-sm); min-width: 40px; min-height: 40px; align-items: center; justify-content: center; background: none; border: none; }
+        .menu-toggle { display: none; font-size: 1.3rem; color: var(--accent); cursor: pointer; padding: 0.5rem; border-radius: var(--radius-sm); min-width: 40px; min-height: 40px; background: none; border: none; }
         .mobile-menu { position: fixed; top: 68px; left: 0; right: 0; background: var(--bg-secondary); border-bottom: 1px solid var(--border); padding: 1rem 5%; max-height: 0; overflow: hidden; transition: max-height 0.3s ease, opacity 0.3s ease; opacity: 0; z-index: 999; }
         .mobile-menu.active { max-height: 60vh; opacity: 1; overflow-y: auto; }
         .mobile-nav-link { display: flex; align-items: center; gap: 0.7rem; padding: 0.9rem 1rem; color: var(--text-secondary); text-decoration: none; font-size: 0.95rem; border-radius: var(--radius-md); }
@@ -63,174 +63,155 @@
         .mobile-divider { height: 1px; background: var(--border); margin: 0.4rem 0; }
         .mobile-logout { width: 100%; color: var(--error); border: 1px solid rgba(239,68,68,0.2); margin-top: 0.5rem; justify-content: center; }
 
-        /* Main */
+        /* Main Content */
         .container { max-width: 1100px; margin: 0 auto; padding: 85px 5% 4rem; }
         .page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem; }
         .page-header h1 { font-family: 'Syne', sans-serif; font-weight: 800; font-size: clamp(1.4rem, 3vw, 1.8rem); display: flex; align-items: center; gap: 0.5rem; }
         .btn-new { background: var(--gradient); color: white; text-decoration: none; padding: 0.65rem 1.4rem; border-radius: var(--radius-full); font-weight: 600; font-size: 0.9rem; transition: var(--trans); min-height: 42px; display: inline-flex; align-items: center; gap: 0.5rem; }
         .btn-new:hover { transform: translateY(-2px); box-shadow: 0 6px 20px var(--accent-glow); }
 
-        /* Policy Notice */
-        .policy-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.2rem; margin-bottom: 2rem; display: flex; gap: 1rem; align-items: flex-start; }
-        .policy-icon { color: var(--accent); font-size: 1.4rem; margin-top: 0.2rem; }
-        .policy-text h3 { font-size: 1.05rem; font-weight: 700; margin-bottom: 0.4rem; }
-        .policy-text p { color: var(--text-secondary); font-size: 0.9rem; line-height: 1.5; }
-        .policy-text strong { color: var(--text-primary); font-weight: 600; }
+        /* Policy Card */
+        .policy-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1rem 1.2rem; margin-bottom: 1.5rem; display: flex; gap: 1rem; align-items: flex-start; }
+        .policy-icon { color: var(--accent); font-size: 1.2rem; margin-top: 0.1rem; }
+        .policy-text h3 { font-size: 0.95rem; font-weight: 700; margin-bottom: 0.2rem; }
+        .policy-text p { color: var(--text-secondary); font-size: 0.8rem; line-height: 1.4; }
 
         /* Orders Grid */
-        .orders-grid { display: grid; gap: 1.2rem; }
-        .order-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.2rem; transition: var(--trans); position: relative; }
-        .order-card:hover { border-color: var(--border-hover); transform: translateY(-3px); box-shadow: var(--shadow-md); }
-        .order-card.processing-refund { border-color: var(--warning); background: rgba(245, 158, 11, 0.05); }
-        .order-card.refund-completed { border-color: var(--success); background: rgba(16, 185, 129, 0.05); }
-        .order-card.refund-rejected { border-color: var(--error); background: rgba(239, 68, 68, 0.05); }
+        .orders-grid { display: grid; gap: 1rem; }
+        .order-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1rem; transition: var(--trans); position: relative; }
+        .order-card:hover { border-color: var(--border-hover); transform: translateY(-2px); box-shadow: var(--shadow-md); }
         
-        .refund-badge { position: absolute; top: 1rem; right: 1rem; padding: 0.35rem 0.8rem; border-radius: var(--radius-full); font-size: 0.75rem; font-weight: 600; display: flex; align-items: center; gap: 5px; background: rgba(255,255,255,0.05); border: 1px solid var(--border); }
-        .badge-review { background: rgba(59,130,246,0.15); color: var(--info); border-color: rgba(59,130,246,0.3); }
-        .badge-processing { background: rgba(245,158,11,0.15); color: var(--warning); border-color: rgba(245,158,11,0.3); }
-        .badge-credited { background: rgba(16,185,129,0.15); color: var(--success); border-color: rgba(16,185,129,0.3); }
-        .badge-noteligible { background: rgba(239,68,68,0.15); color: var(--error); border-color: rgba(239,68,68,0.3); }
-
-        .order-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem; gap: 1rem; flex-wrap: wrap; }
-        .project-info h3 { font-weight: 700; font-size: 1.1rem; margin-bottom: 0.3rem; }
-        .project-type { font-size: 0.85rem; color: var(--text-secondary); display: flex; align-items: center; gap: 0.5rem; }
-        .status-badge { padding: 0.3rem 0.8rem; border-radius: var(--radius-full); font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; background: var(--surface); border: 1px solid var(--border); }
-        .status-pending { color: var(--warning); }
+        .order-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.8rem; gap: 1rem; flex-wrap: wrap; }
+        .project-info h3 { font-weight: 700; font-size: 1rem; margin-bottom: 0.2rem; }
+        .project-type { font-size: 0.75rem; color: var(--text-muted); display: flex; align-items: center; gap: 0.4rem; }
+        .status-badge { padding: 0.2rem 0.7rem; border-radius: var(--radius-full); font-size: 0.65rem; font-weight: 600; text-transform: uppercase; background: var(--surface); border: 1px solid var(--border); }
         .status-payment_received { color: var(--info); background: rgba(59,130,246,0.15); border-color: rgba(59,130,246,0.3); }
         .status-in_progress { color: var(--accent); background: rgba(255,107,53,0.15); border-color: rgba(255,107,53,0.3); }
         .status-ready_for_balance { color: var(--warning); background: rgba(245,158,11,0.15); border-color: rgba(245,158,11,0.3); }
         .status-completed, .status-delivered { color: var(--success); background: rgba(16,185,129,0.15); border-color: rgba(16,185,129,0.3); }
-        .status-cancelled { color: var(--error); background: rgba(239,68,68,0.15); border-color: rgba(239,68,68,0.3); }
+        .status-cancelled, .status-cancellation_requested { color: var(--error); background: rgba(239,68,68,0.15); border-color: rgba(239,68,68,0.3); }
+        .status-pending { color: var(--warning); background: rgba(245,158,11,0.15); border-color: rgba(245,158,11,0.3); }
 
-        .payment-summary { padding: 1rem; background: var(--surface); border-radius: var(--radius-md); margin-bottom: 1rem; border: 1px solid var(--border); }
-        .payment-row { display: flex; justify-content: space-between; margin-bottom: 0.6rem; font-size: 0.9rem; }
+        /* Refund Badge */
+        .refund-badge { position: absolute; top: 0.8rem; right: 0.8rem; padding: 0.2rem 0.6rem; border-radius: var(--radius-full); font-size: 0.65rem; font-weight: 600; display: flex; align-items: center; gap: 0.3rem; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); }
+        .refund-pending { background: rgba(245,158,11,0.2); color: var(--warning); border: 1px solid rgba(245,158,11,0.3); }
+        .refund-processing { background: rgba(59,130,246,0.2); color: var(--info); border: 1px solid rgba(59,130,246,0.3); }
+        .refund-completed { background: rgba(16,185,129,0.2); color: var(--success); border: 1px solid rgba(16,185,129,0.3); }
+        .refund-failed { background: rgba(239,68,68,0.2); color: var(--error); border: 1px solid rgba(239,68,68,0.3); }
+
+        .payment-summary { padding: 0.7rem; background: var(--surface); border-radius: var(--radius-md); margin-bottom: 0.8rem; }
+        .payment-row { display: flex; justify-content: space-between; margin-bottom: 0.4rem; font-size: 0.8rem; }
         .amount-paid { color: var(--success); font-weight: 600; }
         .balance-due { color: var(--warning); font-weight: 500; }
-        .progress-track { height: 4px; background: var(--border); border-radius: var(--radius-full); overflow: hidden; margin-top: 0.5rem; }
-        .progress-bar { height: 100%; background: var(--gradient); border-radius: var(--radius-full); transition: width 0.4s ease; }
+        .progress-track { height: 3px; background: var(--border); border-radius: var(--radius-full); overflow: hidden; margin-top: 0.3rem; }
+        .progress-bar { height: 100%; background: var(--gradient); border-radius: var(--radius-full); transition: width 0.3s ease; }
 
-        .notice-box { padding: 0.8rem 1rem; border-radius: var(--radius-md); margin-bottom: 1rem; font-size: 0.85rem; display: flex; align-items: flex-start; gap: 0.6rem; border-left: 3px solid; }
-        .notice-active { background: rgba(59,130,246,0.1); border-color: var(--info); color: var(--text-secondary); }
-        .notice-expired { background: rgba(239,68,68,0.1); border-color: var(--error); color: var(--text-secondary); }
-        .notice-box i { margin-top: 0.2rem; }
-        .notice-timer { font-weight: 700; color: var(--accent); }
+        .notice-box { padding: 0.5rem 0.7rem; border-radius: var(--radius-md); margin-bottom: 0.8rem; font-size: 0.75rem; display: flex; align-items: center; gap: 0.5rem; background: rgba(59,130,246,0.08); border-left: 2px solid var(--info); }
+        .notice-expired { background: rgba(239,68,68,0.08); border-left-color: var(--error); }
+        .notice-timer { color: var(--accent); font-weight: 600; }
 
-        .action-grid { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-top: 0.5rem; }
-        .btn-action { padding: 0.5rem 1rem; border-radius: var(--radius-sm); font-size: 0.85rem; font-weight: 500; cursor: pointer; transition: var(--trans); border: 1px solid var(--border); background: var(--surface); color: var(--text-secondary); display: inline-flex; align-items: center; gap: 0.5rem; min-height: 40px; }
-        .btn-action:hover:not(:disabled) { background: var(--surface-hover); color: var(--text-primary); border-color: var(--accent); transform: translateY(-1px); }
-        .btn-action:disabled { opacity: 0.4; cursor: not-allowed; }
+        .action-grid { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.5rem; }
+        .btn-action { padding: 0.4rem 0.8rem; border-radius: var(--radius-sm); font-size: 0.75rem; font-weight: 500; cursor: pointer; transition: var(--trans); border: 1px solid var(--border); background: var(--surface); color: var(--text-secondary); display: inline-flex; align-items: center; gap: 0.4rem; min-height: 34px; }
+        .btn-action:hover:not(:disabled) { background: var(--surface-hover); color: var(--text-primary); border-color: var(--accent); }
         .btn-pay { background: var(--gradient); color: white; border: none; }
-        .btn-pay:hover:not(:disabled) { box-shadow: 0 4px 12px var(--accent-glow); }
+        .btn-pay:hover:not(:disabled) { box-shadow: 0 2px 8px var(--accent-glow); }
         .btn-chat { border-color: var(--success); color: var(--success); }
-        .btn-chat:hover { background: rgba(16,185,129,0.1); }
         .btn-cancel { border-color: var(--error); color: var(--error); }
-        .btn-cancel:hover { background: rgba(239,68,68,0.1); }
-        .btn-revision { border-color: var(--warning); color: var(--warning); }
-        .btn-revision:hover { background: rgba(245,158,11,0.1); }
+        .btn-cancel:disabled { opacity: 0.4; cursor: not-allowed; }
 
-        .toggle-preview { display: flex; align-items: center; gap: 0.5rem; padding: 0.6rem 0; color: var(--text-muted); font-size: 0.85rem; cursor: pointer; margin-top: 0.5rem; }
+        .toggle-preview { display: flex; align-items: center; gap: 0.4rem; padding: 0.4rem 0; color: var(--text-muted); font-size: 0.75rem; cursor: pointer; margin-top: 0.3rem; }
         .toggle-preview:hover { color: var(--accent); }
         .toggle-preview i { transition: transform 0.2s; }
         .toggle-preview.open i { transform: rotate(180deg); }
-        .preview-content { display: none; padding: 1rem; background: var(--surface); border-radius: var(--radius-md); margin-top: 0.5rem; font-size: 0.9rem; color: var(--text-secondary); border: 1px solid var(--border); }
-        .preview-content.show { display: block; animation: fadeDown 0.2s ease; }
-        @keyframes fadeDown { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
+        .preview-content { display: none; padding: 0.7rem; background: var(--surface); border-radius: var(--radius-md); margin-top: 0.5rem; font-size: 0.8rem; color: var(--text-secondary); }
 
         /* Modals */
-        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(10px); z-index: 2000; display: none; align-items: center; justify-content: center; padding: 1rem; }
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(8px); z-index: 2000; display: none; align-items: center; justify-content: center; padding: 1rem; }
         .modal-overlay.active { display: flex; }
-        .modal-box { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); width: 100%; max-width: 620px; max-height: 90vh; overflow-y: auto; animation: modalIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); }
-        @keyframes modalIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
-        .modal-header { padding: 1.2rem 1.5rem; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
-        .modal-header h3 { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1.15rem; display: flex; align-items: center; gap: 0.5rem; }
-        .modal-close { background: var(--surface); border: 1px solid var(--border); width: 32px; height: 32px; border-radius: var(--radius-sm); cursor: pointer; color: var(--text-secondary); transition: var(--trans); }
+        .modal-box { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); width: 100%; max-width: 600px; max-height: 85vh; overflow-y: auto; animation: modalIn 0.2s ease; }
+        @keyframes modalIn { from { opacity: 0; transform: scale(0.96); } to { opacity: 1; transform: scale(1); } }
+        .modal-header { padding: 1rem 1.2rem; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+        .modal-header h3 { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1rem; display: flex; align-items: center; gap: 0.4rem; }
+        .modal-close { background: var(--surface); border: 1px solid var(--border); width: 30px; height: 30px; border-radius: var(--radius-sm); cursor: pointer; color: var(--text-secondary); transition: var(--trans); }
         .modal-close:hover { background: var(--error); color: white; }
-        .modal-body { padding: 1.5rem; }
-        .modal-footer { padding: 1rem 1.5rem; border-top: 1px solid var(--border); display: flex; justify-content: flex-end; gap: 0.8rem; }
-        
-        .spinner { width: 28px; height: 28px; border: 2px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 1.5rem auto; }
-        @keyframes spin { to { transform: rotate(360deg); } }
-        .empty-msg { text-align: center; color: var(--text-muted); padding: 2rem 1rem; }
-        .error-msg { background: rgba(239,68,68,0.1); color: var(--error); padding: 1rem; border-radius: var(--radius-md); text-align: center; margin-top: 1rem; }
+        .modal-body { padding: 1.2rem; max-height: 60vh; overflow-y: auto; }
+        .modal-footer { padding: 0.8rem 1.2rem; border-top: 1px solid var(--border); display: flex; justify-content: flex-end; gap: 0.8rem; }
 
-        /* Timeline & Payments */
-        .timeline { display: flex; flex-direction: column; gap: 1rem; margin-top: 1rem; }
-        .timeline-item { display: flex; gap: 1rem; align-items: flex-start; position: relative; padding-left: 1.2rem; border-left: 2px solid var(--border); }
-        .timeline-item::before { content: ''; position: absolute; left: -5px; top: 0; width: 8px; height: 8px; border-radius: 50%; background: var(--accent); }
-        .t-time { font-size: 0.75rem; color: var(--text-muted); }
-        .t-status { font-weight: 600; color: var(--text-primary); margin-bottom: 0.2rem; }
-        .t-msg { font-size: 0.85rem; color: var(--text-secondary); }
-        
-        .pay-stats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; margin-bottom: 1.2rem; }
-        .pay-card { background: var(--surface); padding: 1rem; border-radius: var(--radius-md); text-align: center; border: 1px solid var(--border); }
-        .pay-card.highlight { border-color: rgba(16,185,129,0.4); background: rgba(16,185,129,0.05); }
-        .pay-label { font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.4rem; }
-        .pay-val { font-size: 1.3rem; font-weight: 700; color: var(--text-primary); }
+        /* Payment Modal Styles */
+        .pay-stats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.6rem; margin-bottom: 1rem; }
+        .pay-card { background: var(--surface); padding: 0.7rem; border-radius: var(--radius-md); text-align: center; border: 1px solid var(--border); }
+        .pay-card.highlight { border-color: rgba(16,185,129,0.3); background: rgba(16,185,129,0.05); }
+        .pay-label { font-size: 0.65rem; color: var(--text-muted); text-transform: uppercase; margin-bottom: 0.2rem; }
+        .pay-val { font-size: 1rem; font-weight: 700; }
         .pay-val.green { color: var(--success); }
         .pay-val.orange { color: var(--warning); }
-        .pay-val.red { color: var(--error); }
 
-        .txn-list { max-height: 180px; overflow-y: auto; margin-top: 1rem; border: 1px solid var(--border); border-radius: var(--radius-md); }
-        .txn-item { display: flex; justify-content: space-between; align-items: center; padding: 0.7rem 1rem; border-bottom: 1px solid var(--border); font-size: 0.85rem; }
+        .refund-status-card { background: rgba(59,130,246,0.08); border-left: 3px solid var(--info); padding: 0.7rem; border-radius: var(--radius-md); margin-bottom: 1rem; }
+        .refund-status-card.failed { border-left-color: var(--error); background: rgba(239,68,68,0.08); }
+        .refund-status-card.completed { border-left-color: var(--success); background: rgba(16,185,129,0.08); }
+
+        .txn-list { border: 1px solid var(--border); border-radius: var(--radius-md); overflow: hidden; margin-top: 0.8rem; }
+        .txn-header { padding: 0.5rem 0.8rem; background: var(--surface); font-weight: 600; font-size: 0.7rem; border-bottom: 1px solid var(--border); }
+        .txn-item { display: flex; justify-content: space-between; align-items: center; padding: 0.5rem 0.8rem; border-bottom: 1px solid var(--border); font-size: 0.75rem; }
         .txn-item:last-child { border-bottom: none; }
-        .txn-left { display: flex; align-items: center; gap: 0.6rem; }
-        .txn-icon { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+        .txn-left { display: flex; align-items: center; gap: 0.5rem; }
+        .txn-icon { width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; }
         .txn-icon.advance { background: rgba(59,130,246,0.2); color: var(--info); }
         .txn-icon.balance { background: rgba(255,107,53,0.2); color: var(--accent); }
         .txn-icon.refund { background: rgba(16,185,129,0.2); color: var(--success); }
-        .txn-right { text-align: right; }
         .txn-amount { font-weight: 600; }
-        .txn-date { font-size: 0.7rem; color: var(--text-muted); }
+        .txn-date { font-size: 0.65rem; color: var(--text-muted); }
 
         /* Chat Widget */
-        .chat-widget { position: fixed; bottom: 20px; right: 20px; width: 360px; max-width: 92vw; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); box-shadow: var(--shadow-lg); z-index: 1500; display: none; flex-direction: column; overflow: hidden; }
-        .chat-widget.active { display: flex; animation: chatUp 0.3s ease; }
-        @keyframes chatUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-        .chat-header { padding: 0.8rem 1rem; background: var(--gradient); display: flex; align-items: center; gap: 0.6rem; color: white; }
-        .chat-title { font-weight: 600; font-size: 0.95rem; flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .chat-project { background: rgba(0,0,0,0.25); padding: 0.2rem 0.6rem; border-radius: var(--radius-full); font-size: 0.75rem; }
-        .chat-close { cursor: pointer; padding: 0.2rem 0.4rem; border-radius: var(--radius-sm); transition: var(--trans); }
-        .chat-close:hover { background: rgba(0,0,0,0.3); }
-        .chat-body { flex: 1; display: flex; flex-direction: column; height: 380px; }
-        .chat-msgs { flex: 1; overflow-y: auto; padding: 1rem; background: var(--bg-secondary); display: flex; flex-direction: column; gap: 0.8rem; }
-        .msg-bubble { max-width: 85%; padding: 0.7rem 1rem; border-radius: 14px; font-size: 0.9rem; line-height: 1.4; word-wrap: break-word; }
-        .msg-user { align-self: flex-end; background: var(--gradient); color: white; border-bottom-right-radius: 4px; }
-        .msg-admin { align-self: flex-start; background: var(--surface); color: var(--text-primary); border-bottom-left-radius: 4px; }
-        .msg-time { font-size: 0.65rem; color: var(--text-muted); margin-top: 0.3rem; text-align: right; }
-        .chat-input { padding: 0.8rem; border-top: 1px solid var(--border); display: flex; gap: 0.6rem; background: var(--bg-card); }
-        .chat-input textarea { flex: 1; padding: 0.6rem 0.8rem; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md); color: var(--text-primary); font-family: inherit; font-size: 0.9rem; resize: none; min-height: 42px; max-height: 100px; outline: none; }
+        .chat-widget { position: fixed; bottom: 20px; right: 20px; width: 340px; max-width: 90vw; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); box-shadow: var(--shadow-md); z-index: 1500; display: none; flex-direction: column; overflow: hidden; }
+        .chat-widget.active { display: flex; animation: chatUp 0.2s ease; }
+        @keyframes chatUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+        .chat-header { padding: 0.7rem 1rem; background: var(--gradient); display: flex; align-items: center; gap: 0.5rem; color: white; }
+        .chat-title { font-weight: 600; font-size: 0.85rem; flex: 1; }
+        .chat-project { background: rgba(0,0,0,0.25); padding: 0.2rem 0.5rem; border-radius: var(--radius-full); font-size: 0.7rem; }
+        .chat-close { cursor: pointer; padding: 0.2rem 0.4rem; border-radius: var(--radius-sm); }
+        .chat-body { flex: 1; display: flex; flex-direction: column; height: 350px; }
+        .chat-msgs { flex: 1; overflow-y: auto; padding: 0.8rem; background: var(--bg-secondary); display: flex; flex-direction: column; gap: 0.6rem; }
+        .msg-bubble { max-width: 85%; padding: 0.5rem 0.8rem; border-radius: 12px; font-size: 0.8rem; line-height: 1.4; word-wrap: break-word; }
+        .msg-user { align-self: flex-end; background: var(--gradient); color: white; border-bottom-right-radius: 3px; }
+        .msg-admin { align-self: flex-start; background: var(--surface); color: var(--text-primary); border-bottom-left-radius: 3px; }
+        .msg-time { font-size: 0.6rem; color: var(--text-muted); margin-top: 0.2rem; text-align: right; }
+        .chat-input { padding: 0.6rem; border-top: 1px solid var(--border); display: flex; gap: 0.5rem; background: var(--bg-card); }
+        .chat-input textarea { flex: 1; padding: 0.5rem 0.7rem; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md); color: var(--text-primary); font-family: inherit; font-size: 0.8rem; resize: none; min-height: 36px; max-height: 80px; outline: none; }
         .chat-input textarea:focus { border-color: var(--accent); }
-        .chat-send { padding: 0 1rem; background: var(--gradient); border: none; border-radius: var(--radius-md); color: white; cursor: pointer; font-weight: 600; transition: var(--trans); }
-        .chat-send:hover { transform: scale(1.03); }
+        .chat-send { padding: 0 0.8rem; background: var(--gradient); border: none; border-radius: var(--radius-md); color: white; cursor: pointer; font-weight: 600; }
 
         /* Toast */
-        .toast-wrap { position: fixed; bottom: 1.5rem; left: 50%; transform: translateX(-50%); z-index: 9999; display: flex; flex-direction: column; gap: 0.8rem; align-items: center; }
-        .toast { padding: 0.8rem 1.4rem; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-full); font-size: 0.9rem; font-weight: 500; color: var(--text-primary); box-shadow: var(--shadow-md); animation: toastIn 0.3s ease; display: flex; align-items: center; gap: 0.6rem; min-width: 280px; text-align: center; }
+        .toast-wrap { position: fixed; bottom: 1.5rem; left: 50%; transform: translateX(-50%); z-index: 9999; display: flex; flex-direction: column; gap: 0.5rem; align-items: center; }
+        .toast { padding: 0.6rem 1.2rem; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-full); font-size: 0.8rem; font-weight: 500; color: var(--text-primary); box-shadow: var(--shadow-sm); animation: toastIn 0.2s ease; display: flex; align-items: center; gap: 0.5rem; }
         .toast.success { border-left: 3px solid var(--success); }
         .toast.error { border-left: 3px solid var(--error); }
         .toast.warning { border-left: 3px solid var(--warning); }
-        @keyframes toastIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes toastIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .spinner { width: 28px; height: 28px; border: 2px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.6s linear infinite; margin: 1rem auto; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .empty-msg { text-align: center; color: var(--text-muted); padding: 1.5rem; font-size: 0.85rem; }
 
         @media (max-width: 768px) {
             nav { padding: 0 4%; height: 64px; }
             .nav-links { display: none; }
             .user-toggle-wrapper { display: none; }
             .menu-toggle { display: flex; }
-            .container { padding: 75px 4% 3rem; }
+            .container { padding: 75px 4% 2rem; }
             .page-header { flex-direction: column; text-align: center; align-items: center; }
             .order-header { flex-direction: column; }
             .action-grid { justify-content: center; }
             .pay-stats { grid-template-columns: 1fr; }
-            .modal-box { max-width: 95%; margin: 0.5rem; }
-            .chat-widget { bottom: 0; right: 0; border-radius: var(--radius-lg) var(--radius-lg) 0 0; max-width: 100%; }
         }
-        @media (max-width: 480px) { .order-header { flex-direction: column; align-items: flex-start; } .action-grid { flex-direction: column; } .btn-action { width: 100%; justify-content: center; } }
-        ::-webkit-scrollbar { width: 5px; } ::-webkit-scrollbar-track { background: transparent; } ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; }
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; }
     </style>
 </head>
 <body>
 
-<!-- Nav -->
+<!-- Navigation -->
 <nav id="navbar">
     <a href="index.html" class="logo"><i class="fas fa-code"></i> Nova<span>Stack</span></a>
     <div class="nav-links">
@@ -272,36 +253,31 @@
     </div>
     
     <div class="policy-card">
-        <div class="policy-icon"><i class="fas fa-info-circle"></i></div>
+        <div class="policy-icon"><i class="fas fa-clock"></i></div>
         <div class="policy-text">
-            <h3>Cancellation & Refund Policy</h3>
-            <p>Orders can be cancelled within <strong>48 hours</strong> of placement for a <strong>full automatic refund</strong>. After this period, requests are processed based on project status and resource allocation.</p>
+            <h3>48-Hour Cancellation Policy</h3>
+            <p>Cancel within 48 hours for full refund. After that, refunds are subject to review based on project progress.</p>
         </div>
     </div>
     
-    <div id="loading" style="display:none; text-align:center; padding:3rem;">
-        <div class="spinner"></div>
-        <p style="color:var(--text-muted); margin-top:1rem;">Loading your projects...</p>
-    </div>
+    <div id="loading" style="display:none; text-align:center; padding:2rem;"><div class="spinner"></div><p style="color:var(--text-muted); margin-top:0.5rem;">Loading...</p></div>
     <div id="orders-container" class="orders-grid"></div>
     <div id="empty-state" class="empty-msg" style="display:none;">
-        <i class="fas fa-folder-open" style="font-size:2.5rem; opacity:0.4; margin-bottom:0.8rem; display:block;"></i>
-        <h3 style="margin-bottom:0.5rem;">No orders yet</h3>
-        <p style="color:var(--text-secondary); margin-bottom:1.2rem;">Start your first project today and track its progress in real-time.</p>
+        <i class="fas fa-folder-open" style="font-size:2rem; opacity:0.4; margin-bottom:0.5rem; display:block;"></i>
+        <h3 style="margin-bottom:0.3rem;">No orders yet</h3>
+        <p style="margin-bottom:1rem;">Start your first project today.</p>
         <a href="services.html" class="btn-new">Explore Services</a>
     </div>
 </div>
 
-<!-- Modal Overlay -->
+<!-- Modal -->
 <div class="modal-overlay" id="modalOverlay">
     <div class="modal-box">
         <div class="modal-header">
-            <h3 id="modalTitle"><i class="fas fa-history"></i> Details</h3>
+            <h3 id="modalTitle"><i class="fas fa-info-circle"></i> Details</h3>
             <button class="modal-close" id="modalClose"><i class="fas fa-times"></i></button>
         </div>
-        <div class="modal-body" id="modalBody">
-            <div style="text-align:center;"><div class="spinner"></div></div>
-        </div>
+        <div class="modal-body" id="modalBody"><div class="spinner"></div></div>
         <div class="modal-footer" id="modalFooter"></div>
     </div>
 </div>
@@ -311,13 +287,11 @@
     <div class="chat-header">
         <i class="fas fa-comments"></i>
         <div class="chat-title" id="chatTitle">Support</div>
-        <div class="chat-project" id="chatProject">Project</div>
+        <div class="chat-project" id="chatProject"></div>
         <div class="chat-close" id="chatClose"><i class="fas fa-times"></i></div>
     </div>
     <div class="chat-body">
-        <div class="chat-msgs" id="chatMsgs">
-            <div class="empty-msg" style="padding:1rem;">Start a conversation</div>
-        </div>
+        <div class="chat-msgs" id="chatMsgs"><div class="empty-msg">Start a conversation</div></div>
         <div class="chat-input">
             <textarea id="chatInput" placeholder="Type a message..." rows="1"></textarea>
             <button class="chat-send" id="chatSend"><i class="fas fa-paper-plane"></i></button>
@@ -325,27 +299,27 @@
     </div>
 </div>
 
-<!-- Toast -->
 <div class="toast-wrap" id="toastWrap"></div>
 
 <script>
-// ===== CONFIG & STATE =====
+// ==================== CONFIG ====================
 const CONFIG = { API: 'https://novastack-backend.onrender.com', CANCEL_HOURS: 48 };
 let orders = [], timers = {}, chatId = null, pollInt = null;
 
-// ===== UTILS =====
+// ==================== UTILS ====================
 const toast = (msg, type='success') => {
     const w = document.getElementById('toastWrap');
     const t = document.createElement('div');
     t.className = `toast ${type}`;
     t.innerHTML = `<i class="fas fa-${type==='success'?'check-circle':type==='error'?'exclamation-circle':'info-circle'}"></i> ${msg}`;
-    w.appendChild(t); setTimeout(()=>t.remove(), 4000);
+    w.appendChild(t); setTimeout(()=>t.remove(), 3500);
 };
 const fmtCurr = (n) => `₹${parseFloat(n||0).toLocaleString('en-IN')}`;
 const fmtDate = (d) => d ? new Date(d).toLocaleString('en-IN', {day:'2-digit', month:'short', hour:'2-digit', minute:'2-digit'}) : '—';
 const esc = (t) => { if(!t) return ''; const d=document.createElement('div'); d.textContent=t; return d.innerHTML; };
+const hoursSince = (dateStr) => { if(!dateStr) return 999; const diff = new Date() - new Date(dateStr); return diff / (1000*60*60); };
 
-// ===== AUTH =====
+// ==================== AUTH ====================
 const Auth = {
     token: () => localStorage.getItem('dc_token') || sessionStorage.getItem('dc_token'),
     user: () => { try{ return JSON.parse(localStorage.getItem('dc_user')); }catch{return null;} },
@@ -356,7 +330,7 @@ const Auth = {
     }
 };
 
-// ===== UI INIT =====
+// ==================== UI INIT ====================
 const updateUI = (u) => {
     if(!u) return;
     const n = u.name || u.email?.split('@')[0] || 'User', i = n[0].toUpperCase();
@@ -365,38 +339,24 @@ const updateUI = (u) => {
     if(nm) nm.textContent = n.length > 11 ? n.slice(0,10)+'…' : n;
 };
 
-document.addEventListener('scroll', () => {
-    const n = document.getElementById('navbar');
-    if(window.scrollY > 40) n.classList.add('scrolled'); else n.classList.remove('scrolled');
-});
+document.getElementById('menuToggle').onclick = () => { document.getElementById('mobileMenu').classList.toggle('active'); document.body.classList.toggle('menu-open'); };
+document.getElementById('userToggle').onclick = (e) => { e.stopPropagation(); document.getElementById('userDropdown').classList.toggle('active'); e.currentTarget.classList.toggle('active'); };
+document.addEventListener('click', () => { document.getElementById('userDropdown')?.classList.remove('active'); document.getElementById('userToggle')?.classList.remove('active'); });
+window.addEventListener('scroll', () => { const n = document.getElementById('navbar'); if(window.scrollY > 40) n.classList.add('scrolled'); else n.classList.remove('scrolled'); });
 
-document.getElementById('menuToggle').onclick = () => {
-    const m = document.getElementById('mobileMenu'), b = document.body;
-    m.classList.toggle('active'); b.classList.toggle('menu-open');
-};
-document.getElementById('userToggle').onclick = (e) => {
-    e.stopPropagation();
-    document.getElementById('userDropdown').classList.toggle('active');
-    e.currentTarget.classList.toggle('active');
-};
-document.addEventListener('click', () => {
-    document.getElementById('userDropdown')?.classList.remove('active');
-    document.getElementById('userToggle')?.classList.remove('active');
-});
-
-// ===== LOGOUT =====
+// ==================== LOGOUT ====================
 const logout = async () => {
     if(Auth.token()) try{ await fetch(`${CONFIG.API}/auth/logout`, {method:'POST', headers:{Authorization:`Bearer ${Auth.token()}`}}); }catch{}
-    localStorage.clear(); sessionStorage.clear(); closeAll();
-    toast('Logged out successfully', 'success'); setTimeout(()=>window.location.href='index.html', 800);
+    localStorage.clear(); sessionStorage.clear(); closeChat();
+    toast('Logged out', 'success'); setTimeout(()=>window.location.href='index.html', 800);
 };
 document.getElementById('dropdownLogout').onclick = logout;
 document.getElementById('mobileLogout').onclick = logout;
 
-// ===== LOAD ORDERS =====
+// ==================== LOAD ORDERS ====================
 async function loadOrders() {
     const t = Auth.token();
-    if(!t) { toast('Please login to continue', 'warning'); window.location.href = 'login.html?redirect=my-orders.html'; return; }
+    if(!t) { toast('Please login', 'warning'); window.location.href = 'login.html?redirect=my-orders.html'; return; }
     const ld = document.getElementById('loading'), cont = document.getElementById('orders-container'), emp = document.getElementById('empty-state');
     ld.style.display='block'; cont.innerHTML=''; emp.style.display='none';
     try {
@@ -413,16 +373,15 @@ async function loadOrders() {
     }
 }
 
-// ===== TIMER =====
 function startTimer(oid, deadline) {
     if(timers[oid]) clearInterval(timers[oid]);
     const tick = () => {
-        const now = Date.now(), rem = deadline - now;
+        const rem = deadline - Date.now();
         const el = document.getElementById(`timer-${oid}`);
         const btn = document.getElementById(`btn-cancel-${oid}`);
         if(rem <= 0) {
             if(el) el.innerHTML = `<span style="color:var(--error)">Expired</span>`;
-            if(btn) { btn.disabled=true; btn.innerHTML=`<i class="fas fa-ban"></i> Window Closed`; }
+            if(btn) { btn.disabled=true; btn.innerHTML=`<i class="fas fa-ban"></i> Expired`; }
             clearInterval(timers[oid]); delete timers[oid]; return;
         }
         if(el) {
@@ -433,371 +392,232 @@ function startTimer(oid, deadline) {
     tick(); timers[oid] = setInterval(tick, 1000);
 }
 
-// ===== RENDER ORDERS =====
 function renderOrders(list) {
     const cont = document.getElementById('orders-container');
     cont.innerHTML = list.map(o => {
-        const total = o.price || 0, paid = o.total_paid || o.advance_paid || 0;
-        const due = Math.max(0, total - paid), pct = total>0 ? Math.min(100, Math.round((paid/total)*100)) : 0;
-        const cr = new Date(o.created_at).getTime(), now = Date.now(), dl = cr + (CONFIG.CANCEL_HOURS*3600000), inW = now < dl;
+        const total = o.price || 0, paid = o.total_paid || o.advance_paid || 0, due = Math.max(0, total-paid);
+        const pct = total>0 ? Math.min(100, Math.round((paid/total)*100)) : 0;
+        const cr = new Date(o.created_at).getTime(), dl = cr + (CONFIG.CANCEL_HOURS*3600000);
+        const inW = Date.now() < dl;
         const canCancel = (o.status==='pending'||o.status==='payment_received') && paid < total && inW && o.status!=='cancellation_requested';
-        
-        // Refund Status Mapping (Professional)
-        let badge = '', cls = '';
-        const rs = o.refund_status;
-        if(rs==='approved'){badge=`<span class="refund-badge badge-processing"><i class="fas fa-sync-alt"></i> Processing</span>`;cls='processing-refund';}
-        else if(rs==='completed'){badge=`<span class="refund-badge badge-credited"><i class="fas fa-check-circle"></i> Credited</span>`;cls='refund-completed';}
-        else if(rs==='rejected'){badge=`<span class="refund-badge badge-noteligible"><i class="fas fa-times-circle"></i> Not Eligible</span>`;cls='refund-rejected';}
-        else if(rs==='pending' || o.status==='cancellation_requested'){badge=`<span class="refund-badge badge-review"><i class="fas fa-search"></i> Under Review</span>`;cls='processing-refund';}
-
         const canPay = (o.status==='ready_for_balance'||o.status==='delivered') && due > 0;
-        const canRev = (o.status==='delivered'||o.status==='completed') && !o.revision_requested;
         const hasAcc = o.full_access_ready && paid >= total || o.status==='completed';
-        const projName = o.service_title || o.services?.title || 'Custom Project';
-
-        return `<div class="order-card ${cls}" id="card-${o.id}">
-            ${badge}
+        const hasPreview = o.preview_ready && !hasAcc;
+        
+        // Refund badge
+        let refundBadge = '', refundClass = '';
+        const rs = o.refund_status;
+        if(rs === 'pending') { refundBadge = '<span class="refund-badge refund-pending"><i class="fas fa-clock"></i> Refund Requested</span>'; refundClass = 'refund-pending'; }
+        else if(rs === 'approved' || rs === 'processing') { refundBadge = '<span class="refund-badge refund-processing"><i class="fas fa-sync-alt"></i> Processing</span>'; refundClass = 'refund-processing'; }
+        else if(rs === 'completed') { refundBadge = '<span class="refund-badge refund-completed"><i class="fas fa-check"></i> Refunded</span>'; refundClass = 'refund-completed'; }
+        else if(rs === 'failed') { refundBadge = '<span class="refund-badge refund-failed"><i class="fas fa-exclamation"></i> Refund Failed</span>'; refundClass = 'refund-failed'; }
+        
+        return `<div class="order-card ${refundClass}" id="card-${o.id}">
+            ${refundBadge}
             <div class="order-header">
                 <div class="project-info">
-                    <h3>${esc(projName)}</h3>
+                    <h3>${esc(o.services?.title || 'Custom Project')}</h3>
                     <div class="project-type"><i class="fas fa-hashtag"></i> Order #${o.id} • ${o.services?.category || 'Service'}</div>
                 </div>
                 <span class="status-badge status-${o.status}">${o.status.replace(/_/g,' ')}</span>
             </div>
             <div class="payment-summary">
-                <div class="payment-row"><span>Total Project Value</span><span style="font-weight:700">${fmtCurr(total)}</span></div>
-                <div class="payment-row"><span>Amount Paid</span><span class="amount-paid">${fmtCurr(paid)}</span></div>
-                ${due>0 ? `<div class="payment-row"><span>Remaining Balance</span><span class="balance-due">${fmtCurr(due)}</span></div>` : ''}
+                <div class="payment-row"><span>Total</span><span style="font-weight:600">${fmtCurr(total)}</span></div>
+                <div class="payment-row"><span>Paid</span><span class="amount-paid">${fmtCurr(paid)}</span></div>
+                ${due>0 ? `<div class="payment-row"><span>Due</span><span class="balance-due">${fmtCurr(due)}</span></div>` : ''}
                 <div class="progress-track"><div class="progress-bar" style="width:${pct}%"></div></div>
             </div>
-            ${hasAcc ? `<div style="padding:0.4rem 0;color:var(--success);font-size:0.85rem;margin-bottom:0.5rem"><i class="fas fa-unlock"></i> Full Access Unlocked</div>` : ''}
-            ${o.preview_ready && !hasAcc ? `<div style="padding:0.4rem 0;color:var(--warning);font-size:0.85rem;margin-bottom:0.5rem"><i class="fas fa-eye"></i> Preview Ready</div>` : ''}
-            ${canCancel ? `<div class="notice-box notice-active"><i class="fas fa-clock"></i><div>Cancel within <span class="notice-timer" id="timer-${o.id}">--:--:--</span> for automatic full refund.</div></div>` : (o.status==='pending'||o.status==='payment_received') && !inW && !canCancel ? `<div class="notice-box notice-expired"><i class="fas fa-exclamation-triangle"></i><div>Cancellation window closed. Requests require review.</div></div>` : ''}
+            ${hasAcc ? `<div style="font-size:0.7rem;color:var(--success);margin-bottom:0.3rem"><i class="fas fa-check-circle"></i> Full access unlocked</div>` : ''}
+            ${hasPreview ? `<div style="font-size:0.7rem;color:var(--warning);margin-bottom:0.3rem"><i class="fas fa-eye"></i> Preview available</div>` : ''}
+            ${canCancel ? `<div class="notice-box"><i class="fas fa-clock"></i> Cancel within <span class="notice-timer" id="timer-${o.id}">--:--:--</span> for full refund</div>` : (o.status==='pending'||o.status==='payment_received') && !inW ? `<div class="notice-box notice-expired"><i class="fas fa-exclamation-triangle"></i> Cancellation window closed</div>` : ''}
             <div class="action-grid">
-                ${canPay ? `<button class="btn-action btn-pay" onclick="payBalance(${o.id},${due})"><i class="fas fa-credit-card"></i> Pay Balance</button>` : ''}
+                ${canPay ? `<button class="btn-action btn-pay" onclick="payBalance(${o.id},${due})"><i class="fas fa-credit-card"></i> Pay ₹${due.toLocaleString()}</button>` : ''}
                 <button class="btn-action" onclick="openModal('timeline',${o.id})"><i class="fas fa-history"></i> Timeline</button>
                 <button class="btn-action" onclick="openModal('deliverables',${o.id})"><i class="fas fa-download"></i> Files</button>
                 <button class="btn-action" onclick="openModal('payment',${o.id})"><i class="fas fa-receipt"></i> Payments</button>
-                <button class="btn-action btn-chat" onclick="startChat(${o.id},'${esc(projName)}')"><i class="fas fa-comment"></i> Chat</button>
-                ${canRev ? `<button class="btn-action btn-revision" onclick="openModal('revision',${o.id})"><i class="fas fa-pencil-alt"></i> Revision</button>` : ''}
+                <button class="btn-action btn-chat" onclick="startChat(${o.id},'${esc(o.services?.title || 'Project')}')"><i class="fas fa-comment"></i> Chat</button>
                 ${canCancel ? `<button class="btn-action btn-cancel" id="btn-cancel-${o.id}" onclick="openModal('cancel',${o.id})"><i class="fas fa-ban"></i> Cancel</button>` : (o.status==='pending'||o.status==='payment_received') && !inW ? `<button class="btn-action btn-cancel" disabled><i class="fas fa-ban"></i> Expired</button>` : ''}
             </div>
-            <div class="toggle-preview" onclick="togglePreview(${o.id})"><i class="fas fa-chevron-down"></i> Project Details</div>
+            <div class="toggle-preview" onclick="togglePreview(${o.id})"><i class="fas fa-chevron-down"></i> Details</div>
             <div class="preview-content" id="prev-${o.id}">
-                ${o.requirements ? `<p style="margin-bottom:0.5rem"><strong>Requirements:</strong> ${esc(o.requirements)}</p>` : ''}
+                ${o.requirements ? `<p><strong>Requirements:</strong> ${esc(o.requirements)}</p>` : ''}
                 <p><strong>Ordered:</strong> ${new Date(o.created_at).toLocaleDateString()}</p>
-                ${o.customization && Object.keys(o.customization).length ? `<p style="margin-top:0.5rem"><strong>Options:</strong> ${Object.entries(o.customization).map(([k,v])=>`${k}: ${v}`).join(', ')}</p>` : ''}
+                ${o.customization && Object.keys(o.customization).length ? `<p><strong>Options:</strong> ${Object.entries(o.customization).map(([k,v])=>`${k}: ${v}`).join(', ')}</p>` : ''}
             </div>
         </div>`;
     }).join('');
-
-    // Init Timers
+    // Start timers
     list.forEach(o => {
         const paid = o.total_paid || o.advance_paid || 0, total = o.price || 0;
-        const cr = new Date(o.created_at).getTime(), now = Date.now(), dl = cr + (CONFIG.CANCEL_HOURS*3600000);
-        const blocked = ['completed','delivered','cancelled','cancellation_requested'];
-        if(paid < total && now < dl && !blocked.includes(o.status)) startTimer(o.id, dl);
+        const cr = new Date(o.created_at).getTime(), dl = cr + (CONFIG.CANCEL_HOURS*3600000);
+        if(paid < total && Date.now() < dl && !['completed','delivered','cancelled','cancellation_requested'].includes(o.status)) startTimer(o.id, dl);
     });
 }
 function togglePreview(id) { const p=document.getElementById(`prev-${id}`); p?.classList.toggle('show'); const i=p?.parentElement.querySelector('.toggle-preview i'); i?.classList.toggle('fa-rotate-180'); }
 
-// ===== MODALS - FIXED SYSTEM (NO "mod is not a function" ERROR) =====
+// ==================== MODALS ====================
 function openModal(type, oid) {
-    // ✅ Direct DOM access - no function wrapper that causes errors
-    const modalOverlay = document.getElementById('modalOverlay');
-    const modalTitle = document.getElementById('modalTitle');
-    const modalBody = document.getElementById('modalBody');
-    const modalFooter = document.getElementById('modalFooter');
-    
-    if (!modalOverlay || !modalBody) {
-        console.error('Modal elements not found');
-        return;
-    }
-    
-    const titles = { 
-        timeline:'<i class="fas fa-history"></i> Project Timeline', 
-        deliverables:'<i class="fas fa-download"></i> Project Files', 
-        revision:'<i class="fas fa-pencil-alt"></i> Request Revision', 
-        cancel:'<i class="fas fa-ban"></i> Cancel Order', 
-        payment:'<i class="fas fa-receipt"></i> Payment History' 
-    };
-    
-    modalTitle.innerHTML = titles[type] || 'Details';
-    modalBody.innerHTML = '<div style="text-align:center;"><div class="spinner"></div></div>';
-    if (modalFooter) modalFooter.innerHTML = '';
-    
-    modalOverlay.classList.add('active');
+    const modal = document.getElementById('modalOverlay');
+    const title = document.getElementById('modalTitle');
+    const body = document.getElementById('modalBody');
+    const footer = document.getElementById('modalFooter');
+    const titles = { timeline:'<i class="fas fa-history"></i> Timeline', deliverables:'<i class="fas fa-download"></i> Files', revision:'<i class="fas fa-pencil-alt"></i> Revision', cancel:'<i class="fas fa-ban"></i> Cancel Order', payment:'<i class="fas fa-receipt"></i> Payment History' };
+    title.innerHTML = titles[type] || 'Details';
+    body.innerHTML = '<div class="spinner"></div>';
+    footer.innerHTML = '';
+    modal.classList.add('active');
     document.body.style.overflow = 'hidden';
-    
-    loadModalContent(type, oid, modalBody, modalFooter);
+    loadModalContent(type, oid, body, footer);
 }
-
-function closeModal() {
-    const modalOverlay = document.getElementById('modalOverlay');
-    if (modalOverlay) {
-        modalOverlay.classList.remove('active');
-        document.body.style.overflow = '';
-    }
-}
-
-// Event listeners with null checks
+function closeModal() { const m=document.getElementById('modalOverlay'); m?.classList.remove('active'); document.body.style.overflow=''; }
 document.getElementById('modalClose')?.addEventListener('click', closeModal);
-document.getElementById('modalOverlay')?.addEventListener('click', (e) => {
-    if (e.target.id === 'modalOverlay') closeModal();
-});
-document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') closeModal();
-});
+document.getElementById('modalOverlay')?.addEventListener('click', (e) => { if(e.target.id === 'modalOverlay') closeModal(); });
+document.addEventListener('keydown', (e) => { if(e.key === 'Escape') closeModal(); });
 
 async function loadModalContent(type, oid, body, footer) {
     const token = Auth.token();
-    if (!token) return;
-    
+    if(!token) return;
+    const order = orders.find(o => o.id === oid);
     try {
-        if(type==='timeline') {
-            // ✅ Works with your order_timeline table schema
-            const r = await fetch(`${CONFIG.API}/order/${oid}/timeline`, { 
-                headers: { 'Authorization': `Bearer ${token}` } 
-            });
+        if(type === 'timeline') {
+            const r = await fetch(`${CONFIG.API}/order/${oid}/timeline`, { headers: { 'Authorization': `Bearer ${token}` } });
             const data = await r.json();
-            renderTimeline(body, data.data || []);
+            const timeline = data.data || [];
+            body.innerHTML = timeline.length ? `<div class="timeline-vertical" style="display:flex;flex-direction:column;gap:0.8rem">${timeline.map(t => `<div style="border-left:2px solid var(--accent);padding-left:0.8rem"><div style="font-size:0.7rem;color:var(--text-muted)">${fmtDate(t.created_at)}</div><div style="font-size:0.85rem">${esc(t.message || t.status)}</div></div>`).join('')}</div>` : '<div class="empty-msg">No timeline updates</div>';
         }
-        else if(type==='deliverables') {
-            const r = await fetch(`${CONFIG.API}/order/${oid}/deliverables`, { 
-                headers: { 'Authorization': `Bearer ${token}` } 
-            });
-            renderDeliverables(body, await r.json(), r.status);
+        else if(type === 'deliverables') {
+            const r = await fetch(`${CONFIG.API}/order/${oid}/deliverables`, { headers: { 'Authorization': `Bearer ${token}` } });
+            const res = await r.json();
+            if(!res.success) { body.innerHTML = `<div class="empty-msg">${r.status===403?'🔒 Complete balance payment to access.':res.error||'Unable to load'}</div>`; return; }
+            const d = res.data; let html = '';
+            if(d.live_url) html += `<a href="${d.live_url}" target="_blank" class="btn-action" style="margin-bottom:0.5rem;justify-content:center;width:100%"><i class="fas fa-globe"></i> Live Demo</a>`;
+            if(d.github_repo && d.has_full_access) html += `<a href="${d.github_repo}" target="_blank" class="btn-action" style="margin-bottom:0.5rem;justify-content:center;width:100%"><i class="fab fa-github"></i> Repository</a>`;
+            if(d.deliverables?.length) d.deliverables.forEach(doc => { if(doc.is_preview || d.has_full_access) html += `<a href="${doc.file_url}" class="btn-action" style="margin-bottom:0.5rem;justify-content:center;width:100%"><i class="fas fa-file"></i> ${esc(doc.title)}</a>`; });
+            if(d.delivery_notes) html += `<div style="background:var(--surface);padding:0.7rem;border-radius:var(--radius-md);margin-top:0.5rem;font-size:0.8rem"><strong>Notes:</strong> ${esc(d.delivery_notes)}</div>`;
+            body.innerHTML = html || '<div class="empty-msg">No deliverables yet</div>';
         }
-        else if(type==='payment') {
-            await renderPayment(body, oid);
-        }
-        else if(type==='cancel') {
-            renderCancel(body, oid, footer);
-        }
-        else if(type==='revision') {
-            renderRevision(body, oid, footer);
-        }
-    } catch(e) {
-        if(body) body.innerHTML = `<div class="error-msg"><i class="fas fa-exclamation-triangle"></i> ${esc(e.message)}</div>`;
-    }
-}
-
-// ===== RENDER TIMELINE (Compatible with your Supabase schema) =====
-function renderTimeline(container, timelineData) {
-    if(!container) return;
-    if(!timelineData || !timelineData.length) { 
-        container.innerHTML='<div class="empty-msg">No timeline updates yet. Project is being prepared.</div>'; 
-        return; 
-    }
-    
-    // ✅ Sort by created_at ascending (oldest first)
-    const sorted = [...timelineData].sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
-    
-    container.innerHTML = `<div class="timeline">${sorted.map(item => {
-        // Format status for display
-        const statusDisplay = item.status?.replace(/_/g, ' ').toUpperCase() || 'UPDATE';
-        return `<div class="timeline-item">
-            <div class="t-time">${fmtDate(item.created_at)}</div>
-            <div class="t-status">${esc(statusDisplay)}</div>
-            <div class="t-msg">${esc(item.message || 'Status updated')}</div>
-        </div>`;
-    }).join('')}</div>`;
-}
-
-function renderDeliverables(container, res, status) {
-    if(!container) return;
-    if(!res?.success) { 
-        container.innerHTML=`<div class="empty-msg">${status===403?'🔒 Complete balance payment to access deliverables.':res?.error||'Unable to load'}</div>`; 
-        return; 
-    }
-    const d=res.data; let h='';
-    if(d.live_url) h+=`<a href="${d.live_url}" target="_blank" class="btn-action" style="margin-bottom:0.5rem;justify-content:center"><i class="fas fa-globe"></i> Live Demo</a>`;
-    if(d.github_repo && d.has_full_access) h+=`<a href="${d.github_repo}" target="_blank" class="btn-action" style="margin-bottom:0.5rem;justify-content:center"><i class="fab fa-github"></i> Repository</a>`;
-    if(d.source_code_url && d.has_full_access) h+=`<a href="${d.source_code_url}" target="_blank" class="btn-action" style="margin-bottom:0.5rem;justify-content:center"><i class="fas fa-code"></i> Source Code</a>`;
-    if(d.deliverables?.length) d.deliverables.filter(doc=>doc.is_preview||d.has_full_access).forEach(doc=>{ h+=`<a href="${doc.file_url}" class="btn-action" style="margin-bottom:0.5rem;justify-content:center"><i class="fas fa-file"></i> ${esc(doc.title)}</a>`; });
-    if(d.delivery_notes) h+=`<div style="background:var(--surface);padding:1rem;border-radius:var(--radius-md);margin-top:0.5rem;font-size:0.9rem"><strong>Notes:</strong> ${esc(d.delivery_notes)}</div>`;
-    container.innerHTML = h || '<div class="empty-msg">📭 No deliverables available yet.</div>';
-}
-
-async function renderPayment(container, oid) {
-    if(!container) return;
-    const t = Auth.token();
-    try {
-        const r = await fetch(`${CONFIG.API}/my-orders`, {headers:{Authorization:`Bearer ${t}`}});
-        const o = (await r.json()).orders?.find(x=>x.id===oid); 
-        if(!o) throw new Error('Order not found');
-        
-        const total = o.price || 0, paid = o.total_paid || o.advance_paid || 0, due = Math.max(0,total-paid);
-        const pct = total>0?Math.round((paid/total)*100):0;
-        
-        // 🔥 REFUND STATUS - YEH PEHLE SE ORDER OBJECT MEIN AA RAHA HAI
-        const refundStatus = o.refund_status;  // pending, approved, processing, completed, failed, rejected
-        const refundAmount = o.refund_amount || 0;
-        const refundReason = o.refund_reason || '';
-        const refundRequestedAt = o.refund_created_at;
-        const refundProcessedAt = o.refund_processed_at;
-        
-        // Status mapping for display
-        let refundBadge = '', refundMessage = '', refundColor = '';
-        if (refundStatus === 'pending') {
-            refundBadge = '🟡 PENDING REVIEW';
-            refundMessage = 'Refund request submitted. Awaiting admin approval.';
-            refundColor = 'var(--warning)';
-        } else if (refundStatus === 'approved') {
-            refundBadge = '🔵 APPROVED - PROCESSING';
-            refundMessage = 'Refund approved! Processing with bank (3-5 business days).';
-            refundColor = 'var(--info)';
-        } else if (refundStatus === 'processing') {
-            refundBadge = '🟣 PROCESSING WITH BANK';
-            refundMessage = 'Refund initiated with Razorpay. Amount will reflect in 3-5 days.';
-            refundColor = 'var(--info)';
-        } else if (refundStatus === 'completed') {
-            refundBadge = '🟢 REFUND COMPLETED';
-            refundMessage = 'Refund successfully credited to your account.';
-            refundColor = 'var(--success)';
-        } else if (refundStatus === 'failed') {
-            refundBadge = '🔴 REFUND FAILED';
-            refundMessage = 'Refund could not be processed automatically. Please contact support.';
-            refundColor = 'var(--error)';
-        } else if (refundStatus === 'rejected') {
-            refundBadge = '⚪ REFUND REJECTED';
-            refundMessage = 'Refund request was rejected. Contact support for details.';
-            refundColor = 'var(--error)';
-        }
-        
-        // 🔥 FILTER: Sirf successful payments dikhao, failed refund attempts nahi
-        const successfulTxns = o.payment_history?.filter(tx => 
-            tx.status !== 'failed' && !(tx.type === 'refund' && tx.status === 'failed')
-        ) || [];
-        
-        // Check if there are any failed refund attempts (for warning)
-        const hasFailedRefund = o.payment_history?.some(tx => 
-            tx.type === 'refund' && tx.status === 'failed'
-        ) || false;
-        
-        let html = `
-            <div class="pay-stats">
-                <div class="pay-card"><div class="pay-label">Total</div><div class="pay-val">${fmtCurr(total)}</div></div>
-                <div class="pay-card highlight"><div class="pay-label">Paid</div><div class="pay-val green">${fmtCurr(paid)}</div></div>
-                ${due>0 ? `<div class="pay-card"><div class="pay-label">Remaining</div><div class="pay-val orange">${fmtCurr(due)}</div></div>` : `<div class="pay-card highlight"><div class="pay-label">Status</div><div class="pay-val green" style="font-size:0.9rem">Fully Paid</div></div>`}
-            </div>
-            <div style="margin-bottom:1rem;">
-                <div style="display:flex;justify-content:space-between;margin-bottom:0.4rem;font-size:0.85rem;">
-                    <span>Payment Progress</span><span style="color:var(--accent)">${pct}%</span>
+        else if(type === 'payment') {
+            // 🔥 PRODUCTION-READY PAYMENT MODAL - FILTERS DUPLICATE REFUND ENTRIES
+            const total = order.price || 0, paid = order.total_paid || order.advance_paid || 0, due = Math.max(0,total-paid), pct = total>0?Math.round((paid/total)*100):0;
+            const refundStatus = order.refund_status;
+            const refundAmount = order.refund_amount || 0;
+            
+            // Status mapping
+            let refundBadge = '', refundMsg = '', refundColor = '';
+            if(refundStatus === 'pending') { refundBadge = '🟡 PENDING REVIEW'; refundMsg = 'Refund request submitted. Awaiting admin approval.'; refundColor = 'var(--warning)'; }
+            else if(refundStatus === 'approved' || refundStatus === 'processing') { refundBadge = '🔵 PROCESSING'; refundMsg = 'Refund approved! Processing with bank (3-5 days).'; refundColor = 'var(--info)'; }
+            else if(refundStatus === 'completed') { refundBadge = '🟢 REFUNDED'; refundMsg = 'Refund credited to your account.'; refundColor = 'var(--success)'; }
+            else if(refundStatus === 'failed') { refundBadge = '🔴 REFUND FAILED'; refundMsg = 'Refund failed. Please contact support.'; refundColor = 'var(--error)'; }
+            
+            // 🔥 FILTER: Sirf successful transactions dikhao, failed refund attempts nahi
+            const allTxns = order.payment_history || [];
+            const successfulTxns = allTxns.filter(tx => tx.status !== 'failed');
+            // Check if there's a failed refund (for warning message)
+            const hasFailedRefund = allTxns.some(tx => tx.type === 'refund' && tx.status === 'failed');
+            
+            let html = `
+                <div class="pay-stats">
+                    <div class="pay-card"><div class="pay-label">Total</div><div class="pay-val">${fmtCurr(total)}</div></div>
+                    <div class="pay-card highlight"><div class="pay-label">Paid</div><div class="pay-val green">${fmtCurr(paid)}</div></div>
+                    ${due>0 ? `<div class="pay-card"><div class="pay-label">Due</div><div class="pay-val orange">${fmtCurr(due)}</div></div>` : `<div class="pay-card highlight"><div class="pay-label">Status</div><div class="pay-val green">Fully Paid</div></div>`}
                 </div>
-                <div class="progress-track"><div class="progress-bar" style="width:${pct}%"></div></div>
-            </div>`;
-        
-        // 🔥 REFUND STATUS CARD (Single, clear message)
-        if (refundStatus && refundStatus !== 'none') {
-            html += `
-            <div style="background:rgba(59,130,246,0.08);border-left:3px solid ${refundColor};padding:1rem;border-radius:var(--radius-md);margin-bottom:1.2rem;">
-                <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.5rem;">
-                    <strong style="color:${refundColor}">${refundBadge}</strong>
-                </div>
-                <p style="font-size:0.85rem;color:var(--text-secondary);margin-bottom:0.3rem;">${refundMessage}</p>
-                ${refundAmount > 0 ? `<p style="font-size:0.9rem;margin-top:0.3rem;"><strong>Amount:</strong> ${fmtCurr(refundAmount)}</p>` : ''}
-                ${refundRequestedAt ? `<p style="font-size:0.75rem;color:var(--text-muted);margin-top:0.3rem;">Requested: ${new Date(refundRequestedAt).toLocaleString()}</p>` : ''}
-                ${refundProcessedAt ? `<p style="font-size:0.75rem;color:var(--text-muted);">Processed: ${new Date(refundProcessedAt).toLocaleString()}</p>` : ''}
-                ${refundStatus === 'failed' || refundStatus === 'rejected' ? `
-                <button class="btn-action" style="margin-top:0.8rem;" onclick="startChat(${oid},'Support')">
-                    <i class="fas fa-headset"></i> Contact Support
-                </button>` : ''}
-            </div>`;
-        }
-        
-        // 🔥 FAILED REFUND WARNING (if multiple attempts failed)
-        if (hasFailedRefund && refundStatus !== 'completed') {
-            html += `
-            <div style="background:rgba(239,68,68,0.1);border-left:3px solid var(--error);padding:0.8rem;border-radius:var(--radius-md);margin-bottom:1rem;font-size:0.85rem;">
-                <i class="fas fa-exclamation-triangle" style="color:var(--error)"></i>
-                <strong style="color:var(--error)">Refund Issue Detected</strong>
-                <p style="margin-top:0.3rem;">Your refund could not be processed automatically. Please contact support with Order #${oid}.</p>
-                <button class="btn-action" style="margin-top:0.5rem;" onclick="startChat(${oid},'Support')">
-                    <i class="fas fa-envelope"></i> Contact Support
-                </button>
-            </div>`;
-        }
-        
-        // 🔥 TRANSACTION HISTORY (Only successful transactions)
-        if (successfulTxns.length) {
-            html += `
-            <div class="txn-list">
-                <div style="padding:0.5rem 1rem; background:var(--surface); font-weight:600; font-size:0.8rem;">
-                    <i class="fas fa-history"></i> Transaction History
-                </div>
-                ${successfulTxns.map(tx => {
+                <div style="margin-bottom:0.8rem;"><div style="display:flex;justify-content:space-between;margin-bottom:0.3rem;font-size:0.75rem;"><span>Progress</span><span>${pct}%</span></div><div class="progress-track"><div class="progress-bar" style="width:${pct}%"></div></div></div>`;
+            
+            // 🔥 Refund Status Card (Single, clear message)
+            if(refundStatus && refundStatus !== 'none') {
+                html += `<div class="refund-status-card ${refundStatus === 'failed' ? 'failed' : (refundStatus === 'completed' ? 'completed' : '')}" style="border-left-color:${refundColor};margin-bottom:0.8rem;">
+                    <div style="display:flex;align-items:center;gap:0.4rem;margin-bottom:0.3rem;"><strong style="color:${refundColor}">${refundBadge}</strong></div>
+                    <p style="font-size:0.75rem;color:var(--text-secondary);margin-bottom:0.2rem;">${refundMsg}</p>
+                    ${refundAmount > 0 ? `<p style="font-size:0.8rem;"><strong>Amount:</strong> ${fmtCurr(refundAmount)}</p>` : ''}
+                    ${order.refund_created_at ? `<p style="font-size:0.7rem;color:var(--text-muted);">Requested: ${fmtDate(order.refund_created_at)}</p>` : ''}
+                    ${refundStatus === 'failed' ? `<button class="btn-action" style="margin-top:0.5rem;" onclick="closeModal();startChat(${oid},'Support')"><i class="fas fa-headset"></i> Contact Support</button>` : ''}
+                </div>`;
+            }
+            
+            // 🔥 Failed refund warning (if duplicate attempts)
+            if(hasFailedRefund && refundStatus !== 'completed') {
+                html += `<div style="background:rgba(239,68,68,0.1);border-left:3px solid var(--error);padding:0.6rem;border-radius:var(--radius-md);margin-bottom:0.8rem;font-size:0.75rem;">
+                    <i class="fas fa-exclamation-triangle" style="color:var(--error)"></i>
+                    <strong>Refund Issue Detected</strong>
+                    <p style="margin-top:0.2rem;">Please contact support with Order #${oid}.</p>
+                    <button class="btn-action" style="margin-top:0.3rem;" onclick="closeModal();startChat(${oid},'Support')"><i class="fas fa-envelope"></i> Contact Support</button>
+                </div>`;
+            }
+            
+            // 🔥 Transaction History (Only successful transactions)
+            if(successfulTxns.length) {
+                html += `<div class="txn-list"><div class="txn-header"><i class="fas fa-history"></i> Transaction History</div>`;
+                successfulTxns.forEach(tx => {
                     const isRefund = tx.type === 'refund';
                     const isAdvance = tx.type === 'advance';
-                    const isSuccess = tx.status === 'completed';
                     const amountColor = isRefund ? 'var(--success)' : (isAdvance ? 'var(--info)' : 'var(--accent)');
                     const amountSign = isRefund ? '+' : '-';
-                    return `
-                    <div class="txn-item">
+                    html += `<div class="txn-item">
                         <div class="txn-left">
                             <div class="txn-icon ${isRefund ? 'refund' : (isAdvance ? 'advance' : 'balance')}">
                                 <i class="fas fa-${isRefund ? 'undo' : 'arrow-down'}"></i>
                             </div>
                             <div>
-                                <div>${isRefund ? (isSuccess ? 'Refund Credited' : 'Refund ' + tx.status) : (isAdvance ? 'Advance Payment' : 'Balance Payment')}</div>
+                                <div>${isRefund ? (tx.status === 'completed' ? 'Refund Credited' : 'Refund ' + tx.status) : (isAdvance ? 'Advance Payment' : 'Balance Payment')}</div>
                                 <div class="txn-date">${fmtDate(tx.created_at)}</div>
                             </div>
                         </div>
                         <div class="txn-right">
                             <div class="txn-amount" style="color:${amountColor}">${amountSign} ${fmtCurr(Math.abs(tx.amount))}</div>
-                            ${tx.razorpay_id ? `<div class="txn-id">${tx.razorpay_id.slice(-8)}</div>` : ''}
+                            ${tx.razorpay_id ? `<div class="txn-date">${tx.razorpay_id.slice(-8)}</div>` : ''}
                         </div>
                     </div>`;
-                }).join('')}
-            </div>`;
-        } else {
-            html += '<div class="empty-msg">No payment records found</div>';
+                });
+                html += `</div>`;
+            } else {
+                html += '<div class="empty-msg">No transactions found</div>';
+            }
+            body.innerHTML = html;
         }
-        
-        container.innerHTML = html;
-    } catch(e) { 
-        container.innerHTML = `<div class="error-msg"><i class="fas fa-exclamation-triangle"></i> ${esc(e.message)}</div>`;
-    }
+        else if(type === 'cancel') {
+            const inW = order && hoursSince(order.created_at) <= 48;
+            body.innerHTML = `
+                <div style="background:rgba(59,130,246,0.08);padding:0.7rem;border-radius:var(--radius-md);margin-bottom:0.8rem;font-size:0.8rem;">
+                    <strong><i class="fas fa-clock"></i> Cancellation Policy</strong>
+                    <p style="margin-top:0.3rem;">${inW ? `✅ Within refund window. Full refund of ${fmtCurr(order.advance_paid || 0)} will be processed.` : `❌ Window expired. Cancellations are reviewed based on project status.`}</p>
+                </div>
+                <p style="margin-bottom:0.5rem;font-size:0.8rem;">Reason for cancellation:</p>
+                <textarea id="cancelReason" rows="3" placeholder="Briefly describe why you're cancelling..." style="width:100%;padding:0.6rem;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-md);color:var(--text-primary);font-size:0.8rem;"></textarea>
+            `;
+            footer.innerHTML = `<button class="btn-action" onclick="closeModal()">Keep Order</button><button class="btn-action btn-cancel" onclick="submitCancel(${oid}, ${inW})">${inW ? 'Request Refund' : 'Request Cancellation'}</button>`;
+        }
+        else if(type === 'revision') {
+            body.innerHTML = `<textarea id="revReason" rows="4" placeholder="Describe the changes you need..." style="width:100%;padding:0.6rem;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-md);color:var(--text-primary);font-size:0.8rem;"></textarea>`;
+            footer.innerHTML = `<button class="btn-action" onclick="closeModal()">Cancel</button><button class="btn-action btn-pay" onclick="submitRevision(${oid})">Send Request</button>`;
+        }
+    } catch(e) { body.innerHTML = `<div class="empty-msg">Error loading: ${esc(e.message)}</div>`; }
 }
 
-function renderCancel(container, oid, footer) {
-    const o = orders.find(x=>x.id===oid); if(!o) return;
-    const paid = o.total_paid||o.advance_paid||0, cr=new Date(o.created_at).getTime(), now=Date.now(), inW=now<cr+(CONFIG.CANCEL_HOURS*3600000);
-    container.innerHTML = `
-        <div style="background:rgba(59,130,246,0.1);padding:1rem;border-radius:var(--radius-md);margin-bottom:1rem;font-size:0.9rem;">
-            <strong style="color:var(--info)"><i class="fas fa-clock"></i> Cancellation Policy</strong>
-            <p style="margin-top:0.4rem;">${inW ? `✅ Within the refund window. Full refund of <strong>${fmtCurr(paid)}</strong> will be processed automatically.` : `❌ Window expired. Cancellations are reviewed based on project status. Refund eligibility cannot be guaranteed.`}</p>
-        </div>
-        <p style="margin-bottom:0.6rem;">Reason for cancellation:</p>
-        <textarea id="cancelReason" rows="3" placeholder="Briefly describe why you're cancelling..." style="width:100%;padding:0.8rem;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-md);color:var(--text-primary);font-family:inherit;resize:vertical;"></textarea>
-    `;
-    if(footer) footer.innerHTML = `<button class="btn-action" onclick="closeModal()">Keep Order</button><button class="btn-action btn-cancel" id="submitCancelBtn" onclick="submitCancel(${oid})">${inW?'Request Refund':'Request Cancellation'}</button>`;
-}
-async function submitCancel(oid) {
+async function submitCancel(oid, eligible) {
     const reason = document.getElementById('cancelReason')?.value.trim();
     if(!reason) { toast('Please provide a reason', 'warning'); return; }
-    const btn = document.getElementById('submitCancelBtn'); if(btn){ btn.disabled=true; btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> Processing...'; }
+    const btn = document.querySelector('#modalFooter .btn-cancel');
+    if(btn) { btn.disabled=true; btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> Processing...'; }
     try {
         const r = await fetch(`${CONFIG.API}/order/${oid}/cancel`, {method:'POST', headers:{'Content-Type':'application/json', Authorization:`Bearer ${Auth.token()}`}, body:JSON.stringify({reason})});
-        const d = await r.json(); if(!r.ok) throw new Error(d.error||'Failed');
-        closeModal(); await loadOrders(); toast('Request submitted successfully', 'success');
-    } catch(e) { toast(e.message, 'error'); const btn = document.getElementById('submitCancelBtn'); if(btn){ btn.disabled=false; btn.innerHTML='Request'; } }
+        if(!r.ok) throw new Error((await r.json()).error);
+        closeModal(); await loadOrders();
+        toast(eligible ? 'Cancellation requested! Refund will be processed.' : 'Cancellation requested. Admin will review.', 'success');
+    } catch(e) { toast(e.message, 'error'); if(btn){ btn.disabled=false; btn.innerHTML='Request'; } }
 }
 
-function renderRevision(container, oid, footer) {
-    container.innerHTML = `<p style="margin-bottom:0.6rem;">Describe the changes you need:</p><textarea id="revReason" rows="4" placeholder="Be specific about what needs to be updated..." style="width:100%;padding:0.8rem;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-md);color:var(--text-primary);font-family:inherit;resize:vertical;"></textarea>`;
-    if(footer) footer.innerHTML = `<button class="btn-action" onclick="closeModal()">Cancel</button><button class="btn-action btn-pay" id="submitRevBtn" onclick="submitRevision(${oid})">Send Request</button>`;
-}
 async function submitRevision(oid) {
-    const d = document.getElementById('revReason')?.value.trim(); if(!d){toast('Please describe changes','warning');return;}
-    const btn = document.getElementById('submitRevBtn'); if(btn){ btn.disabled=true; btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> Sending...'; }
+    const msg = document.getElementById('revReason')?.value.trim();
+    if(!msg) { toast('Please describe changes', 'warning'); return; }
+    const btn = document.querySelector('#modalFooter .btn-pay');
+    if(btn) { btn.disabled=true; btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> Sending...'; }
     try {
-        await fetch(`${CONFIG.API}/conversation/order_${oid}/send`, {method:'POST', headers:{'Content-Type':'application/json', Authorization:`Bearer ${Auth.token()}`}, body:JSON.stringify({message:`🔁 REVISION REQUEST:\n\n${d}`})});
-        closeModal(); startChat(oid, orders.find(x=>x.id===oid)?.service_title||'Project'); toast('Revision request sent', 'success');
-    } catch(e){toast(e.message,'error'); const btn = document.getElementById('submitRevBtn'); if(btn){ btn.disabled=false; btn.innerHTML='Send Request'; }}
+        await fetch(`${CONFIG.API}/conversation/order_${oid}/send`, {method:'POST', headers:{'Content-Type':'application/json', Authorization:`Bearer ${Auth.token()}`}, body:JSON.stringify({message:`🔁 REVISION REQUEST:\n\n${msg}`})});
+        closeModal(); startChat(oid, 'Project'); toast('Revision request sent', 'success');
+    } catch(e) { toast(e.message, 'error'); if(btn){ btn.disabled=false; btn.innerHTML='Send Request'; } }
 }
 
-// ===== PAY BALANCE =====
+// ==================== PAY BALANCE ====================
 async function payBalance(oid, amt) {
     if(amt<=0) return;
     const t = Auth.token();
@@ -805,42 +625,40 @@ async function payBalance(oid, amt) {
         const r = await fetch(`${CONFIG.API}/order/${oid}/pay-balance`, {method:'POST', headers:{'Content-Type':'application/json', Authorization:`Bearer ${t}`}});
         const d = await r.json(); if(!r.ok||!d.data) throw new Error(d.error||'Failed');
         const p = d.data;
-        const rz = new Razorpay({key:p.key_id, amount:Math.round(amt*100), currency:"INR", name:"NovaStack", description:`Balance - Order #${oid}`, order_id:p.razorpay_order_id, handler: async(res)=>{
-            try { await fetch(`${CONFIG.API}/verify-balance-payment`, {method:'POST', headers:{'Content-Type':'application/json', Authorization:`Bearer ${t}`}, body:JSON.stringify({order_id:oid, amount:amt, razorpay_order_id:res.razorpay_order_id, razorpay_payment_id:res.razorpay_payment_id, razorpay_signature:res.razorpay_signature})}); toast('Payment successful!', 'success'); await loadOrders(); }catch(e){toast(e.message,'error');}
-        }, theme:{color:"#ff6b35"}, modal:{ondismiss:()=>toast('Payment cancelled','warning')}});
+        const rz = new Razorpay({
+            key:p.key_id, amount:Math.round(amt*100), currency:"INR", name:"NovaStack",
+            description:`Balance - Order #${oid}`, order_id:p.razorpay_order_id,
+            handler: async(res) => {
+                try {
+                    await fetch(`${CONFIG.API}/verify-balance-payment`, {method:'POST', headers:{'Content-Type':'application/json', Authorization:`Bearer ${t}`}, body:JSON.stringify({order_id:oid, amount:amt, razorpay_order_id:res.razorpay_order_id, razorpay_payment_id:res.razorpay_payment_id, razorpay_signature:res.razorpay_signature})});
+                    toast('Payment successful!', 'success'); await loadOrders();
+                } catch(e){ toast(e.message,'error'); }
+            },
+            theme:{color:"#ff6b35"},
+            modal:{ondismiss:()=>toast('Payment cancelled','warning')}
+        });
         rz.open();
-    } catch(e){toast(e.message,'error');}
+    } catch(e){ toast(e.message,'error'); }
 }
 
-// ===== CHAT =====
-function startChat(oid, projName) {
+// ==================== CHAT ====================
+function startChat(oid, name) {
     chatId = `order_${oid}`;
-    document.getElementById('chatProject').textContent = projName || 'Project';
+    document.getElementById('chatTitle').textContent = `Chat with Support`;
+    document.getElementById('chatProject').textContent = name || `Order #${oid}`;
     document.getElementById('chatWidget').classList.add('active');
     loadMsgs(); pollChat();
 }
 function closeChat() { document.getElementById('chatWidget').classList.remove('active'); if(pollInt)clearInterval(pollInt); pollInt=null; chatId=null; }
 document.getElementById('chatClose').onclick = closeChat;
-
-async function loadMsgs() {
-    if(!chatId) return;
-    try { const r=await fetch(`${CONFIG.API}/conversation/${chatId}/messages`, {headers:{Authorization:`Bearer ${Auth.token()}`}}); if(r.ok) renderChat((await r.json()).messages||[]); }catch{}
-}
-function renderChat(msgs) {
-    const c = document.getElementById('chatMsgs'); if(!c) return;
-    if(!msgs.length) { c.innerHTML='<div class="empty-msg" style="padding:1rem;">No messages yet</div>'; return; }
-    c.innerHTML = msgs.map(m=>`<div class="msg-bubble ${m.sender_role==='user'?'msg-user':'msg-admin'}"><div>${esc(m.message)}</div><div class="msg-time">${new Date(m.created_at).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}</div></div>`).join('');
-    c.scrollTop = c.scrollHeight;
-}
-async function sendMsg() {
-    const i = document.getElementById('chatInput'), m = i?.value.trim(); if(!m||!chatId) return;
-    i.value=''; try{await fetch(`${CONFIG.API}/conversation/${chatId}/send`, {method:'POST', headers:{'Content-Type':'application/json', Authorization:`Bearer ${Auth.token()}`}, body:JSON.stringify({message:m})}); loadMsgs();}catch{toast('Failed to send','error'); i.value=m;}
-}
+async function loadMsgs() { if(!chatId) return; try{ const r=await fetch(`${CONFIG.API}/conversation/${chatId}/messages`, {headers:{Authorization:`Bearer ${Auth.token()}`}}); if(r.ok) renderChat((await r.json()).messages||[]); }catch{} }
+function renderChat(msgs) { const c=document.getElementById('chatMsgs'); if(!c) return; c.innerHTML=msgs.length? msgs.map(m=>`<div class="msg-bubble ${m.sender_role==='user'?'msg-user':'msg-admin'}"><div>${esc(m.message)}</div><div class="msg-time">${new Date(m.created_at).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}</div></div>`).join('') : '<div class="empty-msg">No messages yet</div>'; c.scrollTop=c.scrollHeight; }
+async function sendMsg() { const i=document.getElementById('chatInput'), m=i?.value.trim(); if(!m||!chatId) return; i.value=''; try{ await fetch(`${CONFIG.API}/conversation/${chatId}/send`, {method:'POST', headers:{'Content-Type':'application/json', Authorization:`Bearer ${Auth.token()}`}, body:JSON.stringify({message:m})}); loadMsgs(); }catch{ toast('Failed to send','error'); i.value=m; } }
 document.getElementById('chatSend').onclick = sendMsg;
-document.getElementById('chatInput').onkeydown = e => { if(e.key==='Enter'&&!e.shiftKey){e.preventDefault(); sendMsg();} };
-function pollChat() { if(pollInt) clearInterval(pollInt); pollInt = setInterval(()=>{ if(chatId) loadMsgs(); }, 4000); }
+document.getElementById('chatInput').onkeydown = e => { if(e.key==='Enter'&&!e.shiftKey){ e.preventDefault(); sendMsg(); } };
+function pollChat() { if(pollInt) clearInterval(pollInt); pollInt = setInterval(()=>{ if(chatId) loadMsgs(); }, 5000); }
 
-// ===== INIT =====
+// ==================== INIT ====================
 document.addEventListener('DOMContentLoaded', async () => {
     if(Auth.isLoggedIn()) { const u = await Auth.refresh(); if(u) localStorage.setItem('dc_user', JSON.stringify(u)); updateUI(u||Auth.user()); }
     await loadOrders();
