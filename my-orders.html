@@ -624,50 +624,140 @@ async function renderPayment(container, oid) {
     const t = Auth.token();
     try {
         const r = await fetch(`${CONFIG.API}/my-orders`, {headers:{Authorization:`Bearer ${t}`}});
-        const o = (await r.json()).orders?.find(x=>x.id===oid); if(!o) throw new Error('Order not found');
+        const o = (await r.json()).orders?.find(x=>x.id===oid); 
+        if(!o) throw new Error('Order not found');
         
-        const total = o.price||0, paid = o.total_paid||o.advance_paid||0, due = Math.max(0,total-paid), pct = total>0?Math.round((paid/total)*100):0;
+        const total = o.price || 0, paid = o.total_paid || o.advance_paid || 0, due = Math.max(0,total-paid);
+        const pct = total>0?Math.round((paid/total)*100):0;
         
-        // 🔥 FIXED REFUND STATUS MAPPING
-        const hasRef = o.refund_amount != null && o.refund_amount > 0;
-        const refundStatus = o.refund_status || 'pending';
+        // 🔥 REFUND STATUS - YEH PEHLE SE ORDER OBJECT MEIN AA RAHA HAI
+        const refundStatus = o.refund_status;  // pending, approved, processing, completed, failed, rejected
         const refundAmount = o.refund_amount || 0;
+        const refundReason = o.refund_reason || '';
+        const refundRequestedAt = o.refund_created_at;
+        const refundProcessedAt = o.refund_processed_at;
         
-        let refundLabel = "Refund Initiated";
-        let refundColor = "var(--info)";
-        let refundNotice = '📝 Refund request received by admin.';
-        
-        if (refundStatus === 'processing') {
-            refundLabel = "Processing with Bank";
-            refundColor = "var(--warning)";
-            refundNotice = '⏳ Refund initiated. Expected to reflect in 3-5 business days.';
+        // Status mapping for display
+        let refundBadge = '', refundMessage = '', refundColor = '';
+        if (refundStatus === 'pending') {
+            refundBadge = '🟡 PENDING REVIEW';
+            refundMessage = 'Refund request submitted. Awaiting admin approval.';
+            refundColor = 'var(--warning)';
+        } else if (refundStatus === 'approved') {
+            refundBadge = '🔵 APPROVED - PROCESSING';
+            refundMessage = 'Refund approved! Processing with bank (3-5 business days).';
+            refundColor = 'var(--info)';
+        } else if (refundStatus === 'processing') {
+            refundBadge = '🟣 PROCESSING WITH BANK';
+            refundMessage = 'Refund initiated with Razorpay. Amount will reflect in 3-5 days.';
+            refundColor = 'var(--info)';
         } else if (refundStatus === 'completed') {
-            refundLabel = "Credited to Account";
-            refundColor = "var(--success)";
-            refundNotice = '✅ Refund successfully credited to your original payment method.';
+            refundBadge = '🟢 REFUND COMPLETED';
+            refundMessage = 'Refund successfully credited to your account.';
+            refundColor = 'var(--success)';
         } else if (refundStatus === 'failed') {
-            refundLabel = "Refund Failed";
-            refundColor = "var(--error)";
-            refundNotice = '❌ Refund could not be processed. Please contact support.';
+            refundBadge = '🔴 REFUND FAILED';
+            refundMessage = 'Refund could not be processed automatically. Please contact support.';
+            refundColor = 'var(--error)';
+        } else if (refundStatus === 'rejected') {
+            refundBadge = '⚪ REFUND REJECTED';
+            refundMessage = 'Refund request was rejected. Contact support for details.';
+            refundColor = 'var(--error)';
         }
         
-        container.innerHTML = `
+        // 🔥 FILTER: Sirf successful payments dikhao, failed refund attempts nahi
+        const successfulTxns = o.payment_history?.filter(tx => 
+            tx.status !== 'failed' && !(tx.type === 'refund' && tx.status === 'failed')
+        ) || [];
+        
+        // Check if there are any failed refund attempts (for warning)
+        const hasFailedRefund = o.payment_history?.some(tx => 
+            tx.type === 'refund' && tx.status === 'failed'
+        ) || false;
+        
+        let html = `
             <div class="pay-stats">
                 <div class="pay-card"><div class="pay-label">Total</div><div class="pay-val">${fmtCurr(total)}</div></div>
                 <div class="pay-card highlight"><div class="pay-label">Paid</div><div class="pay-val green">${fmtCurr(paid)}</div></div>
                 ${due>0 ? `<div class="pay-card"><div class="pay-label">Remaining</div><div class="pay-val orange">${fmtCurr(due)}</div></div>` : `<div class="pay-card highlight"><div class="pay-label">Status</div><div class="pay-val green" style="font-size:0.9rem">Fully Paid</div></div>`}
-                ${hasRef ? `<div class="pay-card" style="border-color:${refundColor};background:rgba(16,185,129,0.05)"><div class="pay-label">${refundLabel}</div><div class="pay-val" style="color:${refundColor}">${fmtCurr(refundAmount)}</div></div>` : ''}
             </div>
-            <div style="margin-bottom:1rem;"><div style="display:flex;justify-content:space-between;margin-bottom:0.4rem;font-size:0.85rem;"><span>Progress</span><span style="color:var(--accent)">${pct}%</span></div><div class="progress-track"><div class="progress-bar" style="width:${pct}%"></div></div></div>
-            ${hasRef ? `<div style="background:rgba(59,130,246,0.1);border-left:3px solid var(--info);padding:0.8rem;border-radius:var(--radius-md);margin-bottom:1.2rem;font-size:0.85rem;color:var(--text-secondary)">${refundNotice}</div>` : ''}
-            ${o.payment_history?.length ? `<div class="txn-list">${o.payment_history.map(tx=>{
-                const isR=tx.type==='refund';
-                const c = isR ? 'var(--success)' : tx.type==='advance' ? 'var(--info)' : 'var(--accent)';
-                const label = isR ? (refundStatus==='completed'?'Refund Credited':'Refund '+refundStatus) : tx.type==='advance'?'Advance Paid':'Balance Paid';
-                return `<div class="txn-item"><div class="txn-left"><div class="txn-icon ${isR?'refund':tx.type}"><i class="fas fa-${isR?'undo':'arrow-down'}"></i></div><span>${label}</span></div><div class="txn-right"><div class="txn-amount" style="color:${c}">${fmtCurr(Math.abs(tx.amount))}</div><div class="txn-date">${fmtDate(tx.created_at)}</div></div></div>`;
-            }).join('')}</div>` : '<div class="empty-msg">No transactions recorded yet.</div>'}
-        `;
-    } catch(e) { container.innerHTML = `<div class="error-msg"><i class="fas fa-exclamation-triangle"></i> ${esc(e.message)}</div>`; }
+            <div style="margin-bottom:1rem;">
+                <div style="display:flex;justify-content:space-between;margin-bottom:0.4rem;font-size:0.85rem;">
+                    <span>Payment Progress</span><span style="color:var(--accent)">${pct}%</span>
+                </div>
+                <div class="progress-track"><div class="progress-bar" style="width:${pct}%"></div></div>
+            </div>`;
+        
+        // 🔥 REFUND STATUS CARD (Single, clear message)
+        if (refundStatus && refundStatus !== 'none') {
+            html += `
+            <div style="background:rgba(59,130,246,0.08);border-left:3px solid ${refundColor};padding:1rem;border-radius:var(--radius-md);margin-bottom:1.2rem;">
+                <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.5rem;">
+                    <strong style="color:${refundColor}">${refundBadge}</strong>
+                </div>
+                <p style="font-size:0.85rem;color:var(--text-secondary);margin-bottom:0.3rem;">${refundMessage}</p>
+                ${refundAmount > 0 ? `<p style="font-size:0.9rem;margin-top:0.3rem;"><strong>Amount:</strong> ${fmtCurr(refundAmount)}</p>` : ''}
+                ${refundRequestedAt ? `<p style="font-size:0.75rem;color:var(--text-muted);margin-top:0.3rem;">Requested: ${new Date(refundRequestedAt).toLocaleString()}</p>` : ''}
+                ${refundProcessedAt ? `<p style="font-size:0.75rem;color:var(--text-muted);">Processed: ${new Date(refundProcessedAt).toLocaleString()}</p>` : ''}
+                ${refundStatus === 'failed' || refundStatus === 'rejected' ? `
+                <button class="btn-action" style="margin-top:0.8rem;" onclick="startChat(${oid},'Support')">
+                    <i class="fas fa-headset"></i> Contact Support
+                </button>` : ''}
+            </div>`;
+        }
+        
+        // 🔥 FAILED REFUND WARNING (if multiple attempts failed)
+        if (hasFailedRefund && refundStatus !== 'completed') {
+            html += `
+            <div style="background:rgba(239,68,68,0.1);border-left:3px solid var(--error);padding:0.8rem;border-radius:var(--radius-md);margin-bottom:1rem;font-size:0.85rem;">
+                <i class="fas fa-exclamation-triangle" style="color:var(--error)"></i>
+                <strong style="color:var(--error)">Refund Issue Detected</strong>
+                <p style="margin-top:0.3rem;">Your refund could not be processed automatically. Please contact support with Order #${oid}.</p>
+                <button class="btn-action" style="margin-top:0.5rem;" onclick="startChat(${oid},'Support')">
+                    <i class="fas fa-envelope"></i> Contact Support
+                </button>
+            </div>`;
+        }
+        
+        // 🔥 TRANSACTION HISTORY (Only successful transactions)
+        if (successfulTxns.length) {
+            html += `
+            <div class="txn-list">
+                <div style="padding:0.5rem 1rem; background:var(--surface); font-weight:600; font-size:0.8rem;">
+                    <i class="fas fa-history"></i> Transaction History
+                </div>
+                ${successfulTxns.map(tx => {
+                    const isRefund = tx.type === 'refund';
+                    const isAdvance = tx.type === 'advance';
+                    const isSuccess = tx.status === 'completed';
+                    const amountColor = isRefund ? 'var(--success)' : (isAdvance ? 'var(--info)' : 'var(--accent)');
+                    const amountSign = isRefund ? '+' : '-';
+                    return `
+                    <div class="txn-item">
+                        <div class="txn-left">
+                            <div class="txn-icon ${isRefund ? 'refund' : (isAdvance ? 'advance' : 'balance')}">
+                                <i class="fas fa-${isRefund ? 'undo' : 'arrow-down'}"></i>
+                            </div>
+                            <div>
+                                <div>${isRefund ? (isSuccess ? 'Refund Credited' : 'Refund ' + tx.status) : (isAdvance ? 'Advance Payment' : 'Balance Payment')}</div>
+                                <div class="txn-date">${fmtDate(tx.created_at)}</div>
+                            </div>
+                        </div>
+                        <div class="txn-right">
+                            <div class="txn-amount" style="color:${amountColor}">${amountSign} ${fmtCurr(Math.abs(tx.amount))}</div>
+                            ${tx.razorpay_id ? `<div class="txn-id">${tx.razorpay_id.slice(-8)}</div>` : ''}
+                        </div>
+                    </div>`;
+                }).join('')}
+            </div>`;
+        } else {
+            html += '<div class="empty-msg">No payment records found</div>';
+        }
+        
+        container.innerHTML = html;
+    } catch(e) { 
+        container.innerHTML = `<div class="error-msg"><i class="fas fa-exclamation-triangle"></i> ${esc(e.message)}</div>`;
+    }
 }
 
 function renderCancel(container, oid, footer) {
