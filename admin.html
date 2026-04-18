@@ -8,7 +8,6 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
 <link rel="icon" type="image/png" href="logo.png">
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -353,10 +352,6 @@ let adminToken = localStorage.getItem(CONFIG.TOKEN_KEY);
 let adminEmail = localStorage.getItem(CONFIG.EMAIL_KEY);
 let editingServiceId = null, currentOrderId = null, currentConversation = null, chatPollInterval = null;
 let appData = { services: [], orders: [], users: [], customRequests: [], refunds: [], payments: [] };
-// WebSocket variables (ye lines ADD karo)
-let socket = null;
-let currentConvId = null;
-let typingTimeout = null;
 
 // ==================== UTILS ====================
 function showToast(msg, type='info') {
@@ -1021,122 +1016,6 @@ function updateChatBadge(list) {
   const badge = document.getElementById('chat-badge');
   if (badge) { badge.textContent = totalUnread; badge.style.display = totalUnread > 0 ? 'inline-block' : 'none'; }
 }
-
-// ==================== WEBSOCKET REAL-TIME CHAT ====================
-
-function initWebSocket() {
-    const token = localStorage.getItem('nova_admin_token');
-    if (!token) return;
-    
-    if (socket && socket.connected) {
-        socket.disconnect();
-    }
-    
-    socket = io('https://novastack-backend.onrender.com', {
-        query: { token: token },
-        transports: ['websocket', 'polling']
-    });
-    
-    socket.on('connect', () => {
-        console.log('✅ WebSocket connected');
-        showToast('Connected to chat server', 'success');
-    });
-    
-    socket.on('disconnect', () => {
-        console.log('❌ WebSocket disconnected');
-    });
-    
-    socket.on('new_message', (data) => {
-        console.log('📨 New message received:', data);
-        if (currentConvId === data.conversation_id) {
-            appendMessageRealTime(data.message);
-        } else {
-            updateChatBadgeForConversation(data.conversation_id);
-            showToast('New message received!', 'info');
-        }
-    });
-    
-    socket.on('user_typing', (data) => {
-        if (currentConvId === data.conversation_id) {
-            showTypingIndicator(data.user_role, data.typing);
-        }
-    });
-}
-
-function joinConversation(conversationId) {
-    if (!socket || !socket.connected) return;
-    currentConvId = conversationId;
-    socket.emit('join_conversation', { conversation_id: conversationId });
-}
-
-function sendMessageViaSocket(message) {
-    if (!socket || !socket.connected) {
-        return sendChatMessage();
-    }
-    socket.emit('send_message', {
-        conversation_id: currentConvId,
-        message: message
-    });
-}
-
-function sendTypingIndicator(isTyping) {
-    if (!socket || !socket.connected) return;
-    socket.emit('typing', {
-        conversation_id: currentConvId,
-        typing: isTyping
-    });
-}
-
-function onTyping() {
-    sendTypingIndicator(true);
-    clearTimeout(typingTimeout);
-    typingTimeout = setTimeout(() => {
-        sendTypingIndicator(false);
-    }, 1000);
-}
-
-function showTypingIndicator(role, isTyping) {
-    const chatMessages = document.getElementById('chat-messages');
-    if (!chatMessages) return;
-    
-    let typingDiv = document.getElementById('typing-indicator');
-    if (isTyping) {
-        if (!typingDiv) {
-            typingDiv = document.createElement('div');
-            typingDiv.id = 'typing-indicator';
-            typingDiv.className = 'message user';
-            typingDiv.innerHTML = `<div class="message-content"><i class="fas fa-ellipsis-h"></i> ${role === 'admin' ? 'Admin' : 'Client'} is typing...</div>`;
-            chatMessages.appendChild(typingDiv);
-            chatMessages.scrollTop = chatMessages.scrollHeight;
-        }
-    } else {
-        if (typingDiv) typingDiv.remove();
-    }
-}
-
-function appendMessageRealTime(message) {
-    const chatMessages = document.getElementById('chat-messages');
-    if (!chatMessages) return;
-    
-    const isAdmin = message.sender_role === 'admin';
-    const msgDiv = document.createElement('div');
-    msgDiv.className = `message ${isAdmin ? 'admin' : 'user'}`;
-    msgDiv.innerHTML = `
-        <div class="message-content">
-            ${escapeHtml(message.message)}
-            <span class="message-time">${formatDateTime(message.created_at)}</span>
-            <button class="msg-delete" onclick="deleteMessage('${message.id}')" title="Delete"><i class="fas fa-times"></i></button>
-        </div>
-    `;
-    chatMessages.appendChild(msgDiv);
-    chatMessages.scrollTop = chatMessages.scrollHeight;
-}
-
-function updateChatBadgeForConversation(convId) {
-    // Reload conversations to update badge
-    loadConversations();
-}
-
 function startChatPolling() { if (chatPollInterval) clearInterval(chatPollInterval); chatPollInterval = setInterval(() => { if (document.querySelector('.nav-item.active')?.getAttribute('data-page') === 'chat' && currentConversation) { loadConversations(); selectConversation(currentConversation, ''); } }, 4000); }
 
 // ==================== UI HELPERS ====================
@@ -1160,7 +1039,7 @@ function closeModal(id) { document.getElementById(id)?.classList.remove('open');
 document.querySelectorAll('.modal-overlay').forEach(m => m.addEventListener('click', e => { if (e.target === m) m.classList.remove('open'); }));
 
 // ==================== INIT ====================
-window.onload = () => { if (adminToken && adminEmail) showDashboard(); initWebSocket(); else { document.getElementById('login-container').style.display = 'flex'; document.getElementById('dashboard-container').style.display = 'none'; } };
+window.onload = () => { if (adminToken && adminEmail) showDashboard(); else { document.getElementById('login-container').style.display = 'flex'; document.getElementById('dashboard-container').style.display = 'none'; } };
 </script>
 </body>
 </html>
